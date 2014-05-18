@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>${PRODUCT_NAME}</string>
+	<key>CFBundleExecutable</key>
+	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.CCSAS.${PRODUCT_NAME:rfc1034identifier}</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>${PRODUCT_NAME}</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>foursquare_client_id</key>
+	<string>2PFU2PRLO0NFB5PADXSJGEGHNOCMBENWRFETVMRRW1TWVG1A</string>
+	<key>foursquare_client_secret</key>
+	<string>VGEGGNTSWL0BATURPIPJU4GOP0IJVPPC5EU4XL52YATO4DIC</string>
+	<key>foursquare_version</key>
+	<string>20140128</string>
+	<key>google_map_api_key</key>
+	<string>AIzaSyAqAwsG6ZVOnclKRAv8O1zfU_GU2u_4E7A</string>
+	<key>linotte_api_client</key>
+	<string>5f7b6508a22370af29f5</string>
+	<key>linotte_api_secret</key>
+	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
+</dict>
+</plist>
