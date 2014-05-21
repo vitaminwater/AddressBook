@@ -20,7 +20,7 @@
 
 #import "CCAddress.h"
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName3"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
 

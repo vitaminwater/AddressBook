@@ -40,6 +40,10 @@
     [self addChildViewController:_listViewController];
     [view setupListView:_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated

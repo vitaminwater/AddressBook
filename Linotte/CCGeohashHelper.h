@@ -13,7 +13,9 @@
 @interface CCGeohashHelper : NSObject
 
 + (NSString *)geohashFromCoordinates:(CLLocationCoordinate2D)coordinates;
-+ (CLLocationCoordinate2D)coordinatesFromGeohash:(NSString *)hash;
++ (CLLocationCoordinate2D)coordinatesFromGeohash:(NSString *)geohashstring;
 + (NSArray *)geohashGridSurroundingCoordinate:(CLLocationCoordinate2D)coordinates;
++ (NSArray *)calculateAdjacentGeohashesFromcoordinates:(CLLocationCoordinate2D)coordinates;
++ (NSArray *)calculateAdjacentGeohashes:(NSString *)geohashstring;
 
 @end

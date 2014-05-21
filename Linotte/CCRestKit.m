@@ -20,8 +20,8 @@
 #import "CCGoogleDetail.h"
 #import "CCGoogleDetailResult.h"
 
-#import "CCFoursquareResponse.h"
 #import "CCFoursquareVenues.h"
+#import "CCFoursquareCategorie.h"
 
 #import "CCOAuthTokenResponse.h"
 #import "CCOAuthTokenRequest.h"
@@ -37,9 +37,10 @@
 #if defined DEBUG
 // #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
 // #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
-#define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
+// #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
+#define kCCLocalApiServerUrl @"http://www.getlinotte.com"
 #else
-#define kCCLocalApiServerUrl @"https://www.getlinotte.com"
+#define kCCLocalApiServerUrl @"http://www.getlinotte.com"
 #endif
 
 @implementation CCRestKit
@@ -176,6 +177,11 @@ NSMutableDictionary *_objectManagers = nil;
     
     RKObjectMapping *venuesMapping = [RKObjectMapping mappingForClass:[CCFoursquareVenues class]];
     [venuesMapping addAttributeMappingsFromDictionary:@{@"name" : @"name", @"location.lat" : @"latitude", @"location.lng" : @"longitude", @"location.address" : @"address", @"location.city" : @"city", @"location.country" : @"country"}];
+    
+    RKObjectMapping *categoriesMapping = [RKObjectMapping mappingForClass:[CCFoursquareCategorie class]];
+    [categoriesMapping addAttributeMappingsFromDictionary:@{@"id" : @"identifier", @"name" : @"name"}];
+    
+    [venuesMapping addRelationshipMappingWithSourceKeyPath:@"categories" mapping:categoriesMapping];
     
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:venuesMapping method:RKRequestMethodGET pathPattern:kCCFoursquareAPIVenueSearch keyPath:@"response.venues" statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     

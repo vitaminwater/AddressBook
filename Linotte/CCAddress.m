@@ -2,6 +2,8 @@
 
 #import <RestKit/RestKit.h>
 
+#import "CCCategories.h"
+
 
 @interface CCAddress ()
 
@@ -20,6 +22,9 @@
     
     [objectMapping addAttributeMappingsFromArray:@[CCAddressAttributes.address, CCAddressAttributes.latitude, CCAddressAttributes.longitude, CCAddressAttributes.name]];
     
+    RKObjectMapping *categoriesObjectMapping = [CCCategories requestObjectMapping];
+    [objectMapping addRelationshipMappingWithSourceKeyPath:@"categories" mapping:categoriesObjectMapping];
+    
     return objectMapping;
 }
 
@@ -29,7 +34,6 @@
     RKEntityMapping *entityMapping = [RKEntityMapping mappingForEntityForName:[self entityName] inManagedObjectStore:managedObjectStore];
     
     [entityMapping addAttributeMappingsFromArray:@[CCAddressAttributes.identifier]];
-    
     return entityMapping;
 }
 

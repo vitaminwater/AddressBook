@@ -14,14 +14,14 @@
 
 @implementation CCNotificationGenerator
 
-- (void)didEnterGeohash:(NSString *)geohash
+- (void)didEnterGeohash:(NSArray *)geohash
 {
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash = %@ && (lastnotif = nil || lastnotif < %@)", geohash, date];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@)", geohash, date];
     [fetchRequest setPredicate:predicate];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];

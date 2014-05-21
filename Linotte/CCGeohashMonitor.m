@@ -67,7 +67,8 @@
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     if ([region isKindOfClass:[CLCircularRegion class]]) {
-        [_delegate didEnterGeohash:region.identifier];
+        NSArray *geohashes = [CCGeohashHelper calculateAdjacentGeohashes:region.identifier];
+        [_delegate didEnterGeohash:geohashes];
         [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
     }
     NSLog(@"################## didEnterRegion ######################");
@@ -86,8 +87,10 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = [locations firstObject];
+    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:location.coordinate];
+    NSArray *geohashes = [CCGeohashHelper calculateAdjacentGeohashes:geohash];
+    [_delegate didEnterGeohash:geohashes];
     [self updateMonitoredGeohashes:location.coordinate];
-    [_delegate didEnterGeohash:[CCGeohashHelper geohashFromCoordinates:location.coordinate]];
 }
 
 #pragma mark - singelton method

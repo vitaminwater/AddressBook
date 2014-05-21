@@ -16,4 +16,7 @@
 
 - (void)reloadAutocompletionResults;
 
+- (void)enableField;
+- (void)disableField;
+
 @end

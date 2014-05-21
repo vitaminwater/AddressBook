@@ -40,9 +40,13 @@
 	<string>20140128</string>
 	<key>google_map_api_key</key>
 	<string>AIzaSyAqAwsG6ZVOnclKRAv8O1zfU_GU2u_4E7A</string>
-	<key>linotte_api_client</key>
+	<key>linotte_api_client_debug</key>
 	<string>5f7b6508a22370af29f5</string>
-	<key>linotte_api_secret</key>
+	<key>linotte_api_secret_debug</key>
 	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
+	<key>linotte_api_client</key>
+	<string>eda95b19f510ac1f217a</string>
+	<key>linotte_api_secret</key>
+	<string>03deca54e8ca4bc0afda684d06e4b3252fa61164</string>
 </dict>
 </plist>

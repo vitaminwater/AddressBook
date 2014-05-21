@@ -22,6 +22,9 @@
 
 /* Begin PBXBuildFile section */
 		6F468212137B4D43BF3CB196 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741CE8E2CF64C42BEA00356 /* libPods.a */; };
+		C7629759192CCC2900B9B6E5 /* _CCCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = C7629756192CCC2900B9B6E5 /* _CCCategories.m */; };
+		C762975A192CCC2900B9B6E5 /* CCCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = C7629758192CCC2900B9B6E5 /* CCCategories.m */; };
+		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
 		C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB5719216C110096B5A8 /* CCOutputViewController.m */; };
@@ -59,7 +62,6 @@
 		C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E502191A577700602A4D /* CCUserPostPutResponse.m */; };
 		C7E1E509191A577F00602A4D /* CCOAuthTokenResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E506191A577F00602A4D /* CCOAuthTokenResponse.m */; };
 		C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E508191A577F00602A4D /* CCOAuthTokenRequest.m */; };
-		C7E1E511191A579C00602A4D /* CCFoursquareResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E50E191A579C00602A4D /* CCFoursquareResponse.m */; };
 		C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */; };
 		C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E519191A584700602A4D /* CCGoogleDetail.m */; };
 		C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E51B191A584700602A4D /* CCGoogleDetailResult.m */; };
@@ -86,6 +88,12 @@
 /* Begin PBXFileReference section */
 		43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		6741CE8E2CF64C42BEA00356 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7629755192CCC2900B9B6E5 /* _CCCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCCategories.h; sourceTree = "<group>"; };
+		C7629756192CCC2900B9B6E5 /* _CCCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategories.m; sourceTree = "<group>"; };
+		C7629757192CCC2900B9B6E5 /* CCCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategories.h; sourceTree = "<group>"; };
+		C7629758192CCC2900B9B6E5 /* CCCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategories.m; sourceTree = "<group>"; };
+		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
+		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
 		C799AB4B1920CD150096B5A8 /* CCAddViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddViewTableViewCell.h; sourceTree = "<group>"; };
 		C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddViewTableViewCell.m; sourceTree = "<group>"; };
@@ -153,8 +161,6 @@
 		C7E1E506191A577F00602A4D /* CCOAuthTokenResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOAuthTokenResponse.m; sourceTree = "<group>"; };
 		C7E1E507191A577F00602A4D /* CCOAuthTokenRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOAuthTokenRequest.h; sourceTree = "<group>"; };
 		C7E1E508191A577F00602A4D /* CCOAuthTokenRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOAuthTokenRequest.m; sourceTree = "<group>"; };
-		C7E1E50D191A579C00602A4D /* CCFoursquareResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareResponse.h; sourceTree = "<group>"; };
-		C7E1E50E191A579C00602A4D /* CCFoursquareResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareResponse.m; sourceTree = "<group>"; };
 		C7E1E50F191A579C00602A4D /* CCFoursquareVenues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareVenues.h; sourceTree = "<group>"; };
 		C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareVenues.m; sourceTree = "<group>"; };
 		C7E1E518191A584700602A4D /* CCGoogleDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleDetail.h; sourceTree = "<group>"; };
@@ -209,6 +215,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C762975B192CCC2C00B9B6E5 /* categories */ = {
+			isa = PBXGroup;
+			children = (
+				C7629755192CCC2900B9B6E5 /* _CCCategories.h */,
+				C7629756192CCC2900B9B6E5 /* _CCCategories.m */,
+				C7629757192CCC2900B9B6E5 /* CCCategories.h */,
+				C7629758192CCC2900B9B6E5 /* CCCategories.m */,
+			);
+			name = categories;
+			sourceTree = "<group>";
+		};
+		C762975C192CCC3500B9B6E5 /* address */ = {
+			isa = PBXGroup;
+			children = (
+				C7E1E4E9191A240700602A4D /* _CCAddress.h */,
+				C7E1E4EA191A240700602A4D /* _CCAddress.m */,
+				C7E1E4EB191A240700602A4D /* CCAddress.h */,
+				C7E1E4EC191A240700602A4D /* CCAddress.m */,
+			);
+			name = address;
+			sourceTree = "<group>";
+		};
 		C799AB481920CB300096B5A8 /* constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -396,10 +424,8 @@
 		C7CE2C9A1918F07100D37A64 /* core data */ = {
 			isa = PBXGroup;
 			children = (
-				C7E1E4E9191A240700602A4D /* _CCAddress.h */,
-				C7E1E4EA191A240700602A4D /* _CCAddress.m */,
-				C7E1E4EB191A240700602A4D /* CCAddress.h */,
-				C7E1E4EC191A240700602A4D /* CCAddress.m */,
+				C762975C192CCC3500B9B6E5 /* address */,
+				C762975B192CCC2C00B9B6E5 /* categories */,
 			);
 			name = "core data";
 			sourceTree = "<group>";
@@ -604,10 +630,10 @@
 		C7E1E50C191A578E00602A4D /* nearby search */ = {
 			isa = PBXGroup;
 			children = (
-				C7E1E50D191A579C00602A4D /* CCFoursquareResponse.h */,
-				C7E1E50E191A579C00602A4D /* CCFoursquareResponse.m */,
 				C7E1E50F191A579C00602A4D /* CCFoursquareVenues.h */,
 				C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */,
+				C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */,
+				C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */,
 			);
 			name = "nearby search";
 			sourceTree = "<group>";
@@ -855,12 +881,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */,
 				C7E1E4F3191A46B200602A4D /* CCRestKit.m in Sources */,
 				C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */,
 				C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */,
 				C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */,
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
+				C762975A192CCC2900B9B6E5 /* CCCategories.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddView.m in Sources */,
 				C799AB6C19236D4B0096B5A8 /* CCGeohashHelper.m in Sources */,
 				C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */,
@@ -868,6 +896,7 @@
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
+				C7629759192CCC2900B9B6E5 /* _CCCategories.m in Sources */,
 				C7E1E522191A585200602A4D /* CCGoogleGeocode.m in Sources */,
 				C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */,
 				C7E1E529191A585E00602A4D /* CCGoogleSearchResult.m in Sources */,
@@ -884,7 +913,6 @@
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
 				C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */,
-				C7E1E511191A579C00602A4D /* CCFoursquareResponse.m in Sources */,
 				C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,

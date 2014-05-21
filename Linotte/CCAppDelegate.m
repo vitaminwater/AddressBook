@@ -79,8 +79,13 @@
     
     [GMSServices provideAPIKey:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"google_map_api_key"]];
     
-    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client"];
-    NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
+/*#if defined(DEBUG)
+    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_client_debug"]];
+    NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_secret_debug"]];
+#else*/
+    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_client"]];
+    NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_secret"]];
+//#endif
     [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
     
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];

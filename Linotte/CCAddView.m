@@ -16,6 +16,8 @@
 
 @interface CCAddView()
 
+@property(nonatomic, strong)NSString *textFieldValueSave;
+
 @property(nonatomic, strong)UITextField *textField;
 @property(nonatomic, strong)UITableView *tableView;
 
@@ -89,6 +91,31 @@
     
     NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_textField][_tableView]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
+}
+
+- (void)enableField
+{
+    if (_textField.enabled == YES)
+        return;
+    _textField.placeholder = @"* place's name *";
+    _textField.enabled = YES;
+    _textField.text = _textFieldValueSave;
+}
+
+- (void)disableField
+{
+    if (_textField.enabled == NO)
+        return;
+    
+    if ([_textField isFirstResponder]) {
+        [_textField resignFirstResponder];
+        [_delegate reduceAddView];
+    }
+
+    _textFieldValueSave = _textField.text;
+    _textField.text = @"";
+    _textField.placeholder = @"Missing connection";
+    _textField.enabled = NO;
 }
 
 - (void)reloadAutocompletionResults

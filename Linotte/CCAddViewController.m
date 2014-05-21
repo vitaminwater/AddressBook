@@ -10,8 +10,10 @@
 
 #import <RestKit/RestKit.h>
 
-#import "CCFoursquareResponse.h"
+#import <Reachability/Reachability.h>
+
 #import "CCFoursquareVenues.h"
+#import "CCFoursquareCategorie.h"
 
 #import "CCGeohashHelper.h"
 #import "CCNetworkHandler.h"
@@ -26,10 +28,24 @@
  * Address storage class
  */
 
+@interface CCAddViewAutocompletionResultCategorie : NSObject
+
+@property(nonatomic, strong)NSString *identifier;
+@property(nonatomic, strong)NSString *name;
+
+@end
+
+@implementation CCAddViewAutocompletionResultCategorie
+@end
+
+/***************/
+
 @interface CCAddViewAutocompletionResult : NSObject
 
 @property(nonatomic, strong)NSString *address;
 @property(nonatomic, strong)NSString *name;
+
+@property(nonatomic, strong)NSArray *categories;
 
 @property(nonatomic, strong)NSString *reference;
 @property(nonatomic, assign)CLLocationCoordinate2D coordinates;
@@ -73,9 +89,24 @@
     self.view = addView;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - CLLocationManagerDelegate methods
@@ -159,7 +190,17 @@
                     addressString = [addressString stringByAppendingString:addr];
                 }
             }
+            
+            NSMutableArray *categories = [@[] mutableCopy];
+            for (CCFoursquareCategorie *categorie in result.categories) {
+                CCAddViewAutocompletionResultCategorie *autocompletionCategorie = [CCAddViewAutocompletionResultCategorie new];
+                autocompletionCategorie.identifier = categorie.identifier;
+                autocompletionCategorie.name = categorie.name;
+                [categories addObject:autocompletionCategorie];
+            }
+            
             autocompletionResult.address = addressString;
+            autocompletionResult.categories = categories;
             autocompletionResult.coordinates = CLLocationCoordinate2DMake([result.latitude doubleValue], [result.longitude doubleValue]);
             [_autocompletionResults addObject:autocompletionResult];
             
@@ -168,6 +209,18 @@
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         
     }];
+}
+
+#pragma mark - NSNotificationCenter methods
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    Reachability *reachability = notification.object;
+    if (reachability.isReachable) {
+        [((CCAddView *)self.view) enableField];
+    } else {
+        [((CCAddView *)self.view) disableField];
+    }
 }
 
 #pragma mark - CCAddViewDelegate methods
@@ -216,6 +269,13 @@
     address.identifier = [[NSUUID UUID] UUIDString];
     
     address.geohash = [CCGeohashHelper geohashFromCoordinates:autocompletionResult.coordinates];
+    
+    for (CCAddViewAutocompletionResultCategorie *categorie in autocompletionResult.categories) {
+        CCCategories *categorieModel = [CCCategories insertInManagedObjectContext:managedObjectContext];
+        categorieModel.identifier = categorie.identifier;
+        categorieModel.name = categorie.name;
+        [address addCategoriesObject:categorieModel];
+    }
     
     [managedObjectContext saveToPersistentStore:NULL];
     [self reduceAddView];

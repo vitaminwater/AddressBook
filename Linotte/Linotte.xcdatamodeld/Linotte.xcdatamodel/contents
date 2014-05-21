@@ -10,8 +10,15 @@
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCCategories" inverseName="address" inverseEntity="CCCategories" syncable="YES"/>
+    </entity>
+    <entity name="CCCategories" representedClassName="CCCategories" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="categories" inverseEntity="CCAddress" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="-63" positionY="-18" width="128" height="180"/>
+        <element name="CCAddress" positionX="-63" positionY="-18" width="128" height="193"/>
+        <element name="CCCategories" positionX="-63" positionY="54" width="128" height="88"/>
     </elements>
 </model>

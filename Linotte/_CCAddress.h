@@ -17,11 +17,13 @@ extern const struct CCAddressAttributes {
 } CCAddressAttributes;
 
 extern const struct CCAddressRelationships {
+	__unsafe_unretained NSString *categories;
 } CCAddressRelationships;
 
 extern const struct CCAddressFetchedProperties {
 } CCAddressFetchedProperties;
 
+@class CCCategories;
 
 
 
@@ -148,10 +150,22 @@ extern const struct CCAddressFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSSet *categories;
+
+- (NSMutableSet*)categoriesSet;
+
+
+
+
 
 @end
 
 @interface _CCAddress (CoreDataGeneratedAccessors)
+
+- (void)addCategories:(NSSet*)value_;
+- (void)removeCategories:(NSSet*)value_;
+- (void)addCategoriesObject:(CCCategories*)value_;
+- (void)removeCategoriesObject:(CCCategories*)value_;
 
 @end
 
@@ -219,6 +233,11 @@ extern const struct CCAddressFetchedProperties {
 - (void)setPrimitiveSentValue:(BOOL)value_;
 
 
+
+
+
+- (NSMutableSet*)primitiveCategories;
+- (void)setPrimitiveCategories:(NSMutableSet*)value;
 
 
 @end

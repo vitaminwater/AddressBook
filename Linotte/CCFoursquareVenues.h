@@ -16,5 +16,6 @@
 @property(nonatomic, strong)NSString *address;
 @property(nonatomic, strong)NSString *city;
 @property(nonatomic, strong)NSString *country;
+@property(nonatomic, strong)NSArray *categories;
 
 @end
