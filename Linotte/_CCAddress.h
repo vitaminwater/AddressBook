@@ -23,7 +23,7 @@ extern const struct CCAddressRelationships {
 extern const struct CCAddressFetchedProperties {
 } CCAddressFetchedProperties;
 
-@class CCCategories;
+@class CCCategory;
 
 
 
@@ -164,8 +164,8 @@ extern const struct CCAddressFetchedProperties {
 
 - (void)addCategories:(NSSet*)value_;
 - (void)removeCategories:(NSSet*)value_;
-- (void)addCategoriesObject:(CCCategories*)value_;
-- (void)removeCategoriesObject:(CCCategories*)value_;
+- (void)addCategoriesObject:(CCCategory*)value_;
+- (void)removeCategoriesObject:(CCCategory*)value_;
 
 @end
 

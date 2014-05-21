@@ -271,7 +271,7 @@
     address.geohash = [CCGeohashHelper geohashFromCoordinates:autocompletionResult.coordinates];
     
     for (CCAddViewAutocompletionResultCategorie *categorie in autocompletionResult.categories) {
-        CCCategories *categorieModel = [CCCategories insertInManagedObjectContext:managedObjectContext];
+        CCCategory *categorieModel = [CCCategory insertInManagedObjectContext:managedObjectContext];
         categorieModel.identifier = categorie.identifier;
         categorieModel.name = categorie.name;
         [address addCategoriesObject:categorieModel];

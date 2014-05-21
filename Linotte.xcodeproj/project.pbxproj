@@ -22,8 +22,8 @@
 
 /* Begin PBXBuildFile section */
 		6F468212137B4D43BF3CB196 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741CE8E2CF64C42BEA00356 /* libPods.a */; };
-		C7629759192CCC2900B9B6E5 /* _CCCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = C7629756192CCC2900B9B6E5 /* _CCCategories.m */; };
-		C762975A192CCC2900B9B6E5 /* CCCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = C7629758192CCC2900B9B6E5 /* CCCategories.m */; };
+		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
+		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
@@ -88,10 +88,10 @@
 /* Begin PBXFileReference section */
 		43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		6741CE8E2CF64C42BEA00356 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7629755192CCC2900B9B6E5 /* _CCCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCCategories.h; sourceTree = "<group>"; };
-		C7629756192CCC2900B9B6E5 /* _CCCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategories.m; sourceTree = "<group>"; };
-		C7629757192CCC2900B9B6E5 /* CCCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategories.h; sourceTree = "<group>"; };
-		C7629758192CCC2900B9B6E5 /* CCCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategories.m; sourceTree = "<group>"; };
+		C705882A192CEC500096A335 /* _CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCCategory.h; sourceTree = "<group>"; };
+		C705882B192CEC500096A335 /* _CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategory.m; sourceTree = "<group>"; };
+		C705882C192CEC500096A335 /* CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategory.h; sourceTree = "<group>"; };
+		C705882D192CEC500096A335 /* CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategory.m; sourceTree = "<group>"; };
 		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
 		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
@@ -215,15 +215,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C762975B192CCC2C00B9B6E5 /* categories */ = {
+		C762975B192CCC2C00B9B6E5 /* category */ = {
 			isa = PBXGroup;
 			children = (
-				C7629755192CCC2900B9B6E5 /* _CCCategories.h */,
-				C7629756192CCC2900B9B6E5 /* _CCCategories.m */,
-				C7629757192CCC2900B9B6E5 /* CCCategories.h */,
-				C7629758192CCC2900B9B6E5 /* CCCategories.m */,
+				C705882A192CEC500096A335 /* _CCCategory.h */,
+				C705882B192CEC500096A335 /* _CCCategory.m */,
+				C705882C192CEC500096A335 /* CCCategory.h */,
+				C705882D192CEC500096A335 /* CCCategory.m */,
 			);
-			name = categories;
+			name = category;
 			sourceTree = "<group>";
 		};
 		C762975C192CCC3500B9B6E5 /* address */ = {
@@ -425,7 +425,7 @@
 			isa = PBXGroup;
 			children = (
 				C762975C192CCC3500B9B6E5 /* address */,
-				C762975B192CCC2C00B9B6E5 /* categories */,
+				C762975B192CCC2C00B9B6E5 /* category */,
 			);
 			name = "core data";
 			sourceTree = "<group>";
@@ -888,15 +888,14 @@
 				C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */,
 				C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */,
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
-				C762975A192CCC2900B9B6E5 /* CCCategories.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddView.m in Sources */,
 				C799AB6C19236D4B0096B5A8 /* CCGeohashHelper.m in Sources */,
 				C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */,
 				C7CE2C7A1918E48800D37A64 /* Linotte.xcdatamodeld in Sources */,
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
+				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
-				C7629759192CCC2900B9B6E5 /* _CCCategories.m in Sources */,
 				C7E1E522191A585200602A4D /* CCGoogleGeocode.m in Sources */,
 				C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */,
 				C7E1E529191A585E00602A4D /* CCGoogleSearchResult.m in Sources */,
@@ -913,6 +912,7 @@
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
 				C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */,
+				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
 				C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,

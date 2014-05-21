@@ -1,9 +1,9 @@
-#import "_CCCategories.h"
+#import "_CCCategory.h"
 
 @class RKObjectMapping;
 @class RKEntityMapping;
 
-@interface CCCategories : _CCCategories {}
+@interface CCCategory : _CCCategory {}
 
 + (RKObjectMapping *)requestObjectMapping;
 + (RKEntityMapping *)responseEntityMapping;

@@ -2,7 +2,7 @@
 
 #import <RestKit/RestKit.h>
 
-#import "CCCategories.h"
+#import "CCCategory.h"
 
 
 @interface CCAddress ()
@@ -22,7 +22,7 @@
     
     [objectMapping addAttributeMappingsFromArray:@[CCAddressAttributes.address, CCAddressAttributes.latitude, CCAddressAttributes.longitude, CCAddressAttributes.name]];
     
-    RKObjectMapping *categoriesObjectMapping = [CCCategories requestObjectMapping];
+    RKObjectMapping *categoriesObjectMapping = [CCCategory requestObjectMapping];
     [objectMapping addRelationshipMappingWithSourceKeyPath:@"categories" mapping:categoriesObjectMapping];
     
     return objectMapping;

@@ -1,41 +1,41 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to CCCategories.m instead.
+// Make changes to CCCategory.m instead.
 
-#import "_CCCategories.h"
+#import "_CCCategory.h"
 
-const struct CCCategoriesAttributes CCCategoriesAttributes = {
+const struct CCCategoryAttributes CCCategoryAttributes = {
 	.identifier = @"identifier",
 	.name = @"name",
 };
 
-const struct CCCategoriesRelationships CCCategoriesRelationships = {
+const struct CCCategoryRelationships CCCategoryRelationships = {
 	.address = @"address",
 };
 
-const struct CCCategoriesFetchedProperties CCCategoriesFetchedProperties = {
+const struct CCCategoryFetchedProperties CCCategoryFetchedProperties = {
 };
 
-@implementation CCCategoriesID
+@implementation CCCategoryID
 @end
 
-@implementation _CCCategories
+@implementation _CCCategory
 
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription insertNewObjectForEntityForName:@"CCCategories" inManagedObjectContext:moc_];
+	return [NSEntityDescription insertNewObjectForEntityForName:@"CCCategory" inManagedObjectContext:moc_];
 }
 
 + (NSString*)entityName {
-	return @"CCCategories";
+	return @"CCCategory";
 }
 
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription entityForName:@"CCCategories" inManagedObjectContext:moc_];
+	return [NSEntityDescription entityForName:@"CCCategory" inManagedObjectContext:moc_];
 }
 
-- (CCCategoriesID*)objectID {
-	return (CCCategoriesID*)[super objectID];
+- (CCCategoryID*)objectID {
+	return (CCCategoryID*)[super objectID];
 }
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {

@@ -11,7 +11,7 @@
 #import <RestKit/RestKit.h>
 
 #import "CCAddress.h"
-#import "CCCategories.h"
+#import "CCCategory.h"
 
 #define kCCGooglePlaceObjectManager @"kGooglePlaceObjectManager"
 #define kCCFoursquareObjectManager @"kFoursquareObjectManager"

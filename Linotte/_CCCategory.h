@@ -1,34 +1,34 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to CCCategories.h instead.
+// Make changes to CCCategory.h instead.
 
 #import <CoreData/CoreData.h>
 
 
-extern const struct CCCategoriesAttributes {
+extern const struct CCCategoryAttributes {
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *name;
-} CCCategoriesAttributes;
+} CCCategoryAttributes;
 
-extern const struct CCCategoriesRelationships {
+extern const struct CCCategoryRelationships {
 	__unsafe_unretained NSString *address;
-} CCCategoriesRelationships;
+} CCCategoryRelationships;
 
-extern const struct CCCategoriesFetchedProperties {
-} CCCategoriesFetchedProperties;
+extern const struct CCCategoryFetchedProperties {
+} CCCategoryFetchedProperties;
 
 @class CCAddress;
 
 
 
 
-@interface CCCategoriesID : NSManagedObjectID {}
+@interface CCCategoryID : NSManagedObjectID {}
 @end
 
-@interface _CCCategories : NSManagedObject {}
+@interface _CCCategory : NSManagedObject {}
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-- (CCCategoriesID*)objectID;
+- (CCCategoryID*)objectID;
 
 
 
@@ -64,11 +64,11 @@ extern const struct CCCategoriesFetchedProperties {
 
 @end
 
-@interface _CCCategories (CoreDataGeneratedAccessors)
+@interface _CCCategory (CoreDataGeneratedAccessors)
 
 @end
 
-@interface _CCCategories (CoreDataGeneratedPrimitiveAccessors)
+@interface _CCCategory (CoreDataGeneratedPrimitiveAccessors)
 
 
 - (NSString*)primitiveIdentifier;

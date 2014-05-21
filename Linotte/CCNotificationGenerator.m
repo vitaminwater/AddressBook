@@ -11,6 +11,7 @@
 #import <RestKit/RestKit.h>
 
 #import "CCAddress.h"
+#import "CCCategory.h"
 
 @implementation CCNotificationGenerator
 
@@ -27,9 +28,14 @@
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
     for (CCAddress *address in results) {
+        CCCategory *category = [address.categories.allObjects firstObject];
         NSDictionary *userInfo = @{@"addressId" : address.identifier};
         UILocalNotification *localNotification = [UILocalNotification new];
-        localNotification.alertBody = [NSString stringWithFormat:@"%@ %@", address.name, address.address];
+        
+        if (category == nil)
+            localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@", address.name];
+        else
+            localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@, %@", address.name, category.name];
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.userInfo = userInfo;
         
