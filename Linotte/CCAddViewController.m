@@ -64,6 +64,11 @@
     CLLocationManager *_locationManager;
     CLLocation *_currentLocation;
     
+    NSDictionary *_nextFoursquarePlaceQuery;
+    BOOL _isLoadingFoursquarePlace;
+    
+    NSString *_currentGeohash;
+    
     void (^geolocBlock)();
 }
 
@@ -115,6 +120,14 @@
 {
     CLLocation *location = [locations firstObject];
     _currentLocation = location;
+    
+    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:_currentLocation.coordinate];
+    
+    if ([_currentGeohash isEqualToString:geohash])
+        return;
+    
+    _currentGeohash = geohash;
+    
     if (geolocBlock)
         geolocBlock(location);
 }
@@ -124,7 +137,8 @@
 - (void)autocompleteAddressName:(NSString *)addressName
 {
     __weak id weakSelf = self;
-    [self loadPlacesWebserviceByName:addressName];
+    if (_currentLocation)
+        [self loadPlacesWebserviceByName:addressName];
     geolocBlock = ^() {
         [weakSelf loadPlacesWebserviceByName:addressName];
     };
@@ -154,11 +168,12 @@
     NSString *clientSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_client_secret"];
     NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_client_id"];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_version"];
-    NSString *locationString = [NSString stringWithFormat:@"%f,%f", _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude];
-    NSMutableDictionary *args = [@{@"client_id" : clientId, @"client_secret" : clientSecret, @"v" : version} mutableCopy];
+    NSMutableDictionary *args = [@{@"client_id" : clientId, @"client_secret" : clientSecret, @"v" : version, @"intent" : @"checkin"} mutableCopy];
     
     if (_currentLocation) {
+        NSString *locationString = [NSString stringWithFormat:@"%f,%f", _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude];
         args[@"ll"] = locationString;
+        args[@"radius"] = @"1000000000000";
     }
     
     return args;
@@ -173,6 +188,12 @@
 
 - (void)loadFoursquareVenueSearchWebservice:(NSDictionary *)args
 {
+    if (_isLoadingFoursquarePlace) {
+        _nextFoursquarePlaceQuery = args;
+        return;
+    }
+    _isLoadingFoursquarePlace = YES;
+    
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCFoursquareObjectManager];
     [objectManager getObjectsAtPath:kCCFoursquareAPIVenueSearch parameters:args success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         NSArray *venues = mappingResult.array;
@@ -203,12 +224,20 @@
             autocompletionResult.categories = categories;
             autocompletionResult.coordinates = CLLocationCoordinate2DMake([result.latitude doubleValue], [result.longitude doubleValue]);
             [_autocompletionResults addObject:autocompletionResult];
-            
         }
         [(CCAddView *)self.view reloadAutocompletionResults];
+        [self endFoursquareRequest];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        
+        [self endFoursquareRequest];
     }];
+}
+
+- (void)endFoursquareRequest
+{
+    _isLoadingFoursquarePlace = NO;
+    if (_nextFoursquarePlaceQuery != nil)
+        [self loadFoursquareVenueSearchWebservice:_nextFoursquarePlaceQuery];
+    _nextFoursquarePlaceQuery = nil;
 }
 
 #pragma mark - NSNotificationCenter methods

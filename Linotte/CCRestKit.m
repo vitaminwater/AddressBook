@@ -62,9 +62,9 @@ NSMutableDictionary *_objectManagers = nil;
         
         [objectManager setRequestSerializationMIMEType:mimeTypeSerialization];
         
-#if defined(DEBUG)
+//#if defined(DEBUG)
         objectManager.HTTPClient.allowsInvalidSSLCertificate = YES;
-#endif
+//#endif
         
         _objectManagers[name] = objectManager;
     }
@@ -90,8 +90,8 @@ NSMutableDictionary *_objectManagers = nil;
 
 + (void)initializeMappings
 {
-    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
-    RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+    //RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    //RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     
     [self initializeGoogleAutocompleteMapping];
     [self initializeGoogleSearchMapping];

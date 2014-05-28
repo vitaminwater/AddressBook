@@ -46,6 +46,15 @@
 	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
 	<key>linotte_api_client</key>
 	<string>eda95b19f510ac1f217a</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>comlinotte://</string>
+			</array>
+		</dict>
+	</array>
 	<key>linotte_api_secret</key>
 	<string>03deca54e8ca4bc0afda684d06e4b3252fa61164</string>
 </dict>

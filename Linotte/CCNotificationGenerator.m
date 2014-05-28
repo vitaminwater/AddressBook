@@ -27,6 +27,11 @@
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [results count];
+    if ([results count] == 0)
+        return;
+    
+    NSMutableArray *notifications = [@[] mutableCopy];
     for (CCAddress *address in results) {
         CCCategory *category = [address.categories.allObjects firstObject];
         NSDictionary *userInfo = @{@"addressId" : address.identifier};
@@ -39,11 +44,42 @@
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.userInfo = userInfo;
         
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+        [notifications addObject:localNotification];
         
         address.lastnotif = [NSDate date];
     }
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [results count];
+    [managedObjectContext saveToPersistentStore:NULL];
+    
+    [UIApplication sharedApplication].scheduledLocalNotifications = notifications;
+}
+
+#pragma mark - testing methods
+
++ (void)printLastNotif
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCAddress *address in results) {
+        NSLog(@"%@ %@", address.name, address.lastnotif);
+    }
+}
+
++ (void)resetLastNotif
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    
+    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24 * 2];
+    
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCAddress *address in results) {
+        address.lastnotif = date;
+    }
+    
     [managedObjectContext saveToPersistentStore:NULL];
 }
 

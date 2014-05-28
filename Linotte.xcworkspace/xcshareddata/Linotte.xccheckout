@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>F5E23459-098C-491F-9936-607FFC9B6BBD</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Linotte</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</key>
+		<string>ssh://git.ccsas.biz/linotteapp.git</string>
+		<key>2AC06D93-FCEF-4CDF-AFFD-BC82335847A3</key>
+		<string>ssh://git.ccsas.biz/geohash.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Linotte.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</key>
+		<string>..</string>
+		<key>2AC06D93-FCEF-4CDF-AFFD-BC82335847A3</key>
+		<string>../../geohash</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://git.ccsas.biz/linotteapp.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>2AC06D93-FCEF-4CDF-AFFD-BC82335847A3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>geohash</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Linotte</string>
+		</dict>
+	</array>
+</dict>
+</plist>

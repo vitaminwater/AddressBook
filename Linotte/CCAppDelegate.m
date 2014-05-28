@@ -10,6 +10,8 @@
 
 #import <GoogleMaps/GoogleMaps.h>
 
+#import "CCNotificationGenerator.h"
+
 #import "CCLocalAPI.h"
 
 #import "CCNetworkHandler.h"
@@ -88,6 +90,9 @@
 //#endif
     [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
     
+    [CCNotificationGenerator printLastNotif];
+    //[CCNotificationGenerator resetLastNotif];
+    
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
     [CCNetworkHandler sharedInstance];
 }
@@ -125,7 +130,8 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    [self processNotification:notification];
+    NSLog(@"poeut");
+    //[self processNotification:notification];
 }
 
 #pragma mark -

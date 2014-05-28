@@ -92,6 +92,7 @@
 		C705882B192CEC500096A335 /* _CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategory.m; sourceTree = "<group>"; };
 		C705882C192CEC500096A335 /* CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategory.h; sourceTree = "<group>"; };
 		C705882D192CEC500096A335 /* CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategory.m; sourceTree = "<group>"; };
+		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
 		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
 		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
@@ -995,7 +996,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "DBEE5489-B7C7-4EA0-84E8-0562C37400D9";
+				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1028,7 +1029,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "DBEE5489-B7C7-4EA0-84E8-0562C37400D9";
+				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1045,6 +1046,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1060,6 +1062,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1163,9 +1166,10 @@
 		C7CE2C781918E48800D37A64 /* Linotte.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */,
 				C7CE2C791918E48800D37A64 /* Linotte.xcdatamodel */,
 			);
-			currentVersion = C7CE2C791918E48800D37A64 /* Linotte.xcdatamodel */;
+			currentVersion = C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */;
 			path = Linotte.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

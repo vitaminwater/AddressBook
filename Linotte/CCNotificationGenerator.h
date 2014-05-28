@@ -12,6 +12,8 @@
 
 @interface CCNotificationGenerator : NSObject<CCGeohashMonitorDelegate>
 
++ (void)printLastNotif;
++ (void)resetLastNotif;
 + (instancetype)sharedInstance;
 
 @end

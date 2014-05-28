@@ -87,9 +87,11 @@
 {
     NSDictionary *modes = @{@(CCRouteTypeCar) : @"driving", @(CCRouteTypeTrain) : @"transit", @(CCRouteTypeWalk) : @"walking", @(CCRouteTypeBicycling) : @"bicycling"};
     
-    NSMutableString *url = [@"comgooglemaps://?" mutableCopy];
+    NSMutableString *url = [@"comgooglemaps-x-callback://?" mutableCopy];
     [url appendFormat:@"daddr=%f,%f", _address.latitudeValue, _address.longitudeValue];
     [url appendFormat:@"&directionsmode=%@", modes[@(type)]];
+    [url appendFormat:@"&x-source=Linotte"];
+    [url appendFormat:@"&x-success=comlinotte://"];
     
     [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]];
 }

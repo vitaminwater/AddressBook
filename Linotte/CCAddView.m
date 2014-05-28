@@ -163,6 +163,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [_textField resignFirstResponder];
+    _textField.text = @"";
     [_delegate autocompletionResultSelectedAtIndex:indexPath.row];
 }
 
