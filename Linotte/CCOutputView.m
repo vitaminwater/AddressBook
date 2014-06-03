@@ -111,12 +111,7 @@
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
-    NSArray *directionsMode = @[@"transit", @"driving", @"bicycling", @"walking"];
-    NSString *url = [NSString stringWithFormat:@"comgooglemaps://?daddr=%f,%f&directionsmode=%@", [_delegate addressLatitude], [_delegate addressLongitude], directionsMode[[tabBar.items indexOfObject:item]]];
-    if ([[UIApplication sharedApplication] canOpenURL:
-          [NSURL URLWithString:url]]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-    }
+    [_delegate launchRoute:[tabBar.items indexOfObject:item]];
 }
 
 @end

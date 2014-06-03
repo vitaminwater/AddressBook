@@ -97,7 +97,10 @@
 
 - (void)updateCell:(CCListViewTableViewCell *)cell atIndex:(NSUInteger)index
 {
-    NSString *distanceText = [NSString stringWithFormat:@"%.02f m", [_delegate distanceForAddressAtIndex:index]];
+    /*NSDate *lastNotif = [_delegate lastNotifForAddressAtIndex:index];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    dateFormatter.dateFormat = @"dd/MM HH:mm";*/
+    NSString *distanceText = [NSString stringWithFormat:@"%.02f m", [_delegate distanceForAddressAtIndex:index]/*, [dateFormatter stringFromDate:lastNotif]*/];
     cell.textLabel.text = [_delegate nameForAddressAtIndex:index];
     cell.detailTextLabel.text = distanceText;
     cell.angle = [_delegate angleForAddressAtIndex:index];

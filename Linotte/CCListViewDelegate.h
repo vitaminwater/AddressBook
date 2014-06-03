@@ -17,6 +17,7 @@
 - (double)angleForAddressAtIndex:(NSUInteger)index;
 - (NSString *)nameForAddressAtIndex:(NSUInteger)index;
 - (NSString *)addressForAddressAtIndex:(NSUInteger)index;
+- (NSDate *)lastNotifForAddressAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfAddresses;
 
 @end

@@ -121,7 +121,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    CLLocation *location = [locations firstObject];
+    CLLocation *location = [locations lastObject];
     _currentLocation = location;
     
     __weak CCListViewController *weakSelf = self;
@@ -226,6 +226,12 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 {
     CCAddress *address = _addresses[index];
     return address.address;
+}
+
+- (NSDate *)lastNotifForAddressAtIndex:(NSUInteger)index
+{
+    CCAddress *address = _addresses[index];
+    return address.lastnotif;
 }
 
 - (NSUInteger)numberOfAddresses

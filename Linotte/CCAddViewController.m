@@ -118,7 +118,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    CLLocation *location = [locations firstObject];
+    CLLocation *location = [locations lastObject];
     _currentLocation = location;
     
     NSString *geohash = [CCGeohashHelper geohashFromCoordinates:_currentLocation.coordinate];

@@ -12,6 +12,9 @@
 
 #import "CCRestKit.h"
 
+#define kCCGoogleMapScheme @"comgooglemaps-x-callback://"
+#define kCCAppleMapScheme @"http://maps.apple.com/"
+
 @interface CCOutputViewController ()
 {
     CLLocationManager *_locationManager;
@@ -69,11 +72,35 @@
     [_locationManager stopUpdatingLocation];
 }
 
+#pragma mark - route methods
+
+- (void)googleRoute:(CCRouteType)type
+{
+    NSDictionary *modes = @{@(CCRouteTypeCar) : @"driving", @(CCRouteTypeTrain) : @"transit", @(CCRouteTypeWalk) : @"walking", @(CCRouteTypeBicycling) : @"bicycling"};
+    
+    NSMutableString *url = [kCCGoogleMapScheme mutableCopy];
+    [url appendFormat:@"?daddr=%f,%f", _address.latitudeValue, _address.longitudeValue];
+    [url appendFormat:@"&directionsmode=%@", modes[@(type)]];
+    [url appendFormat:@"&x-source=Linotte"];
+    [url appendFormat:@"&x-success=comlinotte://?resume=true"];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
+- (void)appleMapRoute:(CCRouteType)type
+{
+    NSMutableString *url = [kCCAppleMapScheme mutableCopy];
+    [url appendFormat:@"?daddr=%f,%f", _address.latitudeValue, _address.longitudeValue];
+    [url appendFormat:@"&saddr=%f,%f", _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude];
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+}
+
 #pragma mark - CLLocationManagerDelegate methods
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    CLLocation *location = [locations firstObject];
+    CLLocation *location = [locations lastObject];
     _currentLocation = location;
     
     CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
@@ -85,15 +112,10 @@
 
 - (void)launchRoute:(CCRouteType)type
 {
-    NSDictionary *modes = @{@(CCRouteTypeCar) : @"driving", @(CCRouteTypeTrain) : @"transit", @(CCRouteTypeWalk) : @"walking", @(CCRouteTypeBicycling) : @"bicycling"};
-    
-    NSMutableString *url = [@"comgooglemaps-x-callback://?" mutableCopy];
-    [url appendFormat:@"daddr=%f,%f", _address.latitudeValue, _address.longitudeValue];
-    [url appendFormat:@"&directionsmode=%@", modes[@(type)]];
-    [url appendFormat:@"&x-source=Linotte"];
-    [url appendFormat:@"&x-success=comlinotte://"];
-    
-    [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:url]];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:kCCGoogleMapScheme]])
+        [self googleRoute:type];
+    else
+        [self appleMapRoute:type];
 }
 
 - (double)addressDistance

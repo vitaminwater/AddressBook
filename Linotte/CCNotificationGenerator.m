@@ -20,37 +20,70 @@
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
-    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24];
+    NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 8];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@)", geohash, date];
     [fetchRequest setPredicate:predicate];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [results count];
-    if ([results count] == 0)
+    if ([results count] == 0) {
         return;
+    }
     
-    NSMutableArray *notifications = [@[] mutableCopy];
-    for (CCAddress *address in results) {
-        CCCategory *category = [address.categories.allObjects firstObject];
-        NSDictionary *userInfo = @{@"addressId" : address.identifier};
-        UILocalNotification *localNotification = [UILocalNotification new];
+    UILocalNotification *localNotification = [UILocalNotification new];
+    
+    localNotification.alertAction = @"Linotte";
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    
+    localNotification.applicationIconBadgeNumber = [results count];
+    
+    if ([results count] == 1)
+        [self configureLocalNotificationForAddress:[results firstObject] localNotification:localNotification];
+    else
+        [self configureLocalNotificationForAddresses:results localNotification:localNotification];
+
+    [managedObjectContext saveToPersistentStore:NULL];
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+- (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification
+{
+    CCCategory *category = [address.categories.allObjects firstObject];
+    NSDictionary *userInfo = @{@"addressId" : address.identifier};
+    
+    if (category == nil)
+        localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@", address.name];
+    else
+        localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@, %@", address.name, category.name];
+    
+    localNotification.userInfo = userInfo;
+    
+    address.lastnotif = [NSDate date];
+}
+
+- (void)configureLocalNotificationForAddresses:(NSArray *)addresses localNotification:(UILocalNotification *)localNotification
+{
+    NSMutableString *alertBody = [NSMutableString stringWithFormat:@"Vous êtes proche de %d adresses:", (int)[addresses count]];
+    NSDictionary *userInfo = @{@"multiple" : @(YES)};
+    
+    for (CCAddress *address in addresses) {
+        NSString *sep = @", ";
         
-        if (category == nil)
-            localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@", address.name];
-        else
-            localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@, %@", address.name, category.name];
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
-        localNotification.userInfo = userInfo;
-        
-        [notifications addObject:localNotification];
+        if (address == [addresses lastObject])
+            sep = @" et ";
+        else if (address == [addresses firstObject])
+            sep = @" ";
+        [alertBody appendFormat:@"%@%@", sep, address.name];
         
         address.lastnotif = [NSDate date];
     }
-    [managedObjectContext saveToPersistentStore:NULL];
     
-    [UIApplication sharedApplication].scheduledLocalNotifications = notifications;
+    [alertBody appendString:@"."];
+    
+    localNotification.userInfo = userInfo;
+    localNotification.alertBody = alertBody;
 }
 
 #pragma mark - testing methods

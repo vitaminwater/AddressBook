@@ -90,7 +90,7 @@
 //#endif
     [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
     
-    [CCNotificationGenerator printLastNotif];
+    //[CCNotificationGenerator printLastNotif];
     //[CCNotificationGenerator resetLastNotif];
     
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
@@ -130,8 +130,7 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    NSLog(@"poeut");
-    //[self processNotification:notification];
+    [self processNotification:notification];
 }
 
 #pragma mark -
@@ -140,6 +139,13 @@
 {
     if (notification == nil)
         return;
+    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
+    if ([notification.userInfo[@"multiple"] isEqualToNumber:@YES]) {
+        NSLog(@"multiple");
+        return;
+    }
     
     NSString *objectID = notification.userInfo[@"addressId"];
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
