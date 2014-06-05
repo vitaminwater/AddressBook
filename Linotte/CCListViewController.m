@@ -8,6 +8,8 @@
 
 #import "CCListViewController.h"
 
+#import <objc/runtime.h>
+
 #import "CCRestKit.h"
 
 #import "CCOutputViewController.h"
@@ -69,7 +71,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 - (void)loadView
 {
-    CCListView *listView = [CCListView new];
+    CCListView *listView = [[CCListView alloc] initWithHelpOn:[_addresses count] == 0];
     listView.delegate = self;
     self.view = listView;
 }
@@ -172,6 +174,27 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+        return;
+    
+    NSNumber *index = objc_getAssociatedObject(alertView, @"index");
+    
+    NSError *error;
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    CCAddress *address = _addresses[[index intValue]];
+    [_addresses removeObject:address];
+    [managedObjectContext deleteObject:address];
+    if ([managedObjectContext saveToPersistentStore:&error] == NO) {
+        NSLog(@"%@", error);
+        return;
+    }
+    [((CCListView *)self.view) deleteAddressAtIndex:[index intValue]];
+}
+
 #pragma mark - CCListViewDelegate methods
 
 - (void)didSelectAddressAtIndex:(NSUInteger)index
@@ -183,16 +206,10 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 - (void)deleteAddressAtIndex:(NSUInteger)index
 {
-    NSError *error;
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    CCAddress *address = _addresses[index];
-    [_addresses removeObject:address];
-    [managedObjectContext deleteObject:address];
-    if ([managedObjectContext saveToPersistentStore:&error] == NO) {
-        NSLog(@"%@", error);
-        return;
-    }
-    [((CCListView *)self.view) deleteAddressAtIndex:index];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NOTIF_ADDELETE", @"") message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"NOTIF_ADDELETE_N", @"") otherButtonTitles:NSLocalizedString(@"NOTIF_ADDELETE_Y", @""), nil];
+    [alertView show];
+    
+    objc_setAssociatedObject(alertView, @"index", @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (double)distanceForAddressAtIndex:(NSUInteger)index

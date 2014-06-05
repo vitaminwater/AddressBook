@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  Linotte
+
+  Created by stant on 03/06/14.
+  Copyright (c) 2014 CCSAS. All rights reserved.
+*/
+"PLACE_NAME" = "venue's name";
+"WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
+"NOTIF_ADDRESSCREATED" = "This venue is now registered";
+"NOTIFICATION_MULTI" = "You are close to [N] addresses: ";
+"NOTIFICATION_AND" = "and";
+"NOTIFICATION_1" = "You are close to [PlaceName], [Category].\nGetting there?";
+"NOTIFICATION_1_0" = "You are close to [PlaceName].\nGetting there?";
+"NOTIFICATION_2" = "[PlaceName], [Category] is not far from here.\nDo you want to take a look?";
+"NOTIFICATION_2_0" = "[PlaceName] is not far from here.\nDo you want to take a look?";
+"NOTIFICATION_3" = "[PlaceName], [Category]is few steps from here.\nShall we go?";
+"NOTIFICATION_3_0" = "[PlaceName] is few steps from here.\nShall we go?";
+"NOTIFICATION_4" = "Looks like [PlaceName], [Category] is around the corner.\nWhy not to go?";
+"NOTIFICATION_4_0" = "Looks like [PlaceName] is around the corner.\nWhy not to go?";
+"NOTIF_ADDELETE" = "Delete this venue?";
+"NOTIF_ADDELETE_Y" = "Yes";
+"NOTIF_ADDELETE_N" = "No";
+"NOTIF_ADDELETE_KO" = "Venue deleted";
+"SPLASH_BIS" = "ScreenLinotte2_EN";
+"NO_NOTE_SPLASH" = "ScreenLinotteBisEN";

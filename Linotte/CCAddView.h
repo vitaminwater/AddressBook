@@ -19,4 +19,7 @@
 - (void)enableField;
 - (void)disableField;
 
+- (void)showLoading;
+- (void)hideLoading;
+
 @end

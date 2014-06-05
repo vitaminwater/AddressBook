@@ -12,6 +12,8 @@
 
 #import <Reachability/Reachability.h>
 
+#import <MBProgressHUD/MBProgressHUD.h>
+
 #import "CCFoursquareVenues.h"
 #import "CCFoursquareCategorie.h"
 
@@ -194,6 +196,8 @@
     }
     _isLoadingFoursquarePlace = YES;
     
+    [(CCAddView *)self.view showLoading];
+    
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCFoursquareObjectManager];
     [objectManager getObjectsAtPath:kCCFoursquareAPIVenueSearch parameters:args success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         NSArray *venues = mappingResult.array;
@@ -227,8 +231,12 @@
         }
         [(CCAddView *)self.view reloadAutocompletionResults];
         [self endFoursquareRequest];
+        
+        [(CCAddView *)self.view hideLoading];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         [self endFoursquareRequest];
+        
+        [(CCAddView *)self.view hideLoading];
     }];
 }
 
@@ -258,6 +266,11 @@
 {
     [_delegate reduceAddView];
     [self stopGeoloc];
+    
+    [(CCAddView *)self.view hideLoading];
+    
+    _nextFoursquarePlaceQuery = nil;
+    _isLoadingFoursquarePlace = NO;
 }
 
 - (void)autocompleteName:(NSString *)name

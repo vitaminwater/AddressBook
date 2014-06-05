@@ -16,6 +16,7 @@
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 
+- (id)initWithHelpOn:(BOOL)helpOn;
 - (void)reloadAddressList;
 - (void)reloadVisibleAddresses;
 - (void)insertAddressAtIndex:(NSUInteger)index;

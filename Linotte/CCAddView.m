@@ -13,13 +13,17 @@
 #import "CCAddViewTableViewCell.h"
 
 #define kCCAddViewTableViewCell @"kCCAddViewTableViewCell"
+#define kCCLoadingViewHeight 25
 
 @interface CCAddView()
 
 @property(nonatomic, strong)NSString *textFieldValueSave;
 
 @property(nonatomic, strong)UITextField *textField;
+@property(nonatomic, strong)UIView *loadingView;
 @property(nonatomic, strong)UITableView *tableView;
+
+@property(nonatomic, strong)NSLayoutConstraint *loadingViewTopConstraint;
 
 @end
 
@@ -31,6 +35,7 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         [self setupTextField];
+        [self setupLoadingView];
         [self setupTableView];
     }
     return self;
@@ -44,8 +49,8 @@
     _textField.textAlignment = NSTextAlignmentCenter;
     _textField.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:25];
     _textField.textColor = [UIColor darkGrayColor];
-    _textField.backgroundColor = [UIColor clearColor];
-    _textField.placeholder = @"* place's name *";
+    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     
     UIView *leftView = [UIView new];
     leftView.frame = CGRectMake(0, 0, 15, _textField.frame.size.height);
@@ -71,6 +76,47 @@
     [self addConstraints:verticalConstraints];
 }
 
+- (void)setupLoadingView
+{
+    _loadingView = [UIView new];
+    _loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+    _loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    [self insertSubview:_loadingView belowSubview:_textField];
+    
+    {
+        UILabel *loadingLabel = [UILabel new];
+        loadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        loadingLabel.text = @"Loading";
+        loadingLabel.textColor = [UIColor whiteColor];
+        loadingLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+        [_loadingView addSubview:loadingLabel];
+        
+        UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
+        [activityIndicatorView startAnimating];
+        [_loadingView addSubview:activityIndicatorView];
+        
+        NSDictionary *views = NSDictionaryOfVariableBindings(loadingLabel, activityIndicatorView);
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[activityIndicatorView]-[loadingLabel]" options:0 metrics:nil views:views];
+        [_loadingView addConstraints:horizontalConstraints];
+        
+        for (UIView *v in views.allValues) {
+            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : v}];
+            [_loadingView addConstraints:verticalConstraints];
+        }
+    }
+    
+    _loadingViewTopConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_textField attribute:NSLayoutAttributeBottom multiplier:1 constant:-kCCLoadingViewHeight];
+    [self addConstraint:_loadingViewTopConstraint];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_loadingView);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_loadingView]|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
+    
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:kCCLoadingViewHeight];
+    [self addConstraint:heightConstraint];
+}
+
 - (void)setupTableView
 {
     NSAssert(_textField != nil, kCCWrongSetupMethodsOrderError);
@@ -83,7 +129,7 @@
     
     [_tableView registerClass:[CCAddViewTableViewCell class] forCellReuseIdentifier:kCCAddViewTableViewCell];
     
-    [self addSubview:_tableView];
+    [self insertSubview:_tableView belowSubview:_loadingView];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_tableView, _textField);
     NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_tableView]|" options:0 metrics:nil views:views];
@@ -97,7 +143,7 @@
 {
     if (_textField.enabled == YES)
         return;
-    _textField.placeholder = @"* place's name *";
+    _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     _textField.enabled = YES;
     _textField.text = _textFieldValueSave;
 }
@@ -116,6 +162,24 @@
     _textField.text = @"";
     _textField.placeholder = @"Missing connection";
     _textField.enabled = NO;
+}
+
+- (void)showLoading
+{
+    [self layoutIfNeeded];
+    _loadingViewTopConstraint.constant = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
+}
+
+- (void)hideLoading
+{
+    [self layoutIfNeeded];
+    _loadingViewTopConstraint.constant = -kCCLoadingViewHeight;
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
 }
 
 - (void)reloadAutocompletionResults

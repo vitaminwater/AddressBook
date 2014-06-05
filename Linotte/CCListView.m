@@ -14,7 +14,7 @@
 
 @interface CCListView()
 {
-    
+    UIImageView *_helpImage;
 }
 
 @property(nonatomic, strong)UITableView *tableView;
@@ -23,13 +23,16 @@
 
 @implementation CCListView
 
-- (id)init
+- (id)initWithHelpOn:(BOOL)helpOn
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         
         [self setupTableView];
+        
+        if (helpOn)
+            [self setupHelpImage];
     }
     return self;
 }
@@ -51,6 +54,19 @@
     [self addSubview:_tableView];
 }
 
+- (void)setupHelpImage
+{
+    _helpImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NSLocalizedString(@"NO_NOTE_SPLASH", @"")]];
+    _helpImage.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_helpImage];
+    
+    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_helpImage attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    [self addConstraint:centerXConstraint];
+    
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_helpImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [self addConstraint:centerYConstraint];
+}
+
 - (void)reloadAddressList
 {
     [_tableView reloadData];
@@ -69,6 +85,11 @@
 {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
     [_tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    
+    if (_helpImage) {
+        [_helpImage removeFromSuperview];
+        _helpImage = nil;
+    }
 }
 
 - (void)deleteAddressAtIndex:(NSUInteger)index

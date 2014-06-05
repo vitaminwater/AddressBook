@@ -33,6 +33,8 @@
 		C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7119237D340096B5A8 /* CCNotificationGenerator.m */; };
 		C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7519252E750096B5A8 /* CCNetworkHandler.m */; };
 		C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */; };
+		C7BA707D193E107D000780D9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BA707F193E107D000780D9 /* Localizable.strings */; };
+		C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
 		C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C661918E48800D37A64 /* CoreGraphics.framework */; };
 		C7CE2C691918E48800D37A64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C681918E48800D37A64 /* UIKit.framework */; };
@@ -114,6 +116,12 @@
 		C799AB7519252E750096B5A8 /* CCNetworkHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworkHandler.m; sourceTree = "<group>"; };
 		C799AB7E192752DE0096B5A8 /* UIImage+CCInvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CCInvert.h"; sourceTree = "<group>"; };
 		C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CCInvert.m"; sourceTree = "<group>"; };
+		C7BA707B193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C7BA707C193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C7BA707E193E107D000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C7BA7080193E10A4000780D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C7BA7081193E1697000780D9 /* NSString+CCLocalizedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CCLocalizedString.h"; sourceTree = "<group>"; };
+		C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CCLocalizedString.m"; sourceTree = "<group>"; };
 		C7CE2C611918E48800D37A64 /* Linotte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Linotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7CE2C641918E48800D37A64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7CE2C661918E48800D37A64 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -331,6 +339,8 @@
 			children = (
 				C799AB7E192752DE0096B5A8 /* UIImage+CCInvert.h */,
 				C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */,
+				C7BA7081193E1697000780D9 /* NSString+CCLocalizedString.h */,
+				C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */,
 			);
 			name = categories;
 			sourceTree = "<group>";
@@ -391,6 +401,7 @@
 				C7CE2C6F1918E48800D37A64 /* InfoPlist.strings */,
 				C7CE2C721918E48800D37A64 /* main.m */,
 				C7CE2C741918E48800D37A64 /* Linotte-Prefix.pch */,
+				C7BA707F193E107D000780D9 /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -798,6 +809,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				fr,
 			);
 			mainGroup = C7CE2C581918E48800D37A64;
 			productRefGroup = C7CE2C621918E48800D37A64 /* Products */;
@@ -817,6 +829,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7CE2C711918E48800D37A64 /* InfoPlist.strings in Resources */,
+				C7BA707D193E107D000780D9 /* Localizable.strings in Resources */,
 				C7CE2C7C1918E48800D37A64 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -909,6 +922,7 @@
 				C7E1E52F191A586600602A4D /* CCGooglePrediction.m in Sources */,
 				C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */,
 				C7E1E52E191A586600602A4D /* CCGoogleAutocomplete.m in Sources */,
+				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
 				C7CE2C731918E48800D37A64 /* main.m in Sources */,
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
@@ -942,10 +956,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		C7BA707F193E107D000780D9 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C7BA707E193E107D000780D9 /* fr */,
+				C7BA7080193E10A4000780D9 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		C7CE2C6F1918E48800D37A64 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C7CE2C701918E48800D37A64 /* en */,
+				C7BA707B193E1025000780D9 /* fr */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -954,6 +978,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C7CE2C8D1918E48800D37A64 /* en */,
+				C7BA707C193E1025000780D9 /* fr */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -996,7 +1021,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
+				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1029,7 +1054,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
+				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1046,7 +1071,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
+				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1062,7 +1087,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "366F2C32-814B-41D1-B01F-C503FB08B101";
+				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

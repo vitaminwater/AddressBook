@@ -1,0 +1,26 @@
+/* 
+  Localizable.strings
+  Linotte
+
+  Created by stant on 03/06/14.
+  Copyright (c) 2014 CCSAS. All rights reserved.
+*/
+"PLACE_NAME" = "nom de lieu";
+"WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
+"NOTIF_ADDRESSCREATED" = "Ce lieu est désormais enregistré";
+"NOTIFICATION_MULTI" = "Vous vous trouvez à proximité de [N] adresses: ";
+"NOTIFICATION_AND" = "et";
+"NOTIFICATION_1" = "Vous vous trouvez à proximité de [PlaceName], [Category].\nY aller ?";
+"NOTIFICATION_1_0" = "Vous vous trouvez à proximité de [PlaceName].\nY aller ?";
+"NOTIFICATION_2" = "[PlaceName], [Category] n'est pas loin.\nVous voulez y faire un tour ?";
+"NOTIFICATION_2_0" = "[PlaceName] n'est pas loin.\nVous voulez y faire un tour ?";
+"NOTIFICATION_3" = "[PlaceName], [Category] est à quelques mètres.\nOn y va ?";
+"NOTIFICATION_3_0" = "[PlaceName] est à quelques mètres.\nOn y va ?";
+"NOTIFICATION_4" = "On dirait que[PlaceName], [Category] est dans le coin.\nPourquoi ne pas y passer ?";
+"NOTIFICATION_4_0" = "On dirait que[PlaceName] est dans le coin.\nPourquoi ne pas y passer ?";
+"NOTIF_ADDELETE" = "Effacer ce lieu ?";
+"NOTIF_ADDELETE_Y" = "Oui";
+"NOTIF_ADDELETE_N" = "Non";
+"NOTIF_ADDELETE_KO" = "Lieu effacé";
+"SPLASH_BIS" = "ScreenLinotte2";
+"NO_NOTE_SPLASH" = "ScreenLinotteBis";

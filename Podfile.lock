@@ -5,6 +5,7 @@ PODS:
   - HexColors (2.2.1)
   - ISO8601DateFormatterValueTransformer (0.6.0):
     - RKValueTransformers (~> 1.1.0)
+  - MBProgressHUD (0.8)
   - Reachability (3.1.1)
   - RestKit (0.23.1):
     - RestKit/Core
@@ -34,6 +35,7 @@ DEPENDENCIES:
   - geohash (from `../geohash`)
   - Google-Maps-iOS-SDK
   - HexColors
+  - MBProgressHUD
   - Reachability
   - RestKit
   - SSKeychain
@@ -43,16 +45,17 @@ EXTERNAL SOURCES:
     :path: ../geohash
 
 SPEC CHECKSUMS:
-  AFNetworking: e403d4333a4e1956cb3fe42364c3c879f820c9a0
+  AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   geohash: 79b6744e70f12f52a9c4b0697917d4163c6d6eb4
-  Google-Maps-iOS-SDK: 44dfecaff59ba741b3b5a67508a59a3fe2683f7f
-  HexColors: 99211502e17904af7891fc8f687d0e4958a6d66e
-  ISO8601DateFormatterValueTransformer: db1acb188ffb0f87109a793977f750067c351efe
-  Reachability: be4883bb93f31e38266ae3365e5600a317aae735
-  RestKit: 83a7f82ae7c92c51b59717325a0b895749ff2c97
-  RKValueTransformers: 286c8280b6f2570032d87d119863f32bc227799b
-  SOCKit: 8871d058926a6c6cc144f0c5eee82c5d0ec274a3
-  SSKeychain: 3d0b76c87e7b062a7ad1631a825fddec84367d44
-  TransitionKit: 60b6a2cd9370e471c960b2cdf23b0b2593867625
+  Google-Maps-iOS-SDK: ff60d249706b07c7e0af4561894ff835e1bd3283
+  HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
+  ISO8601DateFormatterValueTransformer: a705384ea6531255258e25b6480ba1180db703a0
+  MBProgressHUD: c356980b0cd097f19acec959b49dca5eb8ec31be
+  Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
+  RestKit: 0b5f1bbc43b81beba158262a1adae48ac062eb1e
+  RKValueTransformers: b705e7b4651b9206b94600408462b74554bba969
+  SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
+  SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
+  TransitionKit: 6a6f3ddda38ae758778aa889dcb930e4f8d64edc
 
 COCOAPODS: 0.32.1

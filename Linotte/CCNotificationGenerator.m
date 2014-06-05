@@ -8,6 +8,8 @@
 
 #import "CCNotificationGenerator.h"
 
+#import "NSString+CCLocalizedString.h"
+
 #import <RestKit/RestKit.h>
 
 #import "CCAddress.h"
@@ -52,11 +54,12 @@
 {
     CCCategory *category = [address.categories.allObjects firstObject];
     NSDictionary *userInfo = @{@"addressId" : address.identifier};
+    int notifRand = rand() % 4 + 1;
     
     if (category == nil)
-        localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@", address.name];
+        localNotification.alertBody = [NSString localizedStringByReplacingFromDictionnary:@{@"[PlaceName]" : address.name} localizedKey:[NSString stringWithFormat:@"NOTIFICATION_%d_0", notifRand]];
     else
-        localNotification.alertBody = [NSString stringWithFormat:@"Vous êtes proche de %@, %@", address.name, category.name];
+        localNotification.alertBody = [NSString localizedStringByReplacingFromDictionnary:@{@"[PlaceName]" : address.name, @"[Category]" : category.name} localizedKey:[NSString stringWithFormat:@"NOTIFICATION_%d", notifRand]];
     
     localNotification.userInfo = userInfo;
     
@@ -65,14 +68,14 @@
 
 - (void)configureLocalNotificationForAddresses:(NSArray *)addresses localNotification:(UILocalNotification *)localNotification
 {
-    NSMutableString *alertBody = [NSMutableString stringWithFormat:@"Vous êtes proche de %d adresses:", (int)[addresses count]];
+    NSMutableString *alertBody = [[NSString localizedStringByReplacingFromDictionnary:@{@"[N]" : [@([addresses count]) stringValue]} localizedKey:@"NOTIFICATION_MULTI"] mutableCopy];
     NSDictionary *userInfo = @{@"multiple" : @(YES)};
     
     for (CCAddress *address in addresses) {
         NSString *sep = @", ";
         
         if (address == [addresses lastObject])
-            sep = @" et ";
+            sep = [NSString stringWithFormat:@" %@ ", NSLocalizedString(@"NOTIFICATION_AND", @"")];
         else if (address == [addresses firstObject])
             sep = @" ";
         [alertBody appendFormat:@"%@%@", sep, address.name];

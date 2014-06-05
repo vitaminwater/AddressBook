@@ -16,7 +16,7 @@
 
 @class CCAddress;
 
-@interface CCListViewController : UIViewController<CCListViewDelegate, CLLocationManagerDelegate>
+@interface CCListViewController : UIViewController<CCListViewDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 
