@@ -17,3 +17,5 @@
 #endif
 
 #define kCCWrongSetupMethodsOrderError @"wrong setup methods call order, fix it ffs."
+
+#define kCCLinotteColors @[@"#5acfc4", @"#ffae64", @"#f4607c"]

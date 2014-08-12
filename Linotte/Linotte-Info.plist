@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.CCSAS.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.CCMAF.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -20,10 +20,25 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>comlinotte</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Futura-Book.ttf</string>
+		<string>Montserrat-Regular.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
+	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -40,22 +55,15 @@
 	<string>20140128</string>
 	<key>google_map_api_key</key>
 	<string>AIzaSyAqAwsG6ZVOnclKRAv8O1zfU_GU2u_4E7A</string>
-	<key>linotte_api_client_debug</key>
-	<string>5f7b6508a22370af29f5</string>
-	<key>linotte_api_secret_debug</key>
-	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>linotte_api_client</key>
 	<string>eda95b19f510ac1f217a</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>comlinotte</string>
-			</array>
-		</dict>
-	</array>
+	<key>linotte_api_client_debug</key>
+	<string>5f7b6508a22370af29f5</string>
 	<key>linotte_api_secret</key>
 	<string>03deca54e8ca4bc0afda684d06e4b3252fa61164</string>
+	<key>linotte_api_secret_debug</key>
+	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
 </dict>
 </plist>

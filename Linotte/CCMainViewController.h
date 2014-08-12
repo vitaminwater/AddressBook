@@ -12,6 +12,8 @@
 
 #import "CCAddViewControllerDelegate.h"
 
-@interface CCMainViewController : UIViewController<CCListViewControllerDelegate, CCAddViewControllerDelegate>
+#import "CCSplashViewControllerDelegate.h"
+
+@interface CCMainViewController : UIViewController<CCListViewControllerDelegate, CCAddViewControllerDelegate, CCSplashViewControllerDelegate>
 
 @end

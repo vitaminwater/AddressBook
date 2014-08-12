@@ -8,6 +8,8 @@
 
 #import "CCMainView.h"
 
+#import <HexColors/HexColor.h>
+
 #import "CCAddViewConstants.h"
 
 @interface CCMainView()
@@ -27,7 +29,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"linotte_bg.png"]];
+        self.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b"];
     }
     return self;
 }
@@ -69,7 +71,7 @@
     if (_addViewVerticalConstraints)
         [self removeConstraints:_addViewVerticalConstraints];
     if (_addViewExpanded) {
-        _addViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_addView]-(==216)-|" options:0 metrics:nil views:views];
+        _addViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_addView]-(kCCAddViewKeyboardHeight)-|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
     } else {
         _addViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_addView(kCCAddViewTextFieldHeight)]" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
     }
@@ -83,7 +85,7 @@
     if (_listViewVerticalConstraints)
         [self removeConstraints:_listViewVerticalConstraints];
     if (_addViewExpanded) {
-        _listViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(kCCAddViewTextFieldHeight)-[_listView]" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+        _listViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(kCCAddViewTextFieldHeight)-[_listView]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
     } else {
         _listViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_addView][_listView]|" options:0 metrics:nil views:views];
     }

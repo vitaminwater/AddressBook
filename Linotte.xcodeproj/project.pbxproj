@@ -25,6 +25,7 @@
 		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
 		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
+		C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
 		C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB5719216C110096B5A8 /* CCOutputViewController.m */; };
@@ -55,6 +56,9 @@
 		C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CE2CB71918F17B00D37A64 /* CCListView.m */; };
 		C7CE2CBB1918F18600D37A64 /* CCAddView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CE2CBA1918F18600D37A64 /* CCAddView.m */; };
 		C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CE2CC6191A21C500D37A64 /* CCListViewTableViewCell.m */; };
+		C7D484C31995196E00E81E81 /* Futura-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C21995196E00E81E81 /* Futura-Book.ttf */; };
+		C7D484C61995197900E81E81 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */; };
+		C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */; };
 		C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EA191A240700602A4D /* _CCAddress.m */; };
 		C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EC191A240700602A4D /* CCAddress.m */; };
 		C7E1E4F3191A46B200602A4D /* CCRestKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4F2191A46B200602A4D /* CCRestKit.m */; };
@@ -75,6 +79,9 @@
 		C7E1E52F191A586600602A4D /* CCGooglePrediction.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E52D191A586600602A4D /* CCGooglePrediction.m */; };
 		C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E534191A618900602A4D /* CCMainViewController.m */; };
 		C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E53B191A62D900602A4D /* CCMainView.m */; };
+		C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FE2C6D1996B56100D7D0DC /* CCListViewTableViewCellDetailLabel.m */; };
+		C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FE2C75199794E000D7D0DC /* CCSplashViewController.m */; };
+		C7FE2C7A199795BA00D7D0DC /* CCSplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FE2C79199795BA00D7D0DC /* CCSplashView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +104,10 @@
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
 		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
 		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
+		C76A3C501999115000998F9F /* default_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_notification.caf; sourceTree = "<group>"; };
+		C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryView.h; sourceTree = "<group>"; };
+		C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOutputConfirmEntryView.m; sourceTree = "<group>"; };
+		C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryViewDelegate.h; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
 		C799AB4B1920CD150096B5A8 /* CCAddViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddViewTableViewCell.h; sourceTree = "<group>"; };
 		C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddViewTableViewCell.m; sourceTree = "<group>"; };
@@ -152,6 +163,9 @@
 		C7CE2CBD1918F1A500D37A64 /* CCListViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListViewDelegate.h; sourceTree = "<group>"; };
 		C7CE2CC5191A21C500D37A64 /* CCListViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListViewTableViewCell.h; sourceTree = "<group>"; };
 		C7CE2CC6191A21C500D37A64 /* CCListViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListViewTableViewCell.m; sourceTree = "<group>"; };
+		C7D484C21995196E00E81E81 /* Futura-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Futura-Book.ttf"; sourceTree = "<group>"; };
+		C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		C7E1E4E9191A240700602A4D /* _CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCAddress.h; sourceTree = "<group>"; };
 		C7E1E4EA191A240700602A4D /* _CCAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCAddress.m; sourceTree = "<group>"; };
 		C7E1E4EB191A240700602A4D /* CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddress.h; sourceTree = "<group>"; };
@@ -194,6 +208,14 @@
 		C7E1E537191A61B900602A4D /* CCAddViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7E1E53A191A62D900602A4D /* CCMainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMainView.h; sourceTree = "<group>"; };
 		C7E1E53B191A62D900602A4D /* CCMainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMainView.m; sourceTree = "<group>"; };
+		C7FE2C6D1996B56100D7D0DC /* CCListViewTableViewCellDetailLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListViewTableViewCellDetailLabel.m; sourceTree = "<group>"; };
+		C7FE2C6F1996B57E00D7D0DC /* CCListViewTableViewCellDetailLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListViewTableViewCellDetailLabel.h; sourceTree = "<group>"; };
+		C7FE2C74199794E000D7D0DC /* CCSplashViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSplashViewController.h; sourceTree = "<group>"; };
+		C7FE2C75199794E000D7D0DC /* CCSplashViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSplashViewController.m; sourceTree = "<group>"; };
+		C7FE2C77199795A400D7D0DC /* CCSplashViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCSplashViewControllerDelegate.h; sourceTree = "<group>"; };
+		C7FE2C78199795BA00D7D0DC /* CCSplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSplashView.h; sourceTree = "<group>"; };
+		C7FE2C79199795BA00D7D0DC /* CCSplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSplashView.m; sourceTree = "<group>"; };
+		C7FE2C7C1997961F00D7D0DC /* CCSplashViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCSplashViewDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +268,41 @@
 			name = address;
 			sourceTree = "<group>";
 		};
+		C76A3C4E1999113F00998F9F /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				C76A3C4F1999114500998F9F /* sons */,
+				C7D484C11995196000E81E81 /* fonts */,
+			);
+			name = resources;
+			sourceTree = "<group>";
+		};
+		C76A3C4F1999114500998F9F /* sons */ = {
+			isa = PBXGroup;
+			children = (
+				C76A3C501999115000998F9F /* default_notification.caf */,
+			);
+			name = sons;
+			sourceTree = "<group>";
+		};
+		C76A3C51199913C000998F9F /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C76A3C55199913E400998F9F /* protocol */,
+				C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */,
+				C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C76A3C55199913E400998F9F /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
 		C799AB481920CB300096B5A8 /* constants */ = {
 			isa = PBXGroup;
 			children = (
@@ -276,7 +333,7 @@
 		C799AB5419216BF90096B5A8 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				C799AB5C19216C3D0096B5A8 /* prototype */,
+				C799AB5C19216C3D0096B5A8 /* protocol */,
 				C799AB5519216BFD0096B5A8 /* view */,
 			);
 			name = ui;
@@ -285,18 +342,19 @@
 		C799AB5519216BFD0096B5A8 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				C76A3C51199913C000998F9F /* ui */,
 				C799AB5919216C390096B5A8 /* CCOutputView.h */,
 				C799AB5A19216C390096B5A8 /* CCOutputView.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
 		};
-		C799AB5C19216C3D0096B5A8 /* prototype */ = {
+		C799AB5C19216C3D0096B5A8 /* protocol */ = {
 			isa = PBXGroup;
 			children = (
 				C799AB5E19216C6A0096B5A8 /* CCOutputViewDelegate.h */,
 			);
-			name = prototype;
+			name = protocol;
 			sourceTree = "<group>";
 		};
 		C799AB6919236D330096B5A8 /* geohash helper */ = {
@@ -382,6 +440,7 @@
 		C7CE2C6C1918E48800D37A64 /* Linotte */ = {
 			isa = PBXGroup;
 			children = (
+				C76A3C4E1999113F00998F9F /* resources */,
 				C7E1E4EF191A468800602A4D /* utils */,
 				C7CE2CA31918F0AF00D37A64 /* view controllers */,
 				C7CE2C991918F06500D37A64 /* model */,
@@ -455,6 +514,7 @@
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C7FE2C70199793F300D7D0DC /* splash */,
 				C799AB5019216BDB0096B5A8 /* output */,
 				C7CE2CA41918F0BA00D37A64 /* home */,
 			);
@@ -552,15 +612,27 @@
 		C7CE2CC4191A21B100D37A64 /* cell */ = {
 			isa = PBXGroup;
 			children = (
+				C7FE2C6C1996B52600D7D0DC /* ui */,
 				C7CE2CC5191A21C500D37A64 /* CCListViewTableViewCell.h */,
 				C7CE2CC6191A21C500D37A64 /* CCListViewTableViewCell.m */,
 			);
 			name = cell;
 			sourceTree = "<group>";
 		};
+		C7D484C11995196000E81E81 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */,
+				C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */,
+				C7D484C21995196E00E81E81 /* Futura-Book.ttf */,
+			);
+			name = fonts;
+			sourceTree = "<group>";
+		};
 		C7E1E4EF191A468800602A4D /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C7FE2C7D1998276E00D7D0DC /* ui */,
 				C799AB7A1927529E0096B5A8 /* categories */,
 				C799AB7319252E5F0096B5A8 /* network handler */,
 				C799AB6F19237D190096B5A8 /* notification generator */,
@@ -748,6 +820,67 @@
 			name = view;
 			sourceTree = "<group>";
 		};
+		C7FE2C6C1996B52600D7D0DC /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C6F1996B57E00D7D0DC /* CCListViewTableViewCellDetailLabel.h */,
+				C7FE2C6D1996B56100D7D0DC /* CCListViewTableViewCellDetailLabel.m */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7FE2C70199793F300D7D0DC /* splash */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C711997940000D7D0DC /* ui */,
+				C7FE2C74199794E000D7D0DC /* CCSplashViewController.h */,
+				C7FE2C75199794E000D7D0DC /* CCSplashViewController.m */,
+			);
+			name = splash;
+			sourceTree = "<group>";
+		};
+		C7FE2C711997940000D7D0DC /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C731997940B00D7D0DC /* view */,
+				C7FE2C721997940500D7D0DC /* protocol */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7FE2C721997940500D7D0DC /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C77199795A400D7D0DC /* CCSplashViewControllerDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7FE2C731997940B00D7D0DC /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C7B1997960B00D7D0DC /* protocol */,
+				C7FE2C78199795BA00D7D0DC /* CCSplashView.h */,
+				C7FE2C79199795BA00D7D0DC /* CCSplashView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C7FE2C7B1997960B00D7D0DC /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7FE2C7C1997961F00D7D0DC /* CCSplashViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7FE2C7D1998276E00D7D0DC /* ui */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -828,8 +961,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */,
+				C7D484C61995197900E81E81 /* Montserrat-Bold.ttf in Resources */,
 				C7CE2C711918E48800D37A64 /* InfoPlist.strings in Resources */,
 				C7BA707D193E107D000780D9 /* Localizable.strings in Resources */,
+				C7D484C31995196E00E81E81 /* Futura-Book.ttf in Resources */,
 				C7CE2C7C1918E48800D37A64 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -909,6 +1045,7 @@
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
 				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
+				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
 				C7E1E522191A585200602A4D /* CCGoogleGeocode.m in Sources */,
 				C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */,
@@ -923,12 +1060,15 @@
 				C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */,
 				C7E1E52E191A586600602A4D /* CCGoogleAutocomplete.m in Sources */,
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
+				C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */,
+				C7FE2C7A199795BA00D7D0DC /* CCSplashView.m in Sources */,
 				C7CE2C731918E48800D37A64 /* main.m in Sources */,
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
 				C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */,
 				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
 				C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */,
+				C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
 				C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */,
@@ -1022,7 +1162,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 			};
 			name = Debug;
 		};
@@ -1055,7 +1195,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
-				SDKROOT = iphoneos;
+				SDKROOT = iphoneos7.1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1066,12 +1206,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
+				PROVISIONING_PROFILE = "C4411D9E-58B9-4E11-A138-326F0FB1C814";
+				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1082,12 +1223,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
+				PROVISIONING_PROFILE = "407A9035-0D3E-48C6-AD49-CFB88D19ECC1";
+				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

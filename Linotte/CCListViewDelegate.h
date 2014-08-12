@@ -10,7 +10,7 @@
 
 @protocol CCListViewDelegate <NSObject>
 
-- (void)didSelectAddressAtIndex:(NSUInteger)index;
+- (void)didSelectAddressAtIndex:(NSUInteger)index color:(NSString *)color;
 - (void)deleteAddressAtIndex:(NSUInteger)index;
 
 - (double)distanceForAddressAtIndex:(NSUInteger)index;

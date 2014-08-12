@@ -16,6 +16,7 @@
 
 @interface CCOutputViewController : UIViewController<CCOutputViewDelegate, CLLocationManagerDelegate>
 
+- (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew;
 - (id)initWithAddress:(CCAddress *)address;
 
 @end

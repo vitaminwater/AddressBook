@@ -22,4 +22,6 @@
 - (void)insertAddressAtIndex:(NSUInteger)index;
 - (void)deleteAddressAtIndex:(NSUInteger)index;
 
+- (void)unselect;
+
 @end

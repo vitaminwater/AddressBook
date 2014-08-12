@@ -42,10 +42,10 @@ typedef enum : NSUInteger {
         _addresses = [@[] mutableCopy];
         _loadingAddresses = [@[] mutableCopy];
         
-        _loggedState = kCCNotLogged;
+        _loggedState = [[CCLocalAPI sharedInstance] isLoggedIn] ? kCCLoggedIn : kCCNotLogged;
         
         __weak id weakSelf = self;
-        _reachability = [Reachability reachabilityWithHostname:@"ccsas.biz"];
+        _reachability = [Reachability reachabilityWithHostname:@"getlinotte.com"];
         _reachability.reachableBlock = ^(Reachability *reachability) {
             [weakSelf reachable];
         };
@@ -83,7 +83,13 @@ typedef enum : NSUInteger {
         [self createNewUser];
     } else if (_loggedState == kCCNotLogged) {
         [self refreshToken];
+    } else if (_loggedState == kCCLoggedIn) {
+        [self startTimer];
     }
+}
+
+- (void)unreachable {
+    [self stopTimer];
 }
 
 - (void)createNewUser
@@ -108,10 +114,6 @@ typedef enum : NSUInteger {
             _loggedState = kCCFailed;
         }
     }];
-}
-
-- (void)unreachable {
-    [self stopTimer];
 }
 
 - (void)sendAddress:(CCAddress *)address
@@ -170,8 +172,10 @@ typedef enum : NSUInteger {
 - (void)startTimer
 {
     if (_timer == nil) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:20 target:self selector:@selector(timerTick:) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+        _timer = [NSTimer timerWithTimeInterval:20.0 target:self selector:@selector(timerTick:) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+        
+        [_timer fire];
     }
 }
 

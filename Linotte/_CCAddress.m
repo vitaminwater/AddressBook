@@ -12,6 +12,7 @@ const struct CCAddressAttributes CCAddressAttributes = {
 	.latitude = @"latitude",
 	.longitude = @"longitude",
 	.name = @"name",
+	.notify = @"notify",
 	.sent = @"sent",
 };
 
@@ -55,6 +56,11 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	}
 	if ([key isEqualToString:@"longitudeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"longitude"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"notifyValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"notify"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -159,6 +165,32 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 
 @dynamic name;
 
+
+
+
+
+
+@dynamic notify;
+
+
+
+- (BOOL)notifyValue {
+	NSNumber *result = [self notify];
+	return [result boolValue];
+}
+
+- (void)setNotifyValue:(BOOL)value_ {
+	[self setNotify:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveNotifyValue {
+	NSNumber *result = [self primitiveNotify];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveNotifyValue:(BOOL)value_ {
+	[self setPrimitiveNotify:[NSNumber numberWithBool:value_]];
+}
 
 
 

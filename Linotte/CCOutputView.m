@@ -8,13 +8,17 @@
 
 #import "CCOutputView.h"
 
+#import <HexColors/HexColor.h>
 #import <GoogleMaps/GoogleMaps.h>
+
+#import "CCOutputConfirmEntryView.h"
 
 @interface CCOutputView()
 {
     UITextView *_infoView;
 }
 
+@property(nonatomic, strong)GMSMarker *marker;
 @property(nonatomic, strong)GMSMapView *mapView;
 
 @end
@@ -45,11 +49,11 @@
     mapView.frame = self.bounds;
     [self addSubview:mapView];
     
-    GMSMarker *marker = [[GMSMarker alloc] init];
-    marker.position = camera.target;
-    marker.snippet = [_delegate addressName];
-    marker.title = [_delegate addressName];
-    marker.map = mapView;
+    _marker = [[GMSMarker alloc] init];
+    _marker.position = camera.target;
+    _marker.snippet = [_delegate addressName];
+    _marker.title = [_delegate addressName];
+    _marker.map = mapView;
 }
 
 - (void)setupInfoView
@@ -99,12 +103,67 @@
     NSString *addressName = [_delegate addressName];
     NSString *addressString = [_delegate addressString];
     double addressDistance = [_delegate addressDistance];
-    UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:14];
+    
+    NSString *color = @"#6b6b6b";
+    NSString *iconName = @"neutral_marker";
+    if (addressDistance > 0) {
+        NSArray *distanceColors = kCCLinotteColors;
+        int distanceColorIndex = addressDistance / 500;
+        distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
+        color = distanceColors[distanceColorIndex];
+        iconName = [NSString stringWithFormat:@"gmap_pin_%@.png", [color substringFromIndex:1]];
+        _currentColor = color;
+    }
+
+    _marker.icon = [UIImage imageNamed:iconName];
+    
+    UIFont *titleFont = [UIFont fontWithName:@"Montserrat-Bold" size:20];
+    UIFont *detailFont = [UIFont fontWithName:@"Futura-Book" size:14];
     NSString *string = [NSString stringWithFormat:@"%@\n%@\n%.02f m", addressName, addressString, addressDistance];
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:string];
-    [attributedText setAttributes:@{NSFontAttributeName: titleFont} range:NSMakeRange(0, [addressName length])];
+    [attributedText setAttributes:@{NSFontAttributeName: titleFont, NSForegroundColorAttributeName: [UIColor colorWithHexString:color]} range:NSMakeRange(0, [addressName length])];
+    [attributedText setAttributes:@{NSFontAttributeName: detailFont} range:NSMakeRange([addressName length], [string length] - [addressName length])];
     
     [_infoView setAttributedText:attributedText];
+}
+
+#pragma mark - Public methods
+
+- (void)showIsNewMessage
+{
+    CCOutputConfirmEntryView *confirmEntryView = [CCOutputConfirmEntryView new];
+    confirmEntryView.translatesAutoresizingMaskIntoConstraints = NO;
+    confirmEntryView.delegate = self;
+    [self addSubview:confirmEntryView];
+    
+    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    [self addConstraint:centerXConstraint];
+    
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [self addConstraint:centerYConstraint];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
+    [self addConstraint:widthConstraint];
+    
+    confirmEntryView.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        confirmEntryView.alpha = 1;
+    }];
+}
+
+#pragma mark - CCOutputConfirmEntryViewDelegate methods
+
+- (void)closeConfirmView:(id)sender
+{
+    CCOutputConfirmEntryView *confirmEntryView = sender;
+    
+    [_delegate notificationEnable:confirmEntryView.notificationEnabled];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        confirmEntryView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [confirmEntryView removeFromSuperview];
+    }];
 }
 
 #pragma mark - UITabBarDelegate methods

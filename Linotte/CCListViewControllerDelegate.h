@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class CCAddress;
+
 @protocol CCListViewControllerDelegate <NSObject>
+
+- (void)addressSelected:(CCAddress *)address;
 
 @end

@@ -8,9 +8,13 @@
 
 #import "CCListView.h"
 
+#import <HexColors/HexColor.h>
+
 #import "CCListViewTableViewCell.h"
 
 #define kCCListViewTableViewCellIdentifier @"kCCListViewTableViewCellIdentifier"
+
+#define kCCDistanceColors @[@"#6b6b6b", @"#898989", @"#afafaf", @"#c8c8c8"]
 
 @interface CCListView()
 {
@@ -27,7 +31,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         
         [self setupTableView];
         
@@ -48,7 +52,7 @@
     _tableView.dataSource = self;
     
     _tableView.rowHeight = 100;
-    
+        
     [_tableView registerClass:[CCListViewTableViewCell class] forCellReuseIdentifier:kCCListViewTableViewCellIdentifier];
     
     [self addSubview:_tableView];
@@ -98,6 +102,11 @@
     [_tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
 }
 
+- (void)unselect
+{
+    [_tableView deselectRowAtIndexPath:[_tableView indexPathForSelectedRow] animated:YES];
+}
+
 #pragma mark - CCListViewTableViewCellDelegate methods
 
 - (void)deleteAddress:(CCListViewTableViewCell *)sender
@@ -121,9 +130,28 @@
     /*NSDate *lastNotif = [_delegate lastNotifForAddressAtIndex:index];
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"dd/MM HH:mm";*/
-    NSString *distanceText = [NSString stringWithFormat:@"%.02f m", [_delegate distanceForAddressAtIndex:index]/*, [dateFormatter stringFromDate:lastNotif]*/];
+    double distance = [_delegate distanceForAddressAtIndex:index];
+    NSString *distanceUnit = @"m";
+    
+    NSArray *distanceColors = kCCLinotteColors;
+    int distanceColorIndex = distance / 500;
+    distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
+    
+    if (distance > 1000) {
+        distance /= 1000;
+        distanceUnit = @"km";
+    }
+    
+    NSString *distanceText = [NSString stringWithFormat:@"%.02f %@", distance, distanceUnit /*, [dateFormatter stringFromDate:lastNotif]*/];
     cell.textLabel.text = [_delegate nameForAddressAtIndex:index];
-    cell.detailTextLabel.text = distanceText;
+    if (distance > 0)
+        cell.detailTextLabel.text = distanceText;
+    else
+        cell.detailTextLabel.text = NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
+    if (distance > 0) {
+        NSString *color = distanceColors[distanceColorIndex];
+        cell.colorCode = color;
+    }
     cell.angle = [_delegate angleForAddressAtIndex:index];
 }
 
@@ -141,7 +169,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [_delegate didSelectAddressAtIndex:indexPath.row];
+    CCListViewTableViewCell *cell = (CCListViewTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    [_delegate didSelectAddressAtIndex:indexPath.row color:cell.colorCode];
 }
 
 @end

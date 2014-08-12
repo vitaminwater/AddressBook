@@ -12,7 +12,9 @@
 
 @interface CCListViewTableViewCell : UITableViewCell
 
+@property(nonatomic, strong)NSString *colorCode;
 @property(nonatomic, assign)double angle;
 @property(nonatomic, weak)id<CCListViewTableViewCellDelegate> delegate;
+@property(nonatomic, readonly)UIImageView *markerImageView;
 
 @end

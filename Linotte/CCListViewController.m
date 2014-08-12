@@ -12,8 +12,6 @@
 
 #import "CCRestKit.h"
 
-#import "CCOutputViewController.h"
-
 #import "CCListView.h"
 
 
@@ -76,6 +74,11 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     self.view = listView;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -87,6 +90,9 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     }
     [_locationManager startUpdatingLocation];
     [_locationManager startUpdatingHeading];
+    
+    CCListView *listView = (CCListView *)self.view;
+    [listView unselect];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -94,6 +100,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     [super viewDidDisappear:animated];
     [_locationManager stopUpdatingLocation];
     [_locationManager stopUpdatingHeading];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -169,9 +176,6 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     [_addresses insertObject:address atIndex:newIndex];
     
     [((CCListView *)self.view) insertAddressAtIndex:newIndex];
-    
-    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
-    [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -197,11 +201,10 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 #pragma mark - CCListViewDelegate methods
 
-- (void)didSelectAddressAtIndex:(NSUInteger)index
+- (void)didSelectAddressAtIndex:(NSUInteger)index color:(NSString *)color
 {
     CCAddress *address = _addresses[index];
-    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
-    [self.navigationController pushViewController:outputViewController animated:YES];
+    [_delegate addressSelected:address];
 }
 
 - (void)deleteAddressAtIndex:(NSUInteger)index

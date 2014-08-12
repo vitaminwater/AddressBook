@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 typedef enum : NSUInteger {
-    CCRouteTypeWalk,
-    CCRouteTypeCar,
     CCRouteTypeTrain,
-    CCRouteTypeBicycling
+    CCRouteTypeCar,
+    CCRouteTypeBicycling,
+    CCRouteTypeWalk
 } CCRouteType;
 
 @protocol CCOutputViewDelegate <NSObject>
@@ -24,5 +24,7 @@ typedef enum : NSUInteger {
 - (NSString *)addressString;
 - (double)addressLatitude;
 - (double)addressLongitude;
+
+- (void)notificationEnable:(BOOL)enable;
 
 @end

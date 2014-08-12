@@ -42,20 +42,6 @@
     UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
     [self processNotification:notification];
     
-    UIImageView *splashView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NSLocalizedString(@"SPLASH_BIS", @"")]];
-    splashView.frame = self.window.bounds;
-    splashView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    splashView.contentMode = UIViewContentModeScaleAspectFill;
-    [self.window addSubview:splashView];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.5 animations:^{
-            splashView.alpha = 0;
-        } completion:^(BOOL finished) {
-            [splashView removeFromSuperview];
-        }];
-    });
-    
     return YES;
 }
 

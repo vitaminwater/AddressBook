@@ -1,58 +1,71 @@
 PODS:
   - AFNetworking (1.3.4)
   - geohash (0.0.1)
-  - Google-Maps-iOS-SDK (1.8.0)
+  - Google-Maps-iOS-SDK (1.8.1)
   - HexColors (2.2.1)
   - ISO8601DateFormatterValueTransformer (0.6.0):
     - RKValueTransformers (~> 1.1.0)
   - MBProgressHUD (0.8)
+  - Mixpanel (2.4.1)
   - Reachability (3.1.1)
-  - RestKit (0.23.1):
+  - RestKit (0.23.2):
     - RestKit/Core
-  - RestKit/Core (0.23.1):
     - RestKit/CoreData
     - RestKit/Network
     - RestKit/ObjectMapping
-  - RestKit/CoreData (0.23.1):
+    - RestKit/Search
+    - RestKit/Support
+    - RestKit/Testing
+  - RestKit/Core (0.23.2):
+    - RestKit/CoreData
+    - RestKit/Network
     - RestKit/ObjectMapping
-  - RestKit/Network (0.23.1):
+  - RestKit/CoreData (0.23.2):
+    - RestKit/ObjectMapping
+  - RestKit/Network (0.23.2):
     - AFNetworking (~> 1.3.0)
     - RestKit/ObjectMapping
     - RestKit/Support
     - SOCKit
-  - RestKit/ObjectMapping (0.23.1):
+  - RestKit/ObjectMapping (0.23.2):
     - ISO8601DateFormatterValueTransformer (~> 0.6.0)
     - RestKit/Support
     - RKValueTransformers (~> 1.1.0)
-  - RestKit/Support (0.23.1):
+  - RestKit/Search (0.23.2):
+    - RestKit/CoreData
+  - RestKit/Support (0.23.2):
     - TransitionKit (= 2.1.0)
+  - RestKit/Testing (0.23.2):
+    - RestKit/Network
   - RKValueTransformers (1.1.0)
   - SOCKit (1.1)
   - SSKeychain (1.2.2)
   - TransitionKit (2.1.0)
 
 DEPENDENCIES:
-  - geohash (from `../geohash`)
+  - geohash (from `../../c/geohash`)
   - Google-Maps-iOS-SDK
   - HexColors
   - MBProgressHUD
+  - Mixpanel
   - Reachability
   - RestKit
   - SSKeychain
 
 EXTERNAL SOURCES:
   geohash:
-    :path: ../geohash
+    :path: ../../c/geohash
 
 SPEC CHECKSUMS:
   AFNetworking: 80c4e0652b08eb34e25b9c0ff3c82556fe5967b4
   geohash: 79b6744e70f12f52a9c4b0697917d4163c6d6eb4
-  Google-Maps-iOS-SDK: ff60d249706b07c7e0af4561894ff835e1bd3283
+  Google-Maps-iOS-SDK: 4fe35d952dbd1e4dacfcfa178e9cce2f06d67ecc
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
   ISO8601DateFormatterValueTransformer: a705384ea6531255258e25b6480ba1180db703a0
   MBProgressHUD: c356980b0cd097f19acec959b49dca5eb8ec31be
+  Mixpanel: a29ff32db93936dea24162f0dc4fecc4a8f17071
   Reachability: 8e9635e3cb4f98e7f825e51147f677ecc694d0e7
-  RestKit: 0b5f1bbc43b81beba158262a1adae48ac062eb1e
+  RestKit: dd01867ddb4098e7cfd26125515a9b03b2accadf
   RKValueTransformers: b705e7b4651b9206b94600408462b74554bba969
   SOCKit: d8d0dd3688ae1026c12367570da8fa8e1a6980fb
   SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9

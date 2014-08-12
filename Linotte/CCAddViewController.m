@@ -99,20 +99,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reachabilityChanged:)
                                                  name:kReachabilityChangedNotification
                                                object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+}
+
+- (void)dealloc
+{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -141,6 +145,8 @@
     __weak id weakSelf = self;
     if (_currentLocation)
         [self loadPlacesWebserviceByName:addressName];
+    else
+        [(CCAddView *)self.view showLoading]; // Yeah this sucks
     geolocBlock = ^() {
         [weakSelf loadPlacesWebserviceByName:addressName];
     };

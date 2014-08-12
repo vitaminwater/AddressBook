@@ -1,14 +1,17 @@
 {
   "images" : [
     {
+      "idiom" : "universal"
+    },
+    {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "eject.png"
+      "filename" : "white_pin.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "eject@2x.png"
+      "filename" : "white_pin@2x.png"
     }
   ],
   "info" : {

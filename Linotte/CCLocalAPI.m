@@ -44,6 +44,7 @@
         if ([self isLoggedIn]) {
             _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
             _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+            [self setOAuth2HTTPHeader];
         }
     }
     return self;
@@ -168,10 +169,13 @@
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
     if (address.identifier != nil) {
+        NSLog(@"Sending address: %@", address.name);
         [objectManager postObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             completionBlock(YES);
+            NSLog(@"Adresse %@ sent..", address.name);
         } failure:^(RKObjectRequestOperation *operation, NSError *error) {
             completionBlock(NO);
+            NSLog(@"Adresse %@ error..", address.name);
         }];
     }
 }

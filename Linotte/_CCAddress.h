@@ -13,6 +13,7 @@ extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *latitude;
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *name;
+	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *sent;
 } CCAddressAttributes;
 
@@ -24,6 +25,7 @@ extern const struct CCAddressFetchedProperties {
 } CCAddressFetchedProperties;
 
 @class CCCategory;
+
 
 
 
@@ -136,6 +138,20 @@ extern const struct CCAddressFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* notify;
+
+
+
+@property BOOL notifyValue;
+- (BOOL)notifyValue;
+- (void)setNotifyValue:(BOOL)value_;
+
+//- (BOOL)validateNotify:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSNumber* sent;
 
 
@@ -222,6 +238,15 @@ extern const struct CCAddressFetchedProperties {
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveNotify;
+- (void)setPrimitiveNotify:(NSNumber*)value;
+
+- (BOOL)primitiveNotifyValue;
+- (void)setPrimitiveNotifyValue:(BOOL)value_;
 
 
 

@@ -46,20 +46,21 @@
     _textField = [UITextField new];
     _textField.translatesAutoresizingMaskIntoConstraints = NO;
     _textField.delegate = self;
-    _textField.textAlignment = NSTextAlignmentCenter;
-    _textField.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:25];
+    _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
     _textField.textColor = [UIColor darkGrayColor];
     _textField.backgroundColor = [UIColor whiteColor];
     _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     
-    UIView *leftView = [UIView new];
-    leftView.frame = CGRectMake(0, 0, 15, _textField.frame.size.height);
+    UIImageView *leftView = [UIImageView new];
+    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
+    leftView.contentMode = UIViewContentModeCenter;
     leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    leftView.image = [UIImage imageNamed:@"add_field_icon"];
     _textField.leftView = leftView;
     _textField.leftViewMode = UITextFieldViewModeAlways;
 
     UIView *rightView = [UIView new];
-    rightView.frame = CGRectMake(0, 0, 15, _textField.frame.size.height);
+    rightView.frame = CGRectMake(0, 0, 15, [kCCAddViewTextFieldHeight floatValue]);
     rightView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     _textField.rightView = rightView;
     _textField.rightViewMode = UITextFieldViewModeAlways;

@@ -8,6 +8,8 @@
 
 #import "CCOutputViewController.h"
 
+#import <HexColors/HexColor.h>
+
 #import "CCOutputView.h"
 
 #import "CCRestKit.h"
@@ -21,12 +23,22 @@
     CLLocation *_currentLocation;
 }
 
+@property(nonatomic, assign)BOOL addressIsNew;
 @property(nonatomic, strong)CCAddress *address;
 @property(nonatomic, assign)CLLocationDistance distance;
 
 @end
 
 @implementation CCOutputViewController
+
+- (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
+{
+    self = [self initWithAddress:address];
+    if (self) {
+        _addressIsNew = addressIsNew;
+    }
+    return self;
+}
 
 - (id)initWithAddress:(CCAddress *)address
 {
@@ -41,21 +53,32 @@
 {
     CCOutputView *view = [[CCOutputView alloc] initWithDelegate:self];
     self.view = view;
+    
+    if (_addressIsNew)
+        [view showIsNewMessage];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = _address.name;
+    
+    NSString *color = @"#6b6b6b";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController setNavigationBarHidden:NO animated:animated];
     
     if (_locationManager == nil) {
         _locationManager = [CLLocationManager new];
@@ -106,6 +129,8 @@
     CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
     self.distance = [_currentLocation distanceFromLocation:coordinate];
     [((CCOutputView *)self.view) updateValues];
+    
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
 }
 
 #pragma mark - CCoutputViewDelegate
@@ -140,6 +165,12 @@
 - (double)addressLongitude
 {
     return _address.longitudeValue;
+}
+
+- (void)notificationEnable:(BOOL)enable
+{
+    _address.notify = @(enable);
+    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
 }
 
 @end

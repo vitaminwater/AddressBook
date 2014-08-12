@@ -12,16 +12,21 @@
 
 #import "UIImage+CCInvert.h"
 
+#import "CCListViewTableViewCellDetailLabel.h"
+
+
 @interface CCListViewTableViewCell()
 
+@property(nonatomic, strong)UIButton *deleteButton;
+
 @property(nonatomic, strong)UILabel *realTextLabel;
-@property(nonatomic, strong)UILabel *realDetailTextLabel;
+@property(nonatomic, strong)CCListViewTableViewCellDetailLabel *realDetailTextLabel;
 
 @property(nonatomic, strong)UIImageView *compasView;
 @property(nonatomic, strong)UIImage *compasImage;
 @property(nonatomic, strong)UIImage *invertedCompasImage;
 
-@property(nonatomic, strong)NSLayoutConstraint *leftEjectButtonConstraint;
+@property(nonatomic, strong)NSLayoutConstraint *rightEjectButtonConstraint;
 
 @end
 
@@ -31,14 +36,10 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         
-        UIView *selectedBackgroundView = [UIView new];
-        selectedBackgroundView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-        self.selectedBackgroundView = selectedBackgroundView;
-        
-        [self setupLabels];
         [self setupButton];
+        [self setupLabels];
         [self setupCompas];
     }
     return self;
@@ -46,60 +47,53 @@
 
 - (void)setupLabels
 {
-    self.realTextLabel = [UILabel new];
-    self.realTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.realTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    [self.contentView addSubview:self.realTextLabel];
+    _realTextLabel = [UILabel new];
+    _realTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _realTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    _realTextLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:25];
+    _realTextLabel.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
+    [self.contentView addSubview:_realTextLabel];
     
-    self.realDetailTextLabel = [UILabel new];
-    self.realDetailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:self.realDetailTextLabel];
-    
-    self.realTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.realTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:25];
-    self.realTextLabel.textColor = [UIColor blackColor];
-    
-    self.realDetailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.realDetailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
-    self.realDetailTextLabel.textColor = [UIColor colorWithWhite:0 alpha:0.5];
-    
-    NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:self.realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
+    _realDetailTextLabel = [CCListViewTableViewCellDetailLabel new];
+    _realDetailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addSubview:_realDetailTextLabel];
+
+    NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
     [self.contentView addConstraint:topTextLabelConstraint];
     
-    NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:self.realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
+    NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
     [self.contentView addConstraint:bottomDetailLabelConstraint];
     
-    for (UIView *view in @[self.realTextLabel, self.realDetailTextLabel]) {
-        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:8];
+    for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {
+        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:8];
         [self.contentView addConstraint:leftConstraint];
     }
 }
 
 - (void)setupButton
 {
-    UIButton *button = [UIButton new];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    button.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [button setImage:[UIImage imageNamed:@"eject.png"] forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
-    button.alpha = 0.7;
-    [self.contentView addSubview:button];
+    _deleteButton = [UIButton new];
+    _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _deleteButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_deleteButton setImage:[UIImage imageNamed:@"delete_note.png"] forState:UIControlStateNormal];
+    [_deleteButton addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_deleteButton];
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(button);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[button(==50)]" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_deleteButton(==90)]" options:0 metrics:nil views:views];
     [self.contentView addConstraints:horizontalConstraints];
     
-    _leftEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-    [self addConstraint:_leftEjectButtonConstraint];
+    _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    [self addConstraint:_rightEjectButtonConstraint];
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[button]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
     [self.contentView addConstraints:verticalConstraints];
     
     UISwipeGestureRecognizer *swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     [self addGestureRecognizer:swipGestureRecognizer];
     swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
     [self addGestureRecognizer:swipGestureRecognizer];
 }
 
@@ -133,13 +127,9 @@
 - (void)highlightLabels:(BOOL)highlight
 {
     if (highlight) {
-        self.realTextLabel.textColor = [UIColor whiteColor];
-        self.realDetailTextLabel.textColor = [UIColor whiteColor];
-        self.compasView.image = _invertedCompasImage;
+        
     } else {
-        self.realTextLabel.textColor = [UIColor blackColor];
-        self.realDetailTextLabel.textColor = [UIColor colorWithWhite:0 alpha:0.5];
-        self.compasView.image = _compasImage;
+        
     }
 }
 
@@ -150,12 +140,26 @@
 
 - (UILabel *)detailTextLabel
 {
-    return self.realDetailTextLabel;
+    return self.realDetailTextLabel.label;
+}
+
+- (UIImageView *)markerImageView
+{
+    return self.realDetailTextLabel.imageView;
+}
+
+- (void)setColorCode:(NSString *)colorCode
+{
+    [self willChangeValueForKey:@"colorCode"];
+    NSString *iconName = [NSString stringWithFormat:@"gmap_pin_%@.png", [colorCode substringFromIndex:1]];
+    self.markerImageView.image = [UIImage imageNamed:iconName];
+    _colorCode = colorCode;
+    [self didChangeValueForKey:@"colorCode"];
 }
 
 - (void)prepareForReuse
 {
-    _leftEjectButtonConstraint.constant = 0;
+    _rightEjectButtonConstraint.constant = 0;
 }
 
 #pragma mark - UIButton target methods
@@ -170,10 +174,10 @@
 - (void)swipGestureRecognizer:(UISwipeGestureRecognizer *)swipGestureRecognizer
 {
     if (swipGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
-            _leftEjectButtonConstraint.constant = -50;
-        } else if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
-            _leftEjectButtonConstraint.constant = 0;
+        if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
+            _rightEjectButtonConstraint.constant = 95;
+        } else if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
+            _rightEjectButtonConstraint.constant = 0;
         }
         [UIView animateWithDuration:0.2 animations:^{
             [self.contentView layoutIfNeeded];

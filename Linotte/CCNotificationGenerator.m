@@ -24,7 +24,7 @@
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 8];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@)", geohash, date];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@) && notify = %@", geohash, date, @YES];
     [fetchRequest setPredicate:predicate];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
@@ -36,7 +36,7 @@
     UILocalNotification *localNotification = [UILocalNotification new];
     
     localNotification.alertAction = @"Linotte";
-    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.soundName = @"default_notification.caf";
     
     localNotification.applicationIconBadgeNumber = [results count];
     

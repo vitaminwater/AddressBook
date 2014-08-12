@@ -8,12 +8,18 @@
 
 #import "CCMainViewController.h"
 
+#import "CCSplashViewController.h"
+
 #import "CCListViewController.h"
 #import "CCAddViewController.h"
+
+#import "CCOutputViewController.h"
 
 #import "CCMainView.h"
 
 @interface CCMainViewController ()
+
+@property(nonatomic, strong)CCSplashViewController *splashViewController;
 
 @property(nonatomic, strong)CCListViewController *listViewController;
 @property(nonatomic, strong)CCAddViewController *addViewController;
@@ -46,6 +52,18 @@
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
+- (void)viewDidLoad
+{
+    _splashViewController = [CCSplashViewController new];
+    _splashViewController.delegate = self;
+    
+    [self addChildViewController:_splashViewController];
+    _splashViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _splashViewController.view.frame = self.view.bounds;
+    [self.view addSubview:_splashViewController.view];
+    [_splashViewController didMoveToParentViewController:self];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -58,6 +76,9 @@
 - (void)addressAdded:(CCAddress *)address
 {
     [_listViewController addressAdded:address];
+    
+    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
+    [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
 - (void)expandAddView
@@ -68,6 +89,27 @@
 - (void)reduceAddView
 {
     ((CCMainView *)self.view).addViewExpanded = NO;
+}
+
+#pragma mark - CCListViewControllerDelegate methods
+
+- (void)addressSelected:(CCAddress *)address
+{
+    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
+    [self.navigationController pushViewController:outputViewController animated:YES];
+}
+
+#pragma mark - CCSplashViewControllerDelegate
+
+- (void)splashFinish
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        _splashViewController.view.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_splashViewController willMoveToParentViewController:nil];
+        [_splashViewController.view removeFromSuperview];
+        [_splashViewController removeFromParentViewController];
+    }];
 }
 
 @end
