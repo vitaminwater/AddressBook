@@ -11,6 +11,7 @@
 #import "NSString+CCLocalizedString.h"
 
 #import <RestKit/RestKit.h>
+#import <Mixpanel/Mixpanel.h>
 
 #import "CCAddress.h"
 #import "CCCategory.h"
@@ -48,6 +49,7 @@
     [managedObjectContext saveToPersistentStore:NULL];
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    [[Mixpanel sharedInstance] track:@"Local notification sent" properties:localNotification.userInfo];
 }
 
 - (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification

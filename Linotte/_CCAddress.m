@@ -13,6 +13,8 @@ const struct CCAddressAttributes CCAddressAttributes = {
 	.longitude = @"longitude",
 	.name = @"name",
 	.notify = @"notify",
+	.provider = @"provider",
+	.providerId = @"providerId",
 	.sent = @"sent",
 };
 
@@ -191,6 +193,20 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 - (void)setPrimitiveNotifyValue:(BOOL)value_ {
 	[self setPrimitiveNotify:[NSNumber numberWithBool:value_]];
 }
+
+
+
+
+
+@dynamic provider;
+
+
+
+
+
+
+@dynamic providerId;
+
 
 
 

@@ -10,6 +10,7 @@
 
 @interface CCFoursquareVenues : NSObject
 
+@property(nonatomic, strong)NSString *identifier;
 @property(nonatomic, strong)NSString *name;
 @property(nonatomic, strong)NSNumber *latitude;
 @property(nonatomic, strong)NSNumber *longitude;

@@ -43,7 +43,11 @@ typedef enum : NSUInteger {
         _addresses = [@[] mutableCopy];
         _loadingAddresses = [@[] mutableCopy];
         
-        _loggedState = [[CCLocalAPI sharedInstance] isLoggedIn] ? kCCLoggedIn : kCCNotLogged; // TODO manage token expiration (kCCRefreshToken)
+        _loggedState = [[CCLocalAPI sharedInstance] isLoggedIn] ? kCCLoggedIn : kCCNotLogged; // TODO: manage token expiration (kCCRefreshToken)
+        
+        if (_loggedState == kCCLoggedIn) {
+            [[Mixpanel sharedInstance] track:@"Application started" properties:@{@"date": [NSDate date]}];
+        }
         
         __weak id weakSelf = self;
         _reachability = [Reachability reachabilityWithHostname:@"getlinotte.com"];

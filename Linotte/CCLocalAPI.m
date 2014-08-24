@@ -161,7 +161,7 @@
     postPutRequest.firstName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.lastName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.email = [NSString stringWithFormat:@"%@@getcairnsapp.com", [[NSUUID UUID] UUIDString]];
-    postPutRequest.isNewUser = @YES;
+    postPutRequest.isNewUser = @YES; // TODO: remove when db clean
     
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         CCUserPostPutResponse *response = [mappingResult firstObject];
@@ -175,6 +175,7 @@
     }];
 }
 
+// TODO: remove when unneeded
 - (void)fetchIdentifier:(void(^)(bool success, NSString *identifier))completionBlock {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
@@ -203,7 +204,7 @@
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
     if (address.identifier != nil) {
-        NSLog(@"Sending address: %@", address.name);
+        NSLog(@"Sending address: %@ %@ %@", address.name, address.provider, address.providerId);
         [objectManager postObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             completionBlock(YES);
             NSLog(@"Adresse %@ sent..", address.name);

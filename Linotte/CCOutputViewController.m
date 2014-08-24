@@ -10,6 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
+#import <Mixpanel/Mixpanel.h>
+
 #import "CCOutputView.h"
 
 #import "CCRestKit.h"
@@ -56,6 +58,8 @@
     
     if (_addressIsNew)
         [view showIsNewMessage];
+    
+    [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"address": _address.name, @"address": _address.address}];
 }
 
 - (void)viewDidLoad
@@ -108,6 +112,8 @@
     [url appendFormat:@"&x-success=comlinotte://?resume=true"];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    
+    [[Mixpanel sharedInstance] track:@"Google route" properties:@{@"mode": modes[@(type)], @"name": _address.name, @"address": _address.address, @"identifier": _address.identifier}];
 }
 
 - (void)appleMapRoute:(CCRouteType)type
@@ -117,6 +123,8 @@
     [url appendFormat:@"&saddr=%f,%f", _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    
+    [[Mixpanel sharedInstance] track:@"Apple route" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier}];
 }
 
 #pragma mark - CLLocationManagerDelegate methods
@@ -171,6 +179,7 @@
 {
     _address.notify = @(enable);
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enable)}];
 }
 
 @end

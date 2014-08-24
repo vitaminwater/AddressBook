@@ -38,7 +38,8 @@
 // #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
 // #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
 // #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
-#define kCCLocalApiServerUrl @"https://192.168.1.93:8001" // La clef
+#define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
+//#define kCCLocalApiServerUrl @"https://192.168.1.93:8001" // La clef
 #else
 #define kCCLocalApiServerUrl @"http://www.getlinotte.com"
 #endif
@@ -90,7 +91,7 @@ NSMutableDictionary *_objectManagers = nil;
 
 + (void)initializeMappings
 {
-    //RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
+    RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
     //RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
     
     [self initializeGoogleAutocompleteMapping];
@@ -176,7 +177,7 @@ NSMutableDictionary *_objectManagers = nil;
     RKObjectManager *objectManager = [self addObjectManager:kCCFoursquareObjectManager baseUrl:kFoursquareBaseUrl addManagedObjectStore:NO mimeType:RKMIMETypeFormURLEncoded];
     
     RKObjectMapping *venuesMapping = [RKObjectMapping mappingForClass:[CCFoursquareVenues class]];
-    [venuesMapping addAttributeMappingsFromDictionary:@{@"name" : @"name", @"location.lat" : @"latitude", @"location.lng" : @"longitude", @"location.address" : @"address", @"location.city" : @"city", @"location.country" : @"country"}];
+    [venuesMapping addAttributeMappingsFromDictionary:@{@"name" : @"name", @"location.lat" : @"latitude", @"location.lng" : @"longitude", @"location.address" : @"address", @"location.city" : @"city", @"location.country" : @"country", @"id" : @"identifier"}];
     
     RKObjectMapping *categoriesMapping = [RKObjectMapping mappingForClass:[CCFoursquareCategorie class]];
     [categoriesMapping addAttributeMappingsFromDictionary:@{@"id" : @"identifier", @"name" : @"name"}];
@@ -236,15 +237,15 @@ NSMutableDictionary *_objectManagers = nil;
     
     /* CCAddress mapping */
     {
-        RKObjectMapping *requestEntityMapping = [CCAddress requestObjectMapping];
+        RKObjectMapping *requestEntityMapping = [CCAddress requestPOSTObjectMapping];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:requestEntityMapping objectClass:[CCAddress class] rootKeyPath:nil method:RKRequestMethodPOST];
         
         [objectManager addRequestDescriptor:requestDescriptor];
 
-        RKEntityMapping *responseEntityMapping = [CCAddress responseEntityMapping];
+        RKEntityMapping *responsePOSTEntityMapping = [CCAddress responsePOSTEntityMapping];
         
-        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responseEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIAddress keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responsePOSTEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIAddress keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
         
         [objectManager addResponseDescriptor:responseDescriptor];
     }

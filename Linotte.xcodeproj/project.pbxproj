@@ -1218,6 +1218,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+				);
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "C4411D9E-58B9-4E11-A138-326F0FB1C814";

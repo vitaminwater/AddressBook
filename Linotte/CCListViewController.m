@@ -10,6 +10,8 @@
 
 #import <objc/runtime.h>
 
+#import <Mixpanel/Mixpanel.h>
+
 #import "CCRestKit.h"
 
 #import "CCListView.h"
@@ -197,6 +199,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         return;
     }
     [((CCListView *)self.view) deleteAddressAtIndex:[index intValue]];
+    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name, @"address": address.address, @"identifier": address.identifier}];
 }
 
 #pragma mark - CCListViewDelegate methods

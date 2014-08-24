@@ -8,6 +8,8 @@
 
 #import "CCSplashViewController.h"
 
+#import <Mixpanel/Mixpanel.h>
+
 #import "CCSplashView.h"
 
 @interface CCSplashViewController ()
@@ -25,9 +27,8 @@
 
 - (void)viewDidLoad
 {
-    __weak id weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf splashFinish];
+        [_delegate splashFinish];
     });
 }
 
@@ -36,6 +37,7 @@
 - (void)splashFinish
 {
     [_delegate splashFinish];
+    [[Mixpanel sharedInstance] track:@"Splash skipped"];
 }
 
 @end

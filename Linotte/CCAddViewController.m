@@ -14,6 +14,8 @@
 
 #import <MBProgressHUD/MBProgressHUD.h>
 
+#import <Mixpanel/Mixpanel.h>
+
 #import "CCFoursquareVenues.h"
 #import "CCFoursquareCategorie.h"
 
@@ -46,10 +48,11 @@
 
 @property(nonatomic, strong)NSString *address;
 @property(nonatomic, strong)NSString *name;
+@property(nonatomic, strong)NSString *provider;
+@property(nonatomic, strong)NSString *providerId;
 
 @property(nonatomic, strong)NSArray *categories;
 
-@property(nonatomic, strong)NSString *reference;
 @property(nonatomic, assign)CLLocationCoordinate2D coordinates;
 
 @end
@@ -212,7 +215,6 @@
         
         for (CCFoursquareVenues *result in venues) {
             CCAddViewAutocompletionResult *autocompletionResult = [CCAddViewAutocompletionResult new];
-            autocompletionResult.name = result.name;
             NSString *addressString = @"";
             for (NSString *addr in @[result.address ? result.address : @"", result.city ? result.city : @"", result.country ? result.country : @""]) {
                 if (addr.length) {
@@ -230,8 +232,11 @@
                 [categories addObject:autocompletionCategorie];
             }
             
+            autocompletionResult.name = result.name;
             autocompletionResult.address = addressString;
             autocompletionResult.categories = categories;
+            autocompletionResult.provider = @"foursquare";
+            autocompletionResult.providerId = result.identifier;
             autocompletionResult.coordinates = CLLocationCoordinate2DMake([result.latitude doubleValue], [result.longitude doubleValue]);
             [_autocompletionResults addObject:autocompletionResult];
         }
@@ -311,6 +316,8 @@
     
     address.name = autocompletionResult.name;
     address.address = autocompletionResult.address;
+    address.provider = autocompletionResult.provider;
+    address.providerId = autocompletionResult.providerId;
     address.date = [NSDate date];
     address.latitude = @(autocompletionResult.coordinates.latitude);
     address.longitude = @(autocompletionResult.coordinates.longitude);
@@ -329,6 +336,7 @@
     [self reduceAddView];
     [_delegate addressAdded:address];
     [[CCNetworkHandler sharedInstance] sendAddress:address];
+    [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
 }
 
 @end

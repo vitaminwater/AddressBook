@@ -16,11 +16,12 @@
 
 #pragma mark - RestKit mapping
 
-+ (RKObjectMapping *)requestObjectMapping
++ (RKObjectMapping *)requestPOSTObjectMapping
 {
     RKObjectMapping *objectMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
     
-    [objectMapping addAttributeMappingsFromArray:@[CCAddressAttributes.address, CCAddressAttributes.latitude, CCAddressAttributes.longitude, CCAddressAttributes.name]];
+    [objectMapping addAttributeMappingsFromArray:@[CCAddressAttributes.address, CCAddressAttributes.latitude, CCAddressAttributes.longitude, CCAddressAttributes.name, CCAddressAttributes.provider]];
+    [objectMapping addAttributeMappingsFromDictionary:@{CCAddressAttributes.providerId : @"provider_id"}];
     
     RKObjectMapping *categoriesObjectMapping = [CCCategory requestObjectMapping];
     [objectMapping addRelationshipMappingWithSourceKeyPath:@"categories" mapping:categoriesObjectMapping];
@@ -28,7 +29,7 @@
     return objectMapping;
 }
 
-+ (RKEntityMapping *)responseEntityMapping
++ (RKEntityMapping *)responsePOSTEntityMapping
 {
     RKManagedObjectStore *managedObjectStore = [RKManagedObjectStore defaultStore];
     RKEntityMapping *entityMapping = [RKEntityMapping mappingForEntityForName:[self entityName] inManagedObjectStore:managedObjectStore];
