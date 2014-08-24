@@ -20,9 +20,17 @@
 
 #import "CCAddress.h"
 
+#if defined(DEBUG)
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug7"
+#define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
+#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
+#define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
+#else
 #define kCCKeyChainServiceName @"kCCKeyChainServiceName3"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
+#define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
+#endif
 
 @interface CCLocalAPI()
 {
@@ -42,8 +50,10 @@
     self = [super init];
     if (self != nil) {
         if ([self isLoggedIn]) {
+            [SSKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
             _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
             _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+            _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
             [self setOAuth2HTTPHeader];
         }
     }
@@ -140,7 +150,7 @@
 
 #pragma mark - User methods
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success))completionBlock
+- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success, NSString *identifier))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
@@ -151,15 +161,39 @@
     postPutRequest.firstName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.lastName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.email = [NSString stringWithFormat:@"%@@getcairnsapp.com", [[NSUUID UUID] UUIDString]];
+    postPutRequest.isNewUser = @YES;
     
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+        CCUserPostPutResponse *response = [mappingResult firstObject];
+        [self saveUserIdentifier:response.identifier];
         [self authenticate:postPutRequest.username password:postPutRequest.password completionBlock:^(bool success) {
-            completionBlock(success);
+            completionBlock(success, response.identifier);
         }];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         NSLog(@"%@", error);
-        completionBlock(NO);
+        completionBlock(NO, nil);
     }];
+}
+
+- (void)fetchIdentifier:(void(^)(bool success, NSString *identifier))completionBlock {
+    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
+    
+    AFHTTPClient *client = objectManager.HTTPClient;
+    [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        // NSLog(@"%@", responseObject);
+        [self saveUserIdentifier:responseObject[@"identifier"]];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+    }];
+}
+
+- (void)saveUserIdentifier:(NSString *)identifier {
+    NSError *error;
+    if ([SSKeychain setPassword:identifier forService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName error:&error] == NO) {
+        NSLog(@"%@", error);
+    }
+    _identifier = identifier;
 }
 
 #pragma mark - Notes methods

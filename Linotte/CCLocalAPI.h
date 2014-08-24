@@ -13,13 +13,16 @@
 
 @interface CCLocalAPI : NSObject
 
+@property(nonatomic, strong)NSString *identifier;
+
 - (void)setClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 
 - (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(bool success))completionBlock;
 - (void)refreshTokenWithCompletionBlock:(void(^)(bool success))completionBlock;
 - (BOOL)isLoggedIn;
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success))completionBlock;
+- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success, NSString *identifier))completionBlock;
+- (void)fetchIdentifier:(void(^)(bool success, NSString *identifier))completionBlock;
 
 - (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(bool success))completionBlock;
 

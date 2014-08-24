@@ -9,6 +9,7 @@
 #import "CCAppDelegate.h"
 
 #import <GoogleMaps/GoogleMaps.h>
+#import <Mixpanel/Mixpanel.h>
 
 #import "CCNotificationGenerator.h"
 
@@ -39,8 +40,12 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
-    [self processNotification:notification];
+    if (application.applicationState != UIApplicationStateBackground) {
+        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+        
+        UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
+        [self processNotification:notification];
+    }
     
     return YES;
 }
@@ -79,21 +84,37 @@
     [self initRestkitCoreDataStack];
     [self initRestKitMappings];
     
+    // Google map service initialization
     [GMSServices provideAPIKey:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"google_map_api_key"]];
     
-/*#if defined(DEBUG)
-    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_client_debug"]];
-    NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_secret_debug"]];
-#else*/
-    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_client"]];
-    NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:[NSString stringWithFormat:@"linotte_api_secret"]];
-//#endif
-    [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
+    // MixPanel service initialization
+    {
+    #if defined(DEBUG)
+        NSString *token = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"mixpanel_api_token_debug"];
+    #else
+        NSString *token = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"mixpanel_api_token"];
+    #endif
+        
+        [Mixpanel sharedInstanceWithToken:token];
+    }
+    
+    // Linotte API initialization
+    {
+    #if defined(DEBUG)
+        NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client_debug"];
+        NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret_debug"];
+    #else
+        NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client"];
+        NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
+    #endif
+        [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
+    }
     
     //[CCNotificationGenerator printLastNotif];
     //[CCNotificationGenerator resetLastNotif];
     
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
+    
     [CCNetworkHandler sharedInstance];
 }
 
@@ -130,7 +151,7 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    [self processNotification:notification];
+    //[self processNotification:notification];
 }
 
 #pragma mark -
@@ -139,8 +160,6 @@
 {
     if (notification == nil)
         return;
-    
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     if ([notification.userInfo[@"multiple"] isEqualToNumber:@YES]) {
         NSLog(@"multiple");

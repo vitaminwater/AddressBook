@@ -26,6 +26,7 @@
 		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */; };
+		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
 		C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB5719216C110096B5A8 /* CCOutputViewController.m */; };
@@ -931,6 +932,13 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = CCSAS;
 				TargetAttributes = {
+					C7CE2C601918E48800D37A64 = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+						};
+					};
 					C7CE2C801918E48800D37A64 = {
 						TestTargetID = C7CE2C601918E48800D37A64;
 					};
@@ -961,6 +969,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */,
 				C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */,
 				C7D484C61995197900E81E81 /* Montserrat-Bold.ttf in Resources */,
 				C7CE2C711918E48800D37A64 /* InfoPlist.strings in Resources */,

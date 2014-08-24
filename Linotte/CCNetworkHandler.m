@@ -8,7 +8,7 @@
 
 #import "CCNetworkHandler.h"
 
-#import "CCLocalAPI.h"
+#import <Mixpanel/Mixpanel.h>
 
 #import <Reachability/Reachability.h>
 
@@ -17,6 +17,7 @@
 
 typedef enum : NSUInteger {
     kCCNotLogged,
+    kCCRefreshToken,
     kCCLoggedIn,
     kCCFailed,
 } CCLoggedState;
@@ -42,7 +43,7 @@ typedef enum : NSUInteger {
         _addresses = [@[] mutableCopy];
         _loadingAddresses = [@[] mutableCopy];
         
-        _loggedState = [[CCLocalAPI sharedInstance] isLoggedIn] ? kCCLoggedIn : kCCNotLogged;
+        _loggedState = [[CCLocalAPI sharedInstance] isLoggedIn] ? kCCLoggedIn : kCCNotLogged; // TODO manage token expiration (kCCRefreshToken)
         
         __weak id weakSelf = self;
         _reachability = [Reachability reachabilityWithHostname:@"getlinotte.com"];
@@ -78,12 +79,12 @@ typedef enum : NSUInteger {
 }
 
 - (void)reachable {
-    BOOL isLoggedIn = [[CCLocalAPI sharedInstance] isLoggedIn];
-    if (_loggedState == kCCNotLogged && isLoggedIn == NO) {
+    if (_loggedState == kCCNotLogged) {
         [self createNewUser];
-    } else if (_loggedState == kCCNotLogged) {
+    } else if (_loggedState == kCCRefreshToken) {
         [self refreshToken];
     } else if (_loggedState == kCCLoggedIn) {
+        [self identifyMixpanel];
         [self startTimer];
     }
 }
@@ -94,9 +95,12 @@ typedef enum : NSUInteger {
 
 - (void)createNewUser
 {
-    [[CCLocalAPI sharedInstance] createAndAuthenticateAnonymousUserWithCompletionBlock:^(bool success) {
+    [[CCLocalAPI sharedInstance] createAndAuthenticateAnonymousUserWithCompletionBlock:^(bool success, NSString *identifier) {
         if (success) {
             _loggedState = kCCLoggedIn;
+            Mixpanel *mixpanel = [Mixpanel sharedInstance];
+            [mixpanel identify:identifier];
+            [[mixpanel people] set:@"$created" to:[NSDate date]];
             [self startTimer];
         } else {
             _loggedState = kCCFailed;
@@ -109,6 +113,7 @@ typedef enum : NSUInteger {
     [[CCLocalAPI sharedInstance] refreshTokenWithCompletionBlock:^(bool success) {
         if (success) {
             _loggedState = kCCLoggedIn;
+            [self identifyMixpanel];
             [self startTimer];
         } else {
             _loggedState = kCCFailed;
@@ -191,6 +196,18 @@ typedef enum : NSUInteger {
 {
     if ([self canSend])
         [self purgeAddresses];
+}
+
+#pragma mark - misc methods
+
+- (void)identifyMixpanel {
+    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    if ([CCLocalAPI sharedInstance].identifier == nil) {
+        [[CCLocalAPI sharedInstance] fetchIdentifier:^(bool success, NSString *identifier) {
+            [mixpanel identify:identifier];
+        }];
+    } else
+        [mixpanel identify:[CCLocalAPI sharedInstance].identifier];
 }
 
 #pragma mark - Singleton method

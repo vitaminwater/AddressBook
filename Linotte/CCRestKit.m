@@ -38,7 +38,7 @@
 // #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
 // #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
 // #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
-#define kCCLocalApiServerUrl @"http://www.getlinotte.com"
+#define kCCLocalApiServerUrl @"https://192.168.1.93:8001" // La clef
 #else
 #define kCCLocalApiServerUrl @"http://www.getlinotte.com"
 #endif
@@ -62,9 +62,9 @@ NSMutableDictionary *_objectManagers = nil;
         
         [objectManager setRequestSerializationMIMEType:mimeTypeSerialization];
         
-//#if defined(DEBUG)
+#if defined(DEBUG)
         objectManager.HTTPClient.allowsInvalidSSLCertificate = YES;
-//#endif
+#endif
         
         _objectManagers[name] = objectManager;
     }
@@ -223,7 +223,7 @@ NSMutableDictionary *_objectManagers = nil;
     
     /* User creation/modification request */
     RKObjectMapping *userPostPutRequestMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
-    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email"}];
+    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email", @"isNewUser" : @"is_new_user"}];
     
     RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:userPostPutRequestMapping objectClass:[CCUserPostPutRequest class] rootKeyPath:nil method:RKRequestMethodPOST | RKRequestMethodPUT | RKRequestMethodPATCH];
     

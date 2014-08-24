@@ -47,6 +47,8 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 	<key>foursquare_client_id</key>
 	<string>2PFU2PRLO0NFB5PADXSJGEGHNOCMBENWRFETVMRRW1TWVG1A</string>
 	<key>foursquare_client_secret</key>
@@ -55,15 +57,17 @@
 	<string>20140128</string>
 	<key>google_map_api_key</key>
 	<string>AIzaSyAqAwsG6ZVOnclKRAv8O1zfU_GU2u_4E7A</string>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 	<key>linotte_api_client</key>
 	<string>eda95b19f510ac1f217a</string>
 	<key>linotte_api_client_debug</key>
-	<string>5f7b6508a22370af29f5</string>
+	<string>317fad2ece10bd331120</string>
 	<key>linotte_api_secret</key>
 	<string>03deca54e8ca4bc0afda684d06e4b3252fa61164</string>
 	<key>linotte_api_secret_debug</key>
-	<string>f2cadc00030c479c8bbc92ccd38fcebd3410d080</string>
+	<string>8b5d0f01bf26dca66b599779119aaeb97433b5f4</string>
+	<key>mixpanel_api_token</key>
+	<string>1dc69197f2069b1758b9f0b9b17b8f88</string>
+	<key>mixpanel_api_token_debug</key>
+	<string>a1b283da0d87c55e595424a57cd16f77</string>
 </dict>
 </plist>
