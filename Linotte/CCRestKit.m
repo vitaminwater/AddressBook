@@ -224,7 +224,7 @@ NSMutableDictionary *_objectManagers = nil;
     
     /* User creation/modification request */
     RKObjectMapping *userPostPutRequestMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
-    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email", @"isNewUser" : @"is_new_user"}];
+    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email", @"isClean" : @"is_clean"}];
     
     RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:userPostPutRequestMapping objectClass:[CCUserPostPutRequest class] rootKeyPath:nil method:RKRequestMethodPOST | RKRequestMethodPUT | RKRequestMethodPATCH];
     

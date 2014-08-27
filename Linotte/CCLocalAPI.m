@@ -22,7 +22,7 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug14"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug16"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -220,7 +220,7 @@
     postPutRequest.firstName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.lastName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.email = [NSString stringWithFormat:@"%@@getcairnsapp.com", [[NSUUID UUID] UUIDString]];
-    postPutRequest.isNewUser = @YES; // TODO: remove when db clean
+    postPutRequest.isClean = @YES; // TODO: remove when db clean
     
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         CCUserPostPutResponse *response = [mappingResult firstObject];
