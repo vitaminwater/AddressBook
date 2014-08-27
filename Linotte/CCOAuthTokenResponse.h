@@ -12,5 +12,8 @@
 
 @property(nonatomic, strong)NSString *accessToken;
 @property(nonatomic, strong)NSString *refreshToken;
+@property(nonatomic, strong)NSString *expiresIn;
+
+@property(nonatomic, readonly)NSString *expireTimeStampString;
 
 @end

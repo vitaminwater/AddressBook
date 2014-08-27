@@ -12,14 +12,14 @@
 #import <GoogleMaps/GoogleMaps.h>
 
 #import "CCOutputConfirmEntryView.h"
+#import "CCAddressSettingsView.h"
 
 @interface CCOutputView()
-{
-    UITextView *_infoView;
-}
 
 @property(nonatomic, strong)GMSMarker *marker;
 @property(nonatomic, strong)GMSMapView *mapView;
+@property(nonatomic, strong)CCAddressSettingsView *addressSettingsView;
+@property(nonatomic, strong)UITextView *infoView;
 
 @end
 
@@ -151,19 +151,62 @@
     }];
 }
 
+- (void)showSettingsView
+{
+    if (_addressSettingsView)
+        return;
+    
+    _addressSettingsView = [CCAddressSettingsView new];
+    _addressSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
+    _addressSettingsView.delegate = self;
+    _addressSettingsView.notificationEnabled = [_delegate notificationEnabled];
+    [self addSubview:_addressSettingsView];
+    
+    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    [self addConstraint:centerXConstraint];
+    
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [self addConstraint:centerYConstraint];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-20];
+    [self addConstraint:widthConstraint];
+    
+    _addressSettingsView.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        _addressSettingsView.alpha = 1;
+    }];
+}
+
 #pragma mark - CCOutputConfirmEntryViewDelegate methods
 
 - (void)closeConfirmView:(id)sender
 {
     CCOutputConfirmEntryView *confirmEntryView = sender;
     
-    [_delegate notificationEnable:confirmEntryView.notificationEnabled];
+    [_delegate setNotificationEnabled:confirmEntryView.notificationEnabled];
     
     [UIView animateWithDuration:0.2 animations:^{
         confirmEntryView.alpha = 0;
     } completion:^(BOOL finished) {
         [confirmEntryView removeFromSuperview];
     }];
+}
+
+#pragma mark - CCAddressSettingsViewDelegate methods
+
+- (void)closeButtonPressed:(CCAddressSettingsView *)sender
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        _addressSettingsView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_addressSettingsView removeFromSuperview];
+        _addressSettingsView = nil;
+    }];
+}
+
+- (void)setNotificationEnabled:(BOOL)enabled
+{
+    [_delegate setNotificationEnabled:enabled];
 }
 
 #pragma mark - UITabBarDelegate methods

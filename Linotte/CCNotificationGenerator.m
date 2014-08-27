@@ -38,6 +38,7 @@
     
     localNotification.alertAction = @"Linotte";
     localNotification.soundName = @"default_notification.caf";
+    localNotification.hasAction = YES;
     
     localNotification.applicationIconBadgeNumber = [results count];
     
@@ -119,6 +120,24 @@
     }
     
     [managedObjectContext saveToPersistentStore:NULL];
+}
+
+#pragma mark - test method
+
++ (void)scheduleTestLocalNotification
+{
+    UILocalNotification *localNotification = [UILocalNotification new];
+    
+    localNotification.alertAction = @"Linotte";
+    localNotification.soundName = @"default_notification.caf";
+    localNotification.alertBody = @"Test notification";
+    localNotification.hasAction = YES;
+    
+    localNotification.applicationIconBadgeNumber = 1;
+    
+    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:10];
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
 }
 
 #pragma mark - singelton method

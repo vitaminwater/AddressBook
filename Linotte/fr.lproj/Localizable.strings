@@ -34,3 +34,6 @@
 "ADDRESSCREATED_SUBTEXT" = "Vous pouvez choisir d'être notifié à proximité, ou non.";
 "ENABLE_NOTIF_BUTTON_TEXT" = "Activer\nnotifications";
 "DISABLE_NOTIF_BUTTON_TEXT" = "Désactiver\nnotifications";
+"SETTINGS" = "Paramétres";
+"NOTIFICATION_SETTING" = "Activer notifications";
+"CLOSE" = "Fermer";

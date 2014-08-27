@@ -35,7 +35,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self initAll];
+    [self initAll:application];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
@@ -45,6 +45,8 @@
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    // [CCNotificationGenerator scheduleTestLocalNotification];
     
     if (application.applicationState != UIApplicationStateBackground) {
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
@@ -78,18 +80,26 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     self.dateActive = [NSDate date];
-    [[Mixpanel sharedInstance] track:@"Application launch" properties:@{@"date": [NSDate date]}];
+    [[Mixpanel sharedInstance] track:@"Application active" properties:@{@"date": [NSDate date]}];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
+    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
 }
 
 #pragma mark - RestKit initialization
 
-- (void)initAll
+- (void)initAll:(UIApplication *)application
 {
+    /*UIDevice *device = [UIDevice currentDevice];
+    double version = [device.systemVersion doubleValue];
+    
+    if (version >= 8) {
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge categories:nil]];
+    }*/
+    
     [self initRestkitCoreDataStack];
     [self initRestKitMappings];
     
@@ -160,7 +170,15 @@
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-    //[self processNotification:notification];
+    if (application.applicationState == UIApplicationStateInactive)
+        [self processNotification:notification];
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
+{
+    if (application.applicationState == UIApplicationStateInactive)
+        [self processNotification:notification];
+    completionHandler();
 }
 
 #pragma mark -

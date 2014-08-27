@@ -14,6 +14,9 @@
 
 + (void)printLastNotif;
 + (void)resetLastNotif;
+
++ (void)scheduleTestLocalNotification;
+
 + (instancetype)sharedInstance;
 
 @end

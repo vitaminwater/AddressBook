@@ -11,20 +11,31 @@
 @class CCAddress;
 @class RKPaginator;
 
+typedef enum : NSUInteger {
+    kCCFirstStart, // When nothing has happened yet
+    kCCRequestRefreshToken, // When access token is outdated
+    kCCLoggedIn, // When everything is fine
+    kCCRequestIdentifierSync, // When identifier is missing (upgrade purpose)
+    kCCRequestTotalResync, // When application is outsynced and we need to create a brand new user... this is bad
+    kCCFailed, // unknown error
+} CCLoggedState;
+
 @interface CCLocalAPI : NSObject
 
 @property(nonatomic, strong)NSString *identifier;
+@property(nonatomic, readonly)CCLoggedState loggedState;
 
 - (void)setClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 
-- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(bool success))completionBlock;
-- (void)refreshTokenWithCompletionBlock:(void(^)(bool success))completionBlock;
-- (BOOL)isLoggedIn;
+- (void)APIIinitialization:(void(^)(BOOL newUserCreated))completionBlock;
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success, NSString *identifier))completionBlock;
-- (void)fetchIdentifier:(void(^)(bool success, NSString *identifier))completionBlock;
+- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock;
 
-- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(bool success))completionBlock;
+- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
+- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock;
+
+- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
 
 + (instancetype)sharedInstance;
 

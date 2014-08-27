@@ -211,6 +211,10 @@
     [objectManager getObjectsAtPath:kCCFoursquareAPIVenueSearch parameters:args success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         NSArray *venues = mappingResult.array;
         
+        // exclude categories
+        NSArray *excludedCategories = @[@"50aa9e094b90af0d42d5de0d", @"5345731ebcbc57f1066c39b2", @"530e33ccbcbc57f1066bbff7", @"4f2a25ac4b909258e854f55f", @"530e33ccbcbc57f1066bbff8", @"530e33ccbcbc57f1066bbff3", @"530e33ccbcbc57f1066bbff9"];
+        venues = [venues filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SUBQUERY(categories, $category, $category.identifier IN %@).@count = 0", excludedCategories]];
+        
         [_autocompletionResults removeAllObjects];
         
         for (CCFoursquareVenues *result in venues) {
@@ -242,12 +246,8 @@
         }
         [(CCAddView *)self.view reloadAutocompletionResults];
         [self endFoursquareRequest];
-        
-        [(CCAddView *)self.view hideLoading];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         [self endFoursquareRequest];
-        
-        [(CCAddView *)self.view hideLoading];
     }];
 }
 
@@ -256,6 +256,8 @@
     _isLoadingFoursquarePlace = NO;
     if (_nextFoursquarePlaceQuery != nil)
         [self loadFoursquareVenueSearchWebservice:_nextFoursquarePlaceQuery];
+    else
+        [(CCAddView *)self.view hideLoading];
     _nextFoursquarePlaceQuery = nil;
 }
 

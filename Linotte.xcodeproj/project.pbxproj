@@ -27,6 +27,7 @@
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
+		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
 		C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB5719216C110096B5A8 /* CCOutputViewController.m */; };
@@ -109,6 +110,9 @@
 		C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryView.h; sourceTree = "<group>"; };
 		C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOutputConfirmEntryView.m; sourceTree = "<group>"; };
 		C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryViewDelegate.h; sourceTree = "<group>"; };
+		C770A75119AB647700803E75 /* CCAddressSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsView.h; sourceTree = "<group>"; };
+		C770A75219AB647700803E75 /* CCAddressSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressSettingsView.m; sourceTree = "<group>"; };
+		C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsViewDelegate.h; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
 		C799AB4B1920CD150096B5A8 /* CCAddViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddViewTableViewCell.h; sourceTree = "<group>"; };
 		C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddViewTableViewCell.m; sourceTree = "<group>"; };
@@ -286,20 +290,38 @@
 			name = sons;
 			sourceTree = "<group>";
 		};
-		C76A3C51199913C000998F9F /* ui */ = {
+		C76A3C55199913E400998F9F /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C770A74F19AB644400803E75 /* confirm entry */ = {
 			isa = PBXGroup;
 			children = (
 				C76A3C55199913E400998F9F /* protocol */,
 				C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */,
 				C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */,
 			);
-			name = ui;
+			name = "confirm entry";
 			sourceTree = "<group>";
 		};
-		C76A3C55199913E400998F9F /* protocol */ = {
+		C770A75019AB645D00803E75 /* settings */ = {
 			isa = PBXGroup;
 			children = (
-				C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */,
+				C770A75419AB64CB00803E75 /* protocol */,
+				C770A75119AB647700803E75 /* CCAddressSettingsView.h */,
+				C770A75219AB647700803E75 /* CCAddressSettingsView.m */,
+			);
+			name = settings;
+			sourceTree = "<group>";
+		};
+		C770A75419AB64CB00803E75 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */,
 			);
 			name = protocol;
 			sourceTree = "<group>";
@@ -334,7 +356,8 @@
 		C799AB5419216BF90096B5A8 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				C799AB5C19216C3D0096B5A8 /* protocol */,
+				C770A75019AB645D00803E75 /* settings */,
+				C770A74F19AB644400803E75 /* confirm entry */,
 				C799AB5519216BFD0096B5A8 /* view */,
 			);
 			name = ui;
@@ -343,7 +366,7 @@
 		C799AB5519216BFD0096B5A8 /* view */ = {
 			isa = PBXGroup;
 			children = (
-				C76A3C51199913C000998F9F /* ui */,
+				C799AB5C19216C3D0096B5A8 /* protocol */,
 				C799AB5919216C390096B5A8 /* CCOutputView.h */,
 				C799AB5A19216C390096B5A8 /* CCOutputView.m */,
 			);
@@ -1062,6 +1085,7 @@
 				C7E1E523191A585200602A4D /* CCGoogleGeocodeResult.m in Sources */,
 				C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
+				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
 				C7E1E509191A577F00602A4D /* CCOAuthTokenResponse.m in Sources */,
 				C7E1E528191A585E00602A4D /* CCGoogleSearch.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddViewController.m in Sources */,
@@ -1224,7 +1248,7 @@
 				);
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "C4411D9E-58B9-4E11-A138-326F0FB1C814";
+				PROVISIONING_PROFILE = "52b52802-c2cd-4b74-b28d-7257a1464c1e";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};

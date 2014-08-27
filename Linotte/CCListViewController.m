@@ -192,6 +192,11 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     NSError *error;
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCAddress *address = _addresses[[index intValue]];
+    
+    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ? address.name : @"",
+                                                                     @"address": address.address ? address.address : @"",
+                                                                     @"identifier": address.identifier ? address.identifier : @""}];
+    
     [_addresses removeObject:address];
     [managedObjectContext deleteObject:address];
     if ([managedObjectContext saveToPersistentStore:&error] == NO) {
@@ -199,7 +204,6 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         return;
     }
     [((CCListView *)self.view) deleteAddressAtIndex:[index intValue]];
-    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name, @"address": address.address, @"identifier": address.identifier}];
 }
 
 #pragma mark - CCListViewDelegate methods

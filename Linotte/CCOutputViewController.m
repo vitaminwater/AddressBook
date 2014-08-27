@@ -69,6 +69,33 @@
     
     NSString *color = @"#6b6b6b";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+    
+    CGRect navigationBarFrame = self.navigationController.navigationBar.bounds;
+    
+    { // right bar button items
+        CGRect settingsButtonFrame = CGRectMake(0, 0, 35, 35);
+        settingsButtonFrame.origin.x = navigationBarFrame.size.width - settingsButtonFrame.size.width - 4;
+        settingsButtonFrame.origin.y = navigationBarFrame.size.height - settingsButtonFrame.size.height - 4;
+        UIButton *settingsButton = [UIButton new];
+        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        settingsButton.frame = settingsButtonFrame;
+        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self.navigationController.navigationBar addSubview:settingsButton];
+    }
+    
+    { // left bar button items
+        CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);
+        backButtonFrame.origin.y = navigationBarFrame.size.height - backButtonFrame.size.height - 8;
+        UIButton *backButton = [UIButton new];
+        [backButton setImage:[UIImage imageNamed:@"back_icon.png"] forState:UIControlStateNormal];
+        backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        backButton.frame = backButtonFrame;
+        [backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [self.navigationController.navigationBar addSubview:backButton];
+    }
+    self.navigationItem.hidesBackButton = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -97,6 +124,19 @@
 {
     [super viewWillDisappear:animated];
     [_locationManager stopUpdatingLocation];
+}
+
+#pragma mark - UIBarButtons target methods
+
+- (void)backButtonPressed:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)settingsButtonPressed:(id)sender
+{
+    CCOutputView *view = (CCOutputView *)self.view;
+    [view showSettingsView];
 }
 
 #pragma mark - route methods
@@ -175,10 +215,16 @@
     return _address.longitudeValue;
 }
 
-- (void)notificationEnable:(BOOL)enable
+- (BOOL)notificationEnabled
+{
+    return [_address.notify boolValue];
+}
+
+- (void)setNotificationEnabled:(BOOL)enable
 {
     _address.notify = @(enable);
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enable)}];
 }
 

@@ -10,7 +10,7 @@
 
 @interface CCGooglePrediction : NSObject
 
-@property(nonatomic, strong)NSString *description;
+@property(nonatomic, strong)NSString *descr;
 @property(nonatomic, strong)NSString *identifier;
 @property(nonatomic, strong)NSString *reference;
 

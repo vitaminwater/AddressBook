@@ -10,8 +10,9 @@
 
 #import "CCOutputViewDelegate.h"
 #import "CCOutputConfirmEntryViewDelegate.h"
+#import "CCAddressSettingsView.h"
 
-@interface CCOutputView : UIView<UITabBarDelegate, CCOutputConfirmEntryViewDelegate>
+@interface CCOutputView : UIView<UITabBarDelegate, CCOutputConfirmEntryViewDelegate, CCAddressSettingsViewDelegate>
 
 @property(nonatomic, readonly)NSString *currentColor;
 
@@ -20,5 +21,6 @@
 - (id)initWithDelegate:(id<CCOutputViewDelegate>)delegate;
 - (void)updateValues;
 - (void)showIsNewMessage;
+- (void)showSettingsView;
 
 @end

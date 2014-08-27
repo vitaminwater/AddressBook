@@ -20,17 +20,23 @@
 
 #import "CCAddress.h"
 
+// SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug7"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug8"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
+#define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
 #else
 #define kCCKeyChainServiceName @"kCCKeyChainServiceName3"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
+#define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountName"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
 #endif
+
+// NSUserDefaults keys
+#define kCCAlreadyChecked403 @"kCCAlreadyChecked403"
 
 @interface CCLocalAPI()
 {
@@ -39,6 +45,7 @@
     
     NSString *_accessToken;
     NSString *_refreshToken;
+    NSString *_expireTimeStamp;
 }
 
 @end
@@ -49,15 +56,67 @@
 {
     self = [super init];
     if (self != nil) {
-        if ([self isLoggedIn]) {
-            [SSKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
-            _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
-            _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
-            _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-            [self setOAuth2HTTPHeader];
-        }
+        [SSKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
+        _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
+        _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+        _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
+        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+        [self refreshLoggedState];
+        [self setOAuth2HTTPHeader];
     }
     return self;
+}
+
+- (void)refreshLoggedState
+{
+    if ([self isFirstStart])
+        _loggedState = kCCFirstStart;
+    else if (!_expireTimeStamp || [_expireTimeStamp integerValue] - 60 * 60 * 24 < [[NSDate date] timeIntervalSince1970])
+        _loggedState = kCCRequestRefreshToken;
+    else if (!_identifier)
+        _loggedState = kCCRequestIdentifierSync;
+    else
+        _loggedState = kCCLoggedIn;
+}
+
+- (BOOL)isFirstStart
+{
+    return ![[SSKeychain accountsForService:kCCKeyChainServiceName] count];
+}
+
+#pragma mark - API initialization method
+
+- (void)APIIinitialization:(void(^)(BOOL newUserCreated))completionBlock
+{
+    //BOOL ckecked403 = [[NSUserDefaults standardUserDefaults] boolForKey:kCCAlreadyChecked403];
+    if (_loggedState == kCCFirstStart) {
+        [self createAndAuthenticateAnonymousUserWithCompletionBlock:^(BOOL success, NSString *identifier) {
+            _loggedState = success ? kCCLoggedIn : kCCFailed;
+            completionBlock(YES);
+        }];
+    } else if (_loggedState == kCCRequestRefreshToken) {
+        [self refreshTokenWithCompletionBlock:^(BOOL success) {
+            if (success) {
+                [self refreshLoggedState];
+                [self APIIinitialization:completionBlock];
+                return;
+            }
+            _loggedState = kCCFailed;
+            completionBlock(NO);
+        }];
+    } else if (_loggedState == kCCRequestIdentifierSync) {
+        [self fetchIdentifier:^(BOOL success, NSString *identifier) {
+            if (success) {
+                [self refreshLoggedState];
+                [self APIIinitialization:completionBlock];
+                return;
+            }
+            _loggedState = kCCFailed;
+            completionBlock(NO);
+        }];
+    } else if (_loggedState == kCCLoggedIn) {
+        completionBlock(NO);
+    }
 }
 
 #pragma mark - OAuth2 credentials
@@ -78,7 +137,7 @@
 
 #pragma mark - Authentication methods
 
-- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(bool success))completionBlock
+- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalUrlEncodedObjectManager];
@@ -98,7 +157,7 @@
     }];
 }
 
-- (void)refreshTokenWithCompletionBlock:(void(^)(bool success))completionBlock
+- (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     NSAssert(_refreshToken != nil, @"Refresh token not set !");
@@ -117,25 +176,24 @@
     }];
 }
 
-- (BOOL)isLoggedIn
-{
-    return [[SSKeychain accountsForService:kCCKeyChainServiceName] count];
-}
-
 - (void)saveTokens:(CCOAuthTokenResponse *)tokenResponse
 {
     NSError *error;
     
-    if ([SSKeychain setPassword:tokenResponse.accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
-    }
-    
-    if ([SSKeychain setPassword:tokenResponse.refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
-    }
-    
     _accessToken = tokenResponse.accessToken;
     _refreshToken = tokenResponse.refreshToken;
+    _expireTimeStamp = tokenResponse.expireTimeStampString;
+    if ([SSKeychain setPassword:_accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
+        NSLog(@"%@", error);
+    }
+    
+    if ([SSKeychain setPassword:_refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
+        NSLog(@"%@", error);
+    }
+    
+    if ([SSKeychain setPassword:_expireTimeStamp forService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName error:&error] == NO) {
+        NSLog(@"%@", error);
+    }
     [self setOAuth2HTTPHeader];
 }
 
@@ -150,7 +208,7 @@
 
 #pragma mark - User methods
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(bool success, NSString *identifier))completionBlock
+- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
@@ -166,26 +224,12 @@
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         CCUserPostPutResponse *response = [mappingResult firstObject];
         [self saveUserIdentifier:response.identifier];
-        [self authenticate:postPutRequest.username password:postPutRequest.password completionBlock:^(bool success) {
+        [self authenticate:postPutRequest.username password:postPutRequest.password completionBlock:^(BOOL success) {
             completionBlock(success, response.identifier);
         }];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
-    }];
-}
-
-// TODO: remove when unneeded
-- (void)fetchIdentifier:(void(^)(bool success, NSString *identifier))completionBlock {
-    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    AFHTTPClient *client = objectManager.HTTPClient;
-    [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        // NSLog(@"%@", responseObject);
-        [self saveUserIdentifier:responseObject[@"identifier"]];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
     }];
 }
 
@@ -199,7 +243,7 @@
 
 #pragma mark - Notes methods
 
-- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(bool success))completionBlock
+- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
@@ -213,6 +257,23 @@
             NSLog(@"Adresse %@ error..", address.name);
         }];
     }
+}
+
+#pragma mark - recovery methods
+// TODO: following methods provide a way to recover old version to a stable state. Remove when unneeded
+
+- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock {
+    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
+    
+    AFHTTPClient *client = objectManager.HTTPClient;
+    [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        // NSLog(@"%@", responseObject);
+        [self saveUserIdentifier:responseObject[@"identifier"]];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+        NSLog(@"%d", error.code);
+    }];
 }
 
 #pragma mark - Singleton method

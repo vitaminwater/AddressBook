@@ -38,8 +38,8 @@
 // #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
 // #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
 // #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
-#define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
-//#define kCCLocalApiServerUrl @"https://192.168.1.93:8001" // La clef
+//#define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
+#define kCCLocalApiServerUrl @"https://192.168.1.11:8001" // La clef
 #else
 #define kCCLocalApiServerUrl @"http://www.getlinotte.com"
 #endif
@@ -116,7 +116,7 @@ NSMutableDictionary *_objectManagers = nil;
     [autocompleteMapping addAttributeMappingsFromArray:@[@"status"]];
     
     RKObjectMapping *predictionMapping = [RKObjectMapping mappingForClass:[CCGooglePrediction class]];
-    [predictionMapping addAttributeMappingsFromDictionary:@{@"description" : @"description", @"id" : @"identifier", @"reference" : @"reference"}];
+    [predictionMapping addAttributeMappingsFromDictionary:@{@"description" : @"descr", @"id" : @"identifier", @"reference" : @"reference"}];
     
     [autocompleteMapping addPropertyMapping:[RKRelationshipMapping relationshipMappingFromKeyPath:@"predictions" toKeyPath:@"predictions" withMapping:predictionMapping]];
     
@@ -197,7 +197,7 @@ NSMutableDictionary *_objectManagers = nil;
     
     /* Token request response mapping */
     RKObjectMapping *oauthResponseMapping = [RKObjectMapping mappingForClass:[CCOAuthTokenResponse class]];
-    [oauthResponseMapping addAttributeMappingsFromDictionary:@{@"access_token" : @"accessToken", @"refresh_token" : @"refreshToken"}];
+    [oauthResponseMapping addAttributeMappingsFromDictionary:@{@"access_token" : @"accessToken", @"refresh_token" : @"refreshToken", @"expires_in": @"expiresIn"}];
 
     RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:oauthResponseMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIAccessToken keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
     
