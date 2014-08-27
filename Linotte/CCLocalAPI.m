@@ -22,7 +22,7 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug9"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug10"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -269,10 +269,13 @@
     AFHTTPClient *client = objectManager.HTTPClient;
     [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         // NSLog(@"%@", responseObject);
-        [self saveUserIdentifier:responseObject[@"identifier"]];
+        NSString *identifier = responseObject[@"identifier"];
+        [self saveUserIdentifier:identifier];
+        completionBlock(YES, identifier);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@", error);
         NSLog(@"%d", error.code);
+        completionBlock(NO, nil);
     }];
 }
 
