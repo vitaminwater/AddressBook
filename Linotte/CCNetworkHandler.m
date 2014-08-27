@@ -73,6 +73,8 @@
 
 - (void)reachable {
     [[CCLocalAPI sharedInstance] APIIinitialization:^(BOOL newUserCreated) {
+        if ([CCLocalAPI sharedInstance].loggedState != kCCLoggedIn)
+            return;
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         [mixpanel identify:[CCLocalAPI sharedInstance].identifier];
         if (newUserCreated) {

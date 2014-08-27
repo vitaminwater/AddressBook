@@ -22,7 +22,7 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug10"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug13"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -62,7 +62,8 @@
         _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
         _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
         [self refreshLoggedState];
-        [self setOAuth2HTTPHeader];
+        if (_loggedState == kCCLoggedIn)
+            [self setOAuth2HTTPHeader];
     }
     return self;
 }
