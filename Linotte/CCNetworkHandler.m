@@ -17,8 +17,6 @@
 
 @interface CCNetworkHandler()
 
-@property(nonatomic, assign)CCLoggedState loggedState;
-
 @property(nonatomic, strong)NSTimer *timer;
 @property(nonatomic, strong)Reachability *reachability;
 
@@ -36,7 +34,7 @@
         _addresses = [@[] mutableCopy];
         _loadingAddresses = [@[] mutableCopy];
         
-        if (_loggedState == kCCLoggedIn) {
+        if ([CCLocalAPI sharedInstance].loggedState == kCCLoggedIn) {
             [[Mixpanel sharedInstance] track:@"Application started" properties:@{@"date": [NSDate date]}];
         }
         
@@ -133,7 +131,7 @@
 
 - (BOOL)canSend
 {
-    return _reachability.isReachable && _loggedState == kCCLoggedIn;
+    return _reachability.isReachable && [CCLocalAPI sharedInstance].loggedState == kCCLoggedIn;
 }
 
 - (BOOL)connectionAvailable

@@ -22,7 +22,7 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug8"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug9"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
