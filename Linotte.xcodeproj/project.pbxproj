@@ -1248,7 +1248,7 @@
 				);
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "52b52802-c2cd-4b74-b28d-7257a1464c1e";
+				PROVISIONING_PROFILE = "e52618a6-7fca-40e9-b99f-5c25cc819f7f";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1265,7 +1265,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "23b1f667-103f-4586-8a4e-9dc00543d3da";
+				PROVISIONING_PROFILE = "2fd5b86b-ed2b-4f4c-9f24-b98f0381544c";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
