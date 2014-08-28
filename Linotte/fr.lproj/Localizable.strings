@@ -5,7 +5,7 @@
   Created by stant on 03/06/14.
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
-"PLACE_NAME" = "ajouter un lieu";
+"PLACE_NAME" = "Ajouter un lieu";
 "WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
 "NOTIF_ADDRESSCREATED" = "Ce lieu est désormais enregistré";
 "NOTIFICATION_MULTI" = "Vous vous trouvez à proximité de [N] adresses: ";
@@ -37,3 +37,8 @@
 "SETTINGS" = "Paramétres";
 "NOTIFICATION_SETTING" = "Activer notifications";
 "CLOSE" = "Fermer";
+"ROUTE_TRAIN" = "Train";
+"ROUTE_CAR" = "Voiture";
+"ROUTE_BICYCLE" = "Vélo";
+"ROUTE_WALK" = "À pied";
+"PROVIDER_FROM" = "Depuis";

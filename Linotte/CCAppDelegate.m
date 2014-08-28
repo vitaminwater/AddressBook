@@ -48,9 +48,7 @@
     
     // [CCNotificationGenerator scheduleTestLocalNotification];
     
-    if (application.applicationState != UIApplicationStateBackground) {
-        [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-        
+    if (application.applicationState == UIApplicationStateInactive) {
         UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
         [self processNotification:notification];
     }
@@ -81,6 +79,7 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     self.dateActive = [NSDate date];
     [[Mixpanel sharedInstance] track:@"Application active" properties:@{@"date": [NSDate date]}];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

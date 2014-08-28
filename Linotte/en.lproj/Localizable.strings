@@ -5,7 +5,7 @@
   Created by stant on 03/06/14.
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
-"PLACE_NAME" = "add venue";
+"PLACE_NAME" = "Add a venue";
 "WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
 "NOTIF_ADDRESSCREATED" = "This venue is now registered";
 "NOTIFICATION_MULTI" = "You are close to [N] addresses: ";
@@ -37,3 +37,8 @@
 "SETTINGS" = "Settings";
 "NOTIFICATION_SETTING" = "Activate notifications";
 "CLOSE" = "Close";
+"ROUTE_TRAIN" = "Train";
+"ROUTE_CAR" = "Car";
+"ROUTE_BICYCLE" = "Bicycle";
+"ROUTE_WALK" = "Walk";
+"PROVIDER_FROM" = "From";

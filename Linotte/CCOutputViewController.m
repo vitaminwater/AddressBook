@@ -206,6 +206,11 @@
     return _address.address;
 }
 
+- (NSString *)addressProvider
+{
+    return _address.provider;
+}
+
 - (double)addressLatitude {
     return _address.latitudeValue;
 }

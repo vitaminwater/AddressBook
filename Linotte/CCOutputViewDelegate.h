@@ -22,6 +22,7 @@ typedef enum : NSUInteger {
 - (double)addressDistance;
 - (NSString *)addressName;
 - (NSString *)addressString;
+- (NSString *)addressProvider;
 - (double)addressLatitude;
 - (double)addressLongitude;
 - (BOOL)notificationEnabled;

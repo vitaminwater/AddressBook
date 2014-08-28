@@ -82,10 +82,10 @@
     tabBar.translatesAutoresizingMaskIntoConstraints = NO;
     tabBar.delegate = self;
     
-    UITabBarItem *trainItem = [[UITabBarItem alloc] initWithTitle:@"Train" image:[UIImage imageNamed:@"train.png"] selectedImage:nil];
-    UITabBarItem *carItem = [[UITabBarItem alloc] initWithTitle:@"Car" image:[UIImage imageNamed:@"car.png"] selectedImage:nil];
-    UITabBarItem *bicycleItem = [[UITabBarItem alloc] initWithTitle:@"Bicycle" image:[UIImage imageNamed:@"bicycle.png"] selectedImage:nil];
-    UITabBarItem *walkItem = [[UITabBarItem alloc] initWithTitle:@"Walk" image:[UIImage imageNamed:@"walk.png"] selectedImage:nil];
+    UITabBarItem *trainItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_TRAIN", @"") image:[UIImage imageNamed:@"train.png"] selectedImage:nil];
+    UITabBarItem *carItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_CAR", @"") image:[UIImage imageNamed:@"car.png"] selectedImage:nil];
+    UITabBarItem *bicycleItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_BICYCLE", @"") image:[UIImage imageNamed:@"bicycle.png"] selectedImage:nil];
+    UITabBarItem *walkItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_WALK", @"") image:[UIImage imageNamed:@"walk.png"] selectedImage:nil];
     
     tabBar.items = @[trainItem, carItem, bicycleItem, walkItem];
     [self addSubview:tabBar];
@@ -103,6 +103,7 @@
     NSString *addressName = [_delegate addressName];
     NSString *addressString = [_delegate addressString];
     double addressDistance = [_delegate addressDistance];
+    NSString *providerName = [_delegate addressProvider];
     
     NSString *color = @"#6b6b6b";
     NSString *iconName = @"neutral_marker";
@@ -119,7 +120,7 @@
     
     UIFont *titleFont = [UIFont fontWithName:@"Montserrat-Bold" size:20];
     UIFont *detailFont = [UIFont fontWithName:@"Futura-Book" size:14];
-    NSString *string = [NSString stringWithFormat:@"%@\n%@\n%.02f m", addressName, addressString, addressDistance];
+    NSString *string = [NSString stringWithFormat:@"%@\n%@\n%.02f m\n%@ %@", addressName, addressString, addressDistance, NSLocalizedString(@"PROVIDER_FROM", @""), [providerName capitalizedString]];
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:string];
     [attributedText setAttributes:@{NSFontAttributeName: titleFont, NSForegroundColorAttributeName: [UIColor colorWithHexString:color]} range:NSMakeRange(0, [addressName length])];
     [attributedText setAttributes:@{NSFontAttributeName: detailFont} range:NSMakeRange([addressName length], [string length] - [addressName length])];
