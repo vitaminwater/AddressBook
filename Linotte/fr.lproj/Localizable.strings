@@ -42,3 +42,5 @@
 "ROUTE_BICYCLE" = "Vélo";
 "ROUTE_WALK" = "À pied";
 "PROVIDER_FROM" = "Depuis";
+"REQUEST_GEOLOC_ENABLED_TITLE" = "Géolocalisation";
+"REQUEST_GEOLOC_ENABLED_MESSAGE" = "La localisation doit être activée pour être notifié !";

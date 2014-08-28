@@ -91,8 +91,10 @@ NSMutableDictionary *_objectManagers = nil;
 
 + (void)initializeMappings
 {
+#if defined(DEBUG)
     RKLogConfigureByName("RestKit/ObjectMapping", RKLogLevelTrace);
     //RKLogConfigureByName("RestKit/Network", RKLogLevelTrace);
+#endif
     
     [self initializeGoogleAutocompleteMapping];
     [self initializeGoogleSearchMapping];

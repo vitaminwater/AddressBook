@@ -231,6 +231,15 @@
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
     
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enable)}];
+    
+    BOOL locationEnabled = [CLLocationManager locationServicesEnabled];
+    BOOL locationAuthorized = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized;
+    if (enable && (!locationEnabled || !locationAuthorized)) {
+        NSString *alertTitle = NSLocalizedString(@"REQUEST_GEOLOC_ENABLED_TITLE", @"");
+        NSString *alertMessage = NSLocalizedString(@"REQUEST_GEOLOC_ENABLED_MESSAGE", @"");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alertView show];
+    }
 }
 
 @end

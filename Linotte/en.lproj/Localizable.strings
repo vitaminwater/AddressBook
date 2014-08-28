@@ -42,3 +42,5 @@
 "ROUTE_BICYCLE" = "Bicycle";
 "ROUTE_WALK" = "Walk";
 "PROVIDER_FROM" = "From";
+"REQUEST_GEOLOC_ENABLED_TITLE" = "Localization";
+"REQUEST_GEOLOC_ENABLED_MESSAGE" = "Localization has to be activated and accepted in order to be notified !";
