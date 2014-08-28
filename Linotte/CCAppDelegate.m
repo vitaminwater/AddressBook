@@ -188,7 +188,6 @@
         return;
     
     if ([notification.userInfo[@"multiple"] isEqualToNumber:@YES]) {
-        NSLog(@"multiple");
         return;
     }
     

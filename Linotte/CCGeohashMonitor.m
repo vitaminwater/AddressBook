@@ -27,7 +27,6 @@
     if (self) {
         if (![CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]] ||
             ![CLLocationManager significantLocationChangeMonitoringAvailable]) {
-            NSLog(@"oOps...");
         }
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
@@ -36,8 +35,6 @@
         
         [_locationManager startUpdatingLocation];
         [_locationManager startMonitoringSignificantLocationChanges];
-        
-        NSLog(@"max region distance %f", [_locationManager maximumRegionMonitoringDistance]);
     }
     return self;
 }
@@ -71,7 +68,6 @@
         [_delegate didEnterGeohash:geohashes];
         [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
     }
-    NSLog(@"################## didEnterRegion ######################");
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
@@ -79,7 +75,6 @@
     /*if ([region isKindOfClass:[CLCircularRegion class]]) {
         [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
     }*/
-    NSLog(@"################## didExitRegion ####################");
 }
 
 #pragma mark significant location change monitoring

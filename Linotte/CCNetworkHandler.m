@@ -49,8 +49,6 @@
         [_reachability startNotifier];
         
         [self loadInitialAddresses];
-        
-        NSLog(@"%d", _reachability.isReachable);
     }
     return self;
 }

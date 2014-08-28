@@ -249,13 +249,10 @@
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
     if (address.identifier != nil) {
-        NSLog(@"Sending address: %@ %@ %@", address.name, address.provider, address.providerId);
         [objectManager postObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
             completionBlock(YES);
-            NSLog(@"Adresse %@ sent..", address.name);
         } failure:^(RKObjectRequestOperation *operation, NSError *error) {
             completionBlock(NO);
-            NSLog(@"Adresse %@ error..", address.name);
         }];
     }
 }
@@ -269,13 +266,10 @@
     
     AFHTTPClient *client = objectManager.HTTPClient;
     [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        // NSLog(@"%@", responseObject);
         NSString *identifier = responseObject[@"identifier"];
         [self saveUserIdentifier:identifier];
         completionBlock(YES, identifier);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
-        NSLog(@"%d", error.code);
         completionBlock(NO, nil);
     }];
 }
