@@ -28,7 +28,8 @@
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
 #else
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName4"
+// #define kCCKeyChainServiceName @"kCCKeyChainServiceName6" // test
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName1000" // Apstore
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountName"
@@ -57,7 +58,7 @@
         _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
         _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
         _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName]; // TODO: test expireDate
+        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
         // [@([[NSDate date] timeIntervalSince1970] + 60 * 60 * 24 * 15) stringValue];
         [self refreshLoggedState];
         if (_loggedState == kCCLoggedIn)
