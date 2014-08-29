@@ -46,8 +46,6 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
-    // [CCNotificationGenerator scheduleTestLocalNotification];
-    
     if (application.applicationState == UIApplicationStateInactive) {
         UILocalNotification *notification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
         [self processNotification:notification];
@@ -92,13 +90,6 @@
 
 - (void)initAll:(UIApplication *)application
 {
-    /*UIDevice *device = [UIDevice currentDevice];
-    double version = [device.systemVersion doubleValue];
-    
-    if (version >= 8) {
-        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge categories:nil]];
-    }*/
-    
     [self initRestkitCoreDataStack];
     [self initRestKitMappings];
     
@@ -128,9 +119,6 @@
         [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
     }
     
-    //[CCNotificationGenerator printLastNotif];
-    //[CCNotificationGenerator resetLastNotif];
-    
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
     
     [CCNetworkHandler sharedInstance];
@@ -155,6 +143,9 @@
                                                                                              options:nil
                                                                                                error:&error];
     NSAssert(persistentStore, @"Failed to add persistent store: %@", error);
+    
+    if (![[NSFileManager defaultManager] setAttributes:@{NSFileProtectionKey: NSFileProtectionNone} ofItemAtPath:sqlitePath error:&error])
+        NSLog(@"%@", error);
     
     [managedObjectStore createManagedObjectContexts];
     

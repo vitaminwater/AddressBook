@@ -38,7 +38,7 @@
 // #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
 // #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
 // #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
-//#define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
+// #define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
 #define kCCLocalApiServerUrl @"https://192.168.1.11:8001" // La clef
 #else
 #define kCCLocalApiServerUrl @"http://www.getlinotte.com"
@@ -226,7 +226,7 @@ NSMutableDictionary *_objectManagers = nil;
     
     /* User creation/modification request */
     RKObjectMapping *userPostPutRequestMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
-    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email", @"isClean" : @"is_clean"}];
+    [userPostPutRequestMapping addAttributeMappingsFromDictionary:@{@"password" : @"password", @"username" : @"username", @"firstName" : @"first_name", @"lastName" : @"last_name", @"email" : @"email"}];
     
     RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:userPostPutRequestMapping objectClass:[CCUserPostPutRequest class] rootKeyPath:nil method:RKRequestMethodPOST | RKRequestMethodPUT | RKRequestMethodPATCH];
     

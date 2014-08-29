@@ -15,7 +15,7 @@
 + (void)printLastNotif;
 + (void)resetLastNotif;
 
-+ (void)scheduleTestLocalNotification;
++ (void)scheduleTestLocalNotification:(NSUInteger)delay;
 
 + (instancetype)sharedInstance;
 

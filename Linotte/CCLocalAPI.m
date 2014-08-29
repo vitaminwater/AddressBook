@@ -22,21 +22,18 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug17"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug39"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
 #else
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName3"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName4"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountName"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
 #endif
-
-// NSUserDefaults keys
-#define kCCAlreadyChecked403 @"kCCAlreadyChecked403"
 
 @interface CCLocalAPI()
 {
@@ -56,11 +53,12 @@
 {
     self = [super init];
     if (self != nil) {
-        [SSKeychain setAccessibilityType:kSecAttrAccessibleAfterFirstUnlock];
+        [SSKeychain setAccessibilityType:kSecAttrAccessibleAlways];
         _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
         _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
         _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName]; // TODO: test expireDate
+        // [@([[NSDate date] timeIntervalSince1970] + 60 * 60 * 24 * 15) stringValue];
         [self refreshLoggedState];
         if (_loggedState == kCCLoggedIn)
             [self setOAuth2HTTPHeader];
@@ -72,10 +70,8 @@
 {
     if ([self isFirstStart])
         _loggedState = kCCFirstStart;
-    else if (!_expireTimeStamp || [_expireTimeStamp integerValue] - 60 * 60 * 24 < [[NSDate date] timeIntervalSince1970])
+    else if (!_expireTimeStamp || [_expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
         _loggedState = kCCRequestRefreshToken;
-    else if (!_identifier)
-        _loggedState = kCCRequestIdentifierSync;
     else
         _loggedState = kCCLoggedIn;
 }
@@ -89,7 +85,6 @@
 
 - (void)APIIinitialization:(void(^)(BOOL newUserCreated))completionBlock
 {
-    //BOOL ckecked403 = [[NSUserDefaults standardUserDefaults] boolForKey:kCCAlreadyChecked403];
     if (_loggedState == kCCFirstStart) {
         [self createAndAuthenticateAnonymousUserWithCompletionBlock:^(BOOL success, NSString *identifier) {
             _loggedState = success ? kCCLoggedIn : kCCFailed;
@@ -97,16 +92,6 @@
         }];
     } else if (_loggedState == kCCRequestRefreshToken) {
         [self refreshTokenWithCompletionBlock:^(BOOL success) {
-            if (success) {
-                [self refreshLoggedState];
-                [self APIIinitialization:completionBlock];
-                return;
-            }
-            _loggedState = kCCFailed;
-            completionBlock(NO);
-        }];
-    } else if (_loggedState == kCCRequestIdentifierSync) {
-        [self fetchIdentifier:^(BOOL success, NSString *identifier) {
             if (success) {
                 [self refreshLoggedState];
                 [self APIIinitialization:completionBlock];
@@ -220,7 +205,6 @@
     postPutRequest.firstName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.lastName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
     postPutRequest.email = [NSString stringWithFormat:@"%@@getcairnsapp.com", [[NSUUID UUID] UUIDString]];
-    postPutRequest.isClean = @YES; // TODO: remove when db clean
     
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         CCUserPostPutResponse *response = [mappingResult firstObject];
@@ -260,7 +244,7 @@
 #pragma mark - recovery methods
 // TODO: following methods provide a way to recover old version to a stable state. Remove when unneeded
 
-- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock {
+/*- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
@@ -272,7 +256,7 @@
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completionBlock(NO, nil);
     }];
-}
+}*/
 
 #pragma mark - Singleton method
 

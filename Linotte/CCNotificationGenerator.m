@@ -8,6 +8,8 @@
 
 #import "CCNotificationGenerator.h"
 
+#import <SSKeyChain/SSKeychain.h>
+
 #import "NSString+CCLocalizedString.h"
 
 #import <RestKit/RestKit.h>
@@ -18,8 +20,12 @@
 
 @implementation CCNotificationGenerator
 
+#pragma mark - CCGeohashMonitorDelegate method
+
 - (void)didEnterGeohash:(NSArray *)geohash
 {
+    // [CCNotificationGenerator scheduleTestLocalNotification:0];
+    
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
@@ -52,6 +58,8 @@
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     [[Mixpanel sharedInstance] track:@"Local notification sent" properties:localNotification.userInfo];
 }
+
+#pragma mark - private methods
 
 - (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification
 {
@@ -122,22 +130,41 @@
     [managedObjectContext saveToPersistentStore:NULL];
 }
 
-#pragma mark - test method
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug32"
+#define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
+#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
+#define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
+#define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
 
-+ (void)scheduleTestLocalNotification
++ (void)scheduleTestLocalNotification:(NSUInteger)delay
 {
+    NSError *error = NULL;
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    
+    NSUInteger nAddresses = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    
+    NSString *accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
+    NSString *refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+    NSString *identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
+    NSString *expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+    
     UILocalNotification *localNotification = [UILocalNotification new];
     
     localNotification.alertAction = @"Linotte";
     localNotification.soundName = @"default_notification.caf";
-    localNotification.alertBody = @"Test notification";
+    localNotification.alertBody = [NSString stringWithFormat:@"Nb of addresses: %lu, %lu, %lu, %lu, %lu", (unsigned long)nAddresses, (unsigned long)[accessToken length], (unsigned long)[refreshToken length], (unsigned long)[identifier length], (unsigned long)[expireTimeStamp length]];
     localNotification.hasAction = YES;
     
     localNotification.applicationIconBadgeNumber = 1;
     
-    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:10];
-    
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    if (delay) {
+        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:delay];
+        
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    } else {
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    }
 }
 
 #pragma mark - singelton method

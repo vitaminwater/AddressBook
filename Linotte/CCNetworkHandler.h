@@ -18,6 +18,8 @@
 
 - (void)sendAddress:(CCAddress *)address;
 
+- (void)resetAllAdresses;
+
 + (instancetype)sharedInstance;
 
 @end

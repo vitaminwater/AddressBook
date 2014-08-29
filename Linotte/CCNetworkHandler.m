@@ -70,6 +70,10 @@
 }
 
 - (void)reachable {
+    // Cleaning purpose: remove when db clean
+    if ([CCLocalAPI sharedInstance].loggedState == kCCFirstStart)
+        [self resetAllAdresses];
+    
     [[CCLocalAPI sharedInstance] APIIinitialization:^(BOOL newUserCreated) {
         if ([CCLocalAPI sharedInstance].loggedState != kCCLoggedIn)
             return;
@@ -137,6 +141,35 @@
 - (BOOL)connectionAvailable
 {
     return _reachability.isReachable;
+}
+
+#pragma mark - cleaning methods
+
+- (void)resetAllAdresses
+{
+    NSError *error;
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent=%@", @YES];
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (error != NULL) {
+        NSLog(@"%@", error);
+    }
+    
+    if ([addresses count] == 0)
+        return;
+    
+    for (CCAddress *address in addresses) {
+        address.sent = @NO;
+    }
+    
+    if ([managedObjectContext save:&error] == NO)
+        NSLog(@"%@", error);
+    
+    [self loadInitialAddresses];
 }
 
 #pragma mark - NSTimer management

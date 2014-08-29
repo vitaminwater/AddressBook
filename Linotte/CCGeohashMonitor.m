@@ -33,7 +33,6 @@
         _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
         _locationManager.distanceFilter = kCLDistanceFilterNone;
         
-        [_locationManager startUpdatingLocation];
         [_locationManager startMonitoringSignificantLocationChanges];
     }
     return self;
@@ -72,9 +71,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    /*if ([region isKindOfClass:[CLCircularRegion class]]) {
-        [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
-    }*/
 }
 
 #pragma mark significant location change monitoring
@@ -82,9 +78,6 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = [locations lastObject];
-    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:location.coordinate];
-    NSArray *geohashes = [CCGeohashHelper calculateAdjacentGeohashes:geohash];
-    [_delegate didEnterGeohash:geohashes];
     [self updateMonitoredGeohashes:location.coordinate];
 }
 

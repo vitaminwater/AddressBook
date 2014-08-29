@@ -13,10 +13,8 @@
 
 typedef enum : NSUInteger {
     kCCFirstStart, // When nothing has happened yet
-    kCCRequestRefreshToken, // When access token is outdated
     kCCLoggedIn, // When everything is fine
-    kCCRequestIdentifierSync, // When identifier is missing (upgrade purpose)
-    kCCRequestTotalResync, // When application is outsynced and we need to create a brand new user... this is bad
+    kCCRequestRefreshToken, // When access token is outdated
     kCCFailed, // unknown error
 } CCLoggedState;
 
@@ -33,7 +31,7 @@ typedef enum : NSUInteger {
 - (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock;
 
 - (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
-- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock;
+//- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock;
 
 - (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
 
