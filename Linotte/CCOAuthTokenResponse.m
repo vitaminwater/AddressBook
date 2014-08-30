@@ -13,7 +13,7 @@
 - (NSString *)expireTimeStampString
 {
     NSUInteger expireTimeStamp = [[NSDate date] timeIntervalSince1970] + [_expiresIn integerValue];
-    return [NSString stringWithFormat:@"%d", expireTimeStamp];
+    return [NSString stringWithFormat:@"%lu", (unsigned long)expireTimeStamp];
 }
 
 @end

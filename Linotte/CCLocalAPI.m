@@ -209,8 +209,9 @@
     
     [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         CCUserPostPutResponse *response = [mappingResult firstObject];
-        [self saveUserIdentifier:response.identifier];
         [self authenticate:postPutRequest.username password:postPutRequest.password completionBlock:^(BOOL success) {
+            if (success)
+                [self saveUserIdentifier:response.identifier];
             completionBlock(success, response.identifier);
         }];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {

@@ -88,8 +88,17 @@
     self = [super init];
     if (self) {
         _autocompletionResults = [@[] mutableCopy];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -116,11 +125,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - CLLocationManagerDelegate methods
@@ -339,6 +343,18 @@
     [_delegate addressAdded:address];
     [[CCNetworkHandler sharedInstance] sendAddress:address];
     [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
+}
+
+#pragma mark - UINotificationCenter methods
+
+- (void)applicationActive:(NSNotification *)note
+{
+    [self startGeoloc];
+}
+
+- (void)applicationBackground:(NSNotification *)note
+{
+    [self stopGeoloc];
 }
 
 @end

@@ -65,8 +65,16 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         [_addresses sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
             return [self nameSortMethod:obj1 obj2:obj2];
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -264,6 +272,20 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 - (NSUInteger)numberOfAddresses
 {
     return [_addresses count];
+}
+
+#pragma mark - UINotificationCenter methods
+
+- (void)applicationActive:(NSNotification *)note
+{
+    [_locationManager startUpdatingLocation];
+    [_locationManager startUpdatingHeading];
+}
+
+- (void)applicationBackground:(NSNotification *)note
+{
+    [_locationManager stopUpdatingLocation];
+    [_locationManager stopUpdatingHeading];
 }
 
 @end

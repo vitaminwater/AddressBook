@@ -47,8 +47,16 @@
     self = [super init];
     if (self) {
         self.address = address;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -240,6 +248,18 @@
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alertView show];
     }
+}
+
+#pragma mark - UINotificationCenter methods
+
+- (void)applicationActive:(NSNotification *)note
+{
+    [_locationManager startUpdatingLocation];
+}
+
+- (void)applicationBackground:(NSNotification *)note
+{
+    [_locationManager stopUpdatingLocation];
 }
 
 @end
