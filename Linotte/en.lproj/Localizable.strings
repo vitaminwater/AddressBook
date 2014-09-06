@@ -14,7 +14,7 @@
 "NOTIFICATION_1_0" = "You are close to [PlaceName].\nGetting there?";
 "NOTIFICATION_2" = "[PlaceName], [Category] is not far from here.\nDo you want to take a look?";
 "NOTIFICATION_2_0" = "[PlaceName] is not far from here.\nDo you want to take a look?";
-"NOTIFICATION_3" = "[PlaceName], [Category]is few steps from here.\nShall we go?";
+"NOTIFICATION_3" = "[PlaceName], [Category] is few steps from here.\nShall we go?";
 "NOTIFICATION_3_0" = "[PlaceName] is few steps from here.\nShall we go?";
 "NOTIFICATION_4" = "Looks like [PlaceName], [Category] is around the corner.\nWhy not to go?";
 "NOTIFICATION_4_0" = "Looks like [PlaceName] is around the corner.\nWhy not to go?";
