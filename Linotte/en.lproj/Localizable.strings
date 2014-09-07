@@ -50,6 +50,7 @@
 "MOVE_LIST_ALERT_TEXT" = "If you press Ok, [addressName]  will be moved in [listName].";
 "CANCEL" = "Cancel";
 "OK" = "Ok";
+"MOVED_TO" = "Moved to [listName]";
 
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Car";

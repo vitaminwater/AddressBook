@@ -130,7 +130,7 @@
 
 - (void)closeButtonPressed:(UIButton *)sender
 {
-    [_delegate closeListSettingsView:self];
+    [_delegate closeListSettingsView:self success:NO];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -196,7 +196,7 @@
             [_delegate listSelectedAtIndex:_listSelector.indexPathForSelectedRow.row];
         else
             [_delegate createListWithName:_listName.text];
-        [_delegate closeListSettingsView:self];
+        [_delegate closeListSettingsView:self success:YES];
     }
 }
 

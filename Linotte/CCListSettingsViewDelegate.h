@@ -10,7 +10,7 @@
 
 @protocol CCListSettingsViewDelegate <NSObject>
 
-- (void)closeListSettingsView:(id)sender;
+- (void)closeListSettingsView:(id)sender success:(BOOL)success;
 
 - (NSString *)addressName;
 

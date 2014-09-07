@@ -10,6 +10,9 @@
 
 #import <HexColors/HexColor.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import <MBProgressHUD/MBProgressHUD.h>
+
+#import "NSString+CCLocalizedString.h"
 
 #import "CCOutputConfirmEntryView.h"
 #import "CCSettingsView.h"
@@ -242,17 +245,26 @@
     _listSettingsView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
         _listSettingsView.alpha = 1;
-        _addressSettingsView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [_addressSettingsView removeFromSuperview];
-        _addressSettingsView = nil;
     }];
 }
 
 #pragma mark - CCListSettingsViewDelegate
 
-- (void)closeListSettingsView:(id)sender
+- (void)closeListSettingsView:(id)sender success:(BOOL)success
 {
+    if (success) {
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
+        
+        UIImageView *completedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"completed"]];
+        hud.customView = completedImage;
+        //hud.detailsLabelText = [NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate addressName]} localizedKey:@"MOVED_TO"];
+        
+        hud.mode = MBProgressHUDModeCustomView;
+        hud.opacity = 0.4;
+        
+        [hud show:YES];
+        [hud hide:YES afterDelay:1];
+    }
     [UIView animateWithDuration:0.2 animations:^{
         _listSettingsView.alpha = 0;
     } completion:^(BOOL finished) {
@@ -284,11 +296,13 @@
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
     [_delegate listSelectedAtIndex:index];
+    _addressSettingsView.listName = [_delegate listNameAtIndex:index];
 }
 
 - (void)createListWithName:(NSString *)name
 {
     [_delegate createListWithName:name];
+    _addressSettingsView.listName = name;
 }
 
 - (NSInteger)selectedListIndex
