@@ -21,7 +21,7 @@ extern const struct CCAddressAttributes {
 
 extern const struct CCAddressRelationships {
 	__unsafe_unretained NSString *categories;
-	__unsafe_unretained NSString *list;
+	__unsafe_unretained NSString *lists;
 	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
@@ -201,9 +201,9 @@ extern const struct CCAddressFetchedProperties {
 
 
 
-@property (nonatomic, strong) CCList *list;
+@property (nonatomic, strong) NSSet *lists;
 
-//- (BOOL)validateList:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)listsSet;
 
 
 
@@ -224,6 +224,11 @@ extern const struct CCAddressFetchedProperties {
 - (void)removeCategories:(NSSet*)value_;
 - (void)addCategoriesObject:(CCCategory*)value_;
 - (void)removeCategoriesObject:(CCCategory*)value_;
+
+- (void)addLists:(NSSet*)value_;
+- (void)removeLists:(NSSet*)value_;
+- (void)addListsObject:(CCList*)value_;
+- (void)removeListsObject:(CCList*)value_;
 
 - (void)addMetas:(NSSet*)value_;
 - (void)removeMetas:(NSSet*)value_;
@@ -325,8 +330,8 @@ extern const struct CCAddressFetchedProperties {
 
 
 
-- (CCList*)primitiveList;
-- (void)setPrimitiveList:(CCList*)value;
+- (NSMutableSet*)primitiveLists;
+- (void)setPrimitiveLists:(NSMutableSet*)value;
 
 
 

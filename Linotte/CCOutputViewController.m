@@ -217,37 +217,50 @@
 
 #pragma mark lists
 
-- (void)createListWithName:(NSString *)name
+- (NSUInteger)createListWithName:(NSString *)name
 {
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
     
-    [_lists addObject:list];
-    [self sortLists];
-    _address.list = list;
+    NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
+        return [obj1.name compare:obj2.name];
+    }];
+    [_lists insertObject:list atIndex:insertIndex];
+    [_address addListsObject:list];
     
     [managedObjectContext saveToPersistentStore:NULL];
+    
+    return insertIndex;
 }
 
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
     CCList *list = _lists[index];
-    _address.list = list;
+    [_address addListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
 }
 
-- (NSInteger)selectedListIndex
+- (void)listUnselectedAtIndex:(NSUInteger)index
 {
-    if (_address.list)
-        return [_lists indexOfObject:_address.list];
-    return -1;
+    CCList *list = _lists[index];
+    [_address removeListsObject:list];
+    
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
 }
 
-- (NSString *)currentListName
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index
 {
-    return _address.list.name;
+    CCList *list = _lists[index];
+    return [_address.lists containsObject:list];
+}
+
+- (NSString *)currentListNames
+{
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    NSArray *listArray = [[_address.lists allObjects] sortedArrayUsingDescriptors:@[nameSortDescriptor]];
+    return [[listArray valueForKeyPath:@"@unionOfObjects.name"] componentsJoinedByString:@", "];
 }
 
 - (NSUInteger)numberOfLists

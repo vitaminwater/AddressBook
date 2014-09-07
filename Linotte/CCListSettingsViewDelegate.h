@@ -18,8 +18,9 @@
 - (NSString *)listNameAtIndex:(NSUInteger)index;
 - (NSString *)listIconAtIndex:(NSUInteger)index;
 
+- (NSUInteger)createListWithName:(NSString *)name;
 - (void)listSelectedAtIndex:(NSUInteger)index;
-- (void)createListWithName:(NSString *)name;
-- (NSInteger)selectedListIndex;;
+- (void)listUnselectedAtIndex:(NSUInteger)index;
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index;
 
 @end

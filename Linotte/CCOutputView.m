@@ -166,7 +166,7 @@
     _addressSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
     _addressSettingsView.delegate = self;
     _addressSettingsView.notificationEnabled = [_delegate notificationEnabled];
-    _addressSettingsView.listName = [_delegate currentListName];
+    _addressSettingsView.listName = [_delegate currentListNames];
     [self addSubview:_addressSettingsView];
     
     NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
@@ -296,18 +296,25 @@
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
     [_delegate listSelectedAtIndex:index];
-    _addressSettingsView.listName = [_delegate listNameAtIndex:index];
+    _addressSettingsView.listName = [_delegate currentListNames];
 }
 
-- (void)createListWithName:(NSString *)name
+- (void)listUnselectedAtIndex:(NSUInteger)index
 {
-    [_delegate createListWithName:name];
-    _addressSettingsView.listName = name;
+    [_delegate listUnselectedAtIndex:index];
+    _addressSettingsView.listName = [_delegate currentListNames];
 }
 
-- (NSInteger)selectedListIndex
+- (NSUInteger)createListWithName:(NSString *)name
 {
-    return [_delegate selectedListIndex];
+    NSUInteger insertIndex = [_delegate createListWithName:name];
+    _addressSettingsView.listName = [_delegate currentListNames];
+    return insertIndex;
+}
+
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index
+{
+    return [_delegate isListSelectedAtIndex:index];
 }
 
 #pragma mark - UITabBarDelegate methods

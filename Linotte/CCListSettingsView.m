@@ -93,7 +93,7 @@
     _listSelector.backgroundColor = [UIColor clearColor];
     _listSelector.separatorColor = [UIColor whiteColor];
     _listSelector.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    _listSelector.rowHeight = 30;
+    _listSelector.rowHeight = 35;
     _listSelector.delegate = self;
     _listSelector.dataSource = self;
     [_listSelector registerClass:[CCListSettingsTableViewCell class] forCellReuseIdentifier:kCCListSettingsTableViewCell];
@@ -142,8 +142,9 @@
     if (textField.text.length == 0)
         return NO;
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : textField.text} localizedKey:@"CREATE_LIST_ALERT_TITLE"] message:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : textField.text, @"[addressName]" : [_delegate addressName]} localizedKey:@"CREATE_LIST_ALERT_TEXT"] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", @"") otherButtonTitles:NSLocalizedString(@"OK", @""), nil];
-    [alertView show];
+    NSUInteger insertedIndex = [_delegate createListWithName:_listName.text];
+    
+    [_listSelector insertRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:insertedIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
     return NO;
 }
 
@@ -151,11 +152,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == [_delegate selectedListIndex])
-        return;
+    CCListSettingsTableViewCell *cell = (CCListSettingsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate listNameAtIndex:indexPath.row], @"[addressName]" : [_delegate addressName]} localizedKey:@"MOVE_LIST_ALERT_TITLE"] message:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate listNameAtIndex:indexPath.row], @"[addressName]" : [_delegate addressName]} localizedKey:@"MOVE_LIST_ALERT_TEXT"] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", @"") otherButtonTitles:NSLocalizedString(@"OK", @""), nil];
-    [alertView show];
+    if (cell) {
+        cell.isAdded = !cell.isAdded;
+        if (cell.isAdded) {
+            [_delegate listSelectedAtIndex:indexPath.row];
+        } else {
+            [_delegate listUnselectedAtIndex:indexPath.row];
+        }
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -163,10 +171,7 @@
     CCListSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListSettingsTableViewCell];
     
     cell.textLabel.text = [_delegate listNameAtIndex:indexPath.row];
-    
-    NSInteger selectedListIndex = [_delegate selectedListIndex];
-    if (indexPath.row == selectedListIndex)
-        [_listSelector selectRowAtIndexPath:[NSIndexPath indexPathForItem:selectedListIndex inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+    cell.isAdded = [_delegate isListSelectedAtIndex:indexPath.row];
 
     return cell;
 }
@@ -179,28 +184,6 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
-}
-
-#pragma mark - UIAlertViewDelegate methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        if (_listName.text.length == 0) {
-            NSInteger selectedListIndex = [_delegate selectedListIndex];
-            if (selectedListIndex >= 0)
-                [_listSelector selectRowAtIndexPath:[NSIndexPath indexPathForItem:selectedListIndex inSection:0] animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-            else
-                [_listSelector deselectRowAtIndexPath:_listSelector.indexPathForSelectedRow animated:YES];
-        } else
-            _listName.text = @"";
-    } else if (buttonIndex == 1) {
-        if (_listName.text.length == 0)
-            [_delegate listSelectedAtIndex:_listSelector.indexPathForSelectedRow.row];
-        else
-            [_delegate createListWithName:_listName.text];
-        [_delegate closeListSettingsView:self success:YES];
-    }
 }
 
 @end

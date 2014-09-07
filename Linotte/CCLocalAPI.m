@@ -228,7 +228,7 @@
     _identifier = identifier;
 }
 
-#pragma mark - Notes methods
+#pragma mark - Address methods
 
 - (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
@@ -241,6 +241,28 @@
             completionBlock(NO);
         }];
     }
+}
+
+- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
+{
+    
+}
+
+#pragma mark - List methods
+
+- (void)sendList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+{
+    
+}
+
+- (void)addAddress:(CCAddress *)address toList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+{
+    
+}
+
+- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+{
+    
 }
 
 #pragma mark - recovery methods

@@ -10,4 +10,6 @@
 
 @interface CCListSettingsTableViewCell : UITableViewCell
 
+@property(nonatomic, assign)BOOL isAdded;
+
 @end

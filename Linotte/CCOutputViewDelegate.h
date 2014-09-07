@@ -18,15 +18,16 @@ typedef enum : NSUInteger {
 @protocol CCOutputViewDelegate <NSObject>
 
 // list stuffs
-- (void)createListWithName:(NSString *)name;
+- (NSUInteger)createListWithName:(NSString *)name;
 - (void)listSelectedAtIndex:(NSUInteger)index;
-- (NSInteger)selectedListIndex;
+- (void)listUnselectedAtIndex:(NSUInteger)index;
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index;
 
 - (NSUInteger)numberOfLists;
 - (NSString *)listNameAtIndex:(NSUInteger)index;
 - (NSString *)listIconAtIndex:(NSUInteger)index;
 
-- (NSString *)currentListName;
+- (NSString *)currentListNames;
 
 // route
 - (void)launchRoute:(CCRouteType)type;
