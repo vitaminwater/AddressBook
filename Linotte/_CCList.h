@@ -10,6 +10,8 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *latitude;
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *name;
+	__unsafe_unretained NSString *provider;
+	__unsafe_unretained NSString *providerId;
 } CCListAttributes;
 
 extern const struct CCListRelationships {
@@ -22,6 +24,8 @@ extern const struct CCListFetchedProperties {
 
 @class CCAddress;
 @class CCListMeta;
+
+
 
 
 
@@ -100,6 +104,26 @@ extern const struct CCListFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSString* provider;
+
+
+
+//- (BOOL)validateProvider:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSString* providerId;
+
+
+
+//- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSSet *addresses;
 
 - (NSMutableSet*)addressesSet;
@@ -166,6 +190,18 @@ extern const struct CCListFetchedProperties {
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveProvider;
+- (void)setPrimitiveProvider:(NSString*)value;
+
+
+
+
+- (NSString*)primitiveProviderId;
+- (void)setPrimitiveProviderId:(NSString*)value;
 
 
 

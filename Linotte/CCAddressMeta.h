@@ -1,5 +1,12 @@
 #import "_CCAddressMeta.h"
 
+@class RKEntityMapping;
+@class RKObjectMapping;
+
 @interface CCAddressMeta : _CCAddressMeta {}
-// Custom logic goes here.
+
++ (RKEntityMapping *)responseGETEntityMapping;
++ (RKObjectMapping *)requestPOSTObjectMapping;
++ (RKEntityMapping *)responsePOSTEntityMapping;
+
 @end

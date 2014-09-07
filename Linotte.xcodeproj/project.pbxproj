@@ -27,7 +27,14 @@
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
-		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
+		C770A75319AB647700803E75 /* CCSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCSettingsView.m */; };
+		C796D7C119BB8C0000B97879 /* _CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7BE19BB8C0000B97879 /* _CCList.m */; };
+		C796D7C219BB8C0000B97879 /* CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7C019BB8C0000B97879 /* CCList.m */; };
+		C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7C419BB8C0B00B97879 /* _CCListMeta.m */; };
+		C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7C619BB8C0B00B97879 /* CCListMeta.m */; };
+		C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7CA19BB8C1300B97879 /* _CCAddressMeta.m */; };
+		C796D7CE19BB8C1300B97879 /* CCAddressMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7CC19BB8C1300B97879 /* CCAddressMeta.m */; };
+		C796D7D319BBA8F700B97879 /* CCListSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7D219BBA8F700B97879 /* CCListSettingsView.m */; };
 		C799AB4D1920CD150096B5A8 /* CCAddViewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */; };
 		C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C799AB4E1920D5370096B5A8 /* CoreLocation.framework */; };
 		C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB5719216C110096B5A8 /* CCOutputViewController.m */; };
@@ -36,6 +43,7 @@
 		C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7119237D340096B5A8 /* CCNotificationGenerator.m */; };
 		C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7519252E750096B5A8 /* CCNetworkHandler.m */; };
 		C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */ = {isa = PBXBuildFile; fileRef = C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */; };
+		C7A2EB3019BBBF5B003EF099 /* CCListSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A2EB2F19BBBF5B003EF099 /* CCListSettingsTableViewCell.m */; };
 		C7BA707D193E107D000780D9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BA707F193E107D000780D9 /* Localizable.strings */; };
 		C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
@@ -110,9 +118,25 @@
 		C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryView.h; sourceTree = "<group>"; };
 		C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOutputConfirmEntryView.m; sourceTree = "<group>"; };
 		C76A3C561999140200998F9F /* CCOutputConfirmEntryViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryViewDelegate.h; sourceTree = "<group>"; };
-		C770A75119AB647700803E75 /* CCAddressSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsView.h; sourceTree = "<group>"; };
-		C770A75219AB647700803E75 /* CCAddressSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressSettingsView.m; sourceTree = "<group>"; };
-		C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsViewDelegate.h; sourceTree = "<group>"; };
+		C770A75119AB647700803E75 /* CCSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettingsView.h; sourceTree = "<group>"; };
+		C770A75219AB647700803E75 /* CCSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettingsView.m; sourceTree = "<group>"; };
+		C770A75519AB64E000803E75 /* CCSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCSettingsViewDelegate.h; sourceTree = "<group>"; };
+		C796D7B819BB889F00B97879 /* Linotte 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 3.xcdatamodel"; sourceTree = "<group>"; };
+		C796D7BD19BB8C0000B97879 /* _CCList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCList.h; sourceTree = "<group>"; };
+		C796D7BE19BB8C0000B97879 /* _CCList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCList.m; sourceTree = "<group>"; };
+		C796D7BF19BB8C0000B97879 /* CCList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCList.h; sourceTree = "<group>"; };
+		C796D7C019BB8C0000B97879 /* CCList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCList.m; sourceTree = "<group>"; };
+		C796D7C319BB8C0B00B97879 /* _CCListMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCListMeta.h; sourceTree = "<group>"; };
+		C796D7C419BB8C0B00B97879 /* _CCListMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCListMeta.m; sourceTree = "<group>"; };
+		C796D7C519BB8C0B00B97879 /* CCListMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListMeta.h; sourceTree = "<group>"; };
+		C796D7C619BB8C0B00B97879 /* CCListMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListMeta.m; sourceTree = "<group>"; };
+		C796D7C919BB8C1300B97879 /* _CCAddressMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCAddressMeta.h; sourceTree = "<group>"; };
+		C796D7CA19BB8C1300B97879 /* _CCAddressMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCAddressMeta.m; sourceTree = "<group>"; };
+		C796D7CB19BB8C1300B97879 /* CCAddressMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressMeta.h; sourceTree = "<group>"; };
+		C796D7CC19BB8C1300B97879 /* CCAddressMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressMeta.m; sourceTree = "<group>"; };
+		C796D7D119BBA8F700B97879 /* CCListSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSettingsView.h; sourceTree = "<group>"; };
+		C796D7D219BBA8F700B97879 /* CCListSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSettingsView.m; sourceTree = "<group>"; };
+		C796D7D519BBA91900B97879 /* CCListSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListSettingsViewDelegate.h; sourceTree = "<group>"; };
 		C799AB491920CB560096B5A8 /* CCAddViewConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddViewConstants.h; sourceTree = "<group>"; };
 		C799AB4B1920CD150096B5A8 /* CCAddViewTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddViewTableViewCell.h; sourceTree = "<group>"; };
 		C799AB4C1920CD150096B5A8 /* CCAddViewTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddViewTableViewCell.m; sourceTree = "<group>"; };
@@ -132,6 +156,8 @@
 		C799AB7519252E750096B5A8 /* CCNetworkHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworkHandler.m; sourceTree = "<group>"; };
 		C799AB7E192752DE0096B5A8 /* UIImage+CCInvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+CCInvert.h"; sourceTree = "<group>"; };
 		C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CCInvert.m"; sourceTree = "<group>"; };
+		C7A2EB2E19BBBF5B003EF099 /* CCListSettingsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSettingsTableViewCell.h; sourceTree = "<group>"; };
+		C7A2EB2F19BBBF5B003EF099 /* CCListSettingsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSettingsTableViewCell.m; sourceTree = "<group>"; };
 		C7BA707B193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707C193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707E193E107D000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -312,8 +338,8 @@
 			isa = PBXGroup;
 			children = (
 				C770A75419AB64CB00803E75 /* protocol */,
-				C770A75119AB647700803E75 /* CCAddressSettingsView.h */,
-				C770A75219AB647700803E75 /* CCAddressSettingsView.m */,
+				C770A75119AB647700803E75 /* CCSettingsView.h */,
+				C770A75219AB647700803E75 /* CCSettingsView.m */,
 			);
 			name = settings;
 			sourceTree = "<group>";
@@ -321,7 +347,68 @@
 		C770A75419AB64CB00803E75 /* protocol */ = {
 			isa = PBXGroup;
 			children = (
-				C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */,
+				C770A75519AB64E000803E75 /* CCSettingsViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C796D7B919BB8B2E00B97879 /* meta */ = {
+			isa = PBXGroup;
+			children = (
+				C796D7BB19BB8B3A00B97879 /* list */,
+				C796D7BA19BB8B3200B97879 /* address */,
+			);
+			name = meta;
+			sourceTree = "<group>";
+		};
+		C796D7BA19BB8B3200B97879 /* address */ = {
+			isa = PBXGroup;
+			children = (
+				C796D7C919BB8C1300B97879 /* _CCAddressMeta.h */,
+				C796D7CA19BB8C1300B97879 /* _CCAddressMeta.m */,
+				C796D7CB19BB8C1300B97879 /* CCAddressMeta.h */,
+				C796D7CC19BB8C1300B97879 /* CCAddressMeta.m */,
+			);
+			name = address;
+			sourceTree = "<group>";
+		};
+		C796D7BB19BB8B3A00B97879 /* list */ = {
+			isa = PBXGroup;
+			children = (
+				C796D7C319BB8C0B00B97879 /* _CCListMeta.h */,
+				C796D7C419BB8C0B00B97879 /* _CCListMeta.m */,
+				C796D7C519BB8C0B00B97879 /* CCListMeta.h */,
+				C796D7C619BB8C0B00B97879 /* CCListMeta.m */,
+			);
+			name = list;
+			sourceTree = "<group>";
+		};
+		C796D7BC19BB8B4A00B97879 /* list */ = {
+			isa = PBXGroup;
+			children = (
+				C796D7BD19BB8C0000B97879 /* _CCList.h */,
+				C796D7BE19BB8C0000B97879 /* _CCList.m */,
+				C796D7BF19BB8C0000B97879 /* CCList.h */,
+				C796D7C019BB8C0000B97879 /* CCList.m */,
+			);
+			name = list;
+			sourceTree = "<group>";
+		};
+		C796D7D019BBA8D100B97879 /* list */ = {
+			isa = PBXGroup;
+			children = (
+				C7A2EB2D19BBBF34003EF099 /* cell */,
+				C796D7D419BBA90A00B97879 /* protocol */,
+				C796D7D119BBA8F700B97879 /* CCListSettingsView.h */,
+				C796D7D219BBA8F700B97879 /* CCListSettingsView.m */,
+			);
+			name = list;
+			sourceTree = "<group>";
+		};
+		C796D7D419BBA90A00B97879 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C796D7D519BBA91900B97879 /* CCListSettingsViewDelegate.h */,
 			);
 			name = protocol;
 			sourceTree = "<group>";
@@ -356,6 +443,7 @@
 		C799AB5419216BF90096B5A8 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				C796D7D019BBA8D100B97879 /* list */,
 				C770A75019AB645D00803E75 /* settings */,
 				C770A74F19AB644400803E75 /* confirm entry */,
 				C799AB5519216BFD0096B5A8 /* view */,
@@ -425,6 +513,15 @@
 				C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */,
 			);
 			name = categories;
+			sourceTree = "<group>";
+		};
+		C7A2EB2D19BBBF34003EF099 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				C7A2EB2E19BBBF5B003EF099 /* CCListSettingsTableViewCell.h */,
+				C7A2EB2F19BBBF5B003EF099 /* CCListSettingsTableViewCell.m */,
+			);
+			name = cell;
 			sourceTree = "<group>";
 		};
 		C7CE2C581918E48800D37A64 = {
@@ -519,6 +616,8 @@
 		C7CE2C9A1918F07100D37A64 /* core data */ = {
 			isa = PBXGroup;
 			children = (
+				C796D7BC19BB8B4A00B97879 /* list */,
+				C796D7B919BB8B2E00B97879 /* meta */,
 				C762975C192CCC3500B9B6E5 /* address */,
 				C762975B192CCC2C00B9B6E5 /* category */,
 			);
@@ -1063,6 +1162,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */,
 				C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */,
 				C7E1E4F3191A46B200602A4D /* CCRestKit.m in Sources */,
@@ -1076,6 +1176,7 @@
 				C7CE2C7A1918E48800D37A64 /* Linotte.xcdatamodeld in Sources */,
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
+				C7A2EB3019BBBF5B003EF099 /* CCListSettingsTableViewCell.m in Sources */,
 				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
 				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
@@ -1085,7 +1186,9 @@
 				C7E1E523191A585200602A4D /* CCGoogleGeocodeResult.m in Sources */,
 				C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
-				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
+				C796D7C119BB8C0000B97879 /* _CCList.m in Sources */,
+				C770A75319AB647700803E75 /* CCSettingsView.m in Sources */,
+				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
 				C7E1E509191A577F00602A4D /* CCOAuthTokenResponse.m in Sources */,
 				C7E1E528191A585E00602A4D /* CCGoogleSearch.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddViewController.m in Sources */,
@@ -1095,6 +1198,8 @@
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
 				C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */,
 				C7FE2C7A199795BA00D7D0DC /* CCSplashView.m in Sources */,
+				C796D7CE19BB8C1300B97879 /* CCAddressMeta.m in Sources */,
+				C796D7C219BB8C0000B97879 /* CCList.m in Sources */,
 				C7CE2C731918E48800D37A64 /* main.m in Sources */,
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
@@ -1105,6 +1210,8 @@
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
 				C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */,
+				C796D7D319BBA8F700B97879 /* CCListSettingsView.m in Sources */,
+				C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */,
 				C7E1E4FB191A46FD00602A4D /* CCLocalAPI.m in Sources */,
 				C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */,
 			);
@@ -1370,10 +1477,11 @@
 		C7CE2C781918E48800D37A64 /* Linotte.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				C796D7B819BB889F00B97879 /* Linotte 3.xcdatamodel */,
 				C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */,
 				C7CE2C791918E48800D37A64 /* Linotte.xcdatamodel */,
 			);
-			currentVersion = C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */;
+			currentVersion = C796D7B819BB889F00B97879 /* Linotte 3.xcdatamodel */;
 			path = Linotte.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

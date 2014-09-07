@@ -12,7 +12,17 @@
 
 @implementation CCCategory
 
-+ (RKObjectMapping *)requestObjectMapping
++ (RKEntityMapping *)responseGETEntityMapping
+{
+    RKManagedObjectStore *managedObjectStore = [RKManagedObjectStore defaultStore];
+    RKEntityMapping *entityMapping = [RKEntityMapping mappingForEntityForName:[self entityName] inManagedObjectStore:managedObjectStore];
+    
+    [entityMapping addAttributeMappingsFromArray:@[CCCategoryAttributes.identifier, CCCategoryAttributes.name]];
+    
+    return entityMapping;
+}
+
++ (RKObjectMapping *)requestPOSTObjectMapping
 {
     RKObjectMapping *objectMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
     
@@ -21,7 +31,7 @@
     return objectMapping;
 }
 
-+ (RKEntityMapping *)responseEntityMapping
++ (RKEntityMapping *)responsePOSTEntityMapping
 {
     return nil;
 }

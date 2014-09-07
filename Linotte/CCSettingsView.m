@@ -6,20 +6,27 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCAddressSettingsView.h"
+#import "CCSettingsView.h"
 
 #import <HexColors/HexColor.h>
 
-@interface CCAddressSettingsView()
+#import "NSString+CCLocalizedString.h"
+
+@interface CCSettingsView()
 
 @property(nonatomic, strong)UILabel *titleLabel;
+@property(nonatomic, strong)UIButton *closeButton;
+
+// settings items
 @property(nonatomic, strong)UIView *notificationSettingsView;
 @property(nonatomic, strong)UIButton *notificationToggleButton;
-@property(nonatomic, strong)UIButton *closeButton;
+
+@property(nonatomic, strong)UIView *listSettingsView;
+@property(nonatomic, strong)UILabel *currentListName;
 
 @end
 
-@implementation CCAddressSettingsView
+@implementation CCSettingsView
 
 - (id)init
 {
@@ -33,6 +40,7 @@
         
         [self setupTitle];
         [self setupNotificationSetting];
+        [self setupListSetting];
         [self setupCloseButton];
         [self setupLayout];
     }
@@ -87,6 +95,41 @@
     }
 }
 
+- (void)setupListSetting
+{
+    _listSettingsView = [UIView new];
+    _listSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
+    _listSettingsView.backgroundColor = [UIColor clearColor];
+    [self addSubview:_listSettingsView];
+    
+    _currentListName = [UILabel new];
+    _currentListName.translatesAutoresizingMaskIntoConstraints = NO;
+    _currentListName.font = [UIFont fontWithName:@"Futura-Book" size:18];
+    _currentListName.textColor = [UIColor whiteColor];
+    _currentListName.textAlignment = NSTextAlignmentCenter;
+    _currentListName.numberOfLines = 0;
+    [_listSettingsView addSubview:_currentListName];
+    
+    UIButton *changeListButton = [UIButton new];
+    changeListButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [changeListButton setTitle:NSLocalizedString(@"CHANGE_LIST_BUTTON", @"") forState:UIControlStateNormal];
+    [changeListButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    [changeListButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [changeListButton addTarget:self action:@selector(changeListPressed:) forControlEvents:UIControlEventTouchUpInside];
+    changeListButton.backgroundColor = [UIColor colorWithHexString:@"#5acfc4"];
+    changeListButton.layer.cornerRadius = 5;
+    [_listSettingsView addSubview:changeListButton];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_currentListName, changeListButton);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_currentListName][changeListButton]-|" options:0 metrics:nil views:views];
+    [_listSettingsView addConstraints:horizontalConstraints];
+    
+    for (UIView *view in views.allValues) {
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view"  : view}];
+        [_listSettingsView addConstraints:verticalConstraints];
+    }
+}
+
 - (void)setupCloseButton
 {
     _closeButton = [UIButton new];
@@ -103,8 +146,8 @@
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _notificationSettingsView, _closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==50)]-[_notificationSettingsView]-[_closeButton(==35)]|" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _notificationSettingsView, _listSettingsView, _closeButton);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==50)]-[_notificationSettingsView]-[_listSettingsView]-[_closeButton(==35)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -120,6 +163,15 @@
     _notificationToggleButton.selected = notificationEnabled;
 }
 
+- (void)setListName:(NSString *)listName
+{
+    _listName = listName;
+    if (listName)
+        _currentListName.text = [NSString localizedStringByReplacingFromDictionnary:@{@"[ListName]" : listName} localizedKey:@"LIST_SETTING"];
+    else
+        _currentListName.text = NSLocalizedString(@"NO_LIST_SETTING", @"");
+}
+
 #pragma mark - UIButton target methods
 
 - (void)closeButtonPressed:(UIButton *)sender
@@ -131,6 +183,11 @@
 {
     sender.selected = !sender.selected;
     [_delegate setNotificationEnabled:sender.selected];
+}
+
+- (void)changeListPressed:(UIButton *)sender
+{
+    [_delegate showListSetting];
 }
 
 @end

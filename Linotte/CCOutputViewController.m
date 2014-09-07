@@ -16,6 +16,8 @@
 
 #import "CCRestKit.h"
 
+#import "CCList.h"
+
 #define kCCGoogleMapScheme @"comgooglemaps-x-callback://"
 #define kCCAppleMapScheme @"http://maps.apple.com/"
 
@@ -24,6 +26,8 @@
     CLLocationManager *_locationManager;
     CLLocation *_currentLocation;
 }
+
+@property(nonatomic, strong)NSMutableArray *lists;
 
 @property(nonatomic, assign)BOOL addressIsNew;
 @property(nonatomic, strong)CCAddress *address;
@@ -104,6 +108,8 @@
         [self.navigationController.navigationBar addSubview:backButton];
     }
     self.navigationItem.hidesBackButton = YES;
+    
+    [self loadLists];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -132,6 +138,24 @@
 {
     [super viewWillDisappear:animated];
     [_locationManager stopUpdatingLocation];
+}
+
+- (void)loadLists
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+    
+    NSArray *result = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    _lists = [result mutableCopy];
+    [self sortLists];
+}
+
+- (void)sortLists
+{
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [_lists sortedArrayUsingDescriptors:@[nameSortDescriptor]];
 }
 
 #pragma mark - UIBarButtons target methods
@@ -191,6 +215,60 @@
 
 #pragma mark - CCoutputViewDelegate
 
+#pragma mark lists
+
+- (void)createListWithName:(NSString *)name
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
+    list.name = name;
+    
+    [_lists addObject:list];
+    [self sortLists];
+    _address.list = list;
+    
+    [managedObjectContext saveToPersistentStore:NULL];
+}
+
+- (void)listSelectedAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    _address.list = list;
+    
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+}
+
+- (NSInteger)selectedListIndex
+{
+    if (_address.list)
+        return [_lists indexOfObject:_address.list];
+    return -1;
+}
+
+- (NSString *)currentListName
+{
+    return _address.list.name;
+}
+
+- (NSUInteger)numberOfLists
+{
+    return [_lists count];
+}
+
+- (NSString *)listNameAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    return list.name;
+}
+
+- (NSString *)listIconAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    return list.icon;
+}
+
+#pragma mark route
+
 - (void)launchRoute:(CCRouteType)type
 {
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:kCCGoogleMapScheme]])
@@ -198,6 +276,8 @@
     else
         [self appleMapRoute:type];
 }
+
+#pragma mark address display
 
 - (double)addressDistance
 {

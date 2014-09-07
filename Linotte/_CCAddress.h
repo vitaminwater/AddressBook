@@ -21,12 +21,16 @@ extern const struct CCAddressAttributes {
 
 extern const struct CCAddressRelationships {
 	__unsafe_unretained NSString *categories;
+	__unsafe_unretained NSString *list;
+	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
 extern const struct CCAddressFetchedProperties {
 } CCAddressFetchedProperties;
 
 @class CCCategory;
+@class CCList;
+@class CCAddressMeta;
 
 
 
@@ -197,6 +201,20 @@ extern const struct CCAddressFetchedProperties {
 
 
 
+@property (nonatomic, strong) CCList *list;
+
+//- (BOOL)validateList:(id*)value_ error:(NSError**)error_;
+
+
+
+
+@property (nonatomic, strong) NSSet *metas;
+
+- (NSMutableSet*)metasSet;
+
+
+
+
 
 @end
 
@@ -206,6 +224,11 @@ extern const struct CCAddressFetchedProperties {
 - (void)removeCategories:(NSSet*)value_;
 - (void)addCategoriesObject:(CCCategory*)value_;
 - (void)removeCategoriesObject:(CCCategory*)value_;
+
+- (void)addMetas:(NSSet*)value_;
+- (void)removeMetas:(NSSet*)value_;
+- (void)addMetasObject:(CCAddressMeta*)value_;
+- (void)removeMetasObject:(CCAddressMeta*)value_;
 
 @end
 
@@ -299,6 +322,16 @@ extern const struct CCAddressFetchedProperties {
 
 - (NSMutableSet*)primitiveCategories;
 - (void)setPrimitiveCategories:(NSMutableSet*)value;
+
+
+
+- (CCList*)primitiveList;
+- (void)setPrimitiveList:(CCList*)value;
+
+
+
+- (NSMutableSet*)primitiveMetas;
+- (void)setPrimitiveMetas:(NSMutableSet*)value;
 
 
 @end

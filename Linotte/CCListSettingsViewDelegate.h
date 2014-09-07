@@ -10,4 +10,16 @@
 
 @protocol CCListSettingsViewDelegate <NSObject>
 
+- (void)closeListSettingsView:(id)sender;
+
+- (NSString *)addressName;
+
+- (NSUInteger)numberOfLists;
+- (NSString *)listNameAtIndex:(NSUInteger)index;
+- (NSString *)listIconAtIndex:(NSUInteger)index;
+
+- (void)listSelectedAtIndex:(NSUInteger)index;
+- (void)createListWithName:(NSString *)name;
+- (NSInteger)selectedListIndex;;
+
 @end

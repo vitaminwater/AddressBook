@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCAddressSettingsViewDelegate <NSObject>
+@protocol CCSettingsViewDelegate <NSObject>
 
 - (void)closeButtonPressed:(id)sender;
 - (void)setNotificationEnabled:(BOOL)enabled;
+
+- (void)showListSetting;
 
 @end

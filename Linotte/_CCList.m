@@ -9,6 +9,8 @@ const struct CCListAttributes CCListAttributes = {
 	.latitude = @"latitude",
 	.longitude = @"longitude",
 	.name = @"name",
+	.provider = @"provider",
+	.providerId = @"providerId",
 };
 
 const struct CCListRelationships CCListRelationships = {
@@ -129,6 +131,20 @@ const struct CCListFetchedProperties CCListFetchedProperties = {
 
 
 @dynamic name;
+
+
+
+
+
+
+@dynamic provider;
+
+
+
+
+
+
+@dynamic providerId;
 
 
 

@@ -1,5 +1,12 @@
 #import "_CCList.h"
 
+@class RKEntityMapping;
+@class RKObjectMapping;
+
 @interface CCList : _CCList {}
-// Custom logic goes here.
+
++ (RKEntityMapping *)responseGETEntityMapping;
++ (RKObjectMapping *)requestPOSTObjectMapping;
++ (RKEntityMapping *)responsePOSTEntityMapping;
+
 @end

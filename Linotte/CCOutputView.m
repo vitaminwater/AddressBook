@@ -12,13 +12,15 @@
 #import <GoogleMaps/GoogleMaps.h>
 
 #import "CCOutputConfirmEntryView.h"
-#import "CCAddressSettingsView.h"
+#import "CCSettingsView.h"
+#import "CCListSettingsView.h"
 
 @interface CCOutputView()
 
 @property(nonatomic, strong)GMSMarker *marker;
 @property(nonatomic, strong)GMSMapView *mapView;
-@property(nonatomic, strong)CCAddressSettingsView *addressSettingsView;
+@property(nonatomic, strong)CCSettingsView *addressSettingsView;
+@property(nonatomic, strong)CCListSettingsView *listSettingsView;
 @property(nonatomic, strong)UITextView *infoView;
 
 @end
@@ -157,10 +159,11 @@
     if (_addressSettingsView)
         return;
     
-    _addressSettingsView = [CCAddressSettingsView new];
+    _addressSettingsView = [CCSettingsView new];
     _addressSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
     _addressSettingsView.delegate = self;
     _addressSettingsView.notificationEnabled = [_delegate notificationEnabled];
+    _addressSettingsView.listName = [_delegate currentListName];
     [self addSubview:_addressSettingsView];
     
     NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
@@ -175,6 +178,18 @@
     _addressSettingsView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
         _addressSettingsView.alpha = 1;
+    }];
+}
+
+- (void)closeSettingsView
+{
+    if (_addressSettingsView == nil)
+        return;
+    [UIView animateWithDuration:0.2 animations:^{
+        _addressSettingsView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_addressSettingsView removeFromSuperview];
+        _addressSettingsView = nil;
     }];
 }
 
@@ -193,11 +208,40 @@
     }];
 }
 
-#pragma mark - CCAddressSettingsViewDelegate methods
+#pragma mark - CCSettingsViewDelegate methods
 
-- (void)closeButtonPressed:(CCAddressSettingsView *)sender
+- (void)closeButtonPressed:(CCSettingsView *)sender
 {
+    [self closeSettingsView];
+}
+
+- (void)setNotificationEnabled:(BOOL)enabled
+{
+    [_delegate setNotificationEnabled:enabled];
+}
+
+- (void)showListSetting
+{
+    if (_listSettingsView)
+        return;
+    
+    _listSettingsView = [CCListSettingsView new];
+    _listSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
+    _listSettingsView.delegate = self;
+    [self addSubview:_listSettingsView];
+    
+    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    [self addConstraint:centerXConstraint];
+    
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [self addConstraint:centerYConstraint];
+    
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-20];
+    [self addConstraint:widthConstraint];
+    
+    _listSettingsView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
+        _listSettingsView.alpha = 1;
         _addressSettingsView.alpha = 0;
     } completion:^(BOOL finished) {
         [_addressSettingsView removeFromSuperview];
@@ -205,9 +249,51 @@
     }];
 }
 
-- (void)setNotificationEnabled:(BOOL)enabled
+#pragma mark - CCListSettingsViewDelegate
+
+- (void)closeListSettingsView:(id)sender
 {
-    [_delegate setNotificationEnabled:enabled];
+    [UIView animateWithDuration:0.2 animations:^{
+        _listSettingsView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_listSettingsView removeFromSuperview];
+        _listSettingsView = nil;
+    }];
+}
+
+- (NSString *)addressName
+{
+    return [_delegate addressName];
+}
+
+- (NSUInteger)numberOfLists
+{
+    return [_delegate numberOfLists];
+}
+
+- (NSString *)listNameAtIndex:(NSUInteger)index
+{
+    return [_delegate listNameAtIndex:index];
+}
+
+- (NSString *)listIconAtIndex:(NSUInteger)index
+{
+    return [_delegate listIconAtIndex:index];
+}
+
+- (void)listSelectedAtIndex:(NSUInteger)index
+{
+    [_delegate listSelectedAtIndex:index];
+}
+
+- (void)createListWithName:(NSString *)name
+{
+    [_delegate createListWithName:name];
+}
+
+- (NSInteger)selectedListIndex
+{
+    return [_delegate selectedListIndex];
 }
 
 #pragma mark - UITabBarDelegate methods

@@ -5,7 +5,8 @@
 
 @interface CCCategory : _CCCategory {}
 
-+ (RKObjectMapping *)requestObjectMapping;
-+ (RKEntityMapping *)responseEntityMapping;
++ (RKEntityMapping *)responseGETEntityMapping;
++ (RKObjectMapping *)requestPOSTObjectMapping;
++ (RKEntityMapping *)responsePOSTEntityMapping;
 
 @end

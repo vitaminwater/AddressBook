@@ -28,6 +28,7 @@
 #define kCCLocalAPIAccessToken @"/api/oauth2/access_token/"
 #define kCCLocalAPIUser @"/api/user/"
 #define kCCLocalAPIAddress @"/api/address/"
+#define kCCLocalAPIList @"/api/list/"
 
 @class RKObjectManager;
 

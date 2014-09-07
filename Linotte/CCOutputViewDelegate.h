@@ -17,8 +17,21 @@ typedef enum : NSUInteger {
 
 @protocol CCOutputViewDelegate <NSObject>
 
+// list stuffs
+- (void)createListWithName:(NSString *)name;
+- (void)listSelectedAtIndex:(NSUInteger)index;
+- (NSInteger)selectedListIndex;
+
+- (NSUInteger)numberOfLists;
+- (NSString *)listNameAtIndex:(NSUInteger)index;
+- (NSString *)listIconAtIndex:(NSUInteger)index;
+
+- (NSString *)currentListName;
+
+// route
 - (void)launchRoute:(CCRouteType)type;
 
+// address display
 - (double)addressDistance;
 - (NSString *)addressName;
 - (NSString *)addressString;

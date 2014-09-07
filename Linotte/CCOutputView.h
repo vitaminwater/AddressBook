@@ -10,9 +10,10 @@
 
 #import "CCOutputViewDelegate.h"
 #import "CCOutputConfirmEntryViewDelegate.h"
-#import "CCAddressSettingsView.h"
+#import "CCSettingsView.h"
+#import "CCListSettingsView.h"
 
-@interface CCOutputView : UIView<UITabBarDelegate, CCOutputConfirmEntryViewDelegate, CCAddressSettingsViewDelegate>
+@interface CCOutputView : UIView<UITabBarDelegate, CCOutputConfirmEntryViewDelegate, CCSettingsViewDelegate, CCListSettingsViewDelegate>
 
 @property(nonatomic, readonly)NSString *currentColor;
 

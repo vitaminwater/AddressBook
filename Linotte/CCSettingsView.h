@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCAddressSettingsViewDelegate.h"
+#import "CCSettingsViewDelegate.h"
 
-@interface CCAddressSettingsView : UIView
+@interface CCSettingsView : UIView
 
-@property(nonatomic, assign)id<CCAddressSettingsViewDelegate> delegate;
+@property(nonatomic, assign)id<CCSettingsViewDelegate> delegate;
 
 @property(nonatomic, assign)BOOL notificationEnabled;
+@property(nonatomic, strong)NSString *listName;
 
 @end

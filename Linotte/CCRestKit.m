@@ -8,6 +8,8 @@
 
 #import "CCRestKit.h"
 
+#import <HexColors/HexColor.h>
+
 #import "CCGoogleAutocomplete.h"
 #import "CCGooglePrediction.h"
 
@@ -30,6 +32,9 @@
 #import "CCUserPostPutResponse.h"
 
 #import "CCAddress.h"
+#import "CCAddressMeta.h"
+#import "CCList.h"
+#import "CCListMeta.h"
 
 #define kGooglePlaceBaseUrl @"https://maps.googleapis.com"
 #define kFoursquareBaseUrl @"https://api.foursquare.com"
@@ -237,7 +242,7 @@ NSMutableDictionary *_objectManagers = nil;
 {
     RKObjectManager *objectManager = [self addObjectManager:kCCLocalJSONObjectManager baseUrl:kCCLocalApiServerUrl addManagedObjectStore:YES mimeType:RKMIMETypeJSON];
     
-    /* CCAddress mapping */
+    /* CCAddress POST mapping */
     {
         RKObjectMapping *requestEntityMapping = [CCAddress requestPOSTObjectMapping];
         
@@ -248,6 +253,21 @@ NSMutableDictionary *_objectManagers = nil;
         RKEntityMapping *responsePOSTEntityMapping = [CCAddress responsePOSTEntityMapping];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responsePOSTEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIAddress keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+        
+        [objectManager addResponseDescriptor:responseDescriptor];
+    }
+    
+    /* CCList POST mapping */
+    {
+        RKObjectMapping *requestEntityMapping = [CCAddress requestPOSTObjectMapping];
+        
+        RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:requestEntityMapping objectClass:[CCList class] rootKeyPath:nil method:RKRequestMethodGET];
+        
+        [objectManager addRequestDescriptor:requestDescriptor];
+        
+        RKEntityMapping *responseEntityMapping = [CCAddress responsePOSTEntityMapping];
+        
+        RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responseEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIList keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
         
         [objectManager addResponseDescriptor:responseDescriptor];
     }

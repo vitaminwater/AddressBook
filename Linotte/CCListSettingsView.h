@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListSettingsView : UIView
+#import "CCListSettingsViewDelegate.h"
+
+@interface CCListSettingsView : UIView<UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
+
+@property(nonatomic, assign)id<CCListSettingsViewDelegate> delegate;
 
 @end

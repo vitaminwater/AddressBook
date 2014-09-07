@@ -20,6 +20,8 @@ const struct CCAddressAttributes CCAddressAttributes = {
 
 const struct CCAddressRelationships CCAddressRelationships = {
 	.categories = @"categories",
+	.list = @"list",
+	.metas = @"metas",
 };
 
 const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
@@ -247,6 +249,23 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"categories"];
   
 	[self didAccessValueForKey:@"categories"];
+	return result;
+}
+	
+
+@dynamic list;
+
+	
+
+@dynamic metas;
+
+	
+- (NSMutableSet*)metasSet {
+	[self willAccessValueForKey:@"metas"];
+  
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"metas"];
+  
+	[self didAccessValueForKey:@"metas"];
 	return result;
 }
 	

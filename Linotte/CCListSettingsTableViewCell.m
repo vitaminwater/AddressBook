@@ -10,14 +10,20 @@
 
 @implementation CCListSettingsTableViewCell
 
-- (void)awakeFromNib {
-    // Initialization code
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        self.backgroundColor = [UIColor clearColor];
+        
+        self.textLabel.textColor = [UIColor whiteColor];
+    }
+    return self;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
+    
 }
 
 @end

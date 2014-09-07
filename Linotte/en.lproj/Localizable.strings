@@ -34,9 +34,23 @@
 "ADDRESSCREATED_SUBTEXT" = "You can now choose to be notified, or not.";
 "ENABLE_NOTIF_BUTTON_TEXT" = "Activate\nnotifications";
 "DISABLE_NOTIF_BUTTON_TEXT" = "Deactivate\nnotifications";
+
 "SETTINGS" = "Settings";
 "NOTIFICATION_SETTING" = "Activate notifications";
+"LIST_SETTING" = "This address is in [ListName]";
+"NO_LIST_SETTING" = "This address is isn't in any list";
+"CHANGE_LIST_BUTTON" = "Change to another list";
 "CLOSE" = "Close";
+
+"LIST_HELP" = "Here you can move this address to a list, either by creating a new one, or by choosing one in the list.";
+"CREATE_LIST" = "Create a new list";
+"CREATE_LIST_ALERT_TITLE" = "Create [listName] ?";
+"CREATE_LIST_ALERT_TEXT" = "If you press Ok, [listName] will be created and [addressName] will be moved in it.";
+"MOVE_LIST_ALERT_TITLE" = "Move [addressName] to [listName] ?";
+"MOVE_LIST_ALERT_TEXT" = "If you press Ok, [addressName]  will be moved in [listName].";
+"CANCEL" = "Cancel";
+"OK" = "Ok";
+
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Car";
 "ROUTE_BICYCLE" = "Bicycle";

@@ -6,6 +6,8 @@
 
 @interface CCAddress : _CCAddress {}
 
++ (RKObjectMapping *)requestPOSTObjectSlugMapping;
++ (RKEntityMapping *)responseGETEntityMapping;
 + (RKObjectMapping *)requestPOSTObjectMapping;
 + (RKEntityMapping *)responsePOSTEntityMapping;
 
