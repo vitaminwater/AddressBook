@@ -155,7 +155,7 @@
 - (void)sortLists
 {
     NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    [_lists sortedArrayUsingDescriptors:@[nameSortDescriptor]];
+    [_lists sortUsingDescriptors:@[nameSortDescriptor]];
 }
 
 #pragma mark - UIBarButtons target methods

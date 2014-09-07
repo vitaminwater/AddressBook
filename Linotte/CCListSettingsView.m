@@ -151,6 +151,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.row == [_delegate selectedListIndex])
+        return;
+    
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate listNameAtIndex:indexPath.row], @"[addressName]" : [_delegate addressName]} localizedKey:@"MOVE_LIST_ALERT_TITLE"] message:[NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate listNameAtIndex:indexPath.row], @"[addressName]" : [_delegate addressName]} localizedKey:@"MOVE_LIST_ALERT_TEXT"] delegate:self cancelButtonTitle:NSLocalizedString(@"CANCEL", @"") otherButtonTitles:NSLocalizedString(@"OK", @""), nil];
     [alertView show];
 }
