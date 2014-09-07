@@ -48,6 +48,8 @@
     _tableView.frame = self.frame;
     _tableView.backgroundColor = [UIColor clearColor];
     
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    
     _tableView.delegate = self;
     _tableView.dataSource = self;
     

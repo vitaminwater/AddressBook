@@ -1055,6 +1055,7 @@
 				ORGANIZATIONNAME = CCSAS;
 				TargetAttributes = {
 					C7CE2C601918E48800D37A64 = {
+						DevelopmentTeam = 4S49S5KKNH;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 0;
@@ -1282,8 +1283,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1301,7 +1302,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
+				PROVISIONING_PROFILE = "4a532165-7896-4db2-ac9f-4dd7994bce11";
 				SDKROOT = iphoneos7.1;
 			};
 			name = Debug;
@@ -1322,8 +1323,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: constantin Poupinelle (T9M324KMZD)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1334,7 +1335,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
+				PROVISIONING_PROFILE = "5fdce0b5-0e05-4736-babe-daee02c07dfd";
 				SDKROOT = iphoneos7.1;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1347,6 +1348,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1355,7 +1357,7 @@
 				);
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "39a04408-ea86-484e-a1f1-ea87f384747b";
+				PROVISIONING_PROFILE = "4a532165-7896-4db2-ac9f-4dd7994bce11";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1368,11 +1370,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2fd5b86b-ed2b-4f4c-9f24-b98f0381544c";
+				PROVISIONING_PROFILE = "5fdce0b5-0e05-4736-babe-daee02c07dfd";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};

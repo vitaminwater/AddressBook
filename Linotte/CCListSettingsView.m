@@ -92,7 +92,7 @@
     _listSelector.translatesAutoresizingMaskIntoConstraints = NO;
     _listSelector.backgroundColor = [UIColor clearColor];
     _listSelector.separatorColor = [UIColor whiteColor];
-    _listSelector.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    _listSelector.separatorStyle = UITableViewCellSeparatorStyleNone;
     _listSelector.rowHeight = 35;
     _listSelector.delegate = self;
     _listSelector.dataSource = self;
