@@ -25,6 +25,13 @@
 		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
 		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
 		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
+		C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */; };
+		C76A1CC719BF426C00EE75E4 /* CCListConfigViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CC619BF426C00EE75E4 /* CCListConfigViewController.m */; };
+		C76A1CCC19BF428F00EE75E4 /* CCListConfigView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CCB19BF428F00EE75E4 /* CCListConfigView.m */; };
+		C76A1CD219BF470000EE75E4 /* CCListConfigTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CD019BF470000EE75E4 /* CCListConfigTableViewCell.m */; };
+		C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */; };
+		C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */; };
+		C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */; };
 		C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
 		C770A75319AB647700803E75 /* CCSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCSettingsView.m */; };
@@ -114,6 +121,24 @@
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
 		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
 		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
+		C76A1CBE19BF2F4B00EE75E4 /* CCFlatColorButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatColorButton.h; sourceTree = "<group>"; };
+		C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFlatColorButton.m; sourceTree = "<group>"; };
+		C76A1CC519BF426C00EE75E4 /* CCListConfigViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListConfigViewController.h; sourceTree = "<group>"; };
+		C76A1CC619BF426C00EE75E4 /* CCListConfigViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListConfigViewController.m; sourceTree = "<group>"; };
+		C76A1CCA19BF428F00EE75E4 /* CCListConfigView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListConfigView.h; sourceTree = "<group>"; };
+		C76A1CCB19BF428F00EE75E4 /* CCListConfigView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListConfigView.m; sourceTree = "<group>"; };
+		C76A1CCD19BF42C700EE75E4 /* CCListConfigViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListConfigViewDelegate.h; sourceTree = "<group>"; };
+		C76A1CD019BF470000EE75E4 /* CCListConfigTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListConfigTableViewCell.m; sourceTree = "<group>"; };
+		C76A1CD119BF470000EE75E4 /* CCListConfigTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListConfigTableViewCell.h; sourceTree = "<group>"; };
+		C76A1CD419BF69BC00EE75E4 /* CCListConfigTableViewCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListConfigTableViewCellDelegate.h; sourceTree = "<group>"; };
+		C76A1CDA19BF70EC00EE75E4 /* CCListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewController.h; sourceTree = "<group>"; };
+		C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreViewController.m; sourceTree = "<group>"; };
+		C76A1CDD19BF715000EE75E4 /* CCListStoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreView.h; sourceTree = "<group>"; };
+		C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreView.m; sourceTree = "<group>"; };
+		C76A1CE019BF716D00EE75E4 /* CCListStoreViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewDelegate.h; sourceTree = "<group>"; };
+		C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreTableViewCell.h; sourceTree = "<group>"; };
+		C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreTableViewCell.m; sourceTree = "<group>"; };
+		C76A1CE519BF8EDC00EE75E4 /* CCListConfigViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListConfigViewControllerDelegate.h; sourceTree = "<group>"; };
 		C76A3C501999115000998F9F /* default_notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = default_notification.caf; sourceTree = "<group>"; };
 		C76A3C52199913DF00998F9F /* CCOutputConfirmEntryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputConfirmEntryView.h; sourceTree = "<group>"; };
 		C76A3C53199913DF00998F9F /* CCOutputConfirmEntryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOutputConfirmEntryView.m; sourceTree = "<group>"; };
@@ -297,6 +322,141 @@
 				C7E1E4EC191A240700602A4D /* CCAddress.m */,
 			);
 			name = address;
+			sourceTree = "<group>";
+		};
+		C76A1CC119BF2F4D00EE75E4 /* flat color button */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CBE19BF2F4B00EE75E4 /* CCFlatColorButton.h */,
+				C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */,
+			);
+			name = "flat color button";
+			sourceTree = "<group>";
+		};
+		C76A1CC219BF423C00EE75E4 /* list config */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CC419BF425500EE75E4 /* protocol */,
+				C76A1CC319BF424400EE75E4 /* ui */,
+				C76A1CC519BF426C00EE75E4 /* CCListConfigViewController.h */,
+				C76A1CC619BF426C00EE75E4 /* CCListConfigViewController.m */,
+			);
+			name = "list config";
+			sourceTree = "<group>";
+		};
+		C76A1CC319BF424400EE75E4 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CCF19BF46C800EE75E4 /* cell */,
+				C76A1CC819BF427600EE75E4 /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C76A1CC419BF425500EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CE519BF8EDC00EE75E4 /* CCListConfigViewControllerDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CC819BF427600EE75E4 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CC919BF427D00EE75E4 /* protocol */,
+				C76A1CCA19BF428F00EE75E4 /* CCListConfigView.h */,
+				C76A1CCB19BF428F00EE75E4 /* CCListConfigView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C76A1CC919BF427D00EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CCD19BF42C700EE75E4 /* CCListConfigViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CCE19BF42D100EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7CE2CBD1918F1A500D37A64 /* CCListViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CCF19BF46C800EE75E4 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CD319BF69AC00EE75E4 /* protocol */,
+				C76A1CD119BF470000EE75E4 /* CCListConfigTableViewCell.h */,
+				C76A1CD019BF470000EE75E4 /* CCListConfigTableViewCell.m */,
+			);
+			name = cell;
+			sourceTree = "<group>";
+		};
+		C76A1CD319BF69AC00EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CD419BF69BC00EE75E4 /* CCListConfigTableViewCellDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CD519BF70C300EE75E4 /* list store */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CD719BF70CD00EE75E4 /* protocol */,
+				C76A1CD619BF70C700EE75E4 /* ui */,
+				C76A1CDA19BF70EC00EE75E4 /* CCListStoreViewController.h */,
+				C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */,
+			);
+			name = "list store";
+			sourceTree = "<group>";
+		};
+		C76A1CD619BF70C700EE75E4 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CD819BF70D200EE75E4 /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C76A1CD719BF70CD00EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CD819BF70D200EE75E4 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CE119BF767C00EE75E4 /* cell */,
+				C76A1CD919BF70D600EE75E4 /* protocol */,
+				C76A1CDD19BF715000EE75E4 /* CCListStoreView.h */,
+				C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C76A1CD919BF70D600EE75E4 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CE019BF716D00EE75E4 /* CCListStoreViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C76A1CE119BF767C00EE75E4 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */,
+				C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */,
+			);
+			name = cell;
 			sourceTree = "<group>";
 		};
 		C76A3C4E1999113F00998F9F /* resources */ = {
@@ -637,6 +797,8 @@
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C76A1CD519BF70C300EE75E4 /* list store */,
+				C76A1CC219BF423C00EE75E4 /* list config */,
 				C7FE2C70199793F300D7D0DC /* splash */,
 				C799AB5019216BDB0096B5A8 /* output */,
 				C7CE2CA41918F0BA00D37A64 /* home */,
@@ -700,6 +862,7 @@
 		C7CE2CB21918F14F00D37A64 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				C76A1CCE19BF42D100EE75E4 /* protocol */,
 				C7CE2CB61918F17B00D37A64 /* CCListView.h */,
 				C7CE2CB71918F17B00D37A64 /* CCListView.m */,
 			);
@@ -726,7 +889,6 @@
 		C7CE2CB51918F16800D37A64 /* protocol */ = {
 			isa = PBXGroup;
 			children = (
-				C7CE2CBD1918F1A500D37A64 /* CCListViewDelegate.h */,
 				C799AB681922C39D0096B5A8 /* CCListViewTableViewCellDelegate.h */,
 			);
 			name = protocol;
@@ -1000,6 +1162,7 @@
 		C7FE2C7D1998276E00D7D0DC /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				C76A1CC119BF2F4D00EE75E4 /* flat color button */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -1196,6 +1359,8 @@
 				C7E1E52F191A586600602A4D /* CCGooglePrediction.m in Sources */,
 				C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */,
 				C7E1E52E191A586600602A4D /* CCGoogleAutocomplete.m in Sources */,
+				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,
+				C76A1CCC19BF428F00EE75E4 /* CCListConfigView.m in Sources */,
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
 				C76A3C54199913DF00998F9F /* CCOutputConfirmEntryView.m in Sources */,
 				C7FE2C7A199795BA00D7D0DC /* CCSplashView.m in Sources */,
@@ -1203,14 +1368,19 @@
 				C796D7C219BB8C0000B97879 /* CCList.m in Sources */,
 				C7CE2C731918E48800D37A64 /* main.m in Sources */,
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
+				C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */,
 				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
 				C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */,
 				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
+				C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */,
+				C76A1CC719BF426C00EE75E4 /* CCListConfigViewController.m in Sources */,
 				C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */,
 				C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
+				C76A1CD219BF470000EE75E4 /* CCListConfigTableViewCell.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
 				C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */,
+				C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */,
 				C796D7D319BBA8F700B97879 /* CCListSettingsView.m in Sources */,
 				C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */,
 				C7E1E4FB191A46FD00602A4D /* CCLocalAPI.m in Sources */,
@@ -1375,7 +1545,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5fdce0b5-0e05-4736-babe-daee02c07dfd";
+				PROVISIONING_PROFILE = "92b26bc9-43e7-4464-98ce-7dc25f1c9e16";
 				SDKROOT = iphoneos7.1;
 				WRAPPER_EXTENSION = app;
 			};

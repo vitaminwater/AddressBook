@@ -12,9 +12,17 @@
 
 #import <Mixpanel/Mixpanel.h>
 
+#import "NSString+CCLocalizedString.h"
+
+#import "CCListConfigViewController.h"
+#import "CCListStoreViewController.h"
+
 #import "CCRestKit.h"
 
 #import "CCListView.h"
+
+#import "CCAddress.h"
+#import "CCList.h"
 
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
@@ -38,6 +46,117 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     }
 }
 
+/*
+ * Data model classes
+ */
+
+@interface CCListItem : NSObject
+
+@property(nonatomic, strong)NSString *name;
+@property(nonatomic, strong)CLLocation *location;
+@property(nonatomic, assign)BOOL farAway;
+
+- (double)distanceFromLocation:(CLLocation *)currentLocation;
+- (double)angleFromLocation:(CLLocation *)currentLocation heading:(CLHeading *)currentHeading;
+
+- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate;
+
+@end
+
+@implementation CCListItem
+
+- (double)distanceFromLocation:(CLLocation *)currentLocation
+{
+    if (_farAway)
+        return 10000; // TODO find right distance based on geohash
+    return [currentLocation distanceFromLocation:_location];
+}
+
+- (double)angleFromLocation:(CLLocation *)currentLocation heading:(CLHeading *)currentHeading
+{
+    float angle = getHeadingForDirectionFromCoordinate(currentLocation.coordinate, _location.coordinate);
+    return angle - currentHeading.magneticHeading;
+}
+
+- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate
+{
+    
+}
+
+- (void)handleOnDelete
+{
+
+}
+
+@end
+
+/*
+ * Address list item
+ */
+@interface CCListItemAddress : CCListItem
+
+@property(nonatomic, strong)CCAddress *address;
+
+@end
+
+@implementation CCListItemAddress
+
+- (void)setAddress:(CCAddress *)address
+{
+    _address = address;
+    self.name = _address.name;
+    self.location = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
+}
+
+- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate
+{
+    [delegate addressSelected:_address];
+}
+
+- (void)handleOnDelete
+{
+    NSError *error;
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": _address.name ? _address.name : @"",
+                                                                     @"address": _address.address ? _address.address : @"",
+                                                                     @"identifier": _address.identifier ? _address.identifier : @""}];
+    
+    [managedObjectContext deleteObject:_address];
+    if ([managedObjectContext saveToPersistentStore:&error] == NO) {
+        NSLog(@"%@", error);
+        return;
+    }
+}
+
+@end
+
+/*
+ * List list item
+ */
+@interface CCListItemList : CCListItem
+
+@property(nonatomic, strong)CCList *list;
+
+@end
+
+@implementation CCListItemList
+
+- (void)setList:(CCList *)list
+{
+    _list = list;
+}
+
+- (void)handleOnSelect:(id<CCListViewDelegate>)delegate
+{
+    // TODO
+}
+
+@end
+
+/*
+ * Actual View controller implementation
+ */
+
 @interface CCListViewController ()
 {
     CLLocationManager *_locationManager;
@@ -45,7 +164,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     CLHeading *_currentHeading;
 }
 
-@property(nonatomic, strong)NSMutableArray *addresses;
+@property(nonatomic, strong)NSMutableArray *listItems;
 
 @end
 
@@ -55,17 +174,6 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 {
     self = [super init];
     if (self) {
-        NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-        
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-        
-        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        _addresses = [addresses mutableCopy];
-        
-        [_addresses sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            return [self nameSortMethod:obj1 obj2:obj2];
-        }];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
@@ -79,7 +187,8 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 - (void)loadView
 {
-    CCListView *listView = [[CCListView alloc] initWithHelpOn:[_addresses count] == 0];
+    [self loadListItems];
+    CCListView *listView = [[CCListView alloc] initWithHelpOn:[_listItems count] == 0];
     listView.delegate = self;
     self.view = listView;
 }
@@ -118,20 +227,57 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     [super didReceiveMemoryWarning];
 }
 
+- (void)loadListItems
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    
+    _listItems = [@[] mutableCopy];
+    // Addresses
+    {
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lists.@count = 0 OR ANY lists.expanded = %@", @YES];
+        [fetchRequest setPredicate:predicate];
+        
+        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        for (CCAddress *address in addresses) {
+            CCListItemAddress *itemAddress = [CCListItemAddress new];
+            itemAddress.address = address;
+            [_listItems addObject:itemAddress];
+        }
+    }
+    
+    // Lists
+    {
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"expanded = %@", @NO];
+        [fetchRequest setPredicate:predicate];
+        
+        NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        for (CCList *list in lists) {
+            CCListItemList *itemList = [CCListItemList new];
+            itemList.list = list;
+            [_listItems addObject:itemList];
+        }
+    }
+    
+    [_listItems sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [self nameSortMethod:obj1 obj2:obj2];
+    }];
+}
+
 #pragma mark - sort methods
 
-- (NSComparisonResult)nameSortMethod:(CCAddress *)obj1 obj2:(CCAddress *)obj2
+- (NSComparisonResult)nameSortMethod:(CCListItem *)obj1 obj2:(CCListItem *)obj2
 {
     return [obj1.name compare:obj2.name options:NSCaseInsensitiveSearch];
 }
 
-- (NSComparisonResult)distanceSortMethod:(CCAddress *)obj1 obj2:(CCAddress *)obj2
+- (NSComparisonResult)distanceSortMethod:(CCListItem *)obj1 obj2:(CCListItem *)obj2
 {
-    CLLocation *coordinate1 = [[CLLocation alloc] initWithLatitude:obj1.latitudeValue longitude:obj1.longitudeValue];
-    CLLocation *coordinate2 = [[CLLocation alloc] initWithLatitude:obj2.latitudeValue longitude:obj2.longitudeValue];
-    
-    double distance1 = [coordinate1 distanceFromLocation:_currentLocation];
-    double distance2 = [coordinate2 distanceFromLocation:_currentLocation];
+    double distance1 = [obj1 distanceFromLocation:_currentLocation];
+    double distance2 = [obj2 distanceFromLocation:_currentLocation];
     
     return [@(distance1) compare:@(distance2)];
 }
@@ -141,16 +287,21 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = [locations lastObject];
+    
+    if (_currentLocation != nil && [_currentLocation distanceFromLocation:location] < 10) {
+        return;
+    }
+    
     _currentLocation = location;
     
     __weak CCListViewController *weakSelf = self;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        [_addresses sortUsingComparator:^NSComparisonResult(CCAddress *obj1, CCAddress *obj2) {
+        [_listItems sortUsingComparator:^NSComparisonResult(CCListItem *obj1, CCListItem *obj2) {
             return [weakSelf distanceSortMethod:obj1 obj2:obj2];
         }];
         dispatch_sync(dispatch_get_main_queue(), ^{
-            [((CCListView *)weakSelf.view) reloadVisibleAddresses];
+            [((CCListView *)weakSelf.view) reloadVisibleListItems];
         });
     });
 }
@@ -158,7 +309,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
 {
     _currentHeading = newHeading;
-    [((CCListView *)self.view) reloadVisibleAddresses];
+    [((CCListView *)self.view) reloadVisibleListItems];
 }
 
 #pragma mark - public methods
@@ -167,25 +318,36 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 {
     NSUInteger newIndex;
     
+    CCListItemAddress *listItemAddress = [CCListItemAddress new];
+    listItemAddress.address = address;
     if (!_currentLocation) {
-        newIndex = [_addresses indexOfObject:address
-                    inSortedRange:(NSRange){0, [_addresses count]}
+        newIndex = [_listItems indexOfObject:listItemAddress
+                    inSortedRange:(NSRange){0, [_listItems count]}
                           options:NSBinarySearchingInsertionIndex
-                  usingComparator:^NSComparisonResult(id obj1, id obj2) {
+                  usingComparator:^NSComparisonResult(CCListItem *obj1, CCListItem *obj2) {
                       return [self nameSortMethod:obj1 obj2:obj2];
                   }];
     } else {
-        newIndex = [_addresses indexOfObject:address
-                               inSortedRange:(NSRange){0, [_addresses count]}
+        newIndex = [_listItems indexOfObject:listItemAddress
+                               inSortedRange:(NSRange){0, [_listItems count]}
                                      options:NSBinarySearchingInsertionIndex
-                             usingComparator:^NSComparisonResult(id obj1, id obj2) {
-                                 return [self distanceSortMethod:obj1 obj2:obj2];
+                             usingComparator:^NSComparisonResult(CCListItem *obj1, CCListItem *obj2) {
+                                 if (obj1.farAway == NO && obj2.farAway == NO)
+                                     return [self distanceSortMethod:obj1 obj2:obj2];
+                                 else if (obj1.farAway == YES && obj2.farAway == YES)
+                                     return [self nameSortMethod:obj1 obj2:obj2];
+                                 else if (obj1.farAway == NO && obj2.farAway == YES)
+                                     return NSOrderedDescending;
+                                 else
+                                     return NSOrderedAscending;
                              }];
     }
     
-    [_addresses insertObject:address atIndex:newIndex];
+    {
+        [_listItems insertObject:listItemAddress atIndex:newIndex];
+    }
     
-    [((CCListView *)self.view) insertAddressAtIndex:newIndex];
+    [((CCListView *)self.view) insertListItemAtIndex:newIndex];
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -197,32 +359,23 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     
     NSNumber *index = objc_getAssociatedObject(alertView, @"index");
     
-    NSError *error;
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    CCAddress *address = _addresses[[index intValue]];
+    CCListItem *listItem = _listItems[[index intValue]];
+    [_listItems removeObject:listItem];
     
-    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ? address.name : @"",
-                                                                     @"address": address.address ? address.address : @"",
-                                                                     @"identifier": address.identifier ? address.identifier : @""}];
+    [listItem handleOnDelete];
     
-    [_addresses removeObject:address];
-    [managedObjectContext deleteObject:address];
-    if ([managedObjectContext saveToPersistentStore:&error] == NO) {
-        NSLog(@"%@", error);
-        return;
-    }
-    [((CCListView *)self.view) deleteAddressAtIndex:[index intValue]];
+    [((CCListView *)self.view) deleteListItemAtIndex:[index intValue]];
 }
 
 #pragma mark - CCListViewDelegate methods
 
-- (void)didSelectAddressAtIndex:(NSUInteger)index color:(NSString *)color
+- (void)didSelectListItemAtIndex:(NSUInteger)index color:(NSString *)color
 {
-    CCAddress *address = _addresses[index];
-    [_delegate addressSelected:address];
+    CCListItem *listItem = _listItems[index];
+    [listItem handleOnSelect:_delegate];
 }
 
-- (void)deleteAddressAtIndex:(NSUInteger)index
+- (void)deleteListItemAtIndex:(NSUInteger)index
 {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NOTIF_ADDELETE", @"") message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"NOTIF_ADDELETE_N", @"") otherButtonTitles:NSLocalizedString(@"NOTIF_ADDELETE_Y", @""), nil];
     [alertView show];
@@ -230,48 +383,55 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     objc_setAssociatedObject(alertView, @"index", @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (double)distanceForAddressAtIndex:(NSUInteger)index
+- (double)distanceForListItemAtIndex:(NSUInteger)index
 {
     if (_currentLocation) {
-        CCAddress *address = _addresses[index];
-        CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
-        return [_currentLocation distanceFromLocation:coordinate];
+        CCListItem *listItem = _listItems[index];
+        return [listItem distanceFromLocation:_currentLocation];
     }
     return -1;
 }
 
-- (double)angleForAddressAtIndex:(NSUInteger)index
+- (double)angleForListItemAtIndex:(NSUInteger)index
 {
     if (_currentLocation) {
-        CCAddress *address = _addresses[index];
-        CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
-        float angle = getHeadingForDirectionFromCoordinate(_currentLocation.coordinate, coordinate.coordinate);
-        return angle - _currentHeading.magneticHeading;
+        CCListItem *listItem = _listItems[index];
+        return [listItem angleFromLocation:_currentLocation heading:_currentHeading];
     }
     return 0;
 }
 
-- (NSString *)nameForAddressAtIndex:(NSUInteger)index
+- (NSString *)nameForListItemAtIndex:(NSUInteger)index
 {
-    CCAddress *address = _addresses[index];
-    return address.name;
+    CCListItem *listItem = _listItems[index];
+    return listItem.name;
 }
 
-- (NSString *)addressForAddressAtIndex:(NSUInteger)index
+- (NSUInteger)numberOfListItems
 {
-    CCAddress *address = _addresses[index];
-    return address.address;
+    return [_listItems count];
 }
 
-- (NSDate *)lastNotifForAddressAtIndex:(NSUInteger)index
+- (void)showListManagement
 {
-    CCAddress *address = _addresses[index];
-    return address.lastnotif;
+    CCListConfigViewController *listConfigViewController = [CCListConfigViewController new];
+    listConfigViewController.delegate = self;
+    [self.navigationController pushViewController:listConfigViewController animated:YES];
 }
 
-- (NSUInteger)numberOfAddresses
+- (void)showListStore
 {
-    return [_addresses count];
+    CCListStoreViewController *listStoreViewController = [CCListStoreViewController new];
+    [self.navigationController pushViewController:listStoreViewController animated:YES];
+}
+
+#pragma mark - CCListConfigViewControllerDelegate methods
+
+- (void)didChangedListConfig
+{
+    [self loadListItems];
+    CCListView *view = (CCListView *)self.view;
+    [view reloadListItemList];
 }
 
 #pragma mark - UINotificationCenter methods

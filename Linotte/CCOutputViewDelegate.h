@@ -19,6 +19,7 @@ typedef enum : NSUInteger {
 
 // list stuffs
 - (NSUInteger)createListWithName:(NSString *)name;
+- (void)removeListAtIndex:(NSUInteger)index;
 - (void)listSelectedAtIndex:(NSUInteger)index;
 - (void)listUnselectedAtIndex:(NSUInteger)index;
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index;

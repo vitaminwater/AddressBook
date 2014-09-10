@@ -12,15 +12,15 @@
 
 #import "CCListViewTableViewCellDelegate.h"
 
-@interface CCListView : UIView<UITableViewDataSource, UITableViewDelegate, CCListViewTableViewCellDelegate>
+@interface CCListView : UIView<UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, CCListViewTableViewCellDelegate>
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 
 - (id)initWithHelpOn:(BOOL)helpOn;
-- (void)reloadAddressList;
-- (void)reloadVisibleAddresses;
-- (void)insertAddressAtIndex:(NSUInteger)index;
-- (void)deleteAddressAtIndex:(NSUInteger)index;
+- (void)reloadListItemList;
+- (void)reloadVisibleListItems;
+- (void)insertListItemAtIndex:(NSUInteger)index;
+- (void)deleteListItemAtIndex:(NSUInteger)index;
 
 - (void)unselect;
 

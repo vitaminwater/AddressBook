@@ -15,6 +15,6 @@
 @property(nonatomic, assign)id<CCSettingsViewDelegate> delegate;
 
 @property(nonatomic, assign)BOOL notificationEnabled;
-@property(nonatomic, strong)NSString *listName;
+@property(nonatomic, strong)NSString *listNames;
 
 @end

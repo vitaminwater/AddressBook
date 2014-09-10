@@ -15,6 +15,9 @@
 @property(nonatomic, strong)UITextView *textView;
 @property(nonatomic, strong)UIButton *enableNotificationButton;
 @property(nonatomic, strong)UIButton *disableNotificationButton;
+@property(nonatomic, strong)UIButton *listButton;
+
+@property(nonatomic, strong)UIButton *closeButton;
 
 @end
 
@@ -33,7 +36,9 @@
         _notificationEnabled = YES;
         
         [self setupTextView];
-        [self setupButtons];
+        [self setupNotificationButtons];
+        [self setupListButton];
+        [self setupCloseButton];
         [self setupLayout];
     }
     return self;
@@ -61,17 +66,21 @@
     [self addSubview:_textView];
 }
 
-- (void)setupButtons
+- (void)setupNotificationButtons
 {
     _enableNotificationButton = [self createButton];
     _enableNotificationButton.backgroundColor = [UIColor colorWithHexString:@"#5acfc4"];
     [_enableNotificationButton setTitle:NSLocalizedString(@"ENABLE_NOTIF_BUTTON_TEXT", @"") forState:UIControlStateNormal];
     [_enableNotificationButton addTarget:self action:@selector(enableNotificationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _enableNotificationButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    _enableNotificationButton.layer.borderWidth = 4;
     
     _disableNotificationButton = [self createButton];
     _disableNotificationButton.backgroundColor = [UIColor colorWithHexString:@"#f4607c"];
     [_disableNotificationButton setTitle:NSLocalizedString(@"DISABLE_NOTIF_BUTTON_TEXT", @"") forState:UIControlStateNormal];
     [_disableNotificationButton addTarget:self action:@selector(disableNotificationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _disableNotificationButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    _disableNotificationButton.layer.borderWidth = 0;
 }
 
 - (UIButton *)createButton
@@ -86,16 +95,43 @@
     return button;
 }
 
+- (void)setupListButton
+{
+    _listButton = [UIButton new];
+    _listButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _listButton.backgroundColor = [UIColor colorWithHexString:@"#ffae64"];
+    _listButton.layer.cornerRadius = 5;
+    [_listButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    [_listButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    [_listButton addTarget:self action:@selector(listButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [_listButton setTitle:NSLocalizedString(@"SHOW_LIST_SETTING", @"") forState:UIControlStateNormal];
+    [self addSubview:_listButton];
+}
+
+- (void)setupCloseButton
+{
+    _closeButton = [UIButton new];
+    _closeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [_closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
+    [_closeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    [_closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
+    _closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
+    [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
+    [_closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _closeButton.opaque = NO;
+    [self addSubview:_closeButton];
+}
+
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_textView, _enableNotificationButton, _disableNotificationButton);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_textView, _enableNotificationButton, _disableNotificationButton, _listButton, _closeButton);
     NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_textView]-|" options:0 metrics:nil views:views];
     [self addConstraints:horizontalConstraints];
     
     NSArray *horizontalButtonConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_enableNotificationButton(>=120)]-[_disableNotificationButton(==_enableNotificationButton)]-|" options:0 metrics:nil views:views];
     [self addConstraints:horizontalButtonConstraints];
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_textView]-[_enableNotificationButton]-|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_textView]-[_enableNotificationButton]-[_listButton]-[_closeButton]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     NSLayoutConstraint *centerYRightButtonConstraint = [NSLayoutConstraint constraintWithItem:_enableNotificationButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_disableNotificationButton attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
@@ -103,20 +139,38 @@
     
     NSLayoutConstraint *centerHeightRightButtonConstraint = [NSLayoutConstraint constraintWithItem:_enableNotificationButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_disableNotificationButton attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
     [self addConstraint:centerHeightRightButtonConstraint];
+    
+    NSArray *listButtonWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"|-[_listButton]-|" options:0 metrics:nil views:views];
+    [self addConstraints:listButtonWidthConstraints];
+    
+    NSArray *closeButtonWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"|[_closeButton]|" options:0 metrics:nil views:views];
+    [self addConstraints:closeButtonWidthConstraints];
 }
 
 #pragma mark - UIButton target methods
 
+- (void)listButtonPressed:(UIButton *)sender
+{
+    [_delegate showListSetting];
+}
+
+- (void)closeButtonPressed:(UIButton *)sender
+{
+    [_delegate closeConfirmView:self];
+}
+
 - (void)enableNotificationButtonPressed:(id)sender
 {
     _notificationEnabled = YES;
-    [_delegate closeConfirmView:self];
+    _enableNotificationButton.layer.borderWidth = 4;
+    _disableNotificationButton.layer.borderWidth = 0;
 }
 
 - (void)disableNotificationButtonPressed:(id)sender
 {
     _notificationEnabled = NO;
-    [_delegate closeConfirmView:self];
+    _enableNotificationButton.layer.borderWidth = 0;
+    _disableNotificationButton.layer.borderWidth = 4;
 }
 
 @end

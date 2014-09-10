@@ -25,6 +25,8 @@
 
 #import "CCRestKit.h"
 
+#import "CCAddress.h"
+
 @interface CCAppDelegate()
 
 @property(nonatomic, strong)NSDate *dateActive;

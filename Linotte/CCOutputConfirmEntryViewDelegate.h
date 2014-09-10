@@ -11,5 +11,6 @@
 @protocol CCOutputConfirmEntryViewDelegate <NSObject>
 
 - (void)closeConfirmView:(id)sender;
+- (void)showListSetting;
 
 @end

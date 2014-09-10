@@ -16,6 +16,8 @@
 
 #import <Mixpanel/Mixpanel.h>
 
+#import <geohash/geohash.h>
+
 #import "CCFoursquareVenues.h"
 #import "CCFoursquareCategorie.h"
 
@@ -26,7 +28,9 @@
 
 #import "CCAddView.h"
 
-#import <geohash/geohash.h>
+#import "CCAddress.h"
+#import "CCCategory.h"
+
 
 /**
  * Address storage class

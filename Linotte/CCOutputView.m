@@ -166,7 +166,7 @@
     _addressSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
     _addressSettingsView.delegate = self;
     _addressSettingsView.notificationEnabled = [_delegate notificationEnabled];
-    _addressSettingsView.listName = [_delegate currentListNames];
+    _addressSettingsView.listNames = [_delegate currentListNames];
     [self addSubview:_addressSettingsView];
     
     NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
@@ -296,20 +296,26 @@
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
     [_delegate listSelectedAtIndex:index];
-    _addressSettingsView.listName = [_delegate currentListNames];
+    _addressSettingsView.listNames = [_delegate currentListNames];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
 {
     [_delegate listUnselectedAtIndex:index];
-    _addressSettingsView.listName = [_delegate currentListNames];
+    _addressSettingsView.listNames = [_delegate currentListNames];
 }
 
 - (NSUInteger)createListWithName:(NSString *)name
 {
     NSUInteger insertIndex = [_delegate createListWithName:name];
-    _addressSettingsView.listName = [_delegate currentListNames];
+    _addressSettingsView.listNames = [_delegate currentListNames];
     return insertIndex;
+}
+
+- (void)removeListAtIndex:(NSUInteger)index
+{
+    [_delegate removeListAtIndex:index];
+    _addressSettingsView.listNames = [_delegate currentListNames];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index

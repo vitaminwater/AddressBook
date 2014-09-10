@@ -9,13 +9,13 @@
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="notify" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="notify" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="provider" attributeType="String" defaultValueString="foursquare" syncable="YES"/>
         <attribute name="providerId" attributeType="String" defaultValueString="0" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCCategory" inverseName="address" inverseEntity="CCCategory" syncable="YES"/>
-        <relationship name="lists" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="CCList" inverseName="addresses" inverseEntity="CCList" syncable="YES"/>
-        <relationship name="metas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddressMeta" inverseName="address" inverseEntity="CCAddressMeta" syncable="YES"/>
+        <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCList" inverseName="addresses" inverseEntity="CCList" syncable="YES"/>
+        <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCAddressMeta" inverseName="address" inverseEntity="CCAddressMeta" syncable="YES"/>
     </entity>
     <entity name="CCAddressMeta" representedClassName="CCAddressMeta" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
@@ -30,6 +30,7 @@
         <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="categories" inverseEntity="CCAddress" syncable="YES"/>
     </entity>
     <entity name="CCList" representedClassName="CCList" syncable="YES">
+        <attribute name="expanded" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -37,8 +38,9 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="provider" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="providerId" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="addresses" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>
-        <relationship name="metas" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCListMeta" inverseName="list" inverseEntity="CCListMeta" syncable="YES"/>
+        <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>
+        <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListMeta" inverseName="list" inverseEntity="CCListMeta" syncable="YES"/>
     </entity>
     <entity name="CCListMeta" representedClassName="CCListMeta" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
@@ -48,10 +50,10 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="metas" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="-63" positionY="-18" width="128" height="270"/>
-        <element name="CCAddressMeta" positionX="-18" positionY="108" width="128" height="118"/>
-        <element name="CCCategory" positionX="-63" positionY="54" width="128" height="88"/>
-        <element name="CCList" positionX="-9" positionY="135" width="128" height="178"/>
-        <element name="CCListMeta" positionX="18" positionY="153" width="128" height="118"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="CCAddressMeta" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="CCCategory" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="CCList" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="CCListMeta" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

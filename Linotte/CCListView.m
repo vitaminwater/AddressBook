@@ -11,17 +11,21 @@
 #import <HexColors/HexColor.h>
 
 #import "CCListViewTableViewCell.h"
+#import "CCFlatColorButton.h"
 
 #define kCCListViewTableViewCellIdentifier @"kCCListViewTableViewCellIdentifier"
 
 #define kCCDistanceColors @[@"#6b6b6b", @"#898989", @"#afafaf", @"#c8c8c8"]
 
 @interface CCListView()
-{
-    UIImageView *_helpImage;
-}
 
+@property(nonatomic, strong)UIImageView *helpImage;
+
+@property(nonatomic, strong)UIView *buttonContainer;
 @property(nonatomic, strong)UITableView *tableView;
+
+@property(nonatomic, assign)CGFloat panVelocity;
+@property(nonatomic, strong)NSLayoutConstraint *buttonContainerHeightConstraint;
 
 @end
 
@@ -33,19 +37,67 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         
+        [self setupButtons];
         [self setupTableView];
+        [self setupLayout];
+        
+        UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
+        panGestureRecognizer.delegate = self;
+        [self addGestureRecognizer:panGestureRecognizer];
         
         if (helpOn)
             [self setupHelpImage];
+        
     }
     return self;
+}
+
+- (void)setupButtons
+{
+    _buttonContainer = [UIView new];
+    _buttonContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_buttonContainer];
+    
+    CCFlatColorButton *addListButton = [self createButton];
+    [addListButton addTarget:self action:@selector(addListPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [addListButton setTitle:NSLocalizedString(@"ADD_LIST", @"") forState:UIControlStateNormal];
+    [addListButton setBackgroundColor:[UIColor colorWithHexString:@"#8e44ad"]];
+    [addListButton setBackgroundColor:[UIColor colorWithHexString:@"#9b59b6"] forState:UIControlStateHighlighted];
+    
+    CCFlatColorButton *listSelectorButton = [self createButton];
+    [listSelectorButton addTarget:self action:@selector(listSelectorPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [listSelectorButton setTitle:NSLocalizedString(@"EXPANDED_DISPLAYED_LIST", @"") forState:UIControlStateNormal];
+    [listSelectorButton setBackgroundColor:[UIColor colorWithHexString:@"#2980b9"]];
+    [listSelectorButton setBackgroundColor:[UIColor colorWithHexString:@"#3498db"] forState:UIControlStateHighlighted];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(listSelectorButton, addListButton);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[addListButton][listSelectorButton(==addListButton)]|" options:0 metrics:nil views:views];
+    [_buttonContainer addConstraints:horizontalConstraints];
+    
+    for (UIView *view in views.allValues) {
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        [_buttonContainer addConstraints:verticalConstraints];
+    }
+}
+
+- (CCFlatColorButton *)createButton
+{
+    CCFlatColorButton *button = [CCFlatColorButton new];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
+
+    button.titleLabel.numberOfLines = 0;
+
+    [_buttonContainer addSubview:button];
+    
+    return button;
 }
 
 - (void)setupTableView
 {
     _tableView = [UITableView new];
-    _tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _tableView.frame = self.frame;
+    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     _tableView.backgroundColor = [UIColor clearColor];
     
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -60,6 +112,22 @@
     [self addSubview:_tableView];
 }
 
+- (void)setupLayout
+{
+    NSDictionary *views = NSDictionaryOfVariableBindings(_buttonContainer, _tableView);
+    
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_buttonContainer][_tableView]|" options:0 metrics:nil views:views];
+    [self addConstraints:verticalConstraints];
+    
+    for (UIView *view in views.allValues) {
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        [self addConstraints:horizontalConstraints];
+    }
+    
+    _buttonContainerHeightConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
+    [self addConstraint:_buttonContainerHeightConstraint];
+}
+
 - (void)setupHelpImage
 {
     _helpImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NSLocalizedString(@"NO_NOTE_SPLASH", @"")]];
@@ -71,14 +139,19 @@
     
     NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_helpImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
     [self addConstraint:centerYConstraint];
+    
+    _helpImage.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        _helpImage.alpha = 1;
+    }];
 }
 
-- (void)reloadAddressList
+- (void)reloadListItemList
 {
     [_tableView reloadData];
 }
 
-- (void)reloadVisibleAddresses
+- (void)reloadVisibleListItems
 {
     NSArray *cells = _tableView.visibleCells;
     for (CCListViewTableViewCell *cell in cells) {
@@ -87,21 +160,28 @@
     }
 }
 
-- (void)insertAddressAtIndex:(NSUInteger)index
+- (void)insertListItemAtIndex:(NSUInteger)index
 {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
     [_tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     
     if (_helpImage) {
-        [_helpImage removeFromSuperview];
-        _helpImage = nil;
+        [UIView animateWithDuration:0.2 animations:^{
+            _helpImage.alpha = 0;
+        } completion:^(BOOL finished) {
+            [_helpImage removeFromSuperview];
+            _helpImage = nil;
+        }];
     }
 }
 
-- (void)deleteAddressAtIndex:(NSUInteger)index
+- (void)deleteListItemAtIndex:(NSUInteger)index
 {
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
     [_tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    
+    if ([_delegate numberOfListItems] == 0 && _helpImage == nil)
+        [self setupHelpImage];
 }
 
 - (void)unselect
@@ -114,7 +194,7 @@
 - (void)deleteAddress:(CCListViewTableViewCell *)sender
 {
     NSIndexPath *indexPath = [_tableView indexPathForCell:sender];
-    [_delegate deleteAddressAtIndex:indexPath.row];
+    [_delegate deleteListItemAtIndex:indexPath.row];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -132,7 +212,7 @@
     /*NSDate *lastNotif = [_delegate lastNotifForAddressAtIndex:index];
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     dateFormatter.dateFormat = @"dd/MM HH:mm";*/
-    double distance = [_delegate distanceForAddressAtIndex:index];
+    double distance = [_delegate distanceForListItemAtIndex:index];
     NSString *distanceUnit = @"m";
     
     NSArray *distanceColors = kCCLinotteColors;
@@ -145,7 +225,7 @@
     }
     
     NSString *distanceText = [NSString stringWithFormat:@"%.02f %@", distance, distanceUnit /*, [dateFormatter stringFromDate:lastNotif]*/];
-    cell.textLabel.text = [_delegate nameForAddressAtIndex:index];
+    cell.textLabel.text = [_delegate nameForListItemAtIndex:index];
     if (distance > 0)
         cell.detailTextLabel.text = distanceText;
     else
@@ -154,12 +234,12 @@
         NSString *color = distanceColors[distanceColorIndex];
         cell.colorCode = color;
     }
-    cell.angle = [_delegate angleForAddressAtIndex:index];
+    cell.angle = [_delegate angleForListItemAtIndex:index];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [_delegate numberOfAddresses];
+    return [_delegate numberOfListItems];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -172,7 +252,66 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CCListViewTableViewCell *cell = (CCListViewTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    [_delegate didSelectAddressAtIndex:indexPath.row color:cell.colorCode];
+    [_delegate didSelectListItemAtIndex:indexPath.row color:cell.colorCode];
+}
+
+#pragma mark - UIbutton target methods
+
+- (void)listSelectorPressed:(UIButton *)sender
+{
+    [_delegate showListManagement];
+}
+
+- (void)addListPressed:(UIButton *)sender
+{
+    [_delegate showListStore];
+}
+
+#pragma mark - UIPanGestureRecognizer target methods
+
+- (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer
+{
+    if (panGestureRecognizer.state == UIGestureRecognizerStateBegan) {
+    } else if (panGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        CGFloat y = [panGestureRecognizer translationInView:self].y;
+        [panGestureRecognizer setTranslation:CGPointZero inView:self];
+        CGFloat newHeight = _buttonContainerHeightConstraint.constant + y;
+        NSLog(@"%f %f", y, _tableView.contentOffset.y);
+        
+        if (y > 0 && _tableView.contentOffset.y > 0) {
+            return;
+        }
+        
+        newHeight = MIN(50, MAX(0, newHeight));
+        _panVelocity = [panGestureRecognizer velocityInView:self].y;
+        _buttonContainerHeightConstraint.constant = newHeight;
+        if (newHeight > 0 && newHeight < 50)
+            _tableView.contentOffset = CGPointMake(_tableView.contentOffset.x, _tableView.contentOffset.y + y);
+        [self layoutIfNeeded];
+    } else {
+        NSLog(@"%f", _panVelocity);
+        if (_buttonContainerHeightConstraint.constant < 25 || _panVelocity < -800)
+            _buttonContainerHeightConstraint.constant = 0;
+        else if (_buttonContainerHeightConstraint.constant > 25 || _panVelocity > 800)
+            _buttonContainerHeightConstraint.constant = 50;
+        [UIView animateWithDuration:0.2 animations:^{
+            [self layoutIfNeeded];
+        }];
+    }
+}
+
+#pragma mark - setter methods
+
+- (void)setDelegate:(id<CCListViewDelegate>)delegate
+{
+    _delegate = delegate;
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
 }
 
 @end

@@ -13,10 +13,11 @@
 #import "CCListViewControllerDelegate.h"
 
 #import "CCListViewDelegate.h"
+#import "CCListConfigViewControllerDelegate.h"
 
 @class CCAddress;
 
-@interface CCListViewController : UIViewController<CCListViewDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
+@interface CCListViewController : UIViewController<CCListViewDelegate, CCListConfigViewControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 

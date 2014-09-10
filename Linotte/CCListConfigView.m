@@ -1,53 +1,41 @@
 //
-//  CCListSettingsView.m
+//  CCListConfigView.m
 //  Linotte
 //
-//  Created by stant on 06/09/14.
+//  Created by stant on 09/09/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListSettingsView.h"
+#import "CCListConfigView.h"
 
 #import <HexColors/HexColor.h>
 
-#import "NSString+CCLocalizedString.h"
+#import "CCListConfigTableViewCell.h"
 
-#import "CCListSettingsTableViewCell.h"
+#define kCCListConfigTableViewCell @"kCCListConfigTableViewCell"
 
-#define kCCListSettingsTableViewCell @"kCCListSettingsTableViewCell"
+@interface CCListConfigView()
 
-@interface CCListSettingsView()
-
-@property(nonatomic, strong)NSIndexPath *selectedPath;
-
-@property(nonatomic, strong)UITextView *helpView;
-@property(nonatomic, strong)UIButton *closeButton;
-
+@property(nonatomic, strong)UITextView *helpView1;
+@property(nonatomic, strong)UITextView *helpView2;
 @property(nonatomic, strong)UITextField *listName;
-@property(nonatomic, strong)UITableView *listSelector;
 @property(nonatomic, strong)UIButton *editListButton;
-
-@property(nonatomic, strong)NSLayoutConstraint *listSelectorHeightConstraint;
+@property(nonatomic, strong)UITableView *listView;
 
 @end
 
-@implementation CCListSettingsView
+@implementation CCListConfigView
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b" alpha:0.85];
-        self.alpha = 0.5;
-        self.opaque = NO;
-        self.layer.cornerRadius = 15;
-        self.layer.masksToBounds = YES;
+        self.backgroundColor = [UIColor whiteColor];
         
         [self setupHelp];
         [self setupListName];
         [self setupEditListButton];
-        [self setupListSelector];
-        [self setupCloseButton];
+        [self setupList];
         [self setupLayout];
     }
     return self;
@@ -55,16 +43,23 @@
 
 - (void)setupHelp
 {
-    _helpView = [UITextView new];
-    _helpView.translatesAutoresizingMaskIntoConstraints = NO;
-    _helpView.font = [UIFont fontWithName:@"Futura-Book" size:21];
-    _helpView.backgroundColor = [UIColor clearColor];
-    _helpView.textColor = [UIColor whiteColor];
-    _helpView.textAlignment = NSTextAlignmentJustified;
-    _helpView.editable = NO;
-    _helpView.scrollEnabled = NO;
-    _helpView.text = NSLocalizedString(@"LIST_HELP", @"");
-    [self addSubview:_helpView];
+    //_helpView1 = [self createHelp:NSLocalizedString(@"LIST_CONFIG_HELP1", @"") fontSize:21];
+    _helpView2 = [self createHelp:NSLocalizedString(@"LIST_CONFIG_HELP2", @"") fontSize:17];
+}
+
+- (UITextView *)createHelp:(NSString *)text fontSize:(NSUInteger)fontSize
+{
+    UITextView *textView = [UITextView new];
+    textView.translatesAutoresizingMaskIntoConstraints = NO;
+    textView.font = [UIFont fontWithName:@"Futura-Book" size:fontSize];
+    textView.backgroundColor = [UIColor clearColor];
+    textView.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
+    textView.textAlignment = NSTextAlignmentJustified;
+    textView.editable = NO;
+    textView.scrollEnabled = NO;
+    textView.text = text;
+    [self addSubview:textView];
+    return textView;
 }
 
 - (void)setupListName
@@ -72,6 +67,8 @@
     _listName = [UITextField new];
     _listName.translatesAutoresizingMaskIntoConstraints = NO;
     _listName.backgroundColor = [UIColor whiteColor];
+    _listName.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    _listName.layer.borderWidth = 1;
     _listName.font = [UIFont fontWithName:@"Montserrat-Bold" size:24];
     _listName.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
     [_listName setReturnKeyType:UIReturnKeyGo];
@@ -83,7 +80,7 @@
     leftView.frame = CGRectMake(0, 0, 5, 0);
     _listName.leftView = leftView;
     _listName.leftViewMode = UITextFieldViewModeAlways;
-
+    
     UIView *rightView = [UIView new];
     rightView.frame = CGRectMake(0, 0, 5, 0);
     _listName.rightView = rightView;
@@ -103,42 +100,28 @@
     [self addSubview:_editListButton];
 }
 
-- (void)setupListSelector
+- (void)setupList
 {
-    _listSelector = [UITableView new];
-    _listSelector.translatesAutoresizingMaskIntoConstraints = NO;
-    _listSelector.backgroundColor = [UIColor clearColor];
-    _listSelector.separatorColor = [UIColor whiteColor];
-    _listSelector.separatorStyle = UITableViewCellSeparatorStyleNone;
-    _listSelector.rowHeight = 35;
-    _listSelector.delegate = self;
-    _listSelector.dataSource = self;
-    [_listSelector registerClass:[CCListSettingsTableViewCell class] forCellReuseIdentifier:kCCListSettingsTableViewCell];
-    [self addSubview:_listSelector];
-}
-
-- (void)setupCloseButton
-{
-    _closeButton = [UIButton new];
-    _closeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [_closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    _closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
-    [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
-    [_closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    _closeButton.opaque = NO;
-    [self addSubview:_closeButton];
+    _listView = [UITableView new];
+    _listView.translatesAutoresizingMaskIntoConstraints = NO;
+    _listView.backgroundColor = [UIColor clearColor];
+    _listView.separatorColor = [UIColor whiteColor];
+    _listView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _listView.rowHeight = 40;
+    _listView.delegate = self;
+    _listView.dataSource = self;
+    [_listView registerClass:[CCListConfigTableViewCell class] forCellReuseIdentifier:kCCListConfigTableViewCell];
+    [self addSubview:_listView];
 }
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_helpView, _listName, _editListButton, _listSelector, _closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==150)]-[_closeButton(==35)]|" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(/*_helpView1, */_listName, _helpView2, _editListButton, _listView);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_listName(==40)]-[_helpView2]-[_editListButton]-[_listView]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:view == _closeButton ? @"H:|[view]|" : @"H:|-[view]-|" options:0 metrics:nil views:@{@"view": view}];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view": view}];
         [self addConstraints:horizontalConstraints];
     }
 }
@@ -164,9 +147,7 @@
     }];
 }
 
-#pragma mark - setter methods
-
-- (void)setDelegate:(id<CCListSettingsViewDelegate>)delegate
+- (void)setDelegate:(id<CCListConfigViewDelegate>) delegate
 {
     _delegate = delegate;
     
@@ -178,15 +159,10 @@
 
 #pragma mark - UIButton target methods
 
-- (void)closeButtonPressed:(UIButton *)sender
-{
-    [_delegate closeListSettingsView:self success:NO];
-}
-
 - (void)editListPressed:(UIButton *)sender
 {
-    BOOL newEditing = !_listSelector.editing;
-    [_listSelector setEditing:newEditing animated:YES];
+    BOOL newEditing = !_listView.editing;
+    [_listView setEditing:newEditing animated:YES];
     if (newEditing) {
         [_editListButton setTitle:NSLocalizedString(@"OK", @"") forState:UIControlStateNormal];
         [_editListButton setTitleColor:[UIColor colorWithHexString:@"#5acfc4"] forState:UIControlStateNormal];
@@ -208,8 +184,8 @@
     NSUInteger insertedIndex = [_delegate createListWithName:_listName.text];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:insertedIndex inSection:0];
-    [_listSelector insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    [_listSelector scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    [_listView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [_listView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     
     _listName.text = @"";
     
@@ -217,31 +193,35 @@
     return NO;
 }
 
+#pragma mark - CCListConfigTableViewCellDelegate methods
+
+- (void)checkedCell:(id)sender
+{
+    NSIndexPath *indexPath = [_listView indexPathForCell:sender];
+    [_delegate listExpandedAtIndex:indexPath.row];
+}
+
+- (void)uncheckedCell:(id)sender
+{
+    NSIndexPath *indexPath = [_listView indexPathForCell:sender];
+    [_delegate listUnexpandedAtIndex:indexPath.row];
+}
+
 #pragma mark - UITableViewDelegate/UITableViewDataSource methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CCListSettingsTableViewCell *cell = (CCListSettingsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    
-    if (cell) {
-        cell.isAdded = !cell.isAdded;
-        if (cell.isAdded) {
-            [_delegate listSelectedAtIndex:indexPath.row];
-        } else {
-            [_delegate listUnselectedAtIndex:indexPath.row];
-        }
-    }
-    
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CCListSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListSettingsTableViewCell];
+    CCListConfigTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListConfigTableViewCell];
     
     cell.textLabel.text = [_delegate listNameAtIndex:indexPath.row];
-    cell.isAdded = [_delegate isListSelectedAtIndex:indexPath.row];
-
+    [cell initialExpandedState:[_delegate isListExpandedAtIndex:indexPath.row]];
+    cell.delegate = self;
+    
     return cell;
 }
 
@@ -258,7 +238,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [_delegate removeListAtIndex:indexPath.row];
-        [_listSelector deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        [_listView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         if ([_delegate numberOfLists] == 0)
             [self hideEditListButton];
     }

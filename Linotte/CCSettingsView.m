@@ -121,7 +121,7 @@
     [_listSettingsView addSubview:changeListButton];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_currentListName, changeListButton);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_currentListName][changeListButton]-|" options:0 metrics:nil views:views];
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_currentListName]-(==5)-[changeListButton]-|" options:0 metrics:nil views:views];
     [_listSettingsView addConstraints:horizontalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -163,11 +163,11 @@
     _notificationToggleButton.selected = notificationEnabled;
 }
 
-- (void)setListName:(NSString *)listName
+- (void)setListNames:(NSString *)listNames
 {
-    _listName = listName;
-    if (listName)
-        _currentListName.text = [NSString localizedStringByReplacingFromDictionnary:@{@"[ListName]" : listName} localizedKey:@"LIST_SETTING"];
+    _listNames = listNames;
+    if (listNames.length)
+        _currentListName.text = [NSString localizedStringByReplacingFromDictionnary:@{@"[ListNames]" : listNames} localizedKey:@"LIST_SETTING"];
     else
         _currentListName.text = NSLocalizedString(@"NO_LIST_SETTING", @"");
 }

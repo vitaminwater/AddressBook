@@ -5,9 +5,10 @@
   Created by stant on 03/06/14.
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
+
 "PLACE_NAME" = "Ajouter un lieu";
 "WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
-"NOTIF_ADDRESSCREATED" = "Ce lieu est désormais enregistré";
+
 "NOTIFICATION_MULTI" = "Vous vous trouvez à proximité de [N] adresses: ";
 "NOTIFICATION_AND" = "et";
 "NOTIFICATION_1" = "Vous vous trouvez à proximité de [PlaceName], [Category].\nY aller ?";
@@ -18,32 +19,38 @@
 "NOTIFICATION_3_0" = "[PlaceName] est à quelques mètres.\nOn y va ?";
 "NOTIFICATION_4" = "On dirait que [PlaceName], [Category] est dans le coin.\nPourquoi ne pas y passer ?";
 "NOTIFICATION_4_0" = "On dirait que [PlaceName] est dans le coin.\nPourquoi ne pas y passer ?";
+
 "NOTIF_ADDELETE" = "Effacer ce lieu ?";
 "NOTIF_ADDELETE_Y" = "Oui";
 "NOTIF_ADDELETE_N" = "Non";
 "NOTIF_ADDELETE_KO" = "Lieu effacé";
-"SPLASH_BIS" = "ScreenLinotte2";
+
 "NO_NOTE_SPLASH" = "ScreenLinotteBis";
+
 "DISTANCE_UNAVAILABLE" = "Position non disponible...";
 "SKIP_BUTTON_TEXT" = "Passer >";
+
 "INOTE" = "Je note";
 "ISTROLL" = "Je me balade";
 "IFORGET" = "J'oublie";
 "IMREMINDED" = "Je retrouve";
+
 "ADDRESSCREATED" = "Ce lieu est désormais enregistré";
 "ADDRESSCREATED_SUBTEXT" = "Vous pouvez choisir d'être notifié à proximité, ou non.";
 "ENABLE_NOTIF_BUTTON_TEXT" = "Activer\nnotifications";
 "DISABLE_NOTIF_BUTTON_TEXT" = "Désactiver\nnotifications";
+"SHOW_LIST_SETTING" = "Placer cette adresse dans une liste.";
 
-"SETTINGS" = "Paramétres";
+"SETTINGS" = "Paramètres";
 "NOTIFICATION_SETTING" = "Activer notifications";
-"LIST_SETTING" = "Cette adresse est dans [ListName]";
-"NO_LIST_SETTING" = "Cette addresse est dans aucune liste";
-"CHANGE_LIST_BUTTON" = "Déplacer vers une autre liste";
+"LIST_SETTING" = "Cette adresse est dans [ListNames]";
+"NO_LIST_SETTING" = "Cette addresse n'est dans aucun carnet";
+"EDIT_LIST" = "Supprimer des carnets";
+"CHANGE_LIST_BUTTON" = "Déplacer vers un autre carnet";
 "CLOSE" = "Fermer";
 
-"LIST_HELP" = "Ici vous pouvez déplacer cette adresse dans un liste, soit créant une nouvelle, soit en sélectionnant une dans la liste.";
-"CREATE_LIST" = "Créer une liste";
+"LIST_HELP" = "Ici vous pouvez déplacer cette adresse dans un carnet, soit en en créant un, soit en en sélectionnant un dans la liste.";
+"CREATE_LIST" = "Créer un carnet";
 "CREATE_LIST_ALERT_TITLE" = "Créer [listName] ?";
 "CREATE_LIST_ALERT_TEXT" = "En appuyant Ok, [listName] sera créée et [addressName] sera placé dedans.";
 "MOVE_LIST_ALERT_TITLE" = "Déplacer [addressName] dans [listName] ?";
@@ -52,6 +59,9 @@
 "OK" = "Ok";
 "MOVED_TO" = "Adresse déplacée vers [listName]";
 
+"EXPANDED_DISPLAYED_LIST" = "Mes carnets";
+"ADD_LIST" = "Découvrir";
+
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Voiture";
 "ROUTE_BICYCLE" = "Vélo";
@@ -59,3 +69,9 @@
 "PROVIDER_FROM" = "Depuis";
 "REQUEST_GEOLOC_ENABLED_TITLE" = "Géolocalisation";
 "REQUEST_GEOLOC_ENABLED_MESSAGE" = "La localisation doit être activée pour être notifié !";
+
+"LIST_CONFIG_CONTROLLER_TITLE" = "Mes carnets";
+"LIST_CONFIG_HELP1" = "Utilisez le champ ci-dessous pour créer un carnet.";
+"LIST_CONFIG_HELP2" = "Les carnets marqués d'une coche verte verront leur adresses affichées sur votre page d'accueil.";
+
+"LIST_STORE_CONTROLLER_TITLE" = "Découverte";

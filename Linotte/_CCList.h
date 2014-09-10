@@ -5,6 +5,7 @@
 
 
 extern const struct CCListAttributes {
+	__unsafe_unretained NSString *expanded;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *latitude;
@@ -12,6 +13,7 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
+	__unsafe_unretained NSString *sent;
 } CCListAttributes;
 
 extern const struct CCListRelationships {
@@ -33,6 +35,8 @@ extern const struct CCListFetchedProperties {
 
 
 
+
+
 @interface CCListID : NSManagedObjectID {}
 @end
 
@@ -41,6 +45,20 @@ extern const struct CCListFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (CCListID*)objectID;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* expanded;
+
+
+
+@property BOOL expandedValue;
+- (BOOL)expandedValue;
+- (void)setExpandedValue:(BOOL)value_;
+
+//- (BOOL)validateExpanded:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -124,6 +142,20 @@ extern const struct CCListFetchedProperties {
 
 
 
+@property (nonatomic, strong) NSNumber* sent;
+
+
+
+@property BOOL sentValue;
+- (BOOL)sentValue;
+- (void)setSentValue:(BOOL)value_;
+
+//- (BOOL)validateSent:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSSet *addresses;
 
 - (NSMutableSet*)addressesSet;
@@ -156,6 +188,15 @@ extern const struct CCListFetchedProperties {
 @end
 
 @interface _CCList (CoreDataGeneratedPrimitiveAccessors)
+
+
+- (NSNumber*)primitiveExpanded;
+- (void)setPrimitiveExpanded:(NSNumber*)value;
+
+- (BOOL)primitiveExpandedValue;
+- (void)setPrimitiveExpandedValue:(BOOL)value_;
+
+
 
 
 - (NSString*)primitiveIcon;
@@ -202,6 +243,15 @@ extern const struct CCListFetchedProperties {
 
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
+
+
+
+
+- (NSNumber*)primitiveSent;
+- (void)setPrimitiveSent:(NSNumber*)value;
+
+- (BOOL)primitiveSentValue;
+- (void)setPrimitiveSentValue:(BOOL)value_;
 
 
 

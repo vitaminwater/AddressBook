@@ -10,14 +10,15 @@
 
 @protocol CCListViewDelegate <NSObject>
 
-- (void)didSelectAddressAtIndex:(NSUInteger)index color:(NSString *)color;
-- (void)deleteAddressAtIndex:(NSUInteger)index;
+- (void)didSelectListItemAtIndex:(NSUInteger)index color:(NSString *)color;
+- (void)deleteListItemAtIndex:(NSUInteger)index;
 
-- (double)distanceForAddressAtIndex:(NSUInteger)index;
-- (double)angleForAddressAtIndex:(NSUInteger)index;
-- (NSString *)nameForAddressAtIndex:(NSUInteger)index;
-- (NSString *)addressForAddressAtIndex:(NSUInteger)index;
-- (NSDate *)lastNotifForAddressAtIndex:(NSUInteger)index;
-- (NSUInteger)numberOfAddresses;
+- (double)distanceForListItemAtIndex:(NSUInteger)index;
+- (double)angleForListItemAtIndex:(NSUInteger)index;
+- (NSString *)nameForListItemAtIndex:(NSUInteger)index;
+- (NSUInteger)numberOfListItems;
+
+- (void)showListManagement;
+- (void)showListStore;
 
 @end

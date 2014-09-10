@@ -15,6 +15,8 @@
 #import "CCRestKit.h"
 #import "CCLocalAPI.h"
 
+#import "CCAddress.h"
+
 @interface CCNetworkHandler()
 
 @property(nonatomic, strong)NSTimer *timer;

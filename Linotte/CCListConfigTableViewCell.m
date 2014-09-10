@@ -6,15 +6,17 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListSettingsTableViewCell.h"
+#import "CCListConfigTableViewCell.h"
 
-@interface CCListSettingsTableViewCell()
+#import <HexColors/HexColor.h>
 
-@property(nonatomic, strong)UIImageView *checkImageView;
+@interface CCListConfigTableViewCell()
+
+@property(nonatomic, strong)UIButton *expandedButton;
 
 @end
 
-@implementation CCListSettingsTableViewCell
+@implementation CCListConfigTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -25,9 +27,9 @@
         self.backgroundView.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
         
-        self.textLabel.textColor = [UIColor whiteColor];
+        self.textLabel.textColor = [UIColor colorWithHexString:@"#6b6b6b"];
         self.textLabel.backgroundColor = [UIColor clearColor];
-        self.textLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
+        self.textLabel.font = [UIFont fontWithName:@"Futura-Book" size:25];
         
         [self setupCheckImageView];
     }
@@ -36,10 +38,13 @@
 
 - (void)setupCheckImageView
 {
-    _checkImageView = [UIImageView new];
-    _checkImageView.contentMode = UIViewContentModeScaleAspectFit;
-    _checkImageView.image = [UIImage imageNamed:@"check_list_icon-off"];
-    [self addSubview:_checkImageView];
+    _expandedButton = [UIButton new];
+    _expandedButton.contentMode = UIViewContentModeScaleAspectFit;
+    [_expandedButton setImage:[UIImage imageNamed:@"check_list_icon-off"] forState:UIControlStateNormal];
+    [_expandedButton setImage:[UIImage imageNamed:@"check_list_icon-on"] forState:UIControlStateSelected];
+    [_expandedButton addTarget:self action:@selector(expandedButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _expandedButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self addSubview:_expandedButton];
 }
 
 - (void)layoutSubviews
@@ -50,7 +55,7 @@
     checkImageViewFrame.size.width = checkImageViewFrame.size.height;
     checkImageViewFrame.size.height -= 15;
     checkImageViewFrame.origin.y = 7.5;
-    _checkImageView.frame = checkImageViewFrame;
+    _expandedButton.frame = checkImageViewFrame;
     
     CGRect textLabelFrame = self.bounds;
     textLabelFrame.origin.x = checkImageViewFrame.size.width;
@@ -65,14 +70,24 @@
 {
     [super setEditing:editing animated:animated];
     [UIView animateWithDuration:0.2 animations:^{
-        _checkImageView.alpha = editing ? 0 : 1;
+        _expandedButton.alpha = editing ? 0 : 1;
     }];
 }
 
-- (void)setIsAdded:(BOOL)isAdded
+- (void)initialExpandedState:(BOOL)expandedState
 {
-    _isAdded = isAdded;
-    _checkImageView.image = [UIImage imageNamed:_isAdded ? @"check_list_icon-on" : @"check_list_icon-off"];
+    _expandedButton.selected = expandedState;
+}
+
+#pragma mark - UIButton target methods
+
+- (void)expandedButtonPressed:(id)sender
+{
+    _expandedButton.selected = !_expandedButton.selected;
+    if (_expandedButton.selected)
+        [_delegate checkedCell:self];
+    else
+        [_delegate uncheckedCell:self];
 }
 
 @end
