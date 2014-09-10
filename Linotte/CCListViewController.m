@@ -12,6 +12,8 @@
 
 #import <Mixpanel/Mixpanel.h>
 
+#import "CCGeohashHelper.h"
+
 #import "NSString+CCLocalizedString.h"
 
 #import "CCListConfigViewController.h"
@@ -54,6 +56,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 
 @property(nonatomic, strong)NSString *name;
 @property(nonatomic, strong)CLLocation *location;
+@property(nonatomic, strong)CLLocation *currentLocation;
 @property(nonatomic, assign)BOOL farAway;
 
 - (double)distanceFromLocation:(CLLocation *)currentLocation;
@@ -78,14 +81,20 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     return angle - currentHeading.magneticHeading;
 }
 
-- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate
-{
-    
-}
+- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate {}
 
-- (void)handleOnDelete
-{
+- (void)handleOnDelete {}
 
+- (NSArray *)geohashLimit
+{
+    NSUInteger digits = 16;
+    NSArray *geohashes = [CCGeohashHelper geohashGridSurroundingCoordinate:self.currentLocation.coordinate radius:1 digits:digits all:YES];
+    NSMutableArray *geohashesComp = [@[] mutableCopy];
+    for (NSString *geohash in geohashes) {
+        NSString *subGeohash = [geohash substringToIndex:digits];
+        [geohashesComp addObject:subGeohash];
+    }
+    return geohashesComp;
 }
 
 @end
@@ -117,9 +126,9 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 {
     NSError *error;
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": _address.name ? _address.name : @"",
-                                                                     @"address": _address.address ? _address.address : @"",
-                                                                     @"identifier": _address.identifier ? _address.identifier : @""}];
+    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": _address.name ?: @"",
+                                                                     @"address": _address.address ?: @"",
+                                                                     @"identifier": _address.identifier ?: @""}];
     
     [managedObjectContext deleteObject:_address];
     if ([managedObjectContext saveToPersistentStore:&error] == NO) {
@@ -144,11 +153,51 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 - (void)setList:(CCList *)list
 {
     _list = list;
+    self.name = [NSString stringWithFormat:@"Liste: %@", _list.name];
 }
 
-- (void)handleOnSelect:(id<CCListViewDelegate>)delegate
+- (void)setCurrentLocation:(CLLocation *)currentLocation
 {
-    // TODO
+    [super setCurrentLocation:currentLocation];
+    
+    if (self.currentLocation == nil)
+        return;
+    
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    
+    NSArray *geohashesComp = [self geohashLimit];
+    
+    for (NSString *geohash in geohashesComp) {
+        NSLog(@"%@", geohash);
+    }
+
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@)", _list, geohashesComp[0], geohashesComp[1], geohashesComp[2], geohashesComp[3], geohashesComp[4], geohashesComp[5], geohashesComp[6], geohashesComp[7], geohashesComp[8]]; // TODO store pre calculated small geohash in model !
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    if ([addresses count] == 0) {
+        self.farAway = YES;
+        return;
+    }
+    self.farAway = NO;
+    
+    CLLocation *closestLocation = nil;
+    double distance = 42424242;
+    for (CCAddress *address in addresses) {
+        CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
+        double newDistance = [self.currentLocation distanceFromLocation:addressLocation];
+        if (newDistance < distance || closestLocation == nil)
+            closestLocation = addressLocation;
+    }
+    self.location = closestLocation;
+}
+
+- (void)handleOnSelect:(id<CCListViewControllerDelegate>)delegate
+{
+    [delegate listSelected:_list];
 }
 
 @end
@@ -243,6 +292,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         for (CCAddress *address in addresses) {
             CCListItemAddress *itemAddress = [CCListItemAddress new];
             itemAddress.address = address;
+            itemAddress.currentLocation = _currentLocation;
             [_listItems addObject:itemAddress];
         }
     }
@@ -258,6 +308,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         for (CCList *list in lists) {
             CCListItemList *itemList = [CCListItemList new];
             itemList.list = list;
+            itemList.currentLocation = _currentLocation;
             [_listItems addObject:itemList];
         }
     }
@@ -297,6 +348,10 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     __weak CCListViewController *weakSelf = self;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        for (CCListItem *listItem in _listItems) {
+            listItem.currentLocation = _currentLocation;
+        }
+        
         [_listItems sortUsingComparator:^NSComparisonResult(CCListItem *obj1, CCListItem *obj2) {
             return [weakSelf distanceSortMethod:obj1 obj2:obj2];
         }];
@@ -319,6 +374,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
     NSUInteger newIndex;
     
     CCListItemAddress *listItemAddress = [CCListItemAddress new];
+    listItemAddress.currentLocation = _currentLocation;
     listItemAddress.address = address;
     if (!_currentLocation) {
         newIndex = [_listItems indexOfObject:listItemAddress
@@ -343,9 +399,7 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
                              }];
     }
     
-    {
-        [_listItems insertObject:listItemAddress atIndex:newIndex];
-    }
+    [_listItems insertObject:listItemAddress atIndex:newIndex];
     
     [((CCListView *)self.view) insertListItemAtIndex:newIndex];
 }

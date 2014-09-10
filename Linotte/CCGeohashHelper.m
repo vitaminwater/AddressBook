@@ -32,7 +32,7 @@
     return CLLocationCoordinate2DMake(geohash.latitude, geohash.longitude);
 }
 
-+ (NSArray *)geohashGridSurroundingCoordinate:(CLLocationCoordinate2D)coordinates
++ (NSArray *)geohashGridSurroundingCoordinate:(CLLocationCoordinate2D)coordinates radius:(NSInteger)radius digits:(NSUInteger)digits all:(BOOL)all
 {
     NSMutableArray *geohashes = [@[] mutableCopy];
     CCGeohashStruct centerGeohash = {
@@ -41,12 +41,15 @@
     };
     init_from_coordinates(&centerGeohash);
 
-    for (int i = -2; i <= 2; ++i) {
+    digits = MIN(digits, kCCGeohashHelperNDigits);
+    NSUInteger power = kCCGeohashHelperNDigits - digits;
+    NSUInteger digitsToMultiplier = pow(2, power);
+    for (int i = -radius; i <= radius; ++i) {
         
-        for (int j = -2; j <= 2; ++j) {
+        for (int j = -radius; j <= radius; ++j) {
             
-            if (!((!i && !j) || ((i == j || i == -j) && abs(i) == 2))) {
-                CCGeohashStruct geohash = init_neighbour(&centerGeohash, j, i);
+            if (all || !((!i && !j) || ((i == j || i == -j) && abs(i) == radius))) {
+                CCGeohashStruct geohash = init_neighbour(&centerGeohash, j * digitsToMultiplier, i * digitsToMultiplier);
                 NSString *hash = @(geohash.hash);
                 [geohashes addObject:hash];
                 //NSLog(@"i: %d  j: %d  geohash: %@  lat: %f  lng: %f", i, j, hash, geohash.latitude, geohash.longitude);

@@ -227,7 +227,7 @@
         for (CCFoursquareVenues *result in venues) {
             CCAddViewAutocompletionResult *autocompletionResult = [CCAddViewAutocompletionResult new];
             NSString *addressString = @"";
-            for (NSString *addr in @[result.address ? result.address : @"", result.city ? result.city : @"", result.country ? result.country : @""]) {
+            for (NSString *addr in @[result.address ?: @"", result.city ?: @"", result.country ?: @""]) {
                 if (addr.length) {
                     if (addressString.length)
                         addressString = [addressString stringByAppendingString:@", "];

@@ -10,11 +10,13 @@
 
 #import <CoreLocation/CoreLocation.h>
 
+#define kCCGeohashHelperNDigits 17
+
 @interface CCGeohashHelper : NSObject
 
 + (NSString *)geohashFromCoordinates:(CLLocationCoordinate2D)coordinates;
 + (CLLocationCoordinate2D)coordinatesFromGeohash:(NSString *)geohashstring;
-+ (NSArray *)geohashGridSurroundingCoordinate:(CLLocationCoordinate2D)coordinates;
++ (NSArray *)geohashGridSurroundingCoordinate:(CLLocationCoordinate2D)coordinates radius:(NSInteger)radius digits:(NSUInteger)digits all:(BOOL)all;
 + (NSArray *)calculateAdjacentGeohashesFromcoordinates:(CLLocationCoordinate2D)coordinates;
 + (NSArray *)calculateAdjacentGeohashes:(NSString *)geohashstring;
 

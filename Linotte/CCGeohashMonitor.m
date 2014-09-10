@@ -40,7 +40,7 @@
 
 - (void)updateMonitoredGeohashes:(CLLocationCoordinate2D)coordinates
 {
-    NSMutableArray *geohashes = [[CCGeohashHelper geohashGridSurroundingCoordinate:coordinates] mutableCopy];
+    NSMutableArray *geohashes = [[CCGeohashHelper geohashGridSurroundingCoordinate:coordinates radius:2 digits:kCCGeohashHelperNDigits all:NO] mutableCopy];
     
     for (CLRegion *region in _locationManager.monitoredRegions) {
         if (![geohashes containsObject:region.identifier]) {

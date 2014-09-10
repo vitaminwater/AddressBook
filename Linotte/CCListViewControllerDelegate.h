@@ -9,9 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @class CCAddress;
+@class CCList;
 
 @protocol CCListViewControllerDelegate <NSObject>
 
 - (void)addressSelected:(CCAddress *)address;
+- (void)listSelected:(CCList *)list;
 
 @end

@@ -99,6 +99,12 @@
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
+- (void)addressSelected:(CCList *)list
+{
+    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:list];
+    [self.navigationController pushViewController:outputViewController animated:YES];
+}
+
 #pragma mark - CCSplashViewControllerDelegate
 
 - (void)splashFinish

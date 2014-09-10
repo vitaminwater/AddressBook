@@ -33,8 +33,6 @@
         <attribute name="expanded" optional="YES" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="provider" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="providerId" optional="YES" attributeType="String" syncable="YES"/>
@@ -50,10 +48,10 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="metas" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="CCAddressMeta" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="CCCategory" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="CCList" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="CCListMeta" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="270"/>
+        <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="178"/>
+        <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
     </elements>
 </model>
