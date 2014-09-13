@@ -10,10 +10,14 @@
 
 #import "CCSplashViewController.h"
 
+#import "CCHomeListViewModel.h"
+#import "CCListViewContentProvider.h"
+
 #import "CCListViewController.h"
 #import "CCAddViewController.h"
 
 #import "CCOutputViewController.h"
+#import "CCListOutputViewController.h"
 
 #import "CCMainView.h"
 
@@ -40,7 +44,9 @@
     [view setupAddView:_addViewController.view];
     [_addViewController didMoveToParentViewController:self];
     
-    _listViewController = [CCListViewController new];
+    CCHomeListViewModel *listModel = [CCHomeListViewModel new];
+    CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
+    _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     _listViewController.delegate = self;
     
     [self addChildViewController:_listViewController];
@@ -99,9 +105,9 @@
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
-- (void)addressSelected:(CCList *)list
+- (void)listSelected:(CCList *)list
 {
-    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:list];
+    CCListOutputViewController *outputViewController = [[CCListOutputViewController alloc] initWithList:list];
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 

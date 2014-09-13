@@ -72,7 +72,7 @@
     if (_addressIsNew)
         [view showIsNewMessage];
     
-    [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"address": _address.name, @"address": _address.address}];
+    [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier ?: @"nb"}];
 }
 
 - (void)viewDidLoad

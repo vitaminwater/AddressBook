@@ -13,12 +13,12 @@
 - (void)didSelectListItemAtIndex:(NSUInteger)index color:(NSString *)color;
 - (void)deleteListItemAtIndex:(NSUInteger)index;
 
+- (void)showListManagement;
+- (void)showListStore;
+
 - (double)distanceForListItemAtIndex:(NSUInteger)index;
 - (double)angleForListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
-
-- (void)showListManagement;
-- (void)showListStore;
 
 @end

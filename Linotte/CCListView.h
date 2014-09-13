@@ -12,11 +12,12 @@
 
 #import "CCListViewTableViewCellDelegate.h"
 
+@class CCListViewContentProvider;
+
 @interface CCListView : UIView<UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, CCListViewTableViewCellDelegate>
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 
-- (id)initWithHelpOn:(BOOL)helpOn;
 - (void)reloadListItemList;
 - (void)reloadVisibleListItems;
 - (void)insertListItemAtIndex:(NSUInteger)index;

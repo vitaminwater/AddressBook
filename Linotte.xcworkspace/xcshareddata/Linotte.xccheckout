@@ -10,28 +10,40 @@
 	<string>Linotte</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</key>
-		<string>ssh://git.ccsas.biz/linotteapp.git</string>
 		<key>2AC06D93-FCEF-4CDF-AFFD-BC82335847A3</key>
 		<string>ssh://git.ccsas.biz/geohash.git</string>
+		<key>7A6408BED225D78FB58EF8553DAD1AA33EF6D9CA</key>
+		<string>git.ccsas.biz:geohash.git</string>
+		<key>968C5FE9E8CB0C3B1AA66D85D93A8F9015C94B56</key>
+		<string>ssh://git.ccsas.biz/linotteapp.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Linotte.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</key>
-		<string>..</string>
 		<key>2AC06D93-FCEF-4CDF-AFFD-BC82335847A3</key>
 		<string>../../geohash</string>
+		<key>7A6408BED225D78FB58EF8553DAD1AA33EF6D9CA</key>
+		<string>../../c/geohash</string>
+		<key>968C5FE9E8CB0C3B1AA66D85D93A8F9015C94B56</key>
+		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://git.ccsas.biz/linotteapp.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</string>
+	<string>968C5FE9E8CB0C3B1AA66D85D93A8F9015C94B56</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7A6408BED225D78FB58EF8553DAD1AA33EF6D9CA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>geohash</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
@@ -44,7 +56,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>1E0FC0C9-B38B-4443-8B0B-E4ABB1CC70A5</string>
+			<string>968C5FE9E8CB0C3B1AA66D85D93A8F9015C94B56</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Linotte</string>
 		</dict>

@@ -16,10 +16,14 @@
 #import "CCListConfigViewControllerDelegate.h"
 
 @class CCAddress;
+@class CCListViewContentProvider;
 
 @interface CCListViewController : UIViewController<CCListViewDelegate, CCListConfigViewControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
+@property(nonatomic, strong)CCListViewContentProvider *provider;
+
+- (id)initWithProvider:(CCListViewContentProvider *)provider;
 
 - (void)addressAdded:(CCAddress *)address;
 

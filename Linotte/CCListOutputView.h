@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCListOutputViewDelegate.h"
+
 @interface CCListOutputView : UIView
+
+@property(nonatomic, assign)id<CCListOutputViewDelegate> delegate;
 
 @end

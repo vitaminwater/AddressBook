@@ -10,6 +10,7 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCListViewContentProvider.h"
 #import "CCListViewTableViewCell.h"
 #import "CCFlatColorButton.h"
 
@@ -31,7 +32,7 @@
 
 @implementation CCListView
 
-- (id)initWithHelpOn:(BOOL)helpOn
+- (id)init
 {
     self = [super init];
     if (self) {
@@ -44,10 +45,6 @@
         UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
         panGestureRecognizer.delegate = self;
         [self addGestureRecognizer:panGestureRecognizer];
-        
-        if (helpOn)
-            [self setupHelpImage];
-        
     }
     return self;
 }
@@ -58,20 +55,20 @@
     _buttonContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_buttonContainer];
     
-    CCFlatColorButton *addListButton = [self createButton];
-    [addListButton addTarget:self action:@selector(addListPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [addListButton setTitle:NSLocalizedString(@"ADD_LIST", @"") forState:UIControlStateNormal];
-    [addListButton setBackgroundColor:[UIColor colorWithHexString:@"#8e44ad"]];
-    [addListButton setBackgroundColor:[UIColor colorWithHexString:@"#9b59b6"] forState:UIControlStateHighlighted];
+    CCFlatColorButton *discoveryButton = [self createButton];
+    [discoveryButton addTarget:self action:@selector(discoverPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [discoveryButton setTitle:NSLocalizedString(@"ADD_LIST", @"") forState:UIControlStateNormal];
+    [discoveryButton setBackgroundColor:[UIColor colorWithHexString:@"#8e44ad"]];
+    [discoveryButton setBackgroundColor:[UIColor colorWithHexString:@"#9b59b6"] forState:UIControlStateHighlighted];
     
-    CCFlatColorButton *listSelectorButton = [self createButton];
-    [listSelectorButton addTarget:self action:@selector(listSelectorPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [listSelectorButton setTitle:NSLocalizedString(@"EXPANDED_DISPLAYED_LIST", @"") forState:UIControlStateNormal];
-    [listSelectorButton setBackgroundColor:[UIColor colorWithHexString:@"#2980b9"]];
-    [listSelectorButton setBackgroundColor:[UIColor colorWithHexString:@"#3498db"] forState:UIControlStateHighlighted];
+    CCFlatColorButton *listManagerButton = [self createButton];
+    [listManagerButton addTarget:self action:@selector(listManagerPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [listManagerButton setTitle:NSLocalizedString(@"EXPANDED_DISPLAYED_LIST", @"") forState:UIControlStateNormal];
+    [listManagerButton setBackgroundColor:[UIColor colorWithHexString:@"#2980b9"]];
+    [listManagerButton setBackgroundColor:[UIColor colorWithHexString:@"#3498db"] forState:UIControlStateHighlighted];
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(listSelectorButton, addListButton);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[addListButton][listSelectorButton(==addListButton)]|" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(listManagerButton, discoveryButton);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[discoveryButton][listManagerButton(==discoveryButton)]|" options:0 metrics:nil views:views];
     [_buttonContainer addConstraints:horizontalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -257,12 +254,12 @@
 
 #pragma mark - UIbutton target methods
 
-- (void)listSelectorPressed:(UIButton *)sender
+- (void)listManagerPressed:(UIButton *)sender
 {
     [_delegate showListManagement];
 }
 
-- (void)addListPressed:(UIButton *)sender
+- (void)discoverPressed:(UIButton *)sender
 {
     [_delegate showListStore];
 }
@@ -305,6 +302,9 @@
 - (void)setDelegate:(id<CCListViewDelegate>)delegate
 {
     _delegate = delegate;
+    
+    if ([_delegate numberOfListItems] == 0)
+        [self setupHelpImage];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

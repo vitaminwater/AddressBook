@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListOutputViewController : UIViewController
+#import "CCListOutputViewDelegate.h"
+
+@class CCList;
+
+@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate>
+
+- (id)initWithList:(CCList *)list;
 
 @end
