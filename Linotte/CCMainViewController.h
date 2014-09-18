@@ -8,12 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCListViewControllerDelegate.h"
+#import "CCMainViewDelegate.h"
 
-#import "CCAddViewControllerDelegate.h"
+#import "CCListViewControllerDelegate.h"
+#import "CCAddAddressViewControllerDelegate.h"
 
 #import "CCSplashViewControllerDelegate.h"
 
-@interface CCMainViewController : UIViewController<CCListViewControllerDelegate, CCAddViewControllerDelegate, CCSplashViewControllerDelegate>
+#import "CCListListViewControllerDelegate.h"
+#import "CCListStoreViewControllerDelegate.h"
+
+@interface CCMainViewController : UIViewController<CCMainViewDelegate, CCListViewControllerDelegate, CCAddAddressViewControllerDelegate, CCSplashViewControllerDelegate, CCListListViewControllerDelegate, CCListStoreViewControllerDelegate>
 
 @end

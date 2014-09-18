@@ -18,9 +18,6 @@
 
 #import "NSString+CCLocalizedString.h"
 
-#import "CCListConfigViewController.h"
-#import "CCListStoreViewController.h"
-
 #import "CCOutputViewController.h"
 #import "CCListOutputViewController.h"
 
@@ -36,11 +33,10 @@
  */
 
 @interface CCListViewController ()
-{
-    CLLocationManager *_locationManager;
-    CLLocation *_currentLocation;
-    CLHeading *_currentHeading;
-}
+
+@property(nonatomic, strong)CLLocationManager *locationManager;
+@property(nonatomic, strong)CLLocation *currentLocation;
+@property(nonatomic, strong)CLHeading *currentHeading;
 
 @end
 
@@ -104,8 +100,6 @@
     [super didReceiveMemoryWarning];
 }
 
-
-
 #pragma mark - CLLocationManagerDelegate methods
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
@@ -113,6 +107,9 @@
     CLLocation *location = [locations lastObject];
     
     _provider.currentLocation = location;
+    [_provider resortListItems:^{
+        [((CCListView *)self.view) reloadVisibleListItems];
+    }];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)heading
@@ -165,16 +162,28 @@
 
 #pragma mark - CCListViewDelegate methods
 
-- (void)didSelectListItemAtIndex:(NSUInteger)index color:(NSString *)color
+- (void)showOptionView
+{
+    [_delegate showOptionView];
+}
+
+- (void)hideOptionView
+{
+    [_delegate hideOptionView];
+}
+
+- (void)didSelectListItemAtIndex:(NSUInteger)index
 {
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
+        outputViewController.delegate = self;
         [self.navigationController pushViewController:outputViewController animated:YES];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list];
+        listOutputViewController.delegate = self;
         [self.navigationController pushViewController:listOutputViewController animated:YES];
     }
 }
@@ -185,19 +194,6 @@
     [alertView show];
     
     objc_setAssociatedObject(alertView, @"index", @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)showListManagement
-{
-    CCListConfigViewController *listConfigViewController = [CCListConfigViewController new];
-    listConfigViewController.delegate = self;
-    [self.navigationController pushViewController:listConfigViewController animated:YES];
-}
-
-- (void)showListStore
-{
-    CCListStoreViewController *listStoreViewController = [CCListStoreViewController new];
-    [self.navigationController pushViewController:listStoreViewController animated:YES];
 }
 
 #pragma mark provider methods
@@ -212,6 +208,11 @@
     return [_provider angleForListItemAtIndex:index];
 }
 
+- (UIImage *)iconForListItemAtIndex:(NSUInteger)index
+{
+    return [_provider iconFormListItemAtIndex:index];
+}
+
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index
 {
     return [_provider nameForListItemAtIndex:index];
@@ -222,12 +223,36 @@
     return [_provider numberOfListItems];
 }
 
-#pragma mark - CCListConfigViewControllerDelegate methods
+#pragma mark - CCListOutputViewControllerDelegate methods
 
 - (void)didChangedListConfig
 {
     CCListView *view = (CCListView *)self.view;
     [view reloadListItemList];
+}
+
+#pragma mark - CCOutputViewControllerDelegate methods
+
+- (void)address:(CCAddress *)address movedToList:(CCList *)list
+{
+    [_provider.model address:address movedToList:list];
+}
+
+- (void)address:(CCAddress *)address movedFromList:(CCList *)list
+{
+    [_provider.model address:address movedFromList:list];
+}
+
+- (void)addressNotificationChanged:(CCAddress *)address
+{
+    NSUInteger index = [_provider indexOfListItemContent:address];
+    CCListView *view = (CCListView *)self.view;
+    [view reloadListItemAtIndex:index];
+}
+
+- (void)listCreated:(CCList *)list
+{
+    [_provider.model addList:list];
 }
 
 #pragma mark - UINotificationCenter methods

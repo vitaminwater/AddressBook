@@ -13,6 +13,9 @@
 
 @protocol CCListViewControllerDelegate <NSObject>
 
+- (void)showOptionView;
+- (void)hideOptionView;
+
 - (void)addressSelected:(CCAddress *)address;
 - (void)listSelected:(CCList *)list;
 

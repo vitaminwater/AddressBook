@@ -75,3 +75,7 @@
 "LIST_CONFIG_HELP2" = "Les carnets marqués d'une coche verte verront leur adresses affichées sur votre page d'accueil.";
 
 "LIST_STORE_CONTROLLER_TITLE" = "Découverte";
+
+"MY_BOOKS" = "Mes carnets";
+
+"LIST_NAME" = "Nouveau carnet";

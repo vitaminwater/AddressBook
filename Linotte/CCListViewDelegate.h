@@ -10,14 +10,15 @@
 
 @protocol CCListViewDelegate <NSObject>
 
-- (void)didSelectListItemAtIndex:(NSUInteger)index color:(NSString *)color;
-- (void)deleteListItemAtIndex:(NSUInteger)index;
+- (void)showOptionView;
+- (void)hideOptionView;
 
-- (void)showListManagement;
-- (void)showListStore;
+- (void)didSelectListItemAtIndex:(NSUInteger)index;
+- (void)deleteListItemAtIndex:(NSUInteger)index;
 
 - (double)distanceForListItemAtIndex:(NSUInteger)index;
 - (double)angleForListItemAtIndex:(NSUInteger)index;
+- (UIImage *)iconForListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 

@@ -48,7 +48,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<true/>
 	<key>foursquare_client_id</key>
 	<string>2PFU2PRLO0NFB5PADXSJGEGHNOCMBENWRFETVMRRW1TWVG1A</string>
 	<key>foursquare_client_secret</key>

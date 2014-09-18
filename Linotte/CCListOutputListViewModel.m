@@ -10,9 +10,11 @@
 
 @implementation CCListOutputListViewModel
 
+@synthesize provider;
+
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems:(CCListViewContentProvider *)provider
+- (void)loadListItems
 {
     
 }
@@ -27,5 +29,34 @@
     
 }
 
+- (void)addAddress:(CCAddress *)address
+{
+    
+}
+
+- (void)removeAddress:(CCAddress *)address
+{
+    
+}
+
+- (void)addList:(CCList *)list
+{
+    
+}
+
+- (void)removeList:(CCList *)list
+{
+    
+}
+
+- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
+{
+    return NO;
+}
+
+- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
+{
+    return NO;
+}
 
 @end

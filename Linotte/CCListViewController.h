@@ -13,12 +13,13 @@
 #import "CCListViewControllerDelegate.h"
 
 #import "CCListViewDelegate.h"
-#import "CCListConfigViewControllerDelegate.h"
+#import "CCListOutputViewControllerDelegate.h"
+#import "CCOutputViewControllerDelegate.h"
 
 @class CCAddress;
 @class CCListViewContentProvider;
 
-@interface CCListViewController : UIViewController<CCListViewDelegate, CCListConfigViewControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
+@interface CCListViewController : UIViewController<CCListViewDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;

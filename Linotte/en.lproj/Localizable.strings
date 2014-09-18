@@ -58,8 +58,8 @@
 "OK" = "Ok";
 "MOVED_TO" = "Moved to [listName]";
 
-"EXPANDED_DISPLAYED_LIST" = "My books";
-"ADD_LIST" = "Discover";
+"MY_LISTS" = "My books";
+"DISCOVER_LIST" = "Discover";
 
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Car";
@@ -74,3 +74,7 @@
 "LIST_CONFIG_HELP2" = "Books marked with a green check will have there addresses visible on your front page.";
 
 "LIST_STORE_CONTROLLER_TITLE" = "Discover";
+
+"MY_BOOKS" = "My books";
+
+"LIST_NAME" = "Create book";

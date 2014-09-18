@@ -20,6 +20,7 @@
 
 - (void)reloadListItemList;
 - (void)reloadVisibleListItems;
+- (void)reloadListItemAtIndex:(NSUInteger)index;
 - (void)insertListItemAtIndex:(NSUInteger)index;
 - (void)deleteListItemAtIndex:(NSUInteger)index;
 

@@ -10,11 +10,15 @@
 
 #import <CoreLocation/CoreLocation.h>
 
+#import "CCOutputViewControllerDelegate.h"
+
 #import "CCOutputViewDelegate.h"
 
 @class CCAddress;
 
 @interface CCOutputViewController : UIViewController<CCOutputViewDelegate, CLLocationManagerDelegate>
+
+@property(nonatomic, assign)id<CCOutputViewControllerDelegate> delegate;
 
 - (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew;
 - (id)initWithAddress:(CCAddress *)address;

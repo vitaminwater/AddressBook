@@ -75,7 +75,7 @@
     _deleteButton = [UIButton new];
     _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     _deleteButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [_deleteButton setImage:[UIImage imageNamed:@"delete_note.png"] forState:UIControlStateNormal];
+    [_deleteButton setImage:[UIImage imageNamed:@"delete_note"] forState:UIControlStateNormal];
     [_deleteButton addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_deleteButton];
     
@@ -99,7 +99,7 @@
 
 - (void)setupCompas
 {
-    _compasImage = [UIImage imageNamed:@"direction.png"];
+    _compasImage = [UIImage imageNamed:@"direction"];
     _invertedCompasImage = [UIImage inverseColor:_compasImage];
     _compasView = [[UIImageView alloc] initWithImage:_compasImage];
     _compasView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -146,15 +146,6 @@
 - (UIImageView *)markerImageView
 {
     return self.realDetailTextLabel.imageView;
-}
-
-- (void)setColorCode:(NSString *)colorCode
-{
-    [self willChangeValueForKey:@"colorCode"];
-    NSString *iconName = [NSString stringWithFormat:@"gmap_pin_%@.png", [colorCode substringFromIndex:1]];
-    self.markerImageView.image = [UIImage imageNamed:iconName];
-    _colorCode = colorCode;
-    [self didChangeValueForKey:@"colorCode"];
 }
 
 - (void)prepareForReuse

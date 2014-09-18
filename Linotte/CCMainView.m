@@ -10,16 +10,20 @@
 
 #import <HexColors/HexColor.h>
 
-#import "CCAddViewConstants.h"
+#import "CCListOptionContainer.h"
+
+#import "CCFlatColorButton.h"
+
+#define kCCStatusBarHeight @20
 
 @interface CCMainView()
 {
     UIView *_addView;
     UIView *_listView;
-    
-    NSArray *_addViewVerticalConstraints;
-    NSArray *_listViewVerticalConstraints;
 }
+
+@property(nonatomic, strong)CCListOptionContainer *buttonContainer;
+@property(nonatomic, assign)CGFloat panVelocity;
 
 @end
 
@@ -29,9 +33,33 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b"];
+        self.backgroundColor = [UIColor whiteColor];
+        [self setupStatusBar];
+        [self setupButtons];
     }
     return self;
+}
+
+- (void)setupStatusBar
+{
+    UIView *statusBar = [UIView new];
+    statusBar.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b"];
+    statusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    [self addSubview:statusBar];
+    
+    CGRect bounds = self.bounds;
+    CGRect frame = CGRectMake(0, 0, bounds.size.width, [kCCStatusBarHeight doubleValue]);
+    statusBar.frame = frame;
+}
+
+- (void)setupButtons
+{
+    _buttonContainer = [CCListOptionContainer new];
+    _buttonContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_buttonContainer];
+    
+    [_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"discover"] title:NSLocalizedString(@"DISCOVER_LIST", @"") titleColor:[UIColor colorWithHexString:@"#ffae64"] target:self action:@selector(discoverPressed:)];
+    [_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"book_pink"] title:NSLocalizedString(@"MY_LISTS", @"") titleColor:[UIColor colorWithHexString:@"f4607c"] target:self action:@selector(myListsPressed:)];
 }
 
 - (void)setupAddView:(UIView *)addView
@@ -40,12 +68,6 @@
     
     _addView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_addView];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(_addView);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_addView]|" options:0 metrics:nil views:views];
-    [self addConstraints:horizontalConstraints];
-    
-    [self setupAddViewVerticalConstraints];
 }
 
 - (void)setupListView:(UIView *)listView
@@ -56,40 +78,68 @@
     
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
     [self insertSubview:_listView belowSubview:_addView];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(_addView, _listView);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_listView]|" options:0 metrics:nil views:views];
-    [self addConstraints:horizontalConstraints];
-    
-    [self setupListViewVerticalConstraints];
 }
 
-- (void)setupAddViewVerticalConstraints
+- (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_addView);
+    [self removeConstraints:self.constraints];
     
-    if (_addViewVerticalConstraints)
-        [self removeConstraints:_addViewVerticalConstraints];
-    if (_addViewExpanded) {
-        _addViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_addView]-(kCCAddViewKeyboardHeight)-|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
-    } else {
-        _addViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_addView(kCCAddViewTextFieldHeight)]" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_addView, _buttonContainer, _listView);
+    // Add view
+    {
+        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:[kCCStatusBarHeight doubleValue]];
+        [self addConstraint:topConstraint];
+        
+        if (_addViewExpanded) {
+            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
+            [self addConstraint:bottomConstraint];
+        } else {
+            NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
+            [self addConstraint:heightConstraint];
+        }
     }
-    [self addConstraints:_addViewVerticalConstraints];
+    
+    // Button container
+    {
+        if (_addViewExpanded) {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
+            [self addConstraint:topConstraint];
+        } else {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+            [self addConstraint:topConstraint];
+        }
+    }
+    
+    // _listView
+    {
+        if (_optionViewExpanded) {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_buttonContainer attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+            [self addConstraint:topConstraint];
+        } else {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_buttonContainer attribute:NSLayoutAttributeTop multiplier:1 constant:4];
+            [self addConstraint:topConstraint];
+        }
+        
+        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [self addConstraint:bottomConstraint];
+    }
+    
+    for (UIView *view in views.allValues) {
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        [self addConstraints:horizontalConstraints];
+    }
 }
 
-- (void)setupListViewVerticalConstraints
+#pragma mark - UIbutton target methods
+
+- (void)myListsPressed:(UIButton *)sender
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_addView, _listView);
-    
-    if (_listViewVerticalConstraints)
-        [self removeConstraints:_listViewVerticalConstraints];
-    if (_addViewExpanded) {
-        _listViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(kCCAddViewTextFieldHeight)-[_listView]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
-    } else {
-        _listViewVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_addView][_listView]|" options:0 metrics:nil views:views];
-    }
-    [self addConstraints:_listViewVerticalConstraints];
+    [_delegate showListList];
+}
+
+- (void)discoverPressed:(UIButton *)sender
+{
+    [_delegate showListStore];
 }
 
 #pragma mark - setter methods
@@ -101,14 +151,29 @@
     
     [self willChangeValueForKey:@"addViewExpanded"];
     _addViewExpanded = addViewExpanded;
-    [self setupAddViewVerticalConstraints];
-    [self setupListViewVerticalConstraints];
+    [self setupLayout];
     
     [UIView animateWithDuration:0.4 animations:^{
         [self layoutIfNeeded];
     }];
     
     [self didChangeValueForKey:@"addViewExpanded"];
+}
+
+- (void)setOptionViewExpanded:(BOOL)optionViewExpanded
+{
+    if (_optionViewExpanded == optionViewExpanded)
+        return;
+    
+    [self willChangeValueForKey:@"optionViewExpanded"];
+    _optionViewExpanded = optionViewExpanded;
+    [self setupLayout];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
+    
+    [self didChangeValueForKey:@"optionViewExpanded"];
 }
 
 @end

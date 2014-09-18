@@ -117,7 +117,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    [super viewWillAppear:animated];
     
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
     self.navigationController.navigationBar.translucent = YES;
@@ -159,6 +159,11 @@
 {
     NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     [_lists sortUsingDescriptors:@[nameSortDescriptor]];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleDefault;
 }
 
 #pragma mark - UIBarButtons target methods
@@ -234,6 +239,8 @@
     
     [managedObjectContext saveToPersistentStore:NULL];
     
+    [_delegate listCreated:list];
+    
     return insertIndex;
 }
 
@@ -254,6 +261,7 @@
     [_address addListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [_delegate address:_address movedToList:list];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
@@ -262,6 +270,7 @@
     [_address removeListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [_delegate address:_address movedFromList:list];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index
@@ -344,6 +353,7 @@
 {
     _address.notify = @(enable);
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [_delegate addressNotificationChanged:_address];
     
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enable)}];
     

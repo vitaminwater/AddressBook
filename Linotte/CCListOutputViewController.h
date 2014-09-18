@@ -10,9 +10,13 @@
 
 #import "CCListOutputViewDelegate.h"
 
+#import "CCListOutputViewControllerDelegate.h"
+
 @class CCList;
 
 @interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate>
+
+@property(nonatomic, assign)id<CCListOutputViewControllerDelegate> delegate;
 
 - (id)initWithList:(CCList *)list;
 

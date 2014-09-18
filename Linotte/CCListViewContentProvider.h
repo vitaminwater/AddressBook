@@ -19,7 +19,7 @@
 
 @interface CCListViewContentProvider : NSObject
 
-@property(nonatomic, strong)CCListViewModel<CCListViewModelProtocol> *model;
+@property(nonatomic, strong)id<CCListViewModelProtocol> model;
 @property(nonatomic, strong)CLLocation *currentLocation;
 @property(nonatomic, strong)CLHeading *currentHeading;
 
@@ -39,9 +39,11 @@
 - (NSUInteger)removeList:(CCList *)list;
 
 - (id)listItemContentAtIndex:(NSUInteger)index;
+- (NSUInteger)indexOfListItemContent:(id)content;
 
 - (double)distanceForListItemAtIndex:(NSUInteger)index;
 - (double)angleForListItemAtIndex:(NSUInteger)index;
+- (UIImage *)iconFormListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 

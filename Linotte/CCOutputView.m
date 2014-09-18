@@ -117,6 +117,7 @@
         int distanceColorIndex = addressDistance / 500;
         distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
         color = distanceColors[distanceColorIndex];
+        
         iconName = [NSString stringWithFormat:@"gmap_pin_%@.png", [color substringFromIndex:1]];
         _currentColor = color;
     }

@@ -17,7 +17,7 @@
 
 #import "CCGeohashHelper.h"
 
-#define kCCSmallGeohashLength 16
+#define kCCSmallGeohashLength 13
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define radiandsToDegrees(x) (x * 180.0 / M_PI)
@@ -53,29 +53,55 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 
 
+
+
+
+
+
+
 /*
  * Data model classes
  */
 
 @interface CCListItem()
 
-@property(nonatomic, strong)CLLocation *location;
+- (NSString *)iconPrefix;
 
 @end
 
 @implementation CCListItem
 
-- (double)distanceFromLocation:(CLLocation *)currentLocation
+- (double)distance
 {
     if (_farAway)
-        return 10000; // TODO find right distance based on geohash
-    return [currentLocation distanceFromLocation:_location];
+        return 10000; // TODO find right distance based on geohash length
+    return [self.location distanceFromLocation:self.itemLocation];
 }
 
-- (double)angleFromLocation:(CLLocation *)currentLocation heading:(CLHeading *)currentHeading
+- (double)angle
 {
-    float angle = getHeadingForDirectionFromCoordinate(currentLocation.coordinate, _location.coordinate);
-    return angle - currentHeading.magneticHeading;
+    float angle = getHeadingForDirectionFromCoordinate(self.location.coordinate, self.itemLocation.coordinate);
+    return angle - self.heading.magneticHeading;
+}
+
+- (UIImage *)icon
+{
+    CGFloat distance = [self distance];
+    NSArray *distanceColors = kCCLinotteColors;
+    NSString *imagePath = nil;
+    int distanceColorIndex = distance / 500;
+    distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
+    if (distance > 0) {
+        NSString *color = distanceColors[distanceColorIndex];
+        imagePath = [NSString stringWithFormat:@"%@_%@", [self iconPrefix], [color substringFromIndex:1]];
+    } else
+        imagePath = [NSString stringWithFormat:@"%@_neutral", [self iconPrefix]];
+    return [UIImage imageNamed:imagePath];
+}
+
+- (NSString *)iconPrefix
+{
+    return @"gmap_pin";
 }
 
 @end
@@ -102,14 +128,17 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 {
     _address = address;
     self.name = _address.name;
-    self.location = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
+    self.itemLocation = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
 }
 
-- (void)setCurrentLocation:(CLLocation *)currentLocation
+- (void)setLocation:(CLLocation *)location
 {
-    [super setCurrentLocation:currentLocation];
+    [super setLocation:location];
     
-    NSArray *geohashesComp = geohashLimit(self.currentLocation, kCCSmallGeohashLength);
+    if (location == nil)
+        return;
+    
+    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF = %@", [_address.geohash substringToIndex:kCCSmallGeohashLength]];
     
@@ -153,20 +182,16 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     self.name = [NSString stringWithFormat:@"Liste: %@", _list.name];
 }
 
-- (void)setCurrentLocation:(CLLocation *)currentLocation
+- (void)setLocation:(CLLocation *)location
 {
-    [super setCurrentLocation:currentLocation];
+    [super setLocation:location];
     
-    if (self.currentLocation == nil)
+    if (self.location == nil)
         return;
     
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     
-    NSArray *geohashesComp = geohashLimit(self.currentLocation, kCCSmallGeohashLength);
-    
-    for (NSString *geohash in geohashesComp) {
-        NSLog(@"%@", geohash);
-    }
+    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
@@ -185,16 +210,21 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     double distance = 42424242;
     for (CCAddress *address in addresses) {
         CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
-        double newDistance = [self.currentLocation distanceFromLocation:addressLocation];
+        double newDistance = [self.location distanceFromLocation:addressLocation];
         if (newDistance < distance || closestLocation == nil)
             closestLocation = addressLocation;
     }
-    self.location = closestLocation;
+    self.itemLocation = closestLocation;
 }
 
 - (CCListItemType)type
 {
     return CCListItemTypeList;
+}
+
+- (NSString *)iconPrefix
+{
+    return @"list_pin";
 }
 
 @end

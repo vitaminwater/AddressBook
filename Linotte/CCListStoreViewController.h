@@ -10,6 +10,10 @@
 
 #import "CCListStoreViewDelegate.h"
 
+#import "CCListStoreViewControllerDelegate.h"
+
 @interface CCListStoreViewController : UIViewController<CCListStoreViewDelegate>
+
+@property(nonatomic, assign)id<CCListStoreViewControllerDelegate> delegate;
 
 @end

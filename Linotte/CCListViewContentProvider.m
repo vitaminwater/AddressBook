@@ -14,6 +14,9 @@
 
 #import "CCListItems.h"
 
+#import "CCList.h"
+#import "CCAddress.h"
+
 @interface CCListViewContentProvider()
 
 @property(nonatomic, strong)NSMutableArray *listItems;
@@ -22,13 +25,14 @@
 
 @implementation CCListViewContentProvider
 
-- (id)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model
+- (id)initWithModel:(id<CCListViewModelProtocol>)model
 {
     self = [super init];
     if (self) {
         _model = model;
+        _model.provider = self;
         _listItems = [@[] mutableCopy];
-        [model loadListItems:self];
+        [model loadListItems];
     }
     return self;
 }
@@ -44,7 +48,7 @@
 {
     CCListItemAddress *listItemAddress = [CCListItemAddress new];
     listItemAddress.address = address;
-    listItemAddress.currentLocation = _currentLocation;
+    listItemAddress.location = _currentLocation;
 
     return [self insertNewListItem:listItemAddress];
 }
@@ -52,7 +56,11 @@
 - (NSUInteger)removeAddress:(CCAddress *)address
 {
     NSUInteger index = [_listItems indexOfObjectPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
-        return listItem.type == CCListItemTypeAddress && ((CCListItemAddress *)listItem).address == address;
+        if (listItem.type == CCListItemTypeAddress && ((CCListItemAddress *)listItem).address == address) {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
     }];
     [_listItems removeObjectAtIndex:index];
     return index;
@@ -73,7 +81,7 @@
 {
     CCListItemList *listItemList = [CCListItemList new];
     listItemList.list = list;
-    listItemList.currentLocation = _currentLocation;
+    listItemList.location = _currentLocation;
     
     return [self insertNewListItem:listItemList];
 }
@@ -119,11 +127,37 @@
         return ((CCListItemList *)listItem).list;
 }
 
+- (NSUInteger)indexOfListItemContent:(id)content
+{
+    CCListItemType contentType = [content isKindOfClass:[CCAddress class]] ? CCListItemTypeAddress : CCListItemTypeList;
+    typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop); // ...
+    SearchBlockType searchBlock = nil;
+    
+    if (contentType == CCListItemTypeAddress) {
+        searchBlock = ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
+            if (listItem.type == CCListItemTypeAddress && ((CCListItemAddress *)listItem).address == content) {
+                *stop = YES;
+                return YES;
+            }
+            return NO;
+        };
+    } else if (contentType == CCListItemTypeList) {
+        searchBlock = ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
+            if ([content isKindOfClass:[CCList class]] && listItem.type == CCListItemTypeList && ((CCListItemList *)listItem).list == content) {
+                *stop = YES;
+                return YES;
+            }
+            return NO;
+        };
+    }
+    return [_listItems indexOfObjectPassingTest:searchBlock];
+}
+
 - (void)resortListItems:(void (^)())complete
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         for (CCListItem *listItem in _listItems) {
-            listItem.currentLocation = _currentLocation;
+            listItem.location = _currentLocation;
         }
         
         [_listItems sortUsingComparator:[self sortBlock]];
@@ -139,7 +173,7 @@
 {
     if (_currentLocation) {
         CCListItem *listItem = _listItems[index];
-        return [listItem distanceFromLocation:_currentLocation];
+        return [listItem distance];
     }
     return -1;
 }
@@ -148,9 +182,15 @@
 {
     if (_currentLocation) {
         CCListItem *listItem = _listItems[index];
-        return [listItem angleFromLocation:_currentLocation heading:_currentHeading];
+        return [listItem angle];
     }
     return 0;
+}
+
+- (UIImage *)iconFormListItemAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    return [listItem icon];
 }
 
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index
@@ -173,6 +213,10 @@
     }
     
     _currentLocation = currentLocation;
+    
+    for (CCListItem *listItem in _listItems) {
+        listItem.location = _currentLocation;
+    }
 }
 
 #pragma mark - sort methods
@@ -184,8 +228,8 @@
 
 - (NSComparisonResult)distanceSortMethod:(CCListItem *)obj1 obj2:(CCListItem *)obj2
 {
-    double distance1 = [obj1 distanceFromLocation:_currentLocation];
-    double distance2 = [obj2 distanceFromLocation:_currentLocation];
+    double distance1 = [obj1 distance];
+    double distance2 = [obj2 distance];
     
     return [@(distance1) compare:@(distance2)];
 }
