@@ -1,44 +1,37 @@
 //
-//  CCOutputConfirmEntryView.m
+//  CCFirstDisplaySettingsView.m
 //  Linotte
 //
-//  Created by stant on 11/08/14.
+//  Created by stant on 19/09/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCOutputConfirmEntryView.h"
+#import "CCFirstDisplaySettingsView.h"
 
 #import <HexColors/HexColor.h>
 
-@interface CCOutputConfirmEntryView()
+@interface CCFirstDisplaySettingsView()
 
 @property(nonatomic, strong)UITextView *textView;
 @property(nonatomic, strong)UIButton *enableNotificationButton;
 @property(nonatomic, strong)UIButton *disableNotificationButton;
 @property(nonatomic, strong)UIButton *listButton;
 
-@property(nonatomic, strong)UIButton *closeButton;
-
 @end
 
-@implementation CCOutputConfirmEntryView
+@implementation CCFirstDisplaySettingsView
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b" alpha:0.85];
-        self.alpha = 0.5;
-        self.opaque = NO;
-        self.layer.cornerRadius = 15;
-        self.layer.masksToBounds = YES;
+        self.backgroundColor = [UIColor clearColor];
         
         _notificationEnabled = YES;
         
         [self setupTextView];
         [self setupNotificationButtons];
         [self setupListButton];
-        [self setupCloseButton];
         [self setupLayout];
     }
     return self;
@@ -51,6 +44,7 @@
     _textView.backgroundColor = [UIColor clearColor];
     _textView.textAlignment = NSTextAlignmentCenter;
     _textView.scrollEnabled = NO;
+    _textView.editable = NO;
     
     NSString *addressCreated = NSLocalizedString(@"ADDRESSCREATED", @"");
     NSString *addressCreatedSubText = NSLocalizedString(@"ADDRESSCREATED_SUBTEXT", @"");
@@ -108,30 +102,16 @@
     [self addSubview:_listButton];
 }
 
-- (void)setupCloseButton
-{
-    _closeButton = [UIButton new];
-    _closeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [_closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    _closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
-    [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
-    [_closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    _closeButton.opaque = NO;
-    [self addSubview:_closeButton];
-}
-
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_textView, _enableNotificationButton, _disableNotificationButton, _listButton, _closeButton);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_textView, _enableNotificationButton, _disableNotificationButton, _listButton);
     NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_textView]-|" options:0 metrics:nil views:views];
     [self addConstraints:horizontalConstraints];
     
     NSArray *horizontalButtonConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_enableNotificationButton(>=120)]-[_disableNotificationButton(==_enableNotificationButton)]-|" options:0 metrics:nil views:views];
     [self addConstraints:horizontalButtonConstraints];
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_textView]-[_enableNotificationButton]-[_listButton]-[_closeButton]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_textView]-[_enableNotificationButton]-[_listButton]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     NSLayoutConstraint *centerYRightButtonConstraint = [NSLayoutConstraint constraintWithItem:_enableNotificationButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_disableNotificationButton attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
@@ -140,11 +120,8 @@
     NSLayoutConstraint *centerHeightRightButtonConstraint = [NSLayoutConstraint constraintWithItem:_enableNotificationButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:_disableNotificationButton attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
     [self addConstraint:centerHeightRightButtonConstraint];
     
-    NSArray *listButtonWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"|-[_listButton]-|" options:0 metrics:nil views:views];
+    NSArray *listButtonWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_listButton]-|" options:0 metrics:nil views:views];
     [self addConstraints:listButtonWidthConstraints];
-    
-    NSArray *closeButtonWidthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"|[_closeButton]|" options:0 metrics:nil views:views];
-    [self addConstraints:closeButtonWidthConstraints];
 }
 
 #pragma mark - UIButton target methods
@@ -152,11 +129,6 @@
 - (void)listButtonPressed:(UIButton *)sender
 {
     [_delegate showListSetting];
-}
-
-- (void)closeButtonPressed:(UIButton *)sender
-{
-    [_delegate closeConfirmView:self];
 }
 
 - (void)enableNotificationButtonPressed:(id)sender

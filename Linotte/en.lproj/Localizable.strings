@@ -78,3 +78,5 @@
 "MY_BOOKS" = "My books";
 
 "LIST_NAME" = "Create book";
+
+"LIST_NOTIFICATION_LABEL" = "Activate notifications on this book";

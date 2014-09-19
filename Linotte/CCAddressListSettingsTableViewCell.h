@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListSettingsTableViewCell : UITableViewCell
+@interface CCAddressListSettingsTableViewCell : UITableViewCell
 
 @property(nonatomic, assign)BOOL isAdded;
 

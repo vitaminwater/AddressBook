@@ -17,19 +17,6 @@ typedef enum : NSUInteger {
 
 @protocol CCOutputViewDelegate <NSObject>
 
-// list stuffs
-- (NSUInteger)createListWithName:(NSString *)name;
-- (void)removeListAtIndex:(NSUInteger)index;
-- (void)listSelectedAtIndex:(NSUInteger)index;
-- (void)listUnselectedAtIndex:(NSUInteger)index;
-- (BOOL)isListSelectedAtIndex:(NSUInteger)index;
-
-- (NSUInteger)numberOfLists;
-- (NSString *)listNameAtIndex:(NSUInteger)index;
-- (NSString *)listIconAtIndex:(NSUInteger)index;
-
-- (NSString *)currentListNames;
-
 // route
 - (void)launchRoute:(CCRouteType)type;
 
@@ -40,8 +27,5 @@ typedef enum : NSUInteger {
 - (NSString *)addressProvider;
 - (double)addressLatitude;
 - (double)addressLongitude;
-- (BOOL)notificationEnabled;
-
-- (void)setNotificationEnabled:(BOOL)enable;
 
 @end

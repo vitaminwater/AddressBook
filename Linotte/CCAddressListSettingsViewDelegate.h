@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCListSettingsViewDelegate <NSObject>
+@protocol CCAddressListSettingsViewDelegate <NSObject>
 
-- (void)closeListSettingsView:(id)sender success:(BOOL)success;
+// - (void)closeListSettingsView:(id)sender success:(BOOL)success;
 
 - (NSString *)addressName;
 

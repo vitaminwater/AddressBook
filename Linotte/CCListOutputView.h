@@ -13,5 +13,13 @@
 @interface CCListOutputView : UIView
 
 @property(nonatomic, assign)id<CCListOutputViewDelegate> delegate;
+@property(nonatomic, assign)BOOL addViewExpanded;
+
+- (void)setupAddView:(UIView *)addView;
+- (void)setupListView:(UIView *)listView;
+- (void)setupLayout;
+
+- (void)setListIconImage:(UIImage *)image;
+- (void)setListInfosText:(NSString *)listInfos;
 
 @end

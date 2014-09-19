@@ -72,8 +72,6 @@
 
 - (void)setupListView:(UIView *)listView
 {
-    NSAssert(_addView != nil, kCCWrongSetupMethodsOrderError);
-    
     _listView = listView;
     
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -102,7 +100,7 @@
     // Button container
     {
         if (_addViewExpanded) {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue] + [kCCStatusBarHeight doubleValue]];
             [self addConstraint:topConstraint];
         } else {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
@@ -110,7 +108,7 @@
         }
     }
     
-    // _listView
+    // List view
     {
         if (_optionViewExpanded) {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_buttonContainer attribute:NSLayoutAttributeBottom multiplier:1 constant:0];

@@ -1,8 +1,8 @@
 //
-//  CCAddressSettingsView.h
+//  CCBaseSettingsView.h
 //  Linotte
 //
-//  Created by stant on 25/08/14.
+//  Created by stant on 19/09/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
@@ -14,7 +14,7 @@
 
 @property(nonatomic, assign)id<CCSettingsViewDelegate> delegate;
 
-@property(nonatomic, assign)BOOL notificationEnabled;
-@property(nonatomic, strong)NSString *listNames;
+- (void)setupContentView:(UIView *)contentView;
+- (void)setupLayout;
 
 @end

@@ -78,10 +78,10 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     return [self.location distanceFromLocation:self.itemLocation];
 }
 
-- (double)angle
+- (double)angleForHeading:(CLHeading *)heading
 {
     float angle = getHeadingForDirectionFromCoordinate(self.location.coordinate, self.itemLocation.coordinate);
-    return angle - self.heading.magneticHeading;
+    return angle - heading.magneticHeading;
 }
 
 - (UIImage *)icon

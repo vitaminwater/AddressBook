@@ -11,4 +11,6 @@
 
 @interface CCListOutputListViewModel : CCListViewModel<CCListViewModelProtocol>
 
+- (id)initWithList:(CCList *)list;
+
 @end

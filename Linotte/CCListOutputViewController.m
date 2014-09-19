@@ -9,14 +9,25 @@
 #import "CCListOutputViewController.h"
 
 #import <HexColors/HexColor.h>
+#import <RestKit/RestKit.h>
+
+#import "CCListViewController.h"
+#import "CCAddAddressViewController.h"
+
+#import "CCListOutputListViewModel.h"
+#import "CCListViewContentProvider.h"
 
 #import "CCListOutputView.h"
 
 #import "CCList.h"
+#import "CCAddress.h"
 
 @interface CCListOutputViewController ()
 
 @property(nonatomic, strong)CCList *list;
+
+@property(nonatomic, strong)CCListViewController *listViewController;
+@property(nonatomic, strong)CCAddAddressViewController *addViewController;
 
 @end
 
@@ -36,6 +47,25 @@
     CCListOutputView *view = [CCListOutputView new];
     view.delegate = self;
     self.view = view;
+    
+    _addViewController = [CCAddAddressViewController new];
+    _addViewController.delegate = self;
+    [self addChildViewController:_addViewController];
+    [view setupAddView:_addViewController.view];
+    [_addViewController didMoveToParentViewController:self];
+    
+    CCListOutputListViewModel *listModel = [[CCListOutputListViewModel alloc] initWithList:_list];
+    CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
+    _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
+    _listViewController.delegate = self;
+    [self addChildViewController:_listViewController];
+    [view setupListView:_listViewController.view];
+    [_listViewController didMoveToParentViewController:self];
+    
+    [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
+    [view setListInfosText:@"pouet"];
+
+    [view setupLayout];
 }
 
 - (void)viewDidLoad
@@ -61,7 +91,25 @@
         emptyBarButtonItem.width = -10;
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
+    
+    { // right bar button items
+        CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
+        UIButton *settingsButton = [UIButton new];
+        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        settingsButton.frame = settingsButtonFrame;
+        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        
+        self.navigationItem.rightBarButtonItems = @[barButtonItem];
+    }
+    
     self.navigationItem.hidesBackButton = YES;
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -83,6 +131,53 @@
 - (void)backButtonPressed:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)settingsButtonPressed:(id)sender
+{
+}
+
+#pragma mark - CCListViewControllerDelegate methods
+
+- (void)showOptionView
+{
+    
+}
+
+- (void)hideOptionView
+{
+    
+}
+
+- (void)addressSelected:(CCAddress *)address
+{
+    
+}
+
+- (void)listSelected:(CCList *)list
+{
+    
+}
+
+#pragma mark - CCAddAddressViewControllerDelegate
+
+- (void)addressAdded:(CCAddress *)address
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    
+    [address addListsObject:_list];
+    
+    [managedObjectContext saveToPersistentStore:NULL];
+}
+
+- (void)expandAddView
+{
+    
+}
+
+- (void)reduceAddView
+{
+    
 }
 
 @end

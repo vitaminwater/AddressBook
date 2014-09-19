@@ -1,5 +1,5 @@
-//
-//  CCAddressTableViewDataSourceDelegate.m
+    //
+    //  CCAddressTableViewDataSourceDelegate.m
 //  Linotte
 //
 //  Created by stant on 10/09/14.
@@ -153,18 +153,13 @@
     return [_listItems indexOfObjectPassingTest:searchBlock];
 }
 
-- (void)resortListItems:(void (^)())complete
+- (void)resortListItems
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        for (CCListItem *listItem in _listItems) {
-            listItem.location = _currentLocation;
-        }
-        
-        [_listItems sortUsingComparator:[self sortBlock]];
-        
-        if (complete)
-            dispatch_sync(dispatch_get_main_queue(), complete);
-    });
+    for (CCListItem *listItem in _listItems) {
+        listItem.location = _currentLocation;
+    }
+    
+    [_listItems sortUsingComparator:[self sortBlock]];
 }
 
 #pragma mark -
@@ -182,7 +177,7 @@
 {
     if (_currentLocation) {
         CCListItem *listItem = _listItems[index];
-        return [listItem angle];
+        return [listItem angleForHeading:_currentHeading];
     }
     return 0;
 }

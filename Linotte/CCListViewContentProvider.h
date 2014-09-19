@@ -28,7 +28,7 @@
 - (void)deleteItemAtIndex:(NSUInteger)index;
 
 - (void)emptyListItems;
-- (void)resortListItems:(void (^)())complete;
+- (void)resortListItems;
 
 - (CCListItemType)listItemTypeAtIndex:(NSUInteger)index;
 

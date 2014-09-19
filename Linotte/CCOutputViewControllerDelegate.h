@@ -13,10 +13,6 @@
 
 @protocol CCOutputViewControllerDelegate <NSObject>
 
-- (void)address:(CCAddress *)address movedToList:(CCList *)list;
-- (void)address:(CCAddress *)address movedFromList:(CCList *)list;
-- (void)addressNotificationChanged:(CCAddress *)address;
 
-- (void)listCreated:(CCList *)list;
 
 @end

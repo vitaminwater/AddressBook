@@ -56,10 +56,6 @@
     [_listViewController didMoveToParentViewController:self];
     
     [view setupLayout];
-    
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 - (void)viewDidLoad
@@ -85,7 +81,25 @@
         emptyBarButtonItem.width = -10;
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
+    
+    { // right bar button items
+        CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
+        UIButton *settingsButton = [UIButton new];
+        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        settingsButton.frame = settingsButtonFrame;
+        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        
+        self.navigationItem.rightBarButtonItems = @[barButtonItem];
+    }
+    
     self.navigationItem.hidesBackButton = YES;
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -112,6 +126,11 @@
 - (void)backButtonPressed:(id)sender
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)settingsButtonPressed:(id)sender
+{
+
 }
 
 #pragma mark - CCListListViewDelegate methods

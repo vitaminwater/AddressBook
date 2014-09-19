@@ -6,15 +6,15 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListSettingsTableViewCell.h"
+#import "CCAddressListSettingsTableViewCell.h"
 
-@interface CCListSettingsTableViewCell()
+@interface CCAddressListSettingsTableViewCell()
 
 @property(nonatomic, strong)UIImageView *checkImageView;
 
 @end
 
-@implementation CCListSettingsTableViewCell
+@implementation CCAddressListSettingsTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {

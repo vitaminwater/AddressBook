@@ -1,5 +1,5 @@
 //
-//  CCSettingsViewDelegate.h
+//  CCFirstDisplaySettingsViewDelegate.h
 //  Linotte
 //
 //  Created by stant on 19/09/14.
@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCSettingsViewDelegate <NSObject>
+@protocol CCFirstDisplaySettingsViewDelegate <NSObject>
 
-- (void)closeButtonPressed:(id)sender;
+- (void)showListSetting;
 
 @end

@@ -27,14 +27,13 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 @property(nonatomic, assign)BOOL farAway;
 @property(nonatomic, strong)CLLocation *itemLocation;
 @property(nonatomic, strong)CLLocation *location;
-@property(nonatomic, strong)CLHeading *heading;
 
 @property(nonatomic, readonly)CCListItemType type;
 
 - (UIImage *)icon;
 
 - (double)distance;
-- (double)angle;
+- (double)angleForHeading:(CLHeading *)heading;
 
 @end
 

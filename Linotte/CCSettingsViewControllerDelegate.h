@@ -1,5 +1,5 @@
 //
-//  CCSettingsViewDelegate.h
+//  CCSettingsViewControllerDelegate.h
 //  Linotte
 //
 //  Created by stant on 19/09/14.
@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCSettingsViewDelegate <NSObject>
-
-- (void)closeButtonPressed:(id)sender;
+@protocol CCSettingsViewControllerDelegate <NSObject>
 
 @end

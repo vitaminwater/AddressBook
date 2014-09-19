@@ -14,16 +14,15 @@
 
 #import "NSString+CCLocalizedString.h"
 
-#import "CCOutputConfirmEntryView.h"
-#import "CCSettingsView.h"
-#import "CCListSettingsView.h"
+#import "CCAddressSettingsView.h"
+#import "CCAddressListSettingsView.h"
 
 @interface CCOutputView()
 
 @property(nonatomic, strong)GMSMarker *marker;
 @property(nonatomic, strong)GMSMapView *mapView;
-@property(nonatomic, strong)CCSettingsView *addressSettingsView;
-@property(nonatomic, strong)CCListSettingsView *listSettingsView;
+@property(nonatomic, strong)CCAddressSettingsView *addressSettingsView;
+@property(nonatomic, strong)CCAddressListSettingsView *listSettingsView;
 @property(nonatomic, strong)UITextView *infoView;
 
 @end
@@ -87,10 +86,10 @@
     tabBar.translatesAutoresizingMaskIntoConstraints = NO;
     tabBar.delegate = self;
     
-    UITabBarItem *trainItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_TRAIN", @"") image:[UIImage imageNamed:@"train.png"] selectedImage:nil];
-    UITabBarItem *carItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_CAR", @"") image:[UIImage imageNamed:@"car.png"] selectedImage:nil];
-    UITabBarItem *bicycleItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_BICYCLE", @"") image:[UIImage imageNamed:@"bicycle.png"] selectedImage:nil];
-    UITabBarItem *walkItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_WALK", @"") image:[UIImage imageNamed:@"walk.png"] selectedImage:nil];
+    UITabBarItem *trainItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_TRAIN", @"") image:[UIImage imageNamed:@"train"] selectedImage:nil];
+    UITabBarItem *carItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_CAR", @"") image:[UIImage imageNamed:@"car"] selectedImage:nil];
+    UITabBarItem *bicycleItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_BICYCLE", @"") image:[UIImage imageNamed:@"bicycle"] selectedImage:nil];
+    UITabBarItem *walkItem = [[UITabBarItem alloc] initWithTitle:NSLocalizedString(@"ROUTE_WALK", @"") image:[UIImage imageNamed:@"walk"] selectedImage:nil];
     
     tabBar.items = @[trainItem, carItem, bicycleItem, walkItem];
     [self addSubview:tabBar];
@@ -111,14 +110,14 @@
     NSString *providerName = [_delegate addressProvider];
     
     NSString *color = @"#6b6b6b";
-    NSString *iconName = @"neutral_marker";
+    NSString *iconName = @"gmap_pin_neutral";
     if (addressDistance > 0) {
         NSArray *distanceColors = kCCLinotteColors;
         int distanceColorIndex = addressDistance / 500;
         distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
         color = distanceColors[distanceColorIndex];
         
-        iconName = [NSString stringWithFormat:@"gmap_pin_%@.png", [color substringFromIndex:1]];
+        iconName = [NSString stringWithFormat:@"gmap_pin_%@", [color substringFromIndex:1]];
         _currentColor = color;
     }
 
@@ -138,190 +137,14 @@
 
 - (void)showIsNewMessage
 {
-    CCOutputConfirmEntryView *confirmEntryView = [CCOutputConfirmEntryView new];
-    confirmEntryView.translatesAutoresizingMaskIntoConstraints = NO;
-    confirmEntryView.delegate = self;
-    [self addSubview:confirmEntryView];
-    
-    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    [self addConstraint:centerXConstraint];
-    
-    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self addConstraint:centerYConstraint];
-    
-    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:confirmEntryView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
-    [self addConstraint:widthConstraint];
-    
-    confirmEntryView.alpha = 0;
-    [UIView animateWithDuration:0.2 animations:^{
-        confirmEntryView.alpha = 1;
-    }];
-}
-
-- (void)showSettingsView
-{
-    if (_addressSettingsView)
-        return;
-    
-    _addressSettingsView = [CCSettingsView new];
-    _addressSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
-    _addressSettingsView.delegate = self;
-    _addressSettingsView.notificationEnabled = [_delegate notificationEnabled];
-    _addressSettingsView.listNames = [_delegate currentListNames];
-    [self addSubview:_addressSettingsView];
-    
-    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    [self addConstraint:centerXConstraint];
-    
-    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self addConstraint:centerYConstraint];
-    
-    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:_addressSettingsView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-20];
-    [self addConstraint:widthConstraint];
-    
-    _addressSettingsView.alpha = 0;
-    [UIView animateWithDuration:0.2 animations:^{
-        _addressSettingsView.alpha = 1;
-    }];
-}
-
-- (void)closeSettingsView
-{
-    if (_addressSettingsView == nil)
-        return;
-    [UIView animateWithDuration:0.2 animations:^{
-        _addressSettingsView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [_addressSettingsView removeFromSuperview];
-        _addressSettingsView = nil;
-    }];
+    // TODO
 }
 
 #pragma mark - CCOutputConfirmEntryViewDelegate methods
 
 - (void)closeConfirmView:(id)sender
 {
-    CCOutputConfirmEntryView *confirmEntryView = sender;
-    
-    [_delegate setNotificationEnabled:confirmEntryView.notificationEnabled];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        confirmEntryView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [confirmEntryView removeFromSuperview];
-    }];
-}
-
-#pragma mark - CCSettingsViewDelegate methods
-
-- (void)closeButtonPressed:(CCSettingsView *)sender
-{
-    [self closeSettingsView];
-}
-
-- (void)setNotificationEnabled:(BOOL)enabled
-{
-    [_delegate setNotificationEnabled:enabled];
-}
-
-- (void)showListSetting
-{
-    if (_listSettingsView)
-        return;
-    
-    _listSettingsView = [CCListSettingsView new];
-    _listSettingsView.translatesAutoresizingMaskIntoConstraints = NO;
-    _listSettingsView.delegate = self;
-    [self addSubview:_listSettingsView];
-    
-    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    [self addConstraint:centerXConstraint];
-    
-    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self addConstraint:centerYConstraint];
-    
-    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:_listSettingsView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-20];
-    [self addConstraint:widthConstraint];
-    
-    _listSettingsView.alpha = 0;
-    [UIView animateWithDuration:0.2 animations:^{
-        _listSettingsView.alpha = 1;
-    }];
-}
-
-#pragma mark - CCListSettingsViewDelegate
-
-- (void)closeListSettingsView:(id)sender success:(BOOL)success
-{
-    if (success) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
-        
-        UIImageView *completedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"completed"]];
-        hud.customView = completedImage;
-        //hud.detailsLabelText = [NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate addressName]} localizedKey:@"MOVED_TO"];
-        
-        hud.mode = MBProgressHUDModeCustomView;
-        hud.opacity = 0.4;
-        
-        [hud show:YES];
-        [hud hide:YES afterDelay:1];
-    }
-    [UIView animateWithDuration:0.2 animations:^{
-        _listSettingsView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [_listSettingsView removeFromSuperview];
-        _listSettingsView = nil;
-    }];
-}
-
-- (NSString *)addressName
-{
-    return [_delegate addressName];
-}
-
-- (NSUInteger)numberOfLists
-{
-    return [_delegate numberOfLists];
-}
-
-- (NSString *)listNameAtIndex:(NSUInteger)index
-{
-    return [_delegate listNameAtIndex:index];
-}
-
-- (NSString *)listIconAtIndex:(NSUInteger)index
-{
-    return [_delegate listIconAtIndex:index];
-}
-
-- (void)listSelectedAtIndex:(NSUInteger)index
-{
-    [_delegate listSelectedAtIndex:index];
-    _addressSettingsView.listNames = [_delegate currentListNames];
-}
-
-- (void)listUnselectedAtIndex:(NSUInteger)index
-{
-    [_delegate listUnselectedAtIndex:index];
-    _addressSettingsView.listNames = [_delegate currentListNames];
-}
-
-- (NSUInteger)createListWithName:(NSString *)name
-{
-    NSUInteger insertIndex = [_delegate createListWithName:name];
-    _addressSettingsView.listNames = [_delegate currentListNames];
-    return insertIndex;
-}
-
-- (void)removeListAtIndex:(NSUInteger)index
-{
-    [_delegate removeListAtIndex:index];
-    _addressSettingsView.listNames = [_delegate currentListNames];
-}
-
-- (BOOL)isListSelectedAtIndex:(NSUInteger)index
-{
-    return [_delegate isListSelectedAtIndex:index];
+    // TODO
 }
 
 #pragma mark - UITabBarDelegate methods

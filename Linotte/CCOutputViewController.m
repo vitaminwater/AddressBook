@@ -28,8 +28,6 @@
     CLLocation *_currentLocation;
 }
 
-@property(nonatomic, strong)NSMutableArray *lists;
-
 @property(nonatomic, assign)BOOL addressIsNew;
 @property(nonatomic, strong)CCAddress *address;
 @property(nonatomic, assign)CLLocationDistance distance;
@@ -83,19 +81,6 @@
     NSString *color = @"#6b6b6b";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
     
-    { // right bar button items
-        CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
-        UIButton *settingsButton = [UIButton new];
-        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
-        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        settingsButton.frame = settingsButtonFrame;
-        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
-        
-        self.navigationItem.rightBarButtonItems = @[barButtonItem];
-    }
-    
     { // left bar button items
         CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);
         UIButton *backButton = [UIButton new];
@@ -110,9 +95,21 @@
         emptyBarButtonItem.width = -10;
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
-    self.navigationItem.hidesBackButton = YES;
     
-    [self loadLists];
+    { // right bar button items
+        CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
+        UIButton *settingsButton = [UIButton new];
+        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        settingsButton.frame = settingsButtonFrame;
+        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        
+        self.navigationItem.rightBarButtonItems = @[barButtonItem];
+    }
+    
+    self.navigationItem.hidesBackButton = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -143,24 +140,6 @@
     [_locationManager stopUpdatingLocation];
 }
 
-- (void)loadLists
-{
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    
-    NSArray *result = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    
-    _lists = [result mutableCopy];
-    [self sortLists];
-}
-
-- (void)sortLists
-{
-    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    [_lists sortUsingDescriptors:@[nameSortDescriptor]];
-}
-
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleDefault;
@@ -175,8 +154,7 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
-    CCOutputView *view = (CCOutputView *)self.view;
-    [view showSettingsView];
+    // TODO
 }
 
 #pragma mark - route methods
@@ -223,86 +201,6 @@
 
 #pragma mark - CCoutputViewDelegate
 
-#pragma mark lists
-
-- (NSUInteger)createListWithName:(NSString *)name
-{
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
-    list.name = name;
-    
-    NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
-        return [obj1.name compare:obj2.name];
-    }];
-    [_lists insertObject:list atIndex:insertIndex];
-    [_address addListsObject:list];
-    
-    [managedObjectContext saveToPersistentStore:NULL];
-    
-    [_delegate listCreated:list];
-    
-    return insertIndex;
-}
-
-- (void)removeListAtIndex:(NSUInteger)index
-{
-    NSManagedObjectContext *context = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    
-    CCList *list = _lists[index];
-    [context deleteObject:list];
-    [_lists removeObject:list];
-    
-    [context saveToPersistentStore:NULL];
-}
-
-- (void)listSelectedAtIndex:(NSUInteger)index
-{
-    CCList *list = _lists[index];
-    [_address addListsObject:list];
-    
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
-    [_delegate address:_address movedToList:list];
-}
-
-- (void)listUnselectedAtIndex:(NSUInteger)index
-{
-    CCList *list = _lists[index];
-    [_address removeListsObject:list];
-    
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
-    [_delegate address:_address movedFromList:list];
-}
-
-- (BOOL)isListSelectedAtIndex:(NSUInteger)index
-{
-    CCList *list = _lists[index];
-    return [_address.lists containsObject:list];
-}
-
-- (NSString *)currentListNames
-{
-    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    NSArray *listArray = [[_address.lists allObjects] sortedArrayUsingDescriptors:@[nameSortDescriptor]];
-    return [[listArray valueForKeyPath:@"@unionOfObjects.name"] componentsJoinedByString:@", "];
-}
-
-- (NSUInteger)numberOfLists
-{
-    return [_lists count];
-}
-
-- (NSString *)listNameAtIndex:(NSUInteger)index
-{
-    CCList *list = _lists[index];
-    return list.name;
-}
-
-- (NSString *)listIconAtIndex:(NSUInteger)index
-{
-    CCList *list = _lists[index];
-    return list.icon;
-}
-
 #pragma mark route
 
 - (void)launchRoute:(CCRouteType)type
@@ -347,24 +245,6 @@
 - (BOOL)notificationEnabled
 {
     return [_address.notify boolValue];
-}
-
-- (void)setNotificationEnabled:(BOOL)enable
-{
-    _address.notify = @(enable);
-    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
-    [_delegate addressNotificationChanged:_address];
-    
-    [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enable)}];
-    
-    BOOL locationEnabled = [CLLocationManager locationServicesEnabled];
-    BOOL locationAuthorized = [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized;
-    if (enable && (!locationEnabled || !locationAuthorized)) {
-        NSString *alertTitle = NSLocalizedString(@"REQUEST_GEOLOC_ENABLED_TITLE", @"");
-        NSString *alertMessage = NSLocalizedString(@"REQUEST_GEOLOC_ENABLED_MESSAGE", @"");
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alertView show];
-    }
 }
 
 #pragma mark - UINotificationCenter methods

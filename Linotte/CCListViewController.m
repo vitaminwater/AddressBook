@@ -107,9 +107,8 @@
     CLLocation *location = [locations lastObject];
     
     _provider.currentLocation = location;
-    [_provider resortListItems:^{
-        [((CCListView *)self.view) reloadVisibleListItems];
-    }];
+    [_provider resortListItems];
+    [((CCListView *)self.view) reloadVisibleListItems];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)heading

@@ -79,3 +79,5 @@
 "MY_BOOKS" = "Mes carnets";
 
 "LIST_NAME" = "Nouveau carnet";
+
+"LIST_NOTIFICATION_LABEL" = "Activer les notifications du carnet";

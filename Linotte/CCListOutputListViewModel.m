@@ -8,15 +8,36 @@
 
 #import "CCListOutputListViewModel.h"
 
+#import "CCListViewContentProvider.h"
+
+#import "CCList.h"
+
+@interface CCListOutputListViewModel()
+
+@property(nonatomic, strong)CCList *list;
+
+@end
+
 @implementation CCListOutputListViewModel
 
 @synthesize provider;
+
+- (id)initWithList:(CCList *)list
+{
+    self = [super init];
+    if (self) {
+        _list = list;
+    }
+    return self;
+}
 
 #pragma mark CCListViewModelProtocol methods
 
 - (void)loadListItems
 {
-    
+    for (CCAddress *address in _list.addresses) {
+        [self.provider addAddress:address];
+    }
 }
 
 - (void)expandList:(CCList *)list

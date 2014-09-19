@@ -6,17 +6,17 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListSettingsView.h"
+#import "CCAddressListSettingsView.h"
 
 #import <HexColors/HexColor.h>
 
 #import "NSString+CCLocalizedString.h"
 
-#import "CCListSettingsTableViewCell.h"
+#import "CCAddressListSettingsTableViewCell.h"
 
 #define kCCListSettingsTableViewCell @"kCCListSettingsTableViewCell"
 
-@interface CCListSettingsView()
+@interface CCAddressListSettingsView()
 
 @property(nonatomic, strong)NSIndexPath *selectedPath;
 
@@ -31,7 +31,7 @@
 
 @end
 
-@implementation CCListSettingsView
+@implementation CCAddressListSettingsView
 
 - (id)init
 {
@@ -47,7 +47,6 @@
         [self setupListName];
         [self setupEditListButton];
         [self setupListSelector];
-        [self setupCloseButton];
         [self setupLayout];
     }
     return self;
@@ -113,32 +112,18 @@
     _listSelector.rowHeight = 35;
     _listSelector.delegate = self;
     _listSelector.dataSource = self;
-    [_listSelector registerClass:[CCListSettingsTableViewCell class] forCellReuseIdentifier:kCCListSettingsTableViewCell];
+    [_listSelector registerClass:[CCAddressListSettingsTableViewCell class] forCellReuseIdentifier:kCCListSettingsTableViewCell];
     [self addSubview:_listSelector];
-}
-
-- (void)setupCloseButton
-{
-    _closeButton = [UIButton new];
-    _closeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [_closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    [_closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
-    _closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
-    [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
-    [_closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    _closeButton.opaque = NO;
-    [self addSubview:_closeButton];
 }
 
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_helpView, _listName, _editListButton, _listSelector, _closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==150)]-[_closeButton(==35)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==150)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:view == _closeButton ? @"H:|[view]|" : @"H:|-[view]-|" options:0 metrics:nil views:@{@"view": view}];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view": view}];
         [self addConstraints:horizontalConstraints];
     }
 }
@@ -166,7 +151,7 @@
 
 #pragma mark - setter methods
 
-- (void)setDelegate:(id<CCListSettingsViewDelegate>)delegate
+- (void)setDelegate:(id<CCAddressListSettingsViewDelegate>)delegate
 {
     _delegate = delegate;
     
@@ -177,11 +162,6 @@
 }
 
 #pragma mark - UIButton target methods
-
-- (void)closeButtonPressed:(UIButton *)sender
-{
-    [_delegate closeListSettingsView:self success:NO];
-}
 
 - (void)editListPressed:(UIButton *)sender
 {
@@ -221,7 +201,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CCListSettingsTableViewCell *cell = (CCListSettingsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    CCAddressListSettingsTableViewCell *cell = (CCAddressListSettingsTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     
     if (cell) {
         cell.isAdded = !cell.isAdded;
@@ -237,7 +217,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CCListSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListSettingsTableViewCell];
+    CCAddressListSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListSettingsTableViewCell];
     
     cell.textLabel.text = [_delegate listNameAtIndex:indexPath.row];
     cell.isAdded = [_delegate isListSelectedAtIndex:indexPath.row];
