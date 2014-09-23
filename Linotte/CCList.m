@@ -16,7 +16,7 @@
     RKManagedObjectStore *managedObjectStore = [RKManagedObjectStore defaultStore];
     RKEntityMapping *entityMapping = [RKEntityMapping mappingForEntityForName:[self entityName] inManagedObjectStore:managedObjectStore];
     
-    [entityMapping addAttributeMappingsFromArray:@[CCAddressAttributes.identifier, CCListAttributes.name, CCListAttributes.icon, CCListAttributes.latitude, CCListAttributes.longitude, CCListAttributes.provider]];
+    [entityMapping addAttributeMappingsFromArray:@[CCAddressAttributes.identifier, CCListAttributes.name, CCListAttributes.icon, CCListAttributes.provider]];
     [entityMapping addAttributeMappingsFromDictionary:@{@"provider_id" : CCListAttributes.providerId}];
     
     RKObjectMapping *addressesObjectMapping = [CCAddress responseGETEntityMapping];
@@ -29,7 +29,7 @@
 {
     RKObjectMapping *objectMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
     
-    [objectMapping addAttributeMappingsFromArray:@[CCListAttributes.name, CCListAttributes.icon, CCListAttributes.latitude, CCListAttributes.longitude, CCListAttributes.provider]];
+    [objectMapping addAttributeMappingsFromArray:@[CCListAttributes.name, CCListAttributes.icon, CCListAttributes.provider]];
     [objectMapping addAttributeMappingsFromDictionary:@{CCListAttributes.providerId : @"provider_id"}];
     
     RKObjectMapping *addressesObjectMapping = [CCAddress requestPOSTObjectSlugMapping];

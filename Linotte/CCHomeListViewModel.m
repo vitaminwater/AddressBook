@@ -92,4 +92,29 @@
     return NO;
 }
 
+#pragma mark - NSNotificationCenter target methods
+
+- (void)handleModelChange:(NSNotification *)notification
+{
+    NSArray* insertedObjects = [[notification userInfo]
+                                objectForKey:NSInsertedObjectsKey];
+    NSArray* deletedObjects = [[notification userInfo]
+                               objectForKey:NSDeletedObjectsKey];
+    NSArray* updatedObjects = [[notification userInfo]
+                               objectForKey:NSUpdatedObjectsKey];
+    
+    for (NSManagedObject *managedObject in updatedObjects) {
+        if ([managedObject isKindOfClass:[CCAddress class]]) {
+            CCAddress *address = (CCAddress *)managedObject;
+            NSLog(@"changed model : %@", [address description]);
+            NSDictionary *relationships = managedObject.entity.relationshipsByName;
+            for (NSString *attributeName in [address.changedValuesForCurrentEvent allKeys]) {
+                NSRelationshipDescription *relationship = [relationships objectForKey:attributeName];
+                if (relationship.isToMany && relationship.inverseRelationship.isToMany)
+                    NSLog(@"changed attribute: %@", attributeName);
+            }
+        }
+    }
+}
+
 @end

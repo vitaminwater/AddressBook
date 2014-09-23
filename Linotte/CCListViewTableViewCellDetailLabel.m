@@ -29,6 +29,7 @@
         _label.translatesAutoresizingMaskIntoConstraints = NO;
         _label.font = [UIFont fontWithName:@"Futura-Book" size:18];
         _label.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
+        _label.numberOfLines = 0;
         [self addSubview:_label];
         
         NSDictionary *views = NSDictionaryOfVariableBindings(_imageView, _label);

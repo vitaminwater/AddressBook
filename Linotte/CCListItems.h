@@ -23,9 +23,10 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 
 @interface CCListItem : NSObject
 
-@property(nonatomic, strong)NSString *name;
-@property(nonatomic, assign)BOOL farAway;
-@property(nonatomic, strong)CLLocation *itemLocation;
+@property(nonatomic, strong, readonly)NSString *name;
+@property(nonatomic, readonly)BOOL notify;
+@property(nonatomic, readonly)BOOL farAway;
+@property(nonatomic, readonly, strong)CLLocation *itemLocation;
 @property(nonatomic, strong)CLLocation *location;
 
 @property(nonatomic, readonly)CCListItemType type;

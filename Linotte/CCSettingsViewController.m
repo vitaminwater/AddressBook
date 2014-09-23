@@ -14,8 +14,6 @@
 
 - (void)loadView
 {
-    [super loadView];
-    
     CCSettingsView *view = [CCSettingsView new];
     view.delegate = self;
     self.view = view;
@@ -36,15 +34,16 @@
 
 - (void)setContentView:(UIView *)contentView
 {
+    _contentView = contentView;
     CCSettingsView *view = (CCSettingsView *)self.view;
-    [view setupContentView:view];
+    [view setupContentView:_contentView];
 }
 
 #pragma mark - CCSettingsViewDelegate methods
 
 - (void)closeButtonPressed:(id)sender
 {
-    
+    [_delegate settingsViewControllerDidEnd:self];
 }
 
 @end

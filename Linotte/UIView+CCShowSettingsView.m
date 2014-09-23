@@ -12,6 +12,9 @@
 
 - (void)showSettingsView:(UIView *)settingsView
 {
+    settingsView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:settingsView];
+    
     NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:settingsView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
     [self addConstraint:centerXConstraint];
     

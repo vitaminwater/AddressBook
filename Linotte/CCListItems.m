@@ -65,6 +65,9 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 @interface CCListItem()
 
+@property(nonatomic, assign)BOOL farAway;
+@property(nonatomic, strong)CLLocation *itemLocation;
+
 - (NSString *)iconPrefix;
 
 @end
@@ -127,7 +130,6 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (void)setAddress:(CCAddress *)address
 {
     _address = address;
-    self.name = _address.name;
     self.itemLocation = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
 }
 
@@ -151,6 +153,18 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (CCListItemType)type
 {
     return CCListItemTypeAddress;
+}
+
+#pragma mark - getter methods
+
+- (NSString *)name
+{
+    return _address.name;
+}
+
+- (BOOL)notify
+{
+    return _address.notifyValue;
 }
 
 @end
@@ -179,7 +193,6 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (void)setList:(CCList *)list
 {
     _list = list;
-    self.name = [NSString stringWithFormat:@"Liste: %@", _list.name];
 }
 
 - (void)setLocation:(CLLocation *)location
@@ -225,6 +238,18 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (NSString *)iconPrefix
 {
     return @"list_pin";
+}
+
+#pragma mark - getter methods
+
+- (NSString *)name
+{
+    return _list.name;
+}
+
+- (BOOL)notify
+{
+    return _list.notifyValue;
 }
 
 @end

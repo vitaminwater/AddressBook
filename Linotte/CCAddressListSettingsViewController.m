@@ -128,8 +128,6 @@
     
     [managedObjectContext saveToPersistentStore:NULL];
     
-    [_delegate listCreated:list];
-    
     return insertIndex;
 }
 
@@ -150,7 +148,6 @@
     [_address addListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
-    [_delegate address:_address movedToList:list];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
@@ -159,7 +156,6 @@
     [_address removeListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
-    [_delegate address:_address movedFromList:list];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index

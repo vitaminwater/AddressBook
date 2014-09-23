@@ -94,12 +94,12 @@
     }];
 }
 
-- (void)reloadListItemList
+- (void)reloadData
 {
     [_tableView reloadData];
 }
 
-- (void)reloadVisibleListItems
+- (void)reloadVisibleCells
 {
     NSArray *cells = _tableView.visibleCells;
     for (CCListViewTableViewCell *cell in cells) {
@@ -108,15 +108,25 @@
     }
 }
 
-- (void)reloadListItemAtIndex:(NSUInteger)index
+- (void)reloadCellsAtIndexes:(NSIndexSet *)indexSet
 {
+    NSMutableArray *indexPaths = [@[] mutableCopy];
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
+        [indexPaths addObject:indexPath];
+    }];
     
+    [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)insertListItemAtIndex:(NSUInteger)index
+- (void)insertCellsAtIndexes:(NSIndexSet *)indexSet
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
-    [_tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    NSMutableArray *indexPaths = [@[] mutableCopy];
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
+        [indexPaths addObject:indexPath];
+    }];
+    [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     
     if (_helpImage) {
         [UIView animateWithDuration:0.2 animations:^{
@@ -128,10 +138,14 @@
     }
 }
 
-- (void)deleteListItemAtIndex:(NSUInteger)index
+- (void)deleteCellsAtIndexes:(NSIndexSet *)indexSet
 {
-    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
-    [_tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+    NSMutableArray *indexPaths = [@[] mutableCopy];
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
+        [indexPaths addObject:indexPath];
+    }];
+    [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
     
     if ([_delegate numberOfListItems] == 0 && _helpImage == nil)
         [self setupHelpImage];
@@ -151,7 +165,6 @@
         if (fabs(translation.x) < fabs(translation.y) && translation.y < 0)
             [_delegate hideOptionView];
     }
-        
 }
 
 #pragma mark - CCListViewTableViewCellDelegate methods
@@ -160,6 +173,12 @@
 {
     NSIndexPath *indexPath = [_tableView indexPathForCell:sender];
     [_delegate deleteListItemAtIndex:indexPath.row];
+}
+
+- (void)setNotificationEnabled:(BOOL)enabled forCell:(id)sender
+{
+    NSIndexPath *indexPath = [_tableView indexPathForCell:sender];
+    [_delegate setNotificationEnabled:enabled atIndex:indexPath.row];
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -192,7 +211,8 @@
     else
         cell.detailTextLabel.text = NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
 
-    cell.angle = [_delegate angleForListItemAtIndex:index];
+    [cell setNotificationEnabled:[_delegate notificationEnabledForListItemAtIndex:index]];
+    [cell setAngle:[_delegate angleForListItemAtIndex:index]];
     cell.markerImageView.image = [_delegate iconForListItemAtIndex:index];
 }
 

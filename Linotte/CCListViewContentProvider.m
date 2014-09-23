@@ -194,6 +194,12 @@
     return listItem.name;
 }
 
+- (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    return listItem.notify;
+}
+
 - (NSUInteger)numberOfListItems
 {
     return [_listItems count];

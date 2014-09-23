@@ -33,6 +33,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    
+}
+
 - (void)loadContentView
 {
     CCAddressSettingsView *view = [CCAddressSettingsView new];
@@ -55,7 +60,6 @@
 {
     _address.notify = @(enabled);
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
-    [_delegate addressNotificationChanged:_address];
     
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": @(enabled)}];
     
@@ -71,7 +75,7 @@
 
 - (void)showListSetting
 {
-    
+    [self.delegate showListSettings];
 }
 
 @end

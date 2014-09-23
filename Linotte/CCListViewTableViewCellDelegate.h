@@ -11,5 +11,6 @@
 @protocol CCListViewTableViewCellDelegate <NSObject>
 
 - (void)deleteAddress:(id)sender;
+- (void)setNotificationEnabled:(BOOL)enabled forCell:(id)sender;
 
 @end

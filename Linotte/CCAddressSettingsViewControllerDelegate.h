@@ -14,6 +14,6 @@
 
 @protocol CCAddressSettingsViewControllerDelegate <CCSettingsViewControllerDelegate>
 
-- (void)addressNotificationChanged:(CCAddress *)address;
+- (void)showListSettings;
 
 @end

@@ -10,6 +10,8 @@
 
 #import "CCListItems.h"
 
+#import "CCListViewContentProviderDelegate.h"
+
 #import "CCListViewModelProtocol.h"
 
 @class CCListViewModel;
@@ -22,6 +24,8 @@
 @property(nonatomic, strong)id<CCListViewModelProtocol> model;
 @property(nonatomic, strong)CLLocation *currentLocation;
 @property(nonatomic, strong)CLHeading *currentHeading;
+
+@property(nonatomic, assign)id<CCListViewContentProviderDelegate> delegate;
 
 - (id)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
 
@@ -45,6 +49,7 @@
 - (double)angleForListItemAtIndex:(NSUInteger)index;
 - (UIImage *)iconFormListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
+- (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 
 @end

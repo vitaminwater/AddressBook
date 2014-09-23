@@ -22,9 +22,9 @@
 @property(nonatomic, strong)UILabel *realTextLabel;
 @property(nonatomic, strong)CCListViewTableViewCellDetailLabel *realDetailTextLabel;
 
+@property(nonatomic, strong)UIButton *bellButton;
+
 @property(nonatomic, strong)UIImageView *compasView;
-@property(nonatomic, strong)UIImage *compasImage;
-@property(nonatomic, strong)UIImage *invertedCompasImage;
 
 @property(nonatomic, strong)NSLayoutConstraint *rightEjectButtonConstraint;
 
@@ -40,9 +40,28 @@
         
         [self setupButton];
         [self setupLabels];
+        [self setupBellButton];
         [self setupCompas];
+        [self setupLayout];
+        
+        UISwipeGestureRecognizer *swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
+        swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+        [self addGestureRecognizer:swipGestureRecognizer];
+        swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
+        swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+        [self addGestureRecognizer:swipGestureRecognizer];
     }
     return self;
+}
+
+- (void)setupButton
+{
+    _deleteButton = [UIButton new];
+    _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _deleteButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_deleteButton setImage:[UIImage imageNamed:@"delete_note"] forState:UIControlStateNormal];
+    [_deleteButton addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_deleteButton];
 }
 
 - (void)setupLabels
@@ -57,59 +76,73 @@
     _realDetailTextLabel = [CCListViewTableViewCellDetailLabel new];
     _realDetailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_realDetailTextLabel];
-
-    NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
-    [self.contentView addConstraint:topTextLabelConstraint];
-    
-    NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
-    [self.contentView addConstraint:bottomDetailLabelConstraint];
-    
-    for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {
-        NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:8];
-        [self.contentView addConstraint:leftConstraint];
-    }
 }
 
-- (void)setupButton
+- (void)setupBellButton
 {
-    _deleteButton = [UIButton new];
-    _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    _deleteButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [_deleteButton setImage:[UIImage imageNamed:@"delete_note"] forState:UIControlStateNormal];
-    [_deleteButton addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:_deleteButton];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_deleteButton(==90)]" options:0 metrics:nil views:views];
-    [self.contentView addConstraints:horizontalConstraints];
-    
-    _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    [self addConstraint:_rightEjectButtonConstraint];
-    
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
-    [self.contentView addConstraints:verticalConstraints];
-    
-    UISwipeGestureRecognizer *swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-    [self addGestureRecognizer:swipGestureRecognizer];
-    swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-    swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self addGestureRecognizer:swipGestureRecognizer];
+    _bellButton = [UIButton new];
+    _bellButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _bellButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_bellButton setImage:[UIImage imageNamed:@"bell_button_off"] forState:UIControlStateNormal];
+    [_bellButton setImage:[UIImage imageNamed:@"bell_button_on"] forState:UIControlStateSelected];
+    [_bellButton addTarget:self action:@selector(bellPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_bellButton];
 }
 
 - (void)setupCompas
 {
-    _compasImage = [UIImage imageNamed:@"direction"];
-    _invertedCompasImage = [UIImage inverseColor:_compasImage];
-    _compasView = [[UIImageView alloc] initWithImage:_compasImage];
+    UIImage *compasImage = [UIImage imageNamed:@"direction"];
+    _compasView = [[UIImageView alloc] initWithImage:compasImage];
     _compasView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_compasView];
+}
+
+- (void)setupLayout
+{
+    NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton, _realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
+    // realTextLabel and reatDetailTextLabel
+    {
+        NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
+        [self.contentView addConstraint:topTextLabelConstraint];
+        
+        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
+        [self.contentView addConstraint:bottomDetailLabelConstraint];
+        
+        for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {
+            NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:8];
+            [self.contentView addConstraint:leftConstraint];
+        }
+    }
     
-    NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
-    [self.contentView addConstraint:horizontalConstraint];
+    // deleteButton
+    {
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_deleteButton(==90)]" options:0 metrics:nil views:views];
+        [self.contentView addConstraints:horizontalConstraints];
+        
+        _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        [self addConstraint:_rightEjectButtonConstraint];
+        
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
+        [self.contentView addConstraints:verticalConstraints];
+    }
     
-    NSLayoutConstraint *verticalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.35 constant:0];
-    [self.contentView addConstraint:verticalConstraint];
+    // compasView
+    {
+        NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
+        [self.contentView addConstraint:horizontalConstraint];
+        
+        NSLayoutConstraint *verticalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.35 constant:0];
+        [self.contentView addConstraint:verticalConstraint];
+    }
+    
+    // bellButton
+    {
+        NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeLeft multiplier:1 constant:-5];
+        [self addConstraint:horizontalConstraint];
+        
+        NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [self addConstraint:centerYConstraint];
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -160,6 +193,12 @@
     [_delegate deleteAddress:self];
 }
 
+- (void)bellPressed:(id)sender
+{
+    _bellButton.selected = !_bellButton.selected;
+    [_delegate setNotificationEnabled:_bellButton.selected forCell:self];
+}
+
 #pragma mark - UIGestureRecognizer target methods
 
 - (void)swipGestureRecognizer:(UISwipeGestureRecognizer *)swipGestureRecognizer
@@ -178,10 +217,14 @@
 
 #pragma mark - setter methods
 
+- (void)setNotificationEnabled:(BOOL)notificationEnabled
+{
+    _bellButton.selected = notificationEnabled;
+}
+
 - (void)setAngle:(double)angle
 {
-    _angle = angle;
-    CATransform3D transform = CATransform3DMakeRotation(_angle / 180 * M_PI, 0, 0, 1);
+    CATransform3D transform = CATransform3DMakeRotation(angle / 180 * M_PI, 0, 0, 1);
     _compasView.layer.transform = transform;
 }
 

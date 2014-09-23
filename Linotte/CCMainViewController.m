@@ -106,10 +106,13 @@
 
 #pragma mark - CCAddAddressViewControllerDelegate methods
 
-- (void)addressAdded:(CCAddress *)address
+- (void)preSaveAddress:(CCAddress *)address
 {
-    [_listViewController addressAdded:address];
     
+}
+
+- (void)postSaveAddress:(CCAddress *)address
+{
     CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
     [self.navigationController pushViewController:outputViewController animated:YES];
 }

@@ -12,9 +12,6 @@ const struct CCCategoryRelationships CCCategoryRelationships = {
 	.address = @"address",
 };
 
-const struct CCCategoryFetchedProperties CCCategoryFetchedProperties = {
-};
-
 @implementation CCCategoryID
 @end
 
@@ -40,35 +37,15 @@ const struct CCCategoryFetchedProperties CCCategoryFetchedProperties = {
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-	
 
 	return keyPaths;
 }
 
-
-
-
 @dynamic identifier;
-
-
-
-
-
 
 @dynamic name;
 
-
-
-
-
-
 @dynamic address;
 
-	
-
-
-
-
-
-
 @end
+

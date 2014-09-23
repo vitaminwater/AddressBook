@@ -13,9 +13,9 @@
 
 @protocol CCAddressListSettingsViewControllerDelegate <NSObject>
 
-- (void)address:(CCAddress *)address movedToList:(CCList *)list;
+/*- (void)address:(CCAddress *)address movedToList:(CCList *)list;
 - (void)address:(CCAddress *)address movedFromList:(CCList *)list;
 
-- (void)listCreated:(CCList *)list;
+- (void)listCreated:(CCList *)list;*/
 
 @end

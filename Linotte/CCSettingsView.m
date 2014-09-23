@@ -33,7 +33,6 @@
         
         [self setupTitle];
         [self setupCloseButton];
-        [self setupLayout];
     }
     return self;
 }

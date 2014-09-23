@@ -10,8 +10,11 @@
 
 #import "CCSettingsViewDelegate.h"
 
+#import "CCSettingsViewControllerDelegate.h"
+
 @interface CCSettingsViewController : UIViewController<CCSettingsViewDelegate>
 
+@property(nonatomic, assign)id<CCSettingsViewControllerDelegate> delegate;
 @property(nonatomic, strong)UIView *contentView;
 
 - (void)loadContentView;

@@ -34,6 +34,7 @@
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notify" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="provider" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="providerId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
@@ -51,7 +52,7 @@
         <element name="CCAddress" positionX="0" positionY="0" width="128" height="270"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="CCList" positionX="0" positionY="0" width="128" height="178"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="195"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
     </elements>
 </model>

@@ -341,10 +341,10 @@
         [address addCategoriesObject:categorieModel];
     }
     
+    [_delegate preSaveAddress:address];
     [managedObjectContext saveToPersistentStore:NULL];
     [self reduceAddView];
-    [_delegate addressAdded:address];
-    [[CCNetworkHandler sharedInstance] sendAddress:address];
+    [[CCNetworkHandler sharedInstance] sendAddress:address]; // TODO core data model change notification ?
     [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
 }
 

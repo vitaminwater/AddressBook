@@ -16,10 +16,13 @@
 - (void)didSelectListItemAtIndex:(NSUInteger)index;
 - (void)deleteListItemAtIndex:(NSUInteger)index;
 
+- (void)setNotificationEnabled:(BOOL)enabled atIndex:(NSUInteger)index;
+
 - (double)distanceForListItemAtIndex:(NSUInteger)index;
 - (double)angleForListItemAtIndex:(NSUInteger)index;
 - (UIImage *)iconForListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
+- (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 
 @end

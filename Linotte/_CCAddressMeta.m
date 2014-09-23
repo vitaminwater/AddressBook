@@ -14,9 +14,6 @@ const struct CCAddressMetaRelationships CCAddressMetaRelationships = {
 	.address = @"address",
 };
 
-const struct CCAddressMetaFetchedProperties CCAddressMetaFetchedProperties = {
-};
-
 @implementation CCAddressMetaID
 @end
 
@@ -42,49 +39,19 @@ const struct CCAddressMetaFetchedProperties CCAddressMetaFetchedProperties = {
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-	
 
 	return keyPaths;
 }
 
-
-
-
 @dynamic identifier;
-
-
-
-
-
 
 @dynamic internal_name;
 
-
-
-
-
-
 @dynamic name;
-
-
-
-
-
 
 @dynamic value;
 
-
-
-
-
-
 @dynamic address;
 
-	
-
-
-
-
-
-
 @end
+

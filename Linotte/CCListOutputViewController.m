@@ -11,13 +11,15 @@
 #import <HexColors/HexColor.h>
 #import <RestKit/RestKit.h>
 
+#import "CCListOutputView.h"
+
 #import "CCListViewController.h"
 #import "CCAddAddressViewController.h"
 
 #import "CCListOutputListViewModel.h"
 #import "CCListViewContentProvider.h"
 
-#import "CCListOutputView.h"
+#import "CCAddressSettingsViewController.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -135,6 +137,7 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
+    
 }
 
 #pragma mark - CCListViewControllerDelegate methods
@@ -161,13 +164,14 @@
 
 #pragma mark - CCAddAddressViewControllerDelegate
 
-- (void)addressAdded:(CCAddress *)address
+- (void)preSaveAddress:(CCAddress *)address
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-    
     [address addListsObject:_list];
+}
+
+- (void)postSaveAddress:(CCAddress *)address
+{
     
-    [managedObjectContext saveToPersistentStore:NULL];
 }
 
 - (void)expandAddView

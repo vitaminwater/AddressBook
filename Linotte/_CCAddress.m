@@ -24,9 +24,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	.metas = @"metas",
 };
 
-const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
-};
-
 @implementation CCAddressID
 @end
 
@@ -52,7 +49,7 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-	
+
 	if ([key isEqualToString:@"latitudeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"latitude"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -77,47 +74,17 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	return keyPaths;
 }
 
-
-
-
 @dynamic address;
-
-
-
-
-
 
 @dynamic date;
 
-
-
-
-
-
 @dynamic geohash;
-
-
-
-
-
 
 @dynamic identifier;
 
-
-
-
-
-
 @dynamic lastnotif;
 
-
-
-
-
-
 @dynamic latitude;
-
-
 
 - (double)latitudeValue {
 	NSNumber *result = [self latitude];
@@ -137,13 +104,7 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	[self setPrimitiveLatitude:[NSNumber numberWithDouble:value_]];
 }
 
-
-
-
-
 @dynamic longitude;
-
-
 
 - (double)longitudeValue {
 	NSNumber *result = [self longitude];
@@ -163,20 +124,9 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	[self setPrimitiveLongitude:[NSNumber numberWithDouble:value_]];
 }
 
-
-
-
-
 @dynamic name;
 
-
-
-
-
-
 @dynamic notify;
-
-
 
 - (BOOL)notifyValue {
 	NSNumber *result = [self notify];
@@ -196,27 +146,11 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	[self setPrimitiveNotify:[NSNumber numberWithBool:value_]];
 }
 
-
-
-
-
 @dynamic provider;
-
-
-
-
-
 
 @dynamic providerId;
 
-
-
-
-
-
 @dynamic sent;
-
-
 
 - (BOOL)sentValue {
 	NSNumber *result = [self sent];
@@ -236,52 +170,38 @@ const struct CCAddressFetchedProperties CCAddressFetchedProperties = {
 	[self setPrimitiveSent:[NSNumber numberWithBool:value_]];
 }
 
-
-
-
-
 @dynamic categories;
 
-	
 - (NSMutableSet*)categoriesSet {
 	[self willAccessValueForKey:@"categories"];
-  
+
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"categories"];
-  
+
 	[self didAccessValueForKey:@"categories"];
 	return result;
 }
-	
 
 @dynamic lists;
 
-	
 - (NSMutableSet*)listsSet {
 	[self willAccessValueForKey:@"lists"];
-  
+
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"lists"];
-  
+
 	[self didAccessValueForKey:@"lists"];
 	return result;
 }
-	
 
 @dynamic metas;
 
-	
 - (NSMutableSet*)metasSet {
 	[self willAccessValueForKey:@"metas"];
-  
+
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"metas"];
-  
+
 	[self didAccessValueForKey:@"metas"];
 	return result;
 }
-	
-
-
-
-
-
 
 @end
+

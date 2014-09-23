@@ -14,9 +14,6 @@ const struct CCListMetaRelationships CCListMetaRelationships = {
 	.list = @"list",
 };
 
-const struct CCListMetaFetchedProperties CCListMetaFetchedProperties = {
-};
-
 @implementation CCListMetaID
 @end
 
@@ -42,49 +39,19 @@ const struct CCListMetaFetchedProperties CCListMetaFetchedProperties = {
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-	
 
 	return keyPaths;
 }
 
-
-
-
 @dynamic identifier;
-
-
-
-
-
 
 @dynamic internal_name;
 
-
-
-
-
-
 @dynamic name;
-
-
-
-
-
 
 @dynamic value;
 
-
-
-
-
-
 @dynamic list;
 
-	
-
-
-
-
-
-
 @end
+

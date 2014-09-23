@@ -249,6 +249,7 @@
 		C799AB7F192752DE0096B5A8 /* UIImage+CCInvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+CCInvert.m"; sourceTree = "<group>"; };
 		C7A2EB2E19BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressListSettingsTableViewCell.h; sourceTree = "<group>"; };
 		C7A2EB2F19BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressListSettingsTableViewCell.m; sourceTree = "<group>"; };
+		C7A96F4A19CDCD4A00F88250 /* CCListViewContentProviderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListViewContentProviderDelegate.h; sourceTree = "<group>"; };
 		C7BA707B193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707C193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707E193E107D000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -703,6 +704,8 @@
 			children = (
 				C761A01A19CC64F700C09F0D /* protocol */,
 				C761A01419CC63B600C09F0D /* ui */,
+				C761A01719CC63D500C09F0D /* CCAddressListSettingsViewController.h */,
+				C761A01819CC63D500C09F0D /* CCAddressListSettingsViewController.m */,
 			);
 			name = list;
 			sourceTree = "<group>";
@@ -712,8 +715,6 @@
 			children = (
 				C7A2EB2D19BBBF34003EF099 /* cell */,
 				C761A01519CC63BA00C09F0D /* view */,
-				C761A01719CC63D500C09F0D /* CCAddressListSettingsViewController.h */,
-				C761A01819CC63D500C09F0D /* CCAddressListSettingsViewController.m */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -895,6 +896,7 @@
 		C76A1CF519C0DDFA00EE75E4 /* provider */ = {
 			isa = PBXGroup;
 			children = (
+				C7A96F4919CDCD3800F88250 /* protocol */,
 				C76A1CFB19C0DEA900EE75E4 /* item */,
 				C76A1CF619C0DE2300EE75E4 /* CCListViewContentProvider.h */,
 				C76A1CF719C0DE2300EE75E4 /* CCListViewContentProvider.m */,
@@ -1079,6 +1081,14 @@
 				C7A2EB2F19BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m */,
 			);
 			name = cell;
+			sourceTree = "<group>";
+		};
+		C7A96F4919CDCD3800F88250 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7A96F4A19CDCD4A00F88250 /* CCListViewContentProviderDelegate.h */,
+			);
+			name = protocol;
 			sourceTree = "<group>";
 		};
 		C7CE2C581918E48800D37A64 = {
@@ -1711,7 +1721,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/mogenerator -m Linotte/Linotte.xcdatamodeld -O Linotte/ --template-var arc=true";
+			shellScript = "/usr/bin/mogenerator -m Linotte/Linotte.xcdatamodeld -O Linotte/ --template-var arc=true";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1931,6 +1941,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1953,6 +1964,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Constantin Clauzel (4S49S5KKNH)";
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";

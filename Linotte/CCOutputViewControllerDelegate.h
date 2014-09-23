@@ -8,11 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class CCList;
-@class CCAddress;
-
 @protocol CCOutputViewControllerDelegate <NSObject>
-
-
 
 @end

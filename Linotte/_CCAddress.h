@@ -3,7 +3,6 @@
 
 #import <CoreData/CoreData.h>
 
-
 extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *address;
 	__unsafe_unretained NSString *date;
@@ -25,25 +24,9 @@ extern const struct CCAddressRelationships {
 	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
-extern const struct CCAddressFetchedProperties {
-} CCAddressFetchedProperties;
-
 @class CCCategory;
 @class CCList;
 @class CCAddressMeta;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @interface CCAddressID : NSManagedObjectID {}
 @end
@@ -52,184 +35,103 @@ extern const struct CCAddressFetchedProperties {
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-- (CCAddressID*)objectID;
-
-
-
-
+@property (nonatomic, readonly, strong) CCAddressID* objectID;
 
 @property (nonatomic, strong) NSString* address;
 
-
-
 //- (BOOL)validateAddress:(id*)value_ error:(NSError**)error_;
-
-
-
-
 
 @property (nonatomic, strong) NSDate* date;
 
-
-
 //- (BOOL)validateDate:(id*)value_ error:(NSError**)error_;
-
-
-
-
 
 @property (nonatomic, strong) NSString* geohash;
 
-
-
 //- (BOOL)validateGeohash:(id*)value_ error:(NSError**)error_;
-
-
-
-
 
 @property (nonatomic, strong) NSString* identifier;
 
-
-
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
-
-
-
-
 
 @property (nonatomic, strong) NSDate* lastnotif;
 
-
-
 //- (BOOL)validateLastnotif:(id*)value_ error:(NSError**)error_;
-
-
-
-
 
 @property (nonatomic, strong) NSNumber* latitude;
 
-
-
-@property double latitudeValue;
+@property (atomic) double latitudeValue;
 - (double)latitudeValue;
 - (void)setLatitudeValue:(double)value_;
 
 //- (BOOL)validateLatitude:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSNumber* longitude;
 
-
-
-@property double longitudeValue;
+@property (atomic) double longitudeValue;
 - (double)longitudeValue;
 - (void)setLongitudeValue:(double)value_;
 
 //- (BOOL)validateLongitude:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSString* name;
-
-
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSNumber* notify;
 
-
-
-@property BOOL notifyValue;
+@property (atomic) BOOL notifyValue;
 - (BOOL)notifyValue;
 - (void)setNotifyValue:(BOOL)value_;
 
 //- (BOOL)validateNotify:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSString* provider;
-
-
 
 //- (BOOL)validateProvider:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSString* providerId;
-
-
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSNumber* sent;
 
-
-
-@property BOOL sentValue;
+@property (atomic) BOOL sentValue;
 - (BOOL)sentValue;
 - (void)setSentValue:(BOOL)value_;
 
 //- (BOOL)validateSent:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSSet *categories;
 
 - (NSMutableSet*)categoriesSet;
-
-
-
 
 @property (nonatomic, strong) NSSet *lists;
 
 - (NSMutableSet*)listsSet;
 
-
-
-
 @property (nonatomic, strong) NSSet *metas;
 
 - (NSMutableSet*)metasSet;
 
-
-
-
-
 @end
 
-@interface _CCAddress (CoreDataGeneratedAccessors)
-
+@interface _CCAddress (CategoriesCoreDataGeneratedAccessors)
 - (void)addCategories:(NSSet*)value_;
 - (void)removeCategories:(NSSet*)value_;
 - (void)addCategoriesObject:(CCCategory*)value_;
 - (void)removeCategoriesObject:(CCCategory*)value_;
 
+@end
+
+@interface _CCAddress (ListsCoreDataGeneratedAccessors)
 - (void)addLists:(NSSet*)value_;
 - (void)removeLists:(NSSet*)value_;
 - (void)addListsObject:(CCList*)value_;
 - (void)removeListsObject:(CCList*)value_;
 
+@end
+
+@interface _CCAddress (MetasCoreDataGeneratedAccessors)
 - (void)addMetas:(NSSet*)value_;
 - (void)removeMetas:(NSSet*)value_;
 - (void)addMetasObject:(CCAddressMeta*)value_;
@@ -239,36 +141,20 @@ extern const struct CCAddressFetchedProperties {
 
 @interface _CCAddress (CoreDataGeneratedPrimitiveAccessors)
 
-
 - (NSString*)primitiveAddress;
 - (void)setPrimitiveAddress:(NSString*)value;
-
-
-
 
 - (NSDate*)primitiveDate;
 - (void)setPrimitiveDate:(NSDate*)value;
 
-
-
-
 - (NSString*)primitiveGeohash;
 - (void)setPrimitiveGeohash:(NSString*)value;
-
-
-
 
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-
-
-
 - (NSDate*)primitiveLastnotif;
 - (void)setPrimitiveLastnotif:(NSDate*)value;
-
-
-
 
 - (NSNumber*)primitiveLatitude;
 - (void)setPrimitiveLatitude:(NSNumber*)value;
@@ -276,23 +162,14 @@ extern const struct CCAddressFetchedProperties {
 - (double)primitiveLatitudeValue;
 - (void)setPrimitiveLatitudeValue:(double)value_;
 
-
-
-
 - (NSNumber*)primitiveLongitude;
 - (void)setPrimitiveLongitude:(NSNumber*)value;
 
 - (double)primitiveLongitudeValue;
 - (void)setPrimitiveLongitudeValue:(double)value_;
 
-
-
-
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
-
-
-
 
 - (NSNumber*)primitiveNotify;
 - (void)setPrimitiveNotify:(NSNumber*)value;
@@ -300,20 +177,11 @@ extern const struct CCAddressFetchedProperties {
 - (BOOL)primitiveNotifyValue;
 - (void)setPrimitiveNotifyValue:(BOOL)value_;
 
-
-
-
 - (NSString*)primitiveProvider;
 - (void)setPrimitiveProvider:(NSString*)value;
 
-
-
-
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
-
-
-
 
 - (NSNumber*)primitiveSent;
 - (void)setPrimitiveSent:(NSNumber*)value;
@@ -321,22 +189,13 @@ extern const struct CCAddressFetchedProperties {
 - (BOOL)primitiveSentValue;
 - (void)setPrimitiveSentValue:(BOOL)value_;
 
-
-
-
-
 - (NSMutableSet*)primitiveCategories;
 - (void)setPrimitiveCategories:(NSMutableSet*)value;
-
-
 
 - (NSMutableSet*)primitiveLists;
 - (void)setPrimitiveLists:(NSMutableSet*)value;
 
-
-
 - (NSMutableSet*)primitiveMetas;
 - (void)setPrimitiveMetas:(NSMutableSet*)value;
-
 
 @end

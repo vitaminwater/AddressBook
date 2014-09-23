@@ -12,8 +12,10 @@
 
 @interface CCListViewTableViewCell : UITableViewCell
 
-@property(nonatomic, assign)double angle;
 @property(nonatomic, weak)id<CCListViewTableViewCellDelegate> delegate;
 @property(nonatomic, readonly)UIImageView *markerImageView;
+
+- (void)setNotificationEnabled:(BOOL)notificationEnabled;
+- (void)setAngle:(double)angle;
 
 @end

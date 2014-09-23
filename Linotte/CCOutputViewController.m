@@ -12,6 +12,10 @@
 
 #import <Mixpanel/Mixpanel.h>
 
+#import "UIView+CCShowSettingsView.h"
+#import "CCAddressSettingsViewController.h"
+#import "CCAddressListSettingsViewController.h"
+
 #import "CCOutputView.h"
 
 #import "CCRestKit.h"
@@ -23,10 +27,11 @@
 #define kCCAppleMapScheme @"http://maps.apple.com/"
 
 @interface CCOutputViewController ()
-{
-    CLLocationManager *_locationManager;
-    CLLocation *_currentLocation;
-}
+
+@property(nonatomic, strong)CLLocationManager *locationManager;
+@property(nonatomic, strong)CLLocation *currentLocation;
+
+@property(nonatomic, strong)UIButton *settingsButton;
 
 @property(nonatomic, assign)BOOL addressIsNew;
 @property(nonatomic, strong)CCAddress *address;
@@ -98,13 +103,13 @@
     
     { // right bar button items
         CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
-        UIButton *settingsButton = [UIButton new];
-        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
-        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        settingsButton.frame = settingsButtonFrame;
-        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        _settingsButton = [UIButton new];
+        [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _settingsButton.frame = settingsButtonFrame;
+        [_settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
         
         self.navigationItem.rightBarButtonItems = @[barButtonItem];
     }
@@ -154,7 +159,15 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
-    // TODO
+    CCAddressSettingsViewController *addressSettingsViewController = [[CCAddressSettingsViewController alloc] initWithAddress:_address];
+    addressSettingsViewController.delegate = self;
+    [self addChildViewController:addressSettingsViewController];
+    
+    [self.view showSettingsView:addressSettingsViewController.view];
+    
+    [addressSettingsViewController didMoveToParentViewController:self];
+    
+    _settingsButton.enabled = NO;
 }
 
 #pragma mark - route methods
@@ -246,6 +259,33 @@
 {
     return [_address.notify boolValue];
 }
+
+#pragma mark - CCSettingsViewControllerDelegate methods
+
+- (void)settingsViewControllerDidEnd:(UIViewController *)sender
+{
+    [sender willMoveToParentViewController:nil];
+    [self.view hideSettingsView:sender.view];
+    [sender removeFromParentViewController];
+    
+    if ([sender isKindOfClass:[CCAddressSettingsViewController class]])
+        _settingsButton.enabled = YES;
+}
+
+#pragma mark CCAddressSettingsViewControllerDelegate methods
+
+- (void)showListSettings
+{
+    CCAddressListSettingsViewController *addressListSettingsViewController = [[CCAddressListSettingsViewController alloc] initWithAddress:_address];
+    addressListSettingsViewController.delegate = self;
+    [self addChildViewController:addressListSettingsViewController];
+    
+    [self.view showSettingsView:addressListSettingsViewController.view];
+    
+    [addressListSettingsViewController didMoveToParentViewController:self];
+}
+
+#pragma mark CCAddressListSettingsViewControllerDelegate methods
 
 #pragma mark - UINotificationCenter methods
 

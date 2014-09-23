@@ -10,4 +10,6 @@
 
 @protocol CCSettingsViewControllerDelegate <NSObject>
 
+- (void)settingsViewControllerDidEnd:(id)sender;
+
 @end

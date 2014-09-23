@@ -18,11 +18,11 @@
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 
-- (void)reloadListItemList;
-- (void)reloadVisibleListItems;
-- (void)reloadListItemAtIndex:(NSUInteger)index;
-- (void)insertListItemAtIndex:(NSUInteger)index;
-- (void)deleteListItemAtIndex:(NSUInteger)index;
+- (void)reloadData;
+- (void)reloadVisibleCells;
+- (void)reloadCellsAtIndexes:(NSIndexSet *)indexSet;
+- (void)insertCellsAtIndexes:(NSIndexSet *)indexSet;
+- (void)deleteCellsAtIndexes:(NSIndexSet *)indexSet;
 
 - (void)unselect;
 

@@ -108,23 +108,16 @@
     
     _provider.currentLocation = location;
     [_provider resortListItems];
-    [((CCListView *)self.view) reloadVisibleListItems];
+    [((CCListView *)self.view) reloadVisibleCells];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)heading
 {
     _provider.currentHeading = heading;
-    [((CCListView *)self.view) reloadVisibleListItems];
+    [((CCListView *)self.view) reloadVisibleCells];
 }
 
 #pragma mark - public methods
-
-- (void)addressAdded:(CCAddress *)address
-{
-    NSUInteger newIndex = [_provider addAddress:address];
-
-    [((CCListView *)self.view) insertListItemAtIndex:newIndex];
-}
 
 #pragma mark - UIAlertViewDelegate methods
 
@@ -153,10 +146,6 @@
         // CCList *list = (CCList *)[_addressContentProvider listItemContentAtIndex:[index unsignedIntegerValue]];
         // TODO
     }
-    
-    [_provider deleteItemAtIndex:index];
-    
-    [((CCListView *)self.view) deleteListItemAtIndex:index];
 }
 
 #pragma mark - CCListViewDelegate methods
@@ -195,6 +184,22 @@
     objc_setAssociatedObject(alertView, @"index", @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)setNotificationEnabled:(BOOL)enabled atIndex:(NSUInteger)index
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    CCListItemType type = [_provider listItemTypeAtIndex:index];
+    if (type == CCListItemTypeAddress) {
+        CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
+        address.notify = @(enabled);
+        [managedObjectContext saveToPersistentStore:NULL];
+        
+    } else if (type == CCListItemTypeList) {
+        CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
+        list.notify = @(enabled);
+        [managedObjectContext saveToPersistentStore:NULL];
+    }
+}
+
 #pragma mark provider methods
 
 - (double)distanceForListItemAtIndex:(NSUInteger)index
@@ -217,42 +222,49 @@
     return [_provider nameForListItemAtIndex:index];
 }
 
+- (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index
+{
+    return [_provider notificationEnabledForListItemAtIndex:index];
+}
+
 - (NSUInteger)numberOfListItems
 {
     return [_provider numberOfListItems];
 }
 
+#pragma mark - CCListViewContentProviderDelegate methods
+
+- (void)refreshCellsAtIndexes:(NSIndexSet *)indexSet
+{
+    CCListView *view = (CCListView *)self.view;
+    
+    [view reloadCellsAtIndexes:indexSet];
+}
+
+- (void)insertCellsAtIndexes:(NSIndexSet *)indexSet
+{
+    CCListView *view = (CCListView *)self.view;
+    
+    [view insertCellsAtIndexes:indexSet];
+}
+
+- (void)removeCellsAtIndexes:(NSIndexSet *)indexSet
+{
+    CCListView *view = (CCListView *)self.view;
+    
+    [view deleteCellsAtIndexes:indexSet];
+}
+
+- (void)sortOrderChanged
+{
+    CCListView *view = (CCListView *)self.view;
+    
+    [view reloadVisibleCells];
+}
+
 #pragma mark - CCListOutputViewControllerDelegate methods
 
-- (void)didChangedListConfig
-{
-    CCListView *view = (CCListView *)self.view;
-    [view reloadListItemList];
-}
-
 #pragma mark - CCOutputViewControllerDelegate methods
-
-- (void)address:(CCAddress *)address movedToList:(CCList *)list
-{
-    [_provider.model address:address movedToList:list];
-}
-
-- (void)address:(CCAddress *)address movedFromList:(CCList *)list
-{
-    [_provider.model address:address movedFromList:list];
-}
-
-- (void)addressNotificationChanged:(CCAddress *)address
-{
-    NSUInteger index = [_provider indexOfListItemContent:address];
-    CCListView *view = (CCListView *)self.view;
-    [view reloadListItemAtIndex:index];
-}
-
-- (void)listCreated:(CCList *)list
-{
-    [_provider.model addList:list];
-}
 
 #pragma mark - UINotificationCenter methods
 

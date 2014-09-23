@@ -21,7 +21,6 @@
 @property(nonatomic, strong)NSIndexPath *selectedPath;
 
 @property(nonatomic, strong)UITextView *helpView;
-@property(nonatomic, strong)UIButton *closeButton;
 
 @property(nonatomic, strong)UITextField *listName;
 @property(nonatomic, strong)UITableView *listSelector;
@@ -37,11 +36,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b" alpha:0.85];
-        self.alpha = 0.5;
-        self.opaque = NO;
-        self.layer.cornerRadius = 15;
-        self.layer.masksToBounds = YES;
+        self.backgroundColor = [UIColor clearColor];
         
         [self setupHelp];
         [self setupListName];
@@ -118,7 +113,7 @@
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_helpView, _listName, _editListButton, _listSelector, _closeButton);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_helpView, _listName, _editListButton, _listSelector);
     NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==150)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
