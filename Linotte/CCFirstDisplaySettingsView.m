@@ -27,8 +27,6 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         
-        _notificationEnabled = YES;
-        
         [self setupTextView];
         [self setupNotificationButtons];
         [self setupListButton];
@@ -133,14 +131,14 @@
 
 - (void)enableNotificationButtonPressed:(id)sender
 {
-    _notificationEnabled = YES;
+    [_delegate setNotificationEnabled:YES];
     _enableNotificationButton.layer.borderWidth = 4;
     _disableNotificationButton.layer.borderWidth = 0;
 }
 
 - (void)disableNotificationButtonPressed:(id)sender
 {
-    _notificationEnabled = NO;
+    [_delegate setNotificationEnabled:NO];
     _enableNotificationButton.layer.borderWidth = 0;
     _disableNotificationButton.layer.borderWidth = 4;
 }

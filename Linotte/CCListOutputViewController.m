@@ -11,6 +11,10 @@
 #import <HexColors/HexColor.h>
 #import <RestKit/RestKit.h>
 
+#import "CCModelChangeMonitor.h"
+
+#import "CCListOutputListEmptyView.h"
+
 #import "CCListOutputView.h"
 
 #import "CCListViewController.h"
@@ -140,9 +144,28 @@
     
 }
 
+#pragma mark - CCListOutputViewDelegate methods
+
+#pragma mark - CCListOutputEmptyViewDelegate methods
+
+- (void)showAddressList
+{
+    
+}
+
 #pragma mark - CCListViewControllerDelegate methods
 
+- (void)showOptionViewProgress:(CGFloat)pixels
+{
+    
+}
+
 - (void)showOptionView
+{
+    
+}
+
+- (void)hideOptionViewProgress:(CGFloat)pixels
 {
     
 }
@@ -150,6 +173,13 @@
 - (void)hideOptionView
 {
     
+}
+
+- (UIView *)getEmptyView
+{
+    CCListOutputListEmptyView *emptyView = [CCListOutputListEmptyView new];
+    emptyView.delegate = self;
+    return emptyView;
 }
 
 - (void)addressSelected:(CCAddress *)address
@@ -171,7 +201,7 @@
 
 - (void)postSaveAddress:(CCAddress *)address
 {
-    
+    [[CCModelChangeMonitor sharedInstance] address:address movedToList:_list];
 }
 
 - (void)expandAddView

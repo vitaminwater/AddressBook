@@ -12,7 +12,10 @@
 
 #import <Mixpanel/Mixpanel.h>
 
+#import "CCLocationMonitor.h"
+
 #import "UIView+CCShowSettingsView.h"
+#import "CCFirstAddressDisplaySettingsViewController.h"
 #import "CCAddressSettingsViewController.h"
 #import "CCAddressListSettingsViewController.h"
 
@@ -28,7 +31,6 @@
 
 @interface CCOutputViewController ()
 
-@property(nonatomic, strong)CLLocationManager *locationManager;
 @property(nonatomic, strong)CLLocation *currentLocation;
 
 @property(nonatomic, strong)UIButton *settingsButton;
@@ -55,16 +57,13 @@
     self = [super init];
     if (self) {
         self.address = address;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadView
@@ -72,8 +71,15 @@
     CCOutputView *view = [[CCOutputView alloc] initWithDelegate:self];
     self.view = view;
     
-    if (_addressIsNew)
-        [view showIsNewMessage];
+    if (_addressIsNew) {
+        CCFirstAddressDisplaySettingsViewController *firstAddressDisplaySettingsViewController = [[CCFirstAddressDisplaySettingsViewController alloc] initWithAddress:_address];
+        firstAddressDisplaySettingsViewController.delegate = self;
+        [self addChildViewController:firstAddressDisplaySettingsViewController];
+        
+        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view];
+        
+        [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
+    }
     
     [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier ?: @"nb"}];
 }
@@ -124,25 +130,15 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController setNavigationBarHidden:NO animated:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
     
-    if (_locationManager == nil) {
-        _locationManager = [CLLocationManager new];
-        _locationManager.distanceFilter = kCLDistanceFilterNone;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationManager.delegate = self;
-    }
-    [_locationManager startUpdatingLocation];
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-    [_locationManager stopUpdatingLocation];
+    [super viewDidDisappear:animated];
+    
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
@@ -286,17 +282,5 @@
 }
 
 #pragma mark CCAddressListSettingsViewControllerDelegate methods
-
-#pragma mark - UINotificationCenter methods
-
-- (void)applicationActive:(NSNotification *)note
-{
-    [_locationManager startUpdatingLocation];
-}
-
-- (void)applicationBackground:(NSNotification *)note
-{
-    [_locationManager stopUpdatingLocation];
-}
 
 @end

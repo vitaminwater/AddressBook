@@ -12,6 +12,4 @@
 
 @protocol CCAddListViewControllerDelegate <NSObject>
 
-- (void)listCreated:(CCList *)list;
-
 @end

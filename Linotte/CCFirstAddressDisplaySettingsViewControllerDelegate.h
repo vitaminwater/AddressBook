@@ -12,4 +12,6 @@
 
 @protocol CCFirstAddressDisplaySettingsViewControllerDelegate <CCSettingsViewControllerDelegate>
 
+- (void)showListSettings;
+
 @end

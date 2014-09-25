@@ -33,25 +33,7 @@
     }
 }
 
-- (void)expandList:(CCList *)list
-{
-    
-}
-
-- (void)reduceList:(CCList *)list
-{
-    
-}
-
-- (void)addAddress:(CCAddress *)address
-{
-    
-}
-
-- (void)removeAddress:(CCAddress *)address
-{
-    
-}
+#pragma mark CCModelChangeMonitorDelegate methods
 
 - (void)addList:(CCList *)list
 {
@@ -63,12 +45,17 @@
     [self.provider removeList:list];
 }
 
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
+- (void)updateList:(CCList *)list
+{
+    
+}
+
+- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list
 {
     return NO;
 }
 
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
+- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list
 {
     return NO;
 }

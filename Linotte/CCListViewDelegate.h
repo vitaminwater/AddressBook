@@ -10,8 +10,12 @@
 
 @protocol CCListViewDelegate <NSObject>
 
+- (void)showOptionViewProgress:(CGFloat)pixels;
 - (void)showOptionView;
+- (void)hideOptionViewProgress:(CGFloat)pixels;
 - (void)hideOptionView;
+
+- (UIView *)getEmptyView;
 
 - (void)didSelectListItemAtIndex:(NSUInteger)index;
 - (void)deleteListItemAtIndex:(NSUInteger)index;
@@ -23,6 +27,7 @@
 - (UIImage *)iconForListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
+- (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 
 @end

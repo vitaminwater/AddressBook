@@ -13,8 +13,12 @@
 #import "CCFirstAddressDisplaySettingsViewControllerDelegate.h"
 #import "CCFirstDisplaySettingsViewDelegate.h"
 
+@class CCAddress;
+
 @interface CCFirstAddressDisplaySettingsViewController : CCSettingsViewController<CCFirstDisplaySettingsViewDelegate>
 
 @property(nonatomic, assign)id<CCFirstAddressDisplaySettingsViewControllerDelegate> delegate;
+
+- (id)initWithAddress:(CCAddress *)address;
 
 @end

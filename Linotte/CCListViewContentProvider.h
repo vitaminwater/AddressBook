@@ -50,6 +50,7 @@
 - (UIImage *)iconFormListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
+- (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 
 @end

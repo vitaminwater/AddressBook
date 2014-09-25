@@ -12,6 +12,8 @@
 
 #import "CCAddressListSettingsView.h"
 
+#import "CCModelChangeMonitor.h"
+
 #import "CCList.h"
 #import "CCAddress.h"
 
@@ -19,7 +21,6 @@
 
 @property(nonatomic, strong)NSMutableArray *lists;
 
-@property(nonatomic, strong)NSArray *list;
 @property(nonatomic, strong)CCAddress *address;
 
 @end
@@ -31,6 +32,7 @@
     self = [super init];
     if (self) {
         _address = address;
+        [self loadLists];
     }
     return self;
 }
@@ -45,8 +47,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self loadLists];
 }
 
 - (void)loadLists
@@ -68,29 +68,6 @@
 }
 
 #pragma mark - CCListSettingsViewDelegate
-
-/*- (void)closeListSettingsView:(id)sender success:(BOOL)success
-{
-    if (success) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
-        
-        UIImageView *completedImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"completed"]];
-        hud.customView = completedImage;
-        //hud.detailsLabelText = [NSString localizedStringByReplacingFromDictionnary:@{@"[listName]" : [_delegate addressName]} localizedKey:@"MOVED_TO"];
-        
-        hud.mode = MBProgressHUDModeCustomView;
-        hud.opacity = 0.4;
-        
-        [hud show:YES];
-        [hud hide:YES afterDelay:1];
-    }
-    [UIView animateWithDuration:0.2 animations:^{
-        _listSettingsView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [_listSettingsView removeFromSuperview];
-        _listSettingsView = nil;
-    }];
-}*/
 
 - (NSString *)addressName
 {
@@ -128,6 +105,9 @@
     
     [managedObjectContext saveToPersistentStore:NULL];
     
+    [[CCModelChangeMonitor sharedInstance] addList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address movedToList:list];
+    
     return insertIndex;
 }
 
@@ -140,6 +120,8 @@
     [_lists removeObject:list];
     
     [context saveToPersistentStore:NULL];
+    
+    [[CCModelChangeMonitor sharedInstance] removeList:list];
 }
 
 - (void)listSelectedAtIndex:(NSUInteger)index
@@ -148,6 +130,8 @@
     [_address addListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    
+    [[CCModelChangeMonitor sharedInstance] address:_address movedToList:list];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
@@ -156,6 +140,8 @@
     [_address removeListsObject:list];
     
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    
+    [[CCModelChangeMonitor sharedInstance] address:_address movedFromList:list];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index

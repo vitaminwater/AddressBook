@@ -10,6 +10,4 @@
 
 @protocol CCListListViewControllerDelegate <NSObject>
 
-- (void)listCreated:(CCList *)list;
-
 @end

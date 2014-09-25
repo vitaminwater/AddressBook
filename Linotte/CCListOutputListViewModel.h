@@ -9,7 +9,9 @@
 #import "CCListViewModelProtocol.h"
 #import "CCListViewModel.h"
 
-@interface CCListOutputListViewModel : CCListViewModel<CCListViewModelProtocol>
+#import "CCModelChangeMonitorDelegate.h"
+
+@interface CCListOutputListViewModel : CCListViewModel<CCListViewModelProtocol, CCModelChangeMonitorDelegate>
 
 - (id)initWithList:(CCList *)list;
 

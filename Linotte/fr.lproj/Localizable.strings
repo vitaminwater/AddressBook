@@ -20,10 +20,13 @@
 "NOTIFICATION_4" = "On dirait que [PlaceName], [Category] est dans le coin.\nPourquoi ne pas y passer ?";
 "NOTIFICATION_4_0" = "On dirait que [PlaceName] est dans le coin.\nPourquoi ne pas y passer ?";
 
-"NOTIF_ADDELETE" = "Effacer ce lieu ?";
-"NOTIF_ADDELETE_Y" = "Oui";
-"NOTIF_ADDELETE_N" = "Non";
-"NOTIF_ADDELETE_KO" = "Lieu effacé";
+"NOTIF_ADDRESS_DELETE" = "Effacer ce lieu ?";
+"NOTIF_LIST_DELETE" = "Effacer ce carnet ?";
+"NOTIF_ADDRESS_DELETE_CONFIRM" = "Lieu effacé";
+"NOTIF_LIST_DELETE_CONFIRM" = "Carnet effacé";
+
+"YES" = "Oui";
+"NO" = "Non";
 
 "NO_NOTE_SPLASH" = "ScreenLinotteBis";
 
@@ -81,3 +84,6 @@
 "LIST_NAME" = "Nouveau carnet";
 
 "LIST_NOTIFICATION_LABEL" = "Activer les notifications du carnet";
+
+"LIST_OUTPUT_EMPTY_MESSAGE" = "Vous pouvez aussi ajouter des adresses qui sont déjà dans votre Linotte";
+"LIST_OUTPUT_EMPTY_BUTTON" = "Accéder à ma liste d'adresses Linotte";

@@ -18,6 +18,5 @@
 
 - (id)initWithDelegate:(id<CCOutputViewDelegate>)delegate;
 - (void)updateValues;
-- (void)showIsNewMessage;
 
 @end

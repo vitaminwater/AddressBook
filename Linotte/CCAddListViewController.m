@@ -11,6 +11,8 @@
 #import <RestKit/RestKit.h>
 #import <Mixpanel/Mixpanel.h>
 
+#import "CCModelChangeMonitor.h"
+
 #import "CCAddListView.h"
 
 #import "CCList.h"
@@ -36,6 +38,8 @@
     list.identifier = [[NSUUID UUID] UUIDString];
     
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] addList:list];
+    
     [[Mixpanel sharedInstance] track:@"Address created" properties:@{@"name": list.name}];
 }
 

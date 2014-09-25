@@ -200,6 +200,15 @@
     return listItem.notify;
 }
 
+- (BOOL)orientationAvailableAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    
+    if (listItem.type == CCListItemTypeList)
+        return !listItem.farAway;
+    return YES;
+}
+
 - (NSUInteger)numberOfListItems
 {
     return [_listItems count];

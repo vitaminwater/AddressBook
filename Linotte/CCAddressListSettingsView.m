@@ -144,6 +144,18 @@
     }];
 }
 
+- (void)setListEditable:(BOOL)editable
+{
+    [_listSelector setEditing:editable animated:YES];
+    if (editable) {
+        [_editListButton setTitle:NSLocalizedString(@"OK", @"") forState:UIControlStateNormal];
+        [_editListButton setTitleColor:[UIColor colorWithHexString:@"#5acfc4"] forState:UIControlStateNormal];
+    } else {
+        [_editListButton setTitle:NSLocalizedString(@"EDIT_LIST", @"") forState:UIControlStateNormal];
+        [_editListButton setTitleColor:[UIColor colorWithHexString:@"#f4607c"] forState:UIControlStateNormal];
+    }
+}
+
 #pragma mark - setter methods
 
 - (void)setDelegate:(id<CCAddressListSettingsViewDelegate>)delegate
@@ -161,14 +173,7 @@
 - (void)editListPressed:(UIButton *)sender
 {
     BOOL newEditing = !_listSelector.editing;
-    [_listSelector setEditing:newEditing animated:YES];
-    if (newEditing) {
-        [_editListButton setTitle:NSLocalizedString(@"OK", @"") forState:UIControlStateNormal];
-        [_editListButton setTitleColor:[UIColor colorWithHexString:@"#5acfc4"] forState:UIControlStateNormal];
-    } else {
-        [_editListButton setTitle:NSLocalizedString(@"EDIT_LIST", @"") forState:UIControlStateNormal];
-        [_editListButton setTitleColor:[UIColor colorWithHexString:@"#f4607c"] forState:UIControlStateNormal];
-    }
+    [self setListEditable:newEditing];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -234,8 +239,10 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         [_delegate removeListAtIndex:indexPath.row];
         [_listSelector deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        if ([_delegate numberOfLists] == 0)
+        if ([_delegate numberOfLists] == 0) {
             [self hideEditListButton];
+            [self setListEditable:NO];
+        }
     }
 }
 

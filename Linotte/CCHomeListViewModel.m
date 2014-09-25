@@ -52,6 +52,8 @@
     }
 }
 
+#pragma mark CCModelChangeMonitorDelegate methods
+
 - (void)expandList:(CCList *)list
 {
     
@@ -64,10 +66,15 @@
 
 - (void)addAddress:(CCAddress *)address
 {
-    
+
 }
 
 - (void)removeAddress:(CCAddress *)address
+{
+    
+}
+
+- (void)updateAddress:(CCAddress *)address
 {
     
 }
@@ -82,39 +89,19 @@
     
 }
 
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
+- (void)updateList:(CCList *)list
 {
-    return NO;
-}
-
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
-{
-    return NO;
-}
-
-#pragma mark - NSNotificationCenter target methods
-
-- (void)handleModelChange:(NSNotification *)notification
-{
-    NSArray* insertedObjects = [[notification userInfo]
-                                objectForKey:NSInsertedObjectsKey];
-    NSArray* deletedObjects = [[notification userInfo]
-                               objectForKey:NSDeletedObjectsKey];
-    NSArray* updatedObjects = [[notification userInfo]
-                               objectForKey:NSUpdatedObjectsKey];
     
-    for (NSManagedObject *managedObject in updatedObjects) {
-        if ([managedObject isKindOfClass:[CCAddress class]]) {
-            CCAddress *address = (CCAddress *)managedObject;
-            NSLog(@"changed model : %@", [address description]);
-            NSDictionary *relationships = managedObject.entity.relationshipsByName;
-            for (NSString *attributeName in [address.changedValuesForCurrentEvent allKeys]) {
-                NSRelationshipDescription *relationship = [relationships objectForKey:attributeName];
-                if (relationship.isToMany && relationship.inverseRelationship.isToMany)
-                    NSLog(@"changed attribute: %@", attributeName);
-            }
-        }
-    }
+}
+
+- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list
+{
+    return NO;
+}
+
+- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list
+{
+    return NO;
 }
 
 @end

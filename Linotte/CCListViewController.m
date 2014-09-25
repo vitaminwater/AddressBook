@@ -12,6 +12,11 @@
 
 #import <objc/runtime.h>
 
+#import "CCAlertView.h"
+
+#import "CCModelChangeMonitor.h"
+#import "CCLocationMonitor.h"
+
 #import "CCListViewContentProvider.h"
 
 #import "CCGeohashHelper.h"
@@ -34,7 +39,6 @@
 
 @interface CCListViewController ()
 
-@property(nonatomic, strong)CLLocationManager *locationManager;
 @property(nonatomic, strong)CLLocation *currentLocation;
 @property(nonatomic, strong)CLHeading *currentHeading;
 
@@ -46,9 +50,6 @@
 {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        
         _provider = provider;
     }
     return self;
@@ -56,7 +57,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadView
@@ -69,19 +70,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if (_locationManager == nil) {
-        _locationManager = [CLLocationManager new];
-        _locationManager.distanceFilter = kCLDistanceFilterNone;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationManager.delegate = self;
-    }
-    [_locationManager startUpdatingLocation];
-    [_locationManager startUpdatingHeading];
     
     CCListView *listView = (CCListView *)self.view;
     [listView unselect];
@@ -90,9 +84,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    [_locationManager stopUpdatingLocation];
-    [_locationManager stopUpdatingHeading];
-    
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -119,14 +111,11 @@
 
 #pragma mark - public methods
 
-#pragma mark - UIAlertViewDelegate methods
+#pragma mark - CCAlertView target methods
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)alertViewDidSayYes:(CCAlertView *)sender
 {
-    if (buttonIndex == 0)
-        return;
-    
-    NSUInteger index = [objc_getAssociatedObject(alertView, @"index") unsignedIntegerValue];
+    NSUInteger index = [sender.userInfo integerValue];
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     
     if (type == CCListItemTypeAddress) {
@@ -138,26 +127,56 @@
                                                                          @"identifier": address.identifier ?: @""}];
         
         [managedObjectContext deleteObject:address];
-        if ([managedObjectContext saveToPersistentStore:&error] == NO) {
-            NSLog(@"%@", error);
-            return;
-        }
+        [managedObjectContext saveToPersistentStore:&error];
+        [[CCModelChangeMonitor sharedInstance] removeAddress:address];
+        
+        [((CCListView *)self.view) showConfirmationHUD:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"")];
     } else if (type == CCListItemTypeList) {
         // CCList *list = (CCList *)[_addressContentProvider listItemContentAtIndex:[index unsignedIntegerValue]];
         // TODO
     }
+    
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertViewDidSayNo:(CCAlertView *)sender
+{
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+        return;
+    
+
 }
 
 #pragma mark - CCListViewDelegate methods
+
+- (void)showOptionViewProgress:(CGFloat)pixels
+{
+    
+}
 
 - (void)showOptionView
 {
     [_delegate showOptionView];
 }
 
+- (void)hideOptionViewProgress:(CGFloat)pixels
+{
+    
+}
+
 - (void)hideOptionView
 {
     [_delegate hideOptionView];
+}
+
+- (UIView *)getEmptyView
+{
+    return [_delegate getEmptyView];
 }
 
 - (void)didSelectListItemAtIndex:(NSUInteger)index
@@ -178,10 +197,10 @@
 
 - (void)deleteListItemAtIndex:(NSUInteger)index
 {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"NOTIF_ADDELETE", @"") message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"NOTIF_ADDELETE_N", @"") otherButtonTitles:NSLocalizedString(@"OK", @""), nil];
-    [alertView show];
+    NSString *alertTitle = [_provider listItemTypeAtIndex:index] == CCListItemTypeAddress ? NSLocalizedString(@"NOTIF_ADDRESS_DELETE", @"") : NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
     
-    objc_setAssociatedObject(alertView, @"index", @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self okAction:@selector(alertViewDidSayYes:) cancelAction:@selector(alertViewDidSayNo:)];
+    alertView.userInfo = @(index);
 }
 
 - (void)setNotificationEnabled:(BOOL)enabled atIndex:(NSUInteger)index
@@ -192,11 +211,12 @@
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
         [managedObjectContext saveToPersistentStore:NULL];
-        
+        [[CCModelChangeMonitor sharedInstance] updateAddress:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
         [managedObjectContext saveToPersistentStore:NULL];
+        [[CCModelChangeMonitor sharedInstance] updateList:list];
     }
 }
 
@@ -225,6 +245,11 @@
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index
 {
     return [_provider notificationEnabledForListItemAtIndex:index];
+}
+
+- (BOOL)orientationAvailableAtIndex:(NSUInteger)index
+{
+    return [_provider orientationAvailableAtIndex:index];
 }
 
 - (NSUInteger)numberOfListItems
@@ -265,19 +290,5 @@
 #pragma mark - CCListOutputViewControllerDelegate methods
 
 #pragma mark - CCOutputViewControllerDelegate methods
-
-#pragma mark - UINotificationCenter methods
-
-- (void)applicationActive:(NSNotification *)note
-{
-    [_locationManager startUpdatingLocation];
-    [_locationManager startUpdatingHeading];
-}
-
-- (void)applicationBackground:(NSNotification *)note
-{
-    [_locationManager stopUpdatingLocation];
-    [_locationManager stopUpdatingHeading];
-}
 
 @end

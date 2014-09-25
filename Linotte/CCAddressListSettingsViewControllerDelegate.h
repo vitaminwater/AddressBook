@@ -8,14 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class CCList;
-@class CCAddress;
+#import "CCSettingsViewControllerDelegate.h"
 
-@protocol CCAddressListSettingsViewControllerDelegate <NSObject>
-
-/*- (void)address:(CCAddress *)address movedToList:(CCList *)list;
-- (void)address:(CCAddress *)address movedFromList:(CCList *)list;
-
-- (void)listCreated:(CCList *)list;*/
+@protocol CCAddressListSettingsViewControllerDelegate <CCSettingsViewControllerDelegate>
 
 @end

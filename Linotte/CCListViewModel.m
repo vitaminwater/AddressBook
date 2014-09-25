@@ -10,7 +10,10 @@
 
 #import <RestKit/RestKit.h>
 
+#import "CCModelChangeMonitor.h"
+
 #import "CCListViewModelProtocol.h"
+#import "CCModelChangeMonitorDelegate.h"
 
 @implementation CCListViewModel
 
@@ -22,21 +25,16 @@
             @throw [NSException exceptionWithName:@"implementation error" reason:@"CCListViewModelProtocol not implemented" userInfo:nil];
         }
         
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wundeclared-selector"
-        SEL handleModelChangeSelector = @selector(handleModelChange:);
-        if ([self respondsToSelector:handleModelChangeSelector]) {
-            NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:handleModelChangeSelector name:NSManagedObjectContextObjectsDidChangeNotification object:managedObjectContext];
+        if ([[self class] conformsToProtocol:@protocol(CCModelChangeMonitorDelegate)]) {
+            [[CCModelChangeMonitor sharedInstance] addDelegate:(id<CCModelChangeMonitorDelegate>)self];
         }
-#pragma clang diagnostic pop
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[CCModelChangeMonitor sharedInstance] removeDelegate:(id<CCModelChangeMonitorDelegate>)self];
 }
 
 @end

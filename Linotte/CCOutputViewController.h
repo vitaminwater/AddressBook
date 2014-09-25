@@ -14,12 +14,13 @@
 
 #import "CCAddressSettingsViewControllerDelegate.h"
 #import "CCAddressListSettingsViewControllerDelegate.h"
+#import "CCFirstAddressDisplaySettingsViewController.h"
 
 #import "CCOutputViewDelegate.h"
 
 @class CCAddress;
 
-@interface CCOutputViewController : UIViewController<CCOutputViewDelegate, CCAddressSettingsViewControllerDelegate, CCAddressListSettingsViewControllerDelegate, CLLocationManagerDelegate>
+@interface CCOutputViewController : UIViewController<CCOutputViewDelegate, CCFirstAddressDisplaySettingsViewControllerDelegate, CCAddressSettingsViewControllerDelegate, CCAddressListSettingsViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, assign)id<CCOutputViewControllerDelegate> delegate;
 

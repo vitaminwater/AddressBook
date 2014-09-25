@@ -52,7 +52,6 @@
                 CCGeohashStruct geohash = init_neighbour(&centerGeohash, (int)(j * digitsToMultiplier), (int)(i * digitsToMultiplier));
                 NSString *hash = @(geohash.hash);
                 [geohashes addObject:hash];
-                //NSLog(@"i: %d  j: %d  geohash: %@  lat: %f  lng: %f", i, j, hash, geohash.latitude, geohash.longitude);
             }
         }
         

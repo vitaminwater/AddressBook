@@ -100,6 +100,8 @@
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton, _realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
+    
+    [self removeConstraints:self.constraints];
     // realTextLabel and reatDetailTextLabel
     {
         NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
@@ -128,8 +130,13 @@
     
     // compasView
     {
-        NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
-        [self.contentView addConstraint:horizontalConstraint];
+        if (_compasView.hidden == NO) {
+            NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
+            [self.contentView addConstraint:horizontalConstraint];
+        } else {
+            NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
+            [self.contentView addConstraint:horizontalConstraint];
+        }
         
         NSLayoutConstraint *verticalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.35 constant:0];
         [self.contentView addConstraint:verticalConstraint];
@@ -226,6 +233,18 @@
 {
     CATransform3D transform = CATransform3DMakeRotation(angle / 180 * M_PI, 0, 0, 1);
     _compasView.layer.transform = transform;
+}
+
+- (void)setDirectionHidden:(BOOL)directionHidden
+{
+    if (_directionHidden == directionHidden)
+        return;
+    
+    [self willChangeValueForKey:@"directionHidden"];
+    _directionHidden = directionHidden;
+    _compasView.hidden = directionHidden;
+    [self setupLayout];
+    [self didChangeValueForKey:@"directionHidden"];
 }
 
 @end

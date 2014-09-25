@@ -151,7 +151,6 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    NSLog(@"%f", scrollView.contentOffset.x / scrollView.bounds.size.width);
     _pageControl.currentPage = ceil(scrollView.contentOffset.x / scrollView.bounds.size.width);
 }
 

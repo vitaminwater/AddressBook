@@ -21,16 +21,4 @@
 
 - (void)loadListItems;
 
-- (void)expandList:(CCList *)list;
-- (void)reduceList:(CCList *)list;
-
-- (void)addAddress:(CCAddress *)address;
-- (void)removeAddress:(CCAddress *)address;
-
-- (void)addList:(CCList *)list;
-- (void)removeList:(CCList *)list;
-
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
-
 @end

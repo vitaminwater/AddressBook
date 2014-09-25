@@ -21,7 +21,7 @@
 @class CCAddress;
 @class CCListViewContentProvider;
 
-@interface CCListViewController : UIViewController<CCListViewDelegate, CCListViewContentProviderDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate, UIAlertViewDelegate>
+@interface CCListViewController : UIViewController<CCListViewDelegate, CCListViewContentProviderDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;

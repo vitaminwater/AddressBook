@@ -22,6 +22,8 @@
 #import "CCOutputViewController.h"
 #import "CCListOutputViewController.h"
 
+#import "CCMainListEmptyView.h"
+
 #import "CCMainView.h"
 
 @interface CCMainViewController ()
@@ -35,6 +37,7 @@
 
 @implementation CCMainViewController
 
+// TODO check location enabled
 - (void)loadView
 {
     CCMainView *view = [CCMainView new];
@@ -129,14 +132,29 @@
 
 #pragma mark - CCListViewControllerDelegate methods
 
+- (void)showOptionViewProgress:(CGFloat)pixels
+{
+    
+}
+
 - (void)showOptionView
 {
     ((CCMainView *)self.view).optionViewExpanded = YES;
 }
 
+- (void)hideOptionViewProgress:(CGFloat)pixels
+{
+    
+}
+
 - (void)hideOptionView
 {
     ((CCMainView *)self.view).optionViewExpanded = NO;
+}
+
+- (UIView *)getEmptyView
+{
+    return [CCMainListEmptyView new];
 }
 
 - (void)addressSelected:(CCAddress *)address
@@ -152,11 +170,6 @@
 }
 
 #pragma mark - CCListListViewControllerDelegate
-
-- (void)listCreated:(CCList *)list
-{
-    [_listViewController.provider.model addList:list];
-}
 
 #pragma mark - CCSplashViewControllerDelegate
 

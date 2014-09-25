@@ -83,7 +83,7 @@
 
 #pragma mark - singelton method
 
-+ (CCGeohashMonitor *)sharedInstance
++ (instancetype)sharedInstance
 {
     static CCGeohashMonitor *instance = nil;
     

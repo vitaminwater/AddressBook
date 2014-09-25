@@ -133,20 +133,6 @@
     [_infoView setAttributedText:attributedText];
 }
 
-#pragma mark - Public methods
-
-- (void)showIsNewMessage
-{
-    // TODO
-}
-
-#pragma mark - CCOutputConfirmEntryViewDelegate methods
-
-- (void)closeConfirmView:(id)sender
-{
-    // TODO
-}
-
 #pragma mark - UITabBarDelegate methods
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item

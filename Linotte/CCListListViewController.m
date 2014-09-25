@@ -16,6 +16,8 @@
 #import "CCAddListViewController.h"
 #import "CCListViewController.h"
 
+#import "CCListListEmptyView.h"
+
 #import "CCListListView.h"
 
 @interface CCListListViewController()
@@ -137,17 +139,20 @@
 
 #pragma mark - CCAddListViewControllerDelegate methods
 
-- (void)listCreated:(CCList *)list
-{
-    [_listViewController.provider.model addList:list];
-    [_delegate listCreated:list];
-}
-
 #pragma mark - CCListViewControllerDelegate methods
+
+- (void)showOptionViewProgress:(CGFloat)pixels {}
 
 - (void)showOptionView {}
 
+- (void)hideOptionViewProgress:(CGFloat)pixels {}
+
 - (void)hideOptionView {}
+
+- (UIView *)getEmptyView
+{
+    return [CCListListEmptyView new];
+}
 
 - (void)addressSelected:(CCAddress *)address {}
 

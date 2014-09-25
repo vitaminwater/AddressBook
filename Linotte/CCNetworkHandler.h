@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CCModelChangeMonitorDelegate.h"
+
 @class CCAddress;
 
-@interface CCNetworkHandler : NSObject
+@interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
 
 @property(nonatomic, assign)BOOL isLoggedIn;
 

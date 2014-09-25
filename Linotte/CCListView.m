@@ -10,6 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCActionResultHUD.h"
+
 #import "CCListViewContentProvider.h"
 #import "CCListViewTableViewCell.h"
 #import "CCFlatColorButton.h"
@@ -20,7 +22,7 @@
 
 @interface CCListView()
 
-@property(nonatomic, strong)UIImageView *helpImage;
+@property(nonatomic, strong)UIView *emptyView;
 @property(nonatomic, strong)UITableView *tableView;
 
 @property(nonatomic, strong)UIPanGestureRecognizer *panGestureRecognizer;
@@ -76,21 +78,32 @@
     }
 }
 
-- (void)setupHelpImage
+- (void)setupEmptyView
 {
-    _helpImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:NSLocalizedString(@"NO_NOTE_SPLASH", @"")]];
-    _helpImage.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_helpImage];
+    _emptyView = [_delegate getEmptyView];
+    _emptyView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_emptyView];
     
-    NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:_helpImage attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    [self addConstraint:centerXConstraint];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_emptyView);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_emptyView]|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
     
-    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_helpImage attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self addConstraint:centerYConstraint];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_emptyView]|" options:0 metrics:nil views:views];
+    [self addConstraints:verticalConstraints];
     
-    _helpImage.alpha = 0;
+    _emptyView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
-        _helpImage.alpha = 1;
+        _emptyView.alpha = 1;
+    }];
+}
+
+- (void)removeEmptyView
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        _emptyView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_emptyView removeFromSuperview];
+        _emptyView = nil;
     }];
 }
 
@@ -128,13 +141,8 @@
     }];
     [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
     
-    if (_helpImage) {
-        [UIView animateWithDuration:0.2 animations:^{
-            _helpImage.alpha = 0;
-        } completion:^(BOOL finished) {
-            [_helpImage removeFromSuperview];
-            _helpImage = nil;
-        }];
+    if (_emptyView) {
+        [self removeEmptyView];
     }
 }
 
@@ -147,13 +155,18 @@
     }];
     [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
     
-    if ([_delegate numberOfListItems] == 0 && _helpImage == nil)
-        [self setupHelpImage];
+    if ([_delegate numberOfListItems] == 0 && _emptyView == nil)
+        [self setupEmptyView];
 }
 
 - (void)unselect
 {
     [_tableView deselectRowAtIndexPath:[_tableView indexPathForSelectedRow] animated:YES];
+}
+
+- (void)showConfirmationHUD:(NSString *)detailText
+{
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:detailText delay:1];
 }
 
 #pragma mark - UIGestureRecognizer target methods
@@ -212,7 +225,12 @@
         cell.detailTextLabel.text = NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
 
     [cell setNotificationEnabled:[_delegate notificationEnabledForListItemAtIndex:index]];
-    [cell setAngle:[_delegate angleForListItemAtIndex:index]];
+    if ([_delegate orientationAvailableAtIndex:index]) {
+        [cell setAngle:[_delegate angleForListItemAtIndex:index]];
+        cell.directionHidden = NO;
+    } else {
+        cell.directionHidden = YES;
+    }
     cell.markerImageView.image = [_delegate iconForListItemAtIndex:index];
 }
 
@@ -237,11 +255,11 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    NSLog(@"%f", scrollView.contentOffset.y);
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    NSLog(@"%f", scrollView.contentOffset.y);
     if (scrollView.contentOffset.y < -30)
         [_delegate showOptionView];
     else if (scrollView.contentOffset.y > 0)
@@ -255,7 +273,7 @@
     _delegate = delegate;
     
     if ([_delegate numberOfListItems] == 0)
-        [self setupHelpImage];
+        [self setupEmptyView];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

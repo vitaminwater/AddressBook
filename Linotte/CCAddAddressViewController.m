@@ -18,6 +18,9 @@
 
 #import <geohash/geohash.h>
 
+#import "CCModelChangeMonitor.h"
+#import "CCLocationMonitor.h"
+
 #import "CCFoursquareVenues.h"
 #import "CCFoursquareCategorie.h"
 
@@ -70,7 +73,6 @@
 
 @interface CCAddAddressViewController ()
 {
-    CLLocationManager *_locationManager;
     CLLocation *_currentLocation;
     
     NSDictionary *_nextFoursquarePlaceQuery;
@@ -93,8 +95,6 @@
     if (self) {
         _autocompletionResults = [@[] mutableCopy];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
                                                      name:kReachabilityChangedNotification
@@ -106,6 +106,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadView
@@ -164,19 +165,13 @@
 
 - (void)stopGeoloc
 {
-    [_locationManager stopUpdatingLocation];
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
     geolocBlock = nil;
 }
 
 - (void)startGeoloc
 {
-    if (_locationManager == nil) {
-        _locationManager = [CLLocationManager new];
-        _locationManager.distanceFilter = kCLDistanceFilterNone;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        _locationManager.delegate = self;
-    }
-    [_locationManager startUpdatingLocation];
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
 #pragma mark - Foursquare methods
@@ -343,21 +338,11 @@
     
     [_delegate preSaveAddress:address];
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] addAddress:address];
+    [_delegate postSaveAddress:address];
+    
     [self reduceAddView];
-    [[CCNetworkHandler sharedInstance] sendAddress:address]; // TODO core data model change notification ?
     [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
-}
-
-#pragma mark - UINotificationCenter methods
-
-- (void)applicationActive:(NSNotification *)note
-{
-    [self startGeoloc];
-}
-
-- (void)applicationBackground:(NSNotification *)note
-{
-    [self stopGeoloc];
 }
 
 @end

@@ -9,6 +9,8 @@
 #import "CCListViewModelProtocol.h"
 #import "CCListViewModel.h"
 
-@interface CCHomeListViewModel : CCListViewModel<CCListViewModelProtocol>
+#import "CCModelChangeMonitorDelegate.h"
+
+@interface CCHomeListViewModel : CCListViewModel<CCListViewModelProtocol, CCModelChangeMonitorDelegate>
 
 @end

@@ -10,7 +10,7 @@
 
 #import "CCAddressListSettingsViewDelegate.h"
 
-@interface CCAddressListSettingsView : UIView<UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
+@interface CCAddressListSettingsView : UIView<UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, assign)id<CCAddressListSettingsViewDelegate> delegate;
 

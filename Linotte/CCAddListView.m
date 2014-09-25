@@ -83,7 +83,8 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [textField resignFirstResponder];
-    [_delegate createListWithName:textField.text];
+    if ([textField.text length])
+        [_delegate createListWithName:textField.text];
     return NO;
 }
 

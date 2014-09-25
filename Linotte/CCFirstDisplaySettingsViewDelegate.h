@@ -10,6 +10,8 @@
 
 @protocol CCFirstDisplaySettingsViewDelegate <NSObject>
 
+- (void)setNotificationEnabled:(BOOL)enabled;
+
 - (void)showListSetting;
 
 @end

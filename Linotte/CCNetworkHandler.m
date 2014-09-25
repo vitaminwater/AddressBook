@@ -12,6 +12,8 @@
 
 #import <Reachability/Reachability.h>
 
+#import "CCModelChangeMonitor.h"
+
 #import "CCRestKit.h"
 #import "CCLocalAPI.h"
 
@@ -51,8 +53,15 @@
         [_reachability startNotifier];
         
         [self loadInitialAddresses];
+        
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[CCModelChangeMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadInitialAddresses {
@@ -198,6 +207,48 @@
 {
     if ([self canSend])
         [self purgeAddresses];
+}
+
+#pragma mark CCModelChangeMonitorDelegate methods
+
+- (void)expandList:(CCList *)list
+{
+    
+}
+
+- (void)reduceList:(CCList *)list
+{
+    
+}
+
+- (void)addAddress:(CCAddress *)address
+{
+    
+}
+
+- (void)removeAddress:(CCAddress *)address
+{
+    
+}
+
+- (void)addList:(CCList *)list
+{
+
+}
+
+- (void)removeList:(CCList *)list
+{
+
+}
+
+- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
+{
+    return NO;
+}
+
+- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
+{
+    return NO;
 }
 
 #pragma mark - Singleton method

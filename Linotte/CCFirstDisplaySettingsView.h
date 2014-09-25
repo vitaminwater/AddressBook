@@ -13,6 +13,5 @@
 @interface CCFirstDisplaySettingsView : UIView
 
 @property(nonatomic, assign)id<CCFirstDisplaySettingsViewDelegate> delegate;
-@property(nonatomic, assign)BOOL notificationEnabled;
 
 @end

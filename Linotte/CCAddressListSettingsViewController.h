@@ -15,6 +15,8 @@
 
 @interface CCAddressListSettingsViewController : CCSettingsViewController<CCAddressListSettingsViewDelegate>
 
+@property(nonatomic, assign)id<CCAddressListSettingsViewControllerDelegate> delegate;
+
 - (id)initWithAddress:(CCAddress *)address;
 
 @end

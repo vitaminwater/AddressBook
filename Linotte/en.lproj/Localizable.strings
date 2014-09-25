@@ -5,6 +5,7 @@
   Created by stant on 03/06/14.
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
+
 "PLACE_NAME" = "Add a venue";
 "WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
 
@@ -19,10 +20,13 @@
 "NOTIFICATION_4" = "Looks like [PlaceName], [Category] is around the corner.\nWhy not to go?";
 "NOTIFICATION_4_0" = "Looks like [PlaceName] is around the corner.\nWhy not to go?";
 
-"NOTIF_ADDELETE" = "Delete this venue?";
-"NOTIF_ADDELETE_Y" = "Yes";
-"NOTIF_ADDELETE_N" = "No";
-"NOTIF_ADDELETE_KO" = "Venue deleted";
+"NOTIF_ADDRESS_DELETE" = "Delete this venue?";
+"NOTIF_LIST_DELETE" = "Delete this book ?";
+"NOTIF_ADDRESS_DELETE_CONFIRM" = "Venue deleted";
+"NOTIF_LIST_DELETE_CONFIRM" = "Book deleted";
+
+"YES" = "Yes";
+"NO" = "No";
 
 "NO_NOTE_SPLASH" = "ScreenLinotteBisEN";
 
@@ -80,3 +84,6 @@
 "LIST_NAME" = "Create book";
 
 "LIST_NOTIFICATION_LABEL" = "Activate notifications on this book";
+
+"LIST_OUTPUT_EMPTY_MESSAGE" = "You may also add addresses that are already stored in you Linotte";
+"LIST_OUTPUT_EMPTY_BUTTON" = "Select addresses in my Linotte";

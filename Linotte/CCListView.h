@@ -25,5 +25,6 @@
 - (void)deleteCellsAtIndexes:(NSIndexSet *)indexSet;
 
 - (void)unselect;
+- (void)showConfirmationHUD:(NSString *)detailText;
 
 @end
