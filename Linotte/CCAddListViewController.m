@@ -36,9 +36,9 @@
     list.name = name;
     list.expanded = @YES;
     list.identifier = [[NSUUID UUID] UUIDString];
+    [[CCModelChangeMonitor sharedInstance] listAdded:list];
     
     [managedObjectContext saveToPersistentStore:NULL];
-    [[CCModelChangeMonitor sharedInstance] addList:list];
     
     [[Mixpanel sharedInstance] track:@"Address created" properties:@{@"name": list.name}];
 }

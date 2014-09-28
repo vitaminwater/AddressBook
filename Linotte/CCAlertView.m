@@ -12,18 +12,15 @@
 
 #import "CCFlatColorButton.h"
 
-@interface CCAlertView()
-
-@property(nonatomic, strong)id target;
-@property(nonatomic, assign)SEL okAction;
-@property(nonatomic, assign)SEL cancelAction;
-
-@property(nonatomic, strong)UILabel *label;
-@property(nonatomic, strong)UIView *buttonView;
-
-@end
-
 @implementation CCAlertView
+{
+    id _target;
+    SEL _okAction;
+    SEL _cancelAction;
+    
+    UILabel *_label;
+    UIView *_buttonView;
+}
 
 - (id)initWithText:(NSString *)text target:(id)target okAction:(SEL)okAction cancelAction:(SEL)cancelAction
 {

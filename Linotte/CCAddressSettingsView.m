@@ -12,18 +12,15 @@
 
 #import "NSString+CCLocalizedString.h"
 
-@interface CCAddressSettingsView()
-
-// settings items
-@property(nonatomic, strong)UIView *notificationSettingsView;
-@property(nonatomic, strong)UIButton *notificationToggleButton;
-
-@property(nonatomic, strong)UIView *listSettingsView;
-@property(nonatomic, strong)UILabel *currentListName;
-
-@end
 
 @implementation CCAddressSettingsView
+{
+    UIView *_notificationSettingsView;
+    UIButton *_notificationToggleButton;
+    
+    UIView *_listSettingsView;
+    UILabel *_currentListName;
+}
 
 - (id)init
 {

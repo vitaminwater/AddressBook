@@ -36,7 +36,8 @@
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
 #endif
 
-@interface CCLocalAPI()
+
+@implementation CCLocalAPI
 {
     NSString *_clientId;
     NSString *_clientSecret;
@@ -45,10 +46,6 @@
     NSString *_refreshToken;
     NSString *_expireTimeStamp;
 }
-
-@end
-
-@implementation CCLocalAPI
 
 - (id)init
 {

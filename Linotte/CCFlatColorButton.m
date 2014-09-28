@@ -8,14 +8,11 @@
 
 #import "CCFlatColorButton.h"
 
-@interface CCFlatColorButton()
+
+@implementation CCFlatColorButton
 {
     NSMutableDictionary *_colors;
 }
-
-@end
-
-@implementation CCFlatColorButton
 
 static void *context = &context;
 

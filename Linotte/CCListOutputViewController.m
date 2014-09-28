@@ -11,6 +11,8 @@
 #import <HexColors/HexColor.h>
 #import <RestKit/RestKit.h>
 
+#import "UIView+CCShowSettingsView.h"
+
 #import "CCModelChangeMonitor.h"
 
 #import "CCListOutputListEmptyView.h"
@@ -23,21 +25,25 @@
 #import "CCListOutputListViewModel.h"
 #import "CCListViewContentProvider.h"
 
-#import "CCAddressSettingsViewController.h"
+#import "CCListOutputSettingsViewController.h"
+#import "CCListOutputAddressListViewController.h"
+#import "CCOutputViewController.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
 
-@interface CCListOutputViewController ()
-
-@property(nonatomic, strong)CCList *list;
-
-@property(nonatomic, strong)CCListViewController *listViewController;
-@property(nonatomic, strong)CCAddAddressViewController *addViewController;
-
-@end
 
 @implementation CCListOutputViewController
+{
+    CCList *_list;
+    
+    UIButton *_settingsButton;
+    
+    CCListViewController *_listViewController;
+    CCAddAddressViewController *_addViewController;
+    
+    CCListOutputAddressListViewController *_listOutputAddressListViewController;
+}
 
 - (id)initWithList:(CCList *)list
 {
@@ -54,6 +60,8 @@
     view.delegate = self;
     self.view = view;
     
+    [view setNotificationEnabled:_list.notifyValue];
+    
     _addViewController = [CCAddAddressViewController new];
     _addViewController.delegate = self;
     [self addChildViewController:_addViewController];
@@ -69,7 +77,7 @@
     [_listViewController didMoveToParentViewController:self];
     
     [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
-    [view setListInfosText:@"pouet"];
+    [view setListInfosText:_list.name];
 
     [view setupLayout];
 }
@@ -100,13 +108,13 @@
     
     { // right bar button items
         CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
-        UIButton *settingsButton = [UIButton new];
-        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
-        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        settingsButton.frame = settingsButtonFrame;
-        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        _settingsButton = [UIButton new];
+        [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _settingsButton.frame = settingsButtonFrame;
+        [_settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
         
         self.navigationItem.rightBarButtonItems = @[barButtonItem];
     }
@@ -141,16 +149,30 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
+    CCListOutputSettingsViewController *listOutputSettingsViewController = [CCListOutputSettingsViewController new];
+    listOutputSettingsViewController.delegate = self;
+    [self addChildViewController:listOutputSettingsViewController];
     
+    [self.view showSettingsView:listOutputSettingsViewController.view];
+    
+    [listOutputSettingsViewController didMoveToParentViewController:self];
 }
 
 #pragma mark - CCListOutputViewDelegate methods
+
+- (void)notificationEnabled:(BOOL)enabled
+{
+    _list.notify = @(enabled);
+    [[CCModelChangeMonitor sharedInstance] listUpdated:_list];
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+}
 
 #pragma mark - CCListOutputEmptyViewDelegate methods
 
 - (void)showAddressList
 {
-    
+    _listOutputAddressListViewController = [[CCListOutputAddressListViewController alloc] initWithList:_list];
+    [self.navigationController pushViewController:_listOutputAddressListViewController animated:YES];
 }
 
 #pragma mark - CCListViewControllerDelegate methods
@@ -201,7 +223,8 @@
 
 - (void)postSaveAddress:(CCAddress *)address
 {
-    [[CCModelChangeMonitor sharedInstance] address:address movedToList:_list];
+    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
+    [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
 - (void)expandAddView
@@ -212,6 +235,18 @@
 - (void)reduceAddView
 {
     
+}
+
+#pragma mark - CCSettingsViewControllerDelegate methods
+
+- (void)settingsViewControllerDidEnd:(UIViewController *)sender
+{
+    [sender willMoveToParentViewController:nil];
+    [self.view hideSettingsView:sender.view];
+    [sender removeFromParentViewController];
+    
+    if ([sender isKindOfClass:[CCListOutputSettingsViewController class]])
+        _settingsButton.enabled = YES;
 }
 
 @end

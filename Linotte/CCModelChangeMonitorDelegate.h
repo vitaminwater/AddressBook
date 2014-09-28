@@ -15,18 +15,25 @@
 
 @optional
 
-- (void)expandList:(CCList *)list;
-- (void)reduceList:(CCList *)list;
+- (void)listWillExpand:(CCList *)list;
+- (void)listExpanded:(CCList *)list;
+- (void)listWillReduce:(CCList *)list;
+- (void)listReduced:(CCList *)list;
 
-- (void)addList:(CCList *)list;
-- (void)removeList:(CCList *)list;
-- (void)updateList:(CCList *)list;
+- (void)listAdded:(CCList *)list;
 
-- (void)addAddress:(CCAddress *)address;
-- (void)removeAddress:(CCAddress *)address;
-- (void)updateAddress:(CCAddress *)address;
+- (void)listWillRemove:(CCList *)list;
+- (void)listRemoved:(CCList *)list;
 
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
+- (void)listUpdated:(CCList *)list;
+
+- (void)addressAdded:(CCAddress *)address;
+- (void)addressRemoved:(CCAddress *)address;
+- (void)addressUpdated:(CCAddress *)address;
+
+- (BOOL)address:(CCAddress *)address willMoveToList:(CCList *)list;
+- (BOOL)address:(CCAddress *)address didMoveToList:(CCList *)list;
+- (BOOL)address:(CCAddress *)address willMoveFromList:(CCList *)list;
+- (BOOL)address:(CCAddress *)address didMoveFromList:(CCList *)list;
 
 @end

@@ -13,22 +13,21 @@
 #import "CCListOptionScrollView.h"
 #import "CCListOptionButton.h"
 
-@interface CCListOptionContainer()
-
-@property(nonatomic, strong)UIScrollView *scrollView;
-@property(nonatomic, strong)UIView *contentView;
-@property(nonatomic, strong)UIPageControl *pageControl;
-
-@property(nonatomic, strong)NSMutableArray *buttons;
-
-@end
 
 @implementation CCListOptionContainer
+{
+    UIScrollView *_scrollView;
+    UIView *_contentView;
+    UIPageControl *_pageControl;
+    
+    NSMutableArray *_buttons;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
         _buttons = [@[] mutableCopy];
         [self setupScrollView];
         [self setupContentView];
@@ -78,7 +77,7 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_scrollView, _pageControl);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView][_pageControl]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView][_pageControl(==20)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

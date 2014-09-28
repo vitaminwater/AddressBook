@@ -11,14 +11,12 @@
 #import "CCListViewContentProvider.h"
 
 #import "CCList.h"
-
-@interface CCListOutputListViewModel()
-
-@property(nonatomic, strong)CCList *list;
-
-@end
+#import "CCAddress.h"
 
 @implementation CCListOutputListViewModel
+{
+    CCList *_list;
+}
 
 @synthesize provider;
 
@@ -42,28 +40,29 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)removeAddress:(CCAddress *)address
+- (void)addressRemoved:(CCAddress *)address
 {
-    
+    if ([address.lists containsObject:_list])
+        [self.provider removeAddress:address];
 }
 
-- (void)updateAddress:(CCAddress *)address
+- (void)addressUpdated:(CCAddress *)address
 {
-    
+    if ([address.lists containsObject:_list])
+        [self.provider refreshListItemContentForObject:address];
 }
 
-- (void)updateList:(CCList *)list
+- (BOOL)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
-    
-}
-
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list
-{
+    if (_list == list)
+        [self.provider addAddress:address];
     return NO;
 }
 
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list
+- (BOOL)address:(CCAddress *)address didMoveFromList:(CCList *)list
 {
+    if (_list == list)
+        [self.provider removeAddress:address];
     return NO;
 }
 

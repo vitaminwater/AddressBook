@@ -10,16 +10,14 @@
 
 #import <HexColors/HexColor.h>
 
-@interface CCFirstDisplaySettingsView()
-
-@property(nonatomic, strong)UITextView *textView;
-@property(nonatomic, strong)UIButton *enableNotificationButton;
-@property(nonatomic, strong)UIButton *disableNotificationButton;
-@property(nonatomic, strong)UIButton *listButton;
-
-@end
 
 @implementation CCFirstDisplaySettingsView
+{
+    UITextView *_textView;
+    UIButton *_enableNotificationButton;
+    UIButton *_disableNotificationButton;
+    UIButton *_listButton;
+}
 
 - (id)init
 {

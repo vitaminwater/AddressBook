@@ -17,21 +17,17 @@
 
 #import "CCAddress.h"
 
-@interface CCFirstAddressDisplaySettingsViewController()
-
-@property(nonatomic, strong)CCAddress *address;
-@property(nonatomic, assign)BOOL notificationInitialValue;
-
-@end
 
 @implementation CCFirstAddressDisplaySettingsViewController
+{
+    CCAddress *_address;
+}
 
 - (id)initWithAddress:(CCAddress *)address
 {
     self = [super init];
     if (self) {
         _address = address;
-        _notificationInitialValue = _address.notifyValue;
     }
     return self;
 }
@@ -46,11 +42,6 @@
 - (void)willMoveToParentViewController:(UIViewController *)parent
 {
     [super willMoveToParentViewController:parent];
-    if (parent == nil && _notificationInitialValue != _address.notifyValue) {
-        [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
-        [[CCModelChangeMonitor sharedInstance] updateAddress:_address];
-        [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": _address.notify}];
-    }
 }
 
 #pragma mark - CCFirstAddressDisplaySettingsViewDelegate methods
@@ -58,6 +49,10 @@
 - (void)setNotificationEnabled:(BOOL)enabled
 {
     _address.notify = @(enabled);
+    
+    [[CCModelChangeMonitor sharedInstance] addressUpdated:_address];
+    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": _address.notify}];
 }
 
 - (void)showListSetting

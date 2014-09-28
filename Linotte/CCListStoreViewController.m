@@ -13,13 +13,11 @@
 #import "CCList.h"
 #import "CCListStoreView.h"
 
-@interface CCListStoreViewController ()
-
-@property(nonatomic, strong)NSMutableArray *lists;
-
-@end
 
 @implementation CCListStoreViewController
+{
+    NSMutableArray *_lists;
+}
 
 - (id)init
 {

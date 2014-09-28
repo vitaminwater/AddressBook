@@ -35,28 +35,30 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)addList:(CCList *)list
+- (void)listAdded:(CCList *)list
 {
     [self.provider addList:list];
 }
 
-- (void)removeList:(CCList *)list
+- (void)listRemoved:(CCList *)list
 {
     [self.provider removeList:list];
 }
 
-- (void)updateList:(CCList *)list
+- (void)listUpdated:(CCList *)list
 {
-    
+    [self.provider refreshListItemContentForObject:list];
 }
 
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list
+- (BOOL)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
+    [self.provider addAddress:address toList:list];
     return NO;
 }
 
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list
+- (BOOL)address:(CCAddress *)address didMoveFromList:(CCList *)list
 {
+    [self.provider removeAddress:address fromList:list];
     return NO;
 }
 

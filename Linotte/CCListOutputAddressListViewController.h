@@ -10,6 +10,10 @@
 
 #import "CCListOutputAddressListViewDelegate.h"
 
+@class CCList;
+
 @interface CCListOutputAddressListViewController : UIViewController<CCListOutputAddressListViewDelegate>
+
+- (id)initWithList:(CCList *)list;
 
 @end

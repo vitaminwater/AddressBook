@@ -29,19 +29,17 @@
 #define kCCGoogleMapScheme @"comgooglemaps-x-callback://"
 #define kCCAppleMapScheme @"http://maps.apple.com/"
 
-@interface CCOutputViewController ()
-
-@property(nonatomic, strong)CLLocation *currentLocation;
-
-@property(nonatomic, strong)UIButton *settingsButton;
-
-@property(nonatomic, assign)BOOL addressIsNew;
-@property(nonatomic, strong)CCAddress *address;
-@property(nonatomic, assign)CLLocationDistance distance;
-
-@end
 
 @implementation CCOutputViewController
+{
+    CLLocation *_currentLocation;
+    
+    UIButton *_settingsButton;
+    
+    BOOL _addressIsNew;
+    CCAddress *_address;
+    CLLocationDistance _distance;
+}
 
 - (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
 {
@@ -56,7 +54,7 @@
 {
     self = [super init];
     if (self) {
-        self.address = address;
+        _address = address;
     }
     return self;
 }
@@ -202,7 +200,7 @@
     _currentLocation = location;
     
     CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
-    self.distance = [_currentLocation distanceFromLocation:coordinate];
+    _distance = [_currentLocation distanceFromLocation:coordinate];
     [((CCOutputView *)self.view) updateValues];
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
@@ -224,7 +222,7 @@
 
 - (double)addressDistance
 {
-    return self.distance;
+    return _distance;
 }
 
 - (NSString *)addressName

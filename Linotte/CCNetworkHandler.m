@@ -19,17 +19,15 @@
 
 #import "CCAddress.h"
 
-@interface CCNetworkHandler()
-
-@property(nonatomic, strong)NSTimer *timer;
-@property(nonatomic, strong)Reachability *reachability;
-
-@property(nonatomic, strong)NSMutableArray *addresses;
-@property(nonatomic, strong)NSMutableArray *loadingAddresses;
-
-@end
 
 @implementation CCNetworkHandler
+{
+    NSTimer *_timer;
+    Reachability *_reachability;
+    
+    NSMutableArray *_addresses;
+    NSMutableArray *_loadingAddresses;
+}
 
 - (id)init
 {
@@ -211,45 +209,7 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)expandList:(CCList *)list
-{
-    
-}
-
-- (void)reduceList:(CCList *)list
-{
-    
-}
-
-- (void)addAddress:(CCAddress *)address
-{
-    
-}
-
-- (void)removeAddress:(CCAddress *)address
-{
-    
-}
-
-- (void)addList:(CCList *)list
-{
-
-}
-
-- (void)removeList:(CCList *)list
-{
-
-}
-
-- (BOOL)address:(CCAddress *)address movedToList:(CCList *)list;
-{
-    return NO;
-}
-
-- (BOOL)address:(CCAddress *)address movedFromList:(CCList *)list;
-{
-    return NO;
-}
+// TODO
 
 #pragma mark - Singleton method
 

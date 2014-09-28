@@ -18,6 +18,9 @@
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 
+- (void)setupEmptyView;
+- (void)removeEmptyView;
+
 - (void)reloadData;
 - (void)reloadVisibleCells;
 - (void)reloadCellsAtIndexes:(NSIndexSet *)indexSet;

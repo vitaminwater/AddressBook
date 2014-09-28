@@ -21,5 +21,6 @@
 
 - (void)setListIconImage:(UIImage *)image;
 - (void)setListInfosText:(NSString *)listInfos;
+- (void)setNotificationEnabled:(BOOL)notificationEnabled;
 
 @end

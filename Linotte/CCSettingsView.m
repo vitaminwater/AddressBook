@@ -10,16 +10,15 @@
 
 #import <HexColors/HexColor.h>
 
-@interface CCSettingsView()
-
-@property(nonatomic, strong)UILabel *titleLabel;
-@property(nonatomic, strong)UIButton *closeButton;
-
-@property(nonatomic, strong)UIView *contentView;
-
-@end
+#import "CCFlatColorButton.h"
 
 @implementation CCSettingsView
+{
+    UILabel *_titleLabel;
+    CCFlatColorButton *_closeButton;
+    
+    UIView *_contentView;
+}
 
 - (id)init
 {
@@ -57,13 +56,14 @@
 
 - (void)setupCloseButton
 {
-    _closeButton = [UIButton new];
+    _closeButton = [CCFlatColorButton new];
     _closeButton.translatesAutoresizingMaskIntoConstraints = NO;
     [_closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
     [_closeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     [_closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateHighlighted];
     _closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
     [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.5]];
+    [_closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2] forState:UIControlStateHighlighted];
     [_closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     _closeButton.opaque = NO;
     [self addSubview:_closeButton];
@@ -72,7 +72,7 @@
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _contentView, _closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==50)]-[_contentView]-[_closeButton(==35)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel(==50)]-[_contentView]-[_closeButton(==50)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

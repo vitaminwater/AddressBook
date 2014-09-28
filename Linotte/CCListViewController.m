@@ -37,20 +37,18 @@
  * Actual View controller implementation
  */
 
-@interface CCListViewController ()
-
-@property(nonatomic, strong)CLLocation *currentLocation;
-@property(nonatomic, strong)CLHeading *currentHeading;
-
-@end
-
 @implementation CCListViewController
+{
+    CLLocation *_currentLocation;
+    CLHeading *_currentHeading;
+}
 
 - (id)initWithProvider:(CCListViewContentProvider *)provider
 {
     self = [super init];
     if (self) {
         _provider = provider;
+        _provider.delegate = self;
     }
     return self;
 }
@@ -65,12 +63,20 @@
     CCListView *listView = [CCListView new];
     listView.delegate = self;
     self.view = listView;
+    
+    if ([_provider numberOfListItems] == 0)
+        [listView setupEmptyView];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -127,8 +133,8 @@
                                                                          @"identifier": address.identifier ?: @""}];
         
         [managedObjectContext deleteObject:address];
+        [[CCModelChangeMonitor sharedInstance] addressRemoved:address];
         [managedObjectContext saveToPersistentStore:&error];
-        [[CCModelChangeMonitor sharedInstance] removeAddress:address];
         
         [((CCListView *)self.view) showConfirmationHUD:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"")];
     } else if (type == CCListItemTypeList) {
@@ -210,13 +216,13 @@
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
+        [[CCModelChangeMonitor sharedInstance] addressUpdated:address];
         [managedObjectContext saveToPersistentStore:NULL];
-        [[CCModelChangeMonitor sharedInstance] updateAddress:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
+        [[CCModelChangeMonitor sharedInstance] listUpdated:list];
         [managedObjectContext saveToPersistentStore:NULL];
-        [[CCModelChangeMonitor sharedInstance] updateList:list];
     }
 }
 
@@ -240,6 +246,11 @@
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index
 {
     return [_provider nameForListItemAtIndex:index];
+}
+
+- (NSString *)infoForListItemAtIndex:(NSUInteger)index
+{
+    return [_provider infoForListItemAtIndex:index];
 }
 
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index
@@ -271,6 +282,7 @@
     CCListView *view = (CCListView *)self.view;
     
     [view insertCellsAtIndexes:indexSet];
+    [view removeEmptyView];
 }
 
 - (void)removeCellsAtIndexes:(NSIndexSet *)indexSet
@@ -278,6 +290,8 @@
     CCListView *view = (CCListView *)self.view;
     
     [view deleteCellsAtIndexes:indexSet];
+    if ([_provider numberOfListItems] == 0)
+        [view setupEmptyView];
 }
 
 - (void)sortOrderChanged

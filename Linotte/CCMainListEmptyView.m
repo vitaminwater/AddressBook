@@ -8,13 +8,10 @@
 
 #import "CCMainListEmptyView.h"
 
-@interface CCMainListEmptyView()
-
-@property(nonatomic, strong)UIImageView *helpImageView;
-
-@end
-
 @implementation CCMainListEmptyView
+{
+    UIImageView *_helpImageView;
+}
 
 - (id)init
 {

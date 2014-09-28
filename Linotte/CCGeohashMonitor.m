@@ -12,14 +12,11 @@
 
 #import "CCGeohashHelper.h"
 
-@interface CCGeohashMonitor()
+
+@implementation CCGeohashMonitor
 {
     CLLocationManager *_locationManager;
 }
-
-@end
-
-@implementation CCGeohashMonitor
 
 - (id)init
 {

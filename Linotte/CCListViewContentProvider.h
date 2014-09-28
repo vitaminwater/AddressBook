@@ -37,10 +37,14 @@
 - (CCListItemType)listItemTypeAtIndex:(NSUInteger)index;
 
 - (NSUInteger)addAddress:(CCAddress *)address;
+- (void)addAddress:(CCAddress *)address toList:(CCList *)list;
 - (NSUInteger)removeAddress:(CCAddress *)address;
+- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list;
 - (NSIndexSet *)removeAddresses:(NSArray *)addresses;
 - (NSUInteger)addList:(CCList *)list;
 - (NSUInteger)removeList:(CCList *)list;
+
+- (void)refreshListItemContentForObject:(id)object;
 
 - (id)listItemContentAtIndex:(NSUInteger)index;
 - (NSUInteger)indexOfListItemContent:(id)content;
@@ -49,6 +53,7 @@
 - (double)angleForListItemAtIndex:(NSUInteger)index;
 - (UIImage *)iconFormListItemAtIndex:(NSUInteger)index;
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
+- (NSString *)infoForListItemAtIndex:(NSUInteger)index;
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;

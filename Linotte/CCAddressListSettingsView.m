@@ -16,21 +16,19 @@
 
 #define kCCListSettingsTableViewCell @"kCCListSettingsTableViewCell"
 
-@interface CCAddressListSettingsView()
-
-@property(nonatomic, strong)NSIndexPath *selectedPath;
-
-@property(nonatomic, strong)UITextView *helpView;
-
-@property(nonatomic, strong)UITextField *listName;
-@property(nonatomic, strong)UITableView *listSelector;
-@property(nonatomic, strong)UIButton *editListButton;
-
-@property(nonatomic, strong)NSLayoutConstraint *listSelectorHeightConstraint;
-
-@end
 
 @implementation CCAddressListSettingsView
+{
+    NSIndexPath *_selectedPath;
+    
+    UITextView *_helpView;
+    
+    UITextField *_listName;
+    UITableView *_listSelector;
+    UIButton *_editListButton;
+    
+    NSLayoutConstraint *_listSelectorHeightConstraint;
+}
 
 - (id)init
 {
@@ -219,7 +217,7 @@
 {
     CCAddressListSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCCListSettingsTableViewCell];
     
-    cell.textLabel.text = [_delegate listNameAtIndex:indexPath.row];
+    [cell setName:[_delegate listNameAtIndex:indexPath.row]];
     cell.isAdded = [_delegate isListSelectedAtIndex:indexPath.row];
 
     return cell;

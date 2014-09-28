@@ -10,4 +10,14 @@
 
 @protocol CCListOutputAddressListViewDelegate <NSObject>
 
+- (void)closePressed;
+
+- (void)addressAddedAtIndex:(NSUInteger)index;
+- (void)addressUnaddedAtIndex:(NSUInteger)index;
+
+- (BOOL)addressIsAddedAtIndex:(NSUInteger)index;
+- (NSString *)nameForAddressAtIndex:(NSUInteger)index;
+- (NSString *)addressForAddressAtIndex:(NSUInteger)index;
+- (NSUInteger)numberOfAddresses;
+
 @end

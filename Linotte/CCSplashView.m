@@ -54,15 +54,13 @@
 
 #pragma mark - Actual implementation
 
-@interface CCSplashView()
-
-@property(nonatomic, strong)UIImageView *logo;
-@property(nonatomic, strong)UILabel *titleLabel;
-@property(nonatomic, strong)NSArray *elements;
-
-@end
 
 @implementation CCSplashView
+{
+    UIImageView *_logo;
+    UILabel *_titleLabel;
+    NSArray *_elements;
+}
 
 - (instancetype)init {
     self = [super init];

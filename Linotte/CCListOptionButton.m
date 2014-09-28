@@ -8,18 +8,18 @@
 
 #import "CCListOptionButton.h"
 
-@interface CCListOptionButton()
-
-@property(nonatomic, strong)UIView *topColorView;
-
-@end
 
 @implementation CCListOptionButton
+{
+    UIView *_topColorView;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
+        
         [self setupTopColorView];
     }
     return self;
@@ -38,6 +38,7 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    [self setNeedsDisplay];
     
     CGRect bounds = self.bounds;
     CGRect imageFrame = self.imageView.frame;

@@ -27,13 +27,11 @@
 
 #import "CCAddress.h"
 
-@interface CCAppDelegate()
-
-@property(nonatomic, strong)NSDate *dateActive;
-
-@end
 
 @implementation CCAppDelegate
+{
+    NSDate *_dateActive;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -60,7 +58,7 @@
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    [[Mixpanel sharedInstance] track:@"Active time" properties:@{@"time": @([[NSDate date] timeIntervalSinceDate:self.dateActive])}];
+    [[Mixpanel sharedInstance] track:@"Active time" properties:@{@"time": @([[NSDate date] timeIntervalSinceDate:_dateActive])}];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -77,7 +75,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    self.dateActive = [NSDate date];
+    _dateActive = [NSDate date];
     [[Mixpanel sharedInstance] track:@"Application active" properties:@{@"date": [NSDate date]}];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 }

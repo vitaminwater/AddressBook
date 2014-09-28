@@ -10,17 +10,15 @@
 
 #import <objc/runtime.h>
 
-@interface CCLocationMonitor()
-
-@property(nonatomic, strong)CLLocationManager *locationManager;
-@property(nonatomic, strong)NSHashTable *delegates;
-
-@property(nonatomic, strong)CLLocation *currentLocation;
-@property(nonatomic, strong)CLHeading *currentHeading;
-
-@end
 
 @implementation CCLocationMonitor
+{
+    CLLocationManager *_locationManager;
+    NSHashTable *_delegates;
+    
+    CLLocation *_currentLocation;
+    CLHeading *_currentHeading;
+}
 
 - (id)init
 {
@@ -81,7 +79,14 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    _currentLocation = [locations lastObject];
+    CLLocation *location = [locations lastObject];
+    if (_currentLocation) {
+        CGFloat distance = [location distanceFromLocation:_currentLocation];
+        if (distance < 10)
+            return;
+    }
+    
+    _currentLocation = location;
     for (__weak id<CLLocationManagerDelegate> delegate in _delegates) {
         if ([delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)])
             [delegate locationManager:manager didUpdateLocations:locations];
@@ -118,10 +123,10 @@
 
 + (instancetype)sharedInstance
 {
-    static CCLocationMonitor *instance = nil;
+    static id instance = nil;
     
     if (instance == nil)
-        instance = [CCLocationMonitor new];
+        instance = [[self class] new];
     
     return instance;
 }

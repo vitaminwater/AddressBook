@@ -15,13 +15,11 @@
 
 #import <objc/runtime.h>
 
-@interface CCModelChangeMonitor()
-
-@property(nonatomic, strong)NSHashTable *delegates;
-
-@end
 
 @implementation CCModelChangeMonitor
+{
+    NSHashTable *_delegates;
+}
 
 - (id)init
 {
@@ -63,10 +61,10 @@
 
 + (instancetype)sharedInstance
 {
-    static CCModelChangeMonitor *instance = nil;
+    static id instance = nil;
     
     if (instance == nil)
-        instance = [CCModelChangeMonitor new];
+        instance = [[self class] new];
     
     return instance;
 }

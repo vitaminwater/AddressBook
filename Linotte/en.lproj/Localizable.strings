@@ -32,6 +32,8 @@
 
 "DISTANCE_UNAVAILABLE" = "Looking for position...";
 "SKIP_BUTTON_TEXT" = "Skip >";
+"LIST_INFO" = "[nAddress] address";
+"LIST_INFO_PLURAL" = "[nAddress] addresses";
 
 "INOTE" = "I note";
 "ISTROLL" = "I stroll";
@@ -87,3 +89,7 @@
 
 "LIST_OUTPUT_EMPTY_MESSAGE" = "You may also add addresses that are already stored in you Linotte";
 "LIST_OUTPUT_EMPTY_BUTTON" = "Select addresses in my Linotte";
+
+"LIST_OUTPUT_ADDRESS_LIST_HELP" = "Select the addresses stored in you Linotte that you want to add to this book.";
+"LIST_OUTPUT_ADDRESS_LIST_CLOSE" = "Close";
+"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "Search a venue";

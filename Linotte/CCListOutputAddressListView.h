@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 #import "CCListOutputAddressListViewDelegate.h"
+#import "CCListOutputAddressListTableViewCellDelegate.h"
 
-@interface CCListOutputAddressListView : UIView
+@interface CCListOutputAddressListView : UIView<CCListOutputAddressListTableViewCellDelegate, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property(nonatomic, weak)id<CCListOutputAddressListViewDelegate> delegate;
 

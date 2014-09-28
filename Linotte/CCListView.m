@@ -20,22 +20,19 @@
 
 #define kCCDistanceColors @[@"#6b6b6b", @"#898989", @"#afafaf", @"#c8c8c8"]
 
-@interface CCListView()
-
-@property(nonatomic, strong)UIView *emptyView;
-@property(nonatomic, strong)UITableView *tableView;
-
-@property(nonatomic, strong)UIPanGestureRecognizer *panGestureRecognizer;
-
-@end
-
 @implementation CCListView
+{
+    UIView *_emptyView;
+    UITableView *_tableView;
+
+    UIPanGestureRecognizer *_panGestureRecognizer;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteColor];
         
         _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
         _panGestureRecognizer.delegate = self;
@@ -53,7 +50,9 @@
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     _tableView.backgroundColor = [UIColor clearColor];
     
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    _tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _tableView.separatorColor = [UIColor darkGrayColor];
     
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -80,6 +79,9 @@
 
 - (void)setupEmptyView
 {
+    if (_emptyView != nil)
+        return;
+
     _emptyView = [_delegate getEmptyView];
     _emptyView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_emptyView];
@@ -99,12 +101,43 @@
 
 - (void)removeEmptyView
 {
+    if (_emptyView == nil)
+        return;
+    
     [UIView animateWithDuration:0.2 animations:^{
         _emptyView.alpha = 0;
     } completion:^(BOOL finished) {
         [_emptyView removeFromSuperview];
         _emptyView = nil;
     }];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGRect frame = self.bounds;
+    
+    CGFloat lineHeight = 0.5 * [[UIScreen mainScreen] scale];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, lineHeight);
+    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+    
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + lineHeight / 2);
+    CGContextStrokePath(context);
+    
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextStrokePath(context);
+    
+    [super drawRect:rect];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self setNeedsDisplay];
 }
 
 - (void)reloadData
@@ -129,7 +162,7 @@
         [indexPaths addObject:indexPath];
     }];
     
-    [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [_tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)insertCellsAtIndexes:(NSIndexSet *)indexSet
@@ -140,10 +173,6 @@
         [indexPaths addObject:indexPath];
     }];
     [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-    
-    if (_emptyView) {
-        [self removeEmptyView];
-    }
 }
 
 - (void)deleteCellsAtIndexes:(NSIndexSet *)indexSet
@@ -154,9 +183,6 @@
         [indexPaths addObject:indexPath];
     }];
     [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
-    
-    if ([_delegate numberOfListItems] == 0 && _emptyView == nil)
-        [self setupEmptyView];
 }
 
 - (void)unselect
@@ -206,24 +232,8 @@
 
 - (void)updateCell:(CCListViewTableViewCell *)cell atIndex:(NSUInteger)index
 {
-    /*NSDate *lastNotif = [_delegate lastNotifForAddressAtIndex:index];
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    dateFormatter.dateFormat = @"dd/MM HH:mm";*/
-    double distance = [_delegate distanceForListItemAtIndex:index];
-    NSString *distanceUnit = @"m";
-    
-    if (distance > 1000) {
-        distance /= 1000;
-        distanceUnit = @"km";
-    }
-    
-    NSString *distanceText = [NSString stringWithFormat:@"%.02f %@", distance, distanceUnit /*, [dateFormatter stringFromDate:lastNotif]*/];
     cell.textLabel.text = [_delegate nameForListItemAtIndex:index];
-    if (distance > 0)
-        cell.detailTextLabel.text = distanceText;
-    else
-        cell.detailTextLabel.text = NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
-
+    cell.detailTextLabel.text = [_delegate infoForListItemAtIndex:index];
     [cell setNotificationEnabled:[_delegate notificationEnabledForListItemAtIndex:index]];
     if ([_delegate orientationAvailableAtIndex:index]) {
         [cell setAngle:[_delegate angleForListItemAtIndex:index]];
@@ -271,9 +281,6 @@
 - (void)setDelegate:(id<CCListViewDelegate>)delegate
 {
     _delegate = delegate;
-    
-    if ([_delegate numberOfListItems] == 0)
-        [self setupEmptyView];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

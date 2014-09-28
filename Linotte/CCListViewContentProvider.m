@@ -17,13 +17,11 @@
 #import "CCList.h"
 #import "CCAddress.h"
 
-@interface CCListViewContentProvider()
-
-@property(nonatomic, strong)NSMutableArray *listItems;
-
-@end
 
 @implementation CCListViewContentProvider
+{
+    NSMutableArray *_listItems;
+}
 
 - (id)initWithModel:(id<CCListViewModelProtocol>)model
 {
@@ -38,6 +36,7 @@
 }
 
 #pragma mark - data management methods
+// TODO clean this fucking mess, public/private etc...
 
 - (void)emptyListItems
 {
@@ -53,6 +52,17 @@
     return [self insertNewListItem:listItemAddress];
 }
 
+- (void)addAddress:(CCAddress *)address toList:(CCList *)list
+{
+    NSUInteger listItemIndex = [self indexOfListItemContent:list];
+    if (listItemIndex == NSNotFound)
+        return;
+    
+    CCListItemList *listItemList = _listItems[listItemIndex];
+    [listItemList addAddress:address];
+    [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:listItemIndex]];
+}
+
 - (NSUInteger)removeAddress:(CCAddress *)address
 {
     NSUInteger index = [_listItems indexOfObjectPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
@@ -63,7 +73,19 @@
         return NO;
     }];
     [_listItems removeObjectAtIndex:index];
+    [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
     return index;
+}
+
+- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list
+{
+    NSUInteger listItemIndex = [self indexOfListItemContent:list];
+    if (listItemIndex == NSNotFound)
+        return;
+    
+    CCListItemList *listItemList = _listItems[listItemIndex];
+    [listItemList removeAddress:address];
+    [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:listItemIndex]];
 }
 
 - (NSIndexSet *)removeAddresses:(NSArray *)addresses
@@ -74,6 +96,7 @@
         return NO;
     }];
     [_listItems removeObjectsAtIndexes:toDelete];
+    [_delegate removeCellsAtIndexes:toDelete];
     return toDelete;
 }
 
@@ -82,7 +105,6 @@
     CCListItemList *listItemList = [CCListItemList new];
     listItemList.list = list;
     listItemList.location = _currentLocation;
-    
     return [self insertNewListItem:listItemList];
 }
 
@@ -92,7 +114,14 @@
         return listItem.type == CCListItemTypeList && ((CCListItemList *)listItem).list == list;
     }];
     [_listItems removeObjectAtIndex:index];
+    [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
     return index;
+}
+
+- (void)refreshListItemContentForObject:(id)object
+{
+    NSUInteger index = [self indexOfListItemContent:object];
+    [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
 }
 
 - (NSUInteger)insertNewListItem:(CCListItem *)listItem
@@ -103,6 +132,7 @@
                                     usingComparator:[self sortBlock]];
     
     [_listItems insertObject:listItem atIndex:newIndex];
+    [_delegate insertCellsAtIndexes:[NSIndexSet indexSetWithIndex:newIndex]];
     return newIndex;
 }
 
@@ -110,6 +140,7 @@
 {
     CCListItem *listItem = _listItems[index];
     [_listItems removeObject:listItem];
+    [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
 }
 
 - (CCListItemType)listItemTypeAtIndex:(NSUInteger)index
@@ -192,6 +223,12 @@
 {
     CCListItem *listItem = _listItems[index];
     return listItem.name;
+}
+
+- (NSString *)infoForListItemAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    return listItem.info;
 }
 
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index

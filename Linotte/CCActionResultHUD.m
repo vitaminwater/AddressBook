@@ -8,14 +8,12 @@
 
 #import "CCActionResultHUD.h"
 
-@interface CCActionResultHUD()
-
-@property(nonatomic, strong)UIImageView *imageView;
-@property(nonatomic, strong)UILabel *label;
-
-@end
 
 @implementation CCActionResultHUD
+{
+    UIImageView *_imageView;
+    UILabel *_label;
+}
 
 - (id)initWithImage:(UIImage *)image text:(NSString *)text
 {

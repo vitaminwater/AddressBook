@@ -8,14 +8,11 @@
 
 #import "CCListListView.h"
 
-@interface CCListListView()
-
-@property(nonatomic, strong)UIView *addListView;
-@property(nonatomic, strong)UIView *listView;
-
-@end
-
 @implementation CCListListView
+{
+    UIView *_addListView;
+    UIView *_listView;
+}
 
 - (id)init
 {

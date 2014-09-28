@@ -10,10 +10,6 @@
 
 #import <HexColors/HexColor.h>
 
-@interface CCListViewTableViewCellDetailLabel()
-
-@end
-
 @implementation CCListViewTableViewCellDetailLabel
 
 - (id)init

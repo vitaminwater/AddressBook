@@ -14,7 +14,7 @@
 
 @interface CCSettingsViewController : UIViewController<CCSettingsViewDelegate>
 
-@property(nonatomic, assign)id<CCSettingsViewControllerDelegate> delegate;
+@property(nonatomic, weak)id<CCSettingsViewControllerDelegate> delegate;
 @property(nonatomic, strong)UIView *contentView;
 
 - (void)loadContentView;

@@ -71,7 +71,7 @@
  * View controller implementation
  */
 
-@interface CCAddAddressViewController ()
+@implementation CCAddAddressViewController
 {
     CLLocation *_currentLocation;
     
@@ -80,14 +80,10 @@
     
     NSString *_currentGeohash;
     
-    void (^geolocBlock)();
+    void (^_geolocBlock)();
+
+    NSMutableArray *_autocompletionResults;
 }
-
-@property(nonatomic, strong)NSMutableArray *autocompletionResults;
-
-@end
-
-@implementation CCAddAddressViewController
 
 - (id)init
 {
@@ -145,8 +141,8 @@
     
     _currentGeohash = geohash;
     
-    if (geolocBlock)
-        geolocBlock(location);
+    if (_geolocBlock)
+        _geolocBlock(location);
 }
 
 #pragma mark - API management
@@ -158,7 +154,7 @@
         [self loadPlacesWebserviceByName:addressName];
     else
         [(CCAddAddressView *)self.view showLoading]; // Yeah this sucks
-    geolocBlock = ^() {
+    _geolocBlock = ^() {
         [weakSelf loadPlacesWebserviceByName:addressName];
     };
 }
@@ -166,7 +162,7 @@
 - (void)stopGeoloc
 {
     [[CCLocationMonitor sharedInstance] removeDelegate:self];
-    geolocBlock = nil;
+    _geolocBlock = nil;
 }
 
 - (void)startGeoloc
@@ -337,8 +333,8 @@
     }
     
     [_delegate preSaveAddress:address];
+    [[CCModelChangeMonitor sharedInstance] addressAdded:address];
     [managedObjectContext saveToPersistentStore:NULL];
-    [[CCModelChangeMonitor sharedInstance] addAddress:address];
     [_delegate postSaveAddress:address];
     
     [self reduceAddView];

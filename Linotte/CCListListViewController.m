@@ -10,8 +10,12 @@
 
 #import <HexColors/HexColor.h>
 
+#import "UIView+CCShowSettingsView.h"
+
 #import "CCListViewContentProvider.h"
 #import "CCListListViewModel.h"
+
+#import "CCListListExpandedSettingsViewController.h"
 
 #import "CCAddListViewController.h"
 #import "CCListViewController.h"
@@ -20,14 +24,13 @@
 
 #import "CCListListView.h"
 
-@interface CCListListViewController()
-
-@property(nonatomic, strong)CCAddListViewController *addListViewController;
-@property(nonatomic, strong)CCListViewController *listViewController;
-
-@end
-
 @implementation CCListListViewController
+{
+    UIButton *_settingsButton;
+    
+    CCAddListViewController *_addListViewController;
+    CCListViewController *_listViewController;
+}
 
 - (id)init
 {
@@ -86,13 +89,13 @@
     
     { // right bar button items
         CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
-        UIButton *settingsButton = [UIButton new];
-        [settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
-        settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        settingsButton.frame = settingsButtonFrame;
-        [settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        _settingsButton = [UIButton new];
+        [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+        _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _settingsButton.frame = settingsButtonFrame;
+        [_settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:settingsButton];
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
         
         self.navigationItem.rightBarButtonItems = @[barButtonItem];
     }
@@ -132,7 +135,13 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
-
+    CCListListExpandedSettingsViewController *listListExpandedSettingsViewController = [CCListListExpandedSettingsViewController new];
+    listListExpandedSettingsViewController.delegate = self;
+    [self addChildViewController:listListExpandedSettingsViewController];
+    
+    [self.view showSettingsView:listListExpandedSettingsViewController.view];
+    
+    [listListExpandedSettingsViewController didMoveToParentViewController:self];
 }
 
 #pragma mark - CCListListViewDelegate methods
@@ -159,6 +168,18 @@
 - (void)listSelected:(CCList *)list
 {
     
+}
+
+#pragma mark - CCSettingsViewControllerDelegate methods
+
+- (void)settingsViewControllerDidEnd:(UIViewController *)sender
+{
+    [sender willMoveToParentViewController:nil];
+    [self.view hideSettingsView:sender.view];
+    [sender removeFromParentViewController];
+    
+    if ([sender isKindOfClass:[CCListListExpandedSettingsViewController class]])
+        _settingsButton.enabled = YES;
 }
 
 @end

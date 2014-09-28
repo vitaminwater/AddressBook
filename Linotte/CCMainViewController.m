@@ -26,16 +26,14 @@
 
 #import "CCMainView.h"
 
-@interface CCMainViewController ()
-
-@property(nonatomic, strong)CCSplashViewController *splashViewController;
-
-@property(nonatomic, strong)CCListViewController *listViewController;
-@property(nonatomic, strong)CCAddAddressViewController *addViewController;
-
-@end
 
 @implementation CCMainViewController
+{
+    CCSplashViewController *_splashViewController;
+    
+    CCListViewController *_listViewController;
+    CCAddAddressViewController *_addViewController;
+}
 
 // TODO check location enabled
 - (void)loadView

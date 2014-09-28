@@ -13,25 +13,24 @@
 #define kCCAddViewTableViewCell @"kCCAddViewTableViewCell"
 #define kCCLoadingViewHeight 25
 
-@interface CCAddAddressView()
-
-@property(nonatomic, strong)NSString *textFieldValueSave;
-
-@property(nonatomic, strong)UITextField *textField;
-@property(nonatomic, strong)UIView *loadingView;
-@property(nonatomic, strong)UITableView *tableView;
-
-@property(nonatomic, strong)NSLayoutConstraint *loadingViewTopConstraint;
-
-@end
 
 @implementation CCAddAddressView
+{
+    NSString *_textFieldValueSave;
+
+    UITextField *_textField;
+    UIView *_loadingView;
+    UITableView *_tableView;
+
+    NSLayoutConstraint *_loadingViewTopConstraint;
+}
 
 - (id)init
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        
         [self setupTextField];
         [self setupLoadingView];
         [self setupTableView];
@@ -47,7 +46,7 @@
     _textField.delegate = self;
     _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
     _textField.textColor = [UIColor darkGrayColor];
-    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.backgroundColor = [UIColor clearColor];
     _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     
     UIImageView *leftView = [UIImageView new];
@@ -74,6 +73,7 @@
     _loadingView = [UIView new];
     _loadingView.translatesAutoresizingMaskIntoConstraints = NO;
     _loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    _loadingView.alpha = 0;
     [self insertSubview:_loadingView belowSubview:_textField];
     
     {
@@ -106,6 +106,7 @@
     
     _tableView = [UITableView new];
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    _tableView.backgroundColor = [UIColor clearColor];
 
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -157,6 +158,7 @@
     }
 
     _textFieldValueSave = _textField.text;
+    _textField.backgroundColor = [UIColor clearColor];
     _textField.text = @"";
     _textField.placeholder = @"Missing connection";
     _textField.enabled = NO;
@@ -167,6 +169,7 @@
     [self layoutIfNeeded];
     _loadingViewTopConstraint.constant = 0;
     [UIView animateWithDuration:0.2 animations:^{
+        _loadingView.alpha = 1;
         [self layoutIfNeeded];
     }];
 }
@@ -176,6 +179,7 @@
     [self layoutIfNeeded];
     _loadingViewTopConstraint.constant = -kCCLoadingViewHeight;
     [UIView animateWithDuration:0.2 animations:^{
+        _loadingView.alpha = 0;
         [self layoutIfNeeded];
     }];
 }
@@ -183,6 +187,34 @@
 - (void)reloadAutocompletionResults
 {
     [_tableView reloadData];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGRect frame = _textField.bounds;
+    
+    CGFloat lineHeight = 0.5 * [[UIScreen mainScreen] scale];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, lineHeight);
+    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+    
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + lineHeight / 2);
+    CGContextStrokePath(context);
+    
+    /*CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextStrokePath(context);*/
+    
+    [super drawRect:rect];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self setNeedsDisplay];
 }
 
 #pragma mark - UITextFieldDelegate methods

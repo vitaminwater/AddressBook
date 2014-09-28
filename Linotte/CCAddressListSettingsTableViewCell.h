@@ -12,4 +12,6 @@
 
 @property(nonatomic, assign)BOOL isAdded;
 
+- (void)setName:(NSString *)name;
+
 @end

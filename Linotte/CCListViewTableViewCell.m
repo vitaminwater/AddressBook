@@ -15,28 +15,26 @@
 #import "CCListViewTableViewCellDetailLabel.h"
 
 
-@interface CCListViewTableViewCell()
-
-@property(nonatomic, strong)UIButton *deleteButton;
-
-@property(nonatomic, strong)UILabel *realTextLabel;
-@property(nonatomic, strong)CCListViewTableViewCellDetailLabel *realDetailTextLabel;
-
-@property(nonatomic, strong)UIButton *bellButton;
-
-@property(nonatomic, strong)UIImageView *compasView;
-
-@property(nonatomic, strong)NSLayoutConstraint *rightEjectButtonConstraint;
-
-@end
-
 @implementation CCListViewTableViewCell
+{
+    UIButton *_deleteButton;
+    
+    UILabel *_realTextLabel;
+    CCListViewTableViewCellDetailLabel *_realDetailTextLabel;
+    
+    UIButton *_bellButton;
+    
+    UIImageView *_compasView;
+    
+    NSLayoutConstraint *_rightEjectButtonConstraint;
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
+        self.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
         
         [self setupButton];
         [self setupLabels];
@@ -86,7 +84,7 @@
     [_bellButton setImage:[UIImage imageNamed:@"bell_button_off"] forState:UIControlStateNormal];
     [_bellButton setImage:[UIImage imageNamed:@"bell_button_on"] forState:UIControlStateSelected];
     [_bellButton addTarget:self action:@selector(bellPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_bellButton];
+    [self.contentView addSubview:_bellButton];
 }
 
 - (void)setupCompas
@@ -101,7 +99,7 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton, _realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
     
-    [self removeConstraints:self.constraints];
+    [self.contentView removeConstraints:self.contentView.constraints];
     // realTextLabel and reatDetailTextLabel
     {
         NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
@@ -122,7 +120,7 @@
         [self.contentView addConstraints:horizontalConstraints];
         
         _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        [self addConstraint:_rightEjectButtonConstraint];
+        [self.contentView addConstraint:_rightEjectButtonConstraint];
         
         NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:verticalConstraints];
@@ -145,10 +143,10 @@
     // bellButton
     {
         NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeLeft multiplier:1 constant:-5];
-        [self addConstraint:horizontalConstraint];
+        [self.contentView addConstraint:horizontalConstraint];
         
         NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-        [self addConstraint:centerYConstraint];
+        [self.contentView addConstraint:centerYConstraint];
     }
 }
 
@@ -175,17 +173,17 @@
 
 - (UILabel *)textLabel
 {
-    return self.realTextLabel;
+    return _realTextLabel;
 }
 
 - (UILabel *)detailTextLabel
 {
-    return self.realDetailTextLabel.label;
+    return _realDetailTextLabel.label;
 }
 
 - (UIImageView *)markerImageView
 {
-    return self.realDetailTextLabel.imageView;
+    return _realDetailTextLabel.imageView;
 }
 
 - (void)prepareForReuse
@@ -202,8 +200,7 @@
 
 - (void)bellPressed:(id)sender
 {
-    _bellButton.selected = !_bellButton.selected;
-    [_delegate setNotificationEnabled:_bellButton.selected forCell:self];
+    [_delegate setNotificationEnabled:!_bellButton.selected forCell:self];
 }
 
 #pragma mark - UIGestureRecognizer target methods

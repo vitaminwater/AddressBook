@@ -8,13 +8,10 @@
 
 #import "CCAddListView.h"
 
-@interface CCAddListView()
-
-@property(nonatomic, strong)UITextField *textField;
-
-@end
-
 @implementation CCAddListView
+{
+    UITextField *_textField;
+}
 
 - (id)init
 {
@@ -34,7 +31,7 @@
     _textField.translatesAutoresizingMaskIntoConstraints = NO;
     _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
     _textField.textColor = [UIColor darkGrayColor];
-    _textField.backgroundColor = [UIColor whiteColor];
+    _textField.backgroundColor = [UIColor clearColor];
     _textField.placeholder = NSLocalizedString(@"LIST_NAME", @"");
     _textField.delegate = self;
     
@@ -68,6 +65,34 @@
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [self addConstraints:horizontalConstraints];
     }
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    CGRect frame = self.bounds;
+    
+    CGFloat lineHeight = 0.5 * [[UIScreen mainScreen] scale];
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, lineHeight);
+    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+    
+    CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + lineHeight / 2);
+    CGContextStrokePath(context);
+    
+    /*CGContextBeginPath(context);
+    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + frame.size.height - lineHeight / 2);
+    CGContextStrokePath(context);*/
+    
+    [super drawRect:rect];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self setNeedsDisplay];
 }
 
 #pragma mark - UIButton target methods

@@ -10,21 +10,19 @@
 
 #define kCCListHeaderViewHeight @150
 
-@interface CCListOutputView()
-
-@property(nonatomic, strong)UIView *listHeaderView;
-@property(nonatomic, strong)UIImageView *listIcon;
-@property(nonatomic, strong)UITextView *listInfos;
-
-@property(nonatomic, strong)UIView *listNotificationView;
-@property(nonatomic, strong)UIButton *listNotificationButton;
-
-@property(nonatomic, strong)UIView *addView;
-@property(nonatomic, strong)UIView *listView;
-
-@end
 
 @implementation CCListOutputView
+{
+    UIView *_listHeaderView;
+    UIImageView *_listIcon;
+    UITextView *_listInfos;
+    
+    UIView *_listNotificationView;
+    UIButton *_listNotificationButton;
+    
+    UIView *_addView;
+    UIView *_listView;
+}
 
 - (id)init
 {
@@ -106,7 +104,7 @@
         [_listNotificationView addConstraints:horizontalConstraints];
         
         for (UIView *view in views.allValues) {
-            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==10)-[view]-(==10)-|" options:0 metrics:nil views:@{@"view" : view}];
             [_listNotificationView addConstraints:verticalConstraints];
         }
     }
@@ -196,11 +194,17 @@
     _listInfos.text = listInfos;
 }
 
+- (void)setNotificationEnabled:(BOOL)notificationEnabled
+{
+    _listNotificationButton.selected = notificationEnabled;
+}
+
 #pragma mark - UIButton target methods
 
 - (void)notificationPressed:(id)sender
 {
     _listNotificationButton.selected = !_listNotificationButton.selected;
+    [_delegate notificationEnabled:_listNotificationButton.selected];
 }
 
 @end

@@ -12,6 +12,8 @@
 
 #import <RestKit/RestKit.h>
 
+#import "NSString+CCLocalizedString.h"
+
 #import "CCAddress.h"
 #import "CCList.h"
 
@@ -107,6 +109,23 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     return @"gmap_pin";
 }
 
+- (NSString *)distanceInfo
+{
+    if (self.distance < 0)
+        return NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
+    
+    double distance = self.distance;
+    NSString *distanceUnit = @"m";
+    
+    if (distance > 1000) {
+        distance /= 1000;
+        distanceUnit = @"km";
+    }
+    
+    NSString *distanceText = [NSString stringWithFormat:@"%d %@", (int)distance, distanceUnit /*, [dateFormatter stringFromDate:lastNotif]*/];
+    return distanceText;
+}
+
 @end
 
 
@@ -162,6 +181,12 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     return _address.name;
 }
 
+- (NSString *)info
+{
+    NSString *distanceInfo = [self distanceInfo];
+    return distanceInfo;
+}
+
 - (BOOL)notify
 {
     return _address.notifyValue;
@@ -184,11 +209,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 /*
  * List list item
  */
-@interface CCListItemList()
-
-@end
 
 @implementation CCListItemList
+{
+    CCAddress *_closestAddress;
+}
 
 - (void)setList:(CCList *)list
 {
@@ -198,7 +223,57 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (void)setLocation:(CLLocation *)location
 {
     [super setLocation:location];
+    [self refreshListData];
+}
+
+- (CCListItemType)type
+{
+    return CCListItemTypeList;
+}
+
+- (NSString *)iconPrefix
+{
+    return @"list_pin";
+}
+
+#pragma mark - public methods
+
+- (void)addAddress:(CCAddress *)address
+{
+    if (self.location == nil)
+        return;
     
+    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
+    BOOL tooFar = YES;
+    for (NSString *geohash in geohashesComp) {
+        if ([address.geohash hasPrefix:geohash]) {
+            tooFar = NO;
+            break;
+        }
+    }
+    if (tooFar)
+        return;
+    
+    CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
+    double newDistance = [self.location distanceFromLocation:addressLocation];
+    if (self.farAway || newDistance < self.distance) {
+        self.itemLocation = addressLocation;
+        _closestAddress = address;
+        self.farAway = NO;
+    }
+}
+
+- (void)removeAddress:(CCAddress *)address
+{
+    if (_closestAddress == address) {
+        [self refreshListData];
+    }
+}
+
+#pragma mark - private methods
+
+- (void)refreshListData
+{
     if (self.location == nil)
         return;
     
@@ -214,30 +289,27 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
     if ([addresses count] == 0) {
+        self.itemLocation = nil;
+        _closestAddress = nil;
         self.farAway = YES;
         return;
     }
     self.farAway = NO;
     
     CLLocation *closestLocation = nil;
-    double distance = 42424242;
+    CCAddress *closestAddress = nil;
+    double distance = DBL_MAX;
     for (CCAddress *address in addresses) {
         CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
         double newDistance = [self.location distanceFromLocation:addressLocation];
-        if (newDistance < distance || closestLocation == nil)
+        if (closestLocation == nil || newDistance < distance) {
             closestLocation = addressLocation;
+            closestAddress = address;
+            distance = newDistance;
+        }
     }
     self.itemLocation = closestLocation;
-}
-
-- (CCListItemType)type
-{
-    return CCListItemTypeList;
-}
-
-- (NSString *)iconPrefix
-{
-    return @"list_pin";
+    _closestAddress = closestAddress;
 }
 
 #pragma mark - getter methods
@@ -245,6 +317,16 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (NSString *)name
 {
     return _list.name;
+}
+
+- (NSString *)info
+{
+    NSString *distanceInfo = [self distanceInfo];
+    
+    NSUInteger nAddresses = [_list.addresses count];
+    NSString *localizedKey = nAddresses > 1 ? @"LIST_INFO_PLURAL" : @"LIST_INFO";
+    NSString *listInfo = [NSString localizedStringByReplacingFromDictionnary:@{@"[nAddress]" : [@(nAddresses) stringValue]} localizedKey:localizedKey];
+    return [NSString stringWithFormat:@"%@\n%@", listInfo, distanceInfo];
 }
 
 - (BOOL)notify

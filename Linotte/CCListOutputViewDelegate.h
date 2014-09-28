@@ -10,4 +10,6 @@
 
 @protocol CCListOutputViewDelegate <NSObject>
 
+- (void)notificationEnabled:(BOOL)enabled;
+
 @end

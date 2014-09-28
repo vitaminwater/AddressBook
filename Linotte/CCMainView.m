@@ -16,18 +16,15 @@
 
 #define kCCStatusBarHeight @20
 
-@interface CCMainView()
+
+@implementation CCMainView
 {
     UIView *_addView;
     UIView *_listView;
+
+    CCListOptionContainer *_buttonContainer;
+    CGFloat _panVelocity;
 }
-
-@property(nonatomic, strong)CCListOptionContainer *buttonContainer;
-@property(nonatomic, assign)CGFloat panVelocity;
-
-@end
-
-@implementation CCMainView
 
 - (id)init
 {

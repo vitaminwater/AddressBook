@@ -32,6 +32,8 @@
 
 "DISTANCE_UNAVAILABLE" = "Position non disponible...";
 "SKIP_BUTTON_TEXT" = "Passer >";
+"LIST_INFO" = "[nAddress] adresses";
+"LIST_INFO_PLURAL" = "[nAddress] adresses";
 
 "INOTE" = "Je note";
 "ISTROLL" = "Je me balade";
@@ -87,3 +89,7 @@
 
 "LIST_OUTPUT_EMPTY_MESSAGE" = "Vous pouvez aussi ajouter des adresses qui sont déjà dans votre Linotte";
 "LIST_OUTPUT_EMPTY_BUTTON" = "Accéder à ma liste d'adresses Linotte";
+
+"LIST_OUTPUT_ADDRESS_LIST_HELP" = "Sélectionnez les adresses de votre Linotte que vous souhaitez ajouter au nouveau carnet.";
+"LIST_OUTPUT_ADDRESS_LIST_CLOSE" = "Terminer";
+"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "Rechercher un lieu";

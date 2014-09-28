@@ -12,14 +12,12 @@
 
 #import "CCFlatColorButton.h"
 
-@interface CCListOutputListEmptyView()
-
-@property(nonatomic, strong)UILabel *helpMessage;
-@property(nonatomic, strong)CCFlatColorButton *addressListButton;
-
-@end
 
 @implementation CCListOutputListEmptyView
+{
+    UILabel *_helpLabel;
+    CCFlatColorButton *_addressListButton;
+}
 
 - (id)init
 {
@@ -36,10 +34,14 @@
 
 - (void)setupHelpMessage
 {
-    _helpMessage = [UILabel new];
-    _helpMessage.translatesAutoresizingMaskIntoConstraints = NO;
-    _helpMessage.text = NSLocalizedString(@"LIST_OUTPUT_EMPTY_MESSAGE", @"");
-    [self addSubview:_helpMessage];
+    _helpLabel = [UILabel new];
+    _helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _helpLabel.textColor = [UIColor darkGrayColor];
+    _helpLabel.numberOfLines = 0;
+    _helpLabel.textAlignment = NSTextAlignmentCenter;
+    _helpLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
+    _helpLabel.text = NSLocalizedString(@"LIST_OUTPUT_EMPTY_MESSAGE", @"");
+    [self addSubview:_helpLabel];
 }
 
 - (void)setupAddressListButton
@@ -49,7 +51,8 @@
     [_addressListButton setTitle:NSLocalizedString(@"LIST_OUTPUT_EMPTY_BUTTON", @"") forState:UIControlStateNormal];
     _addressListButton.backgroundColor = [UIColor colorWithHexString:@"#ffae64"];
     [_addressListButton setBackgroundColor:[UIColor colorWithHexString:@"#ef9e54"] forState:UIControlStateHighlighted];
-    _addressListButton.layer.cornerRadius = 10;
+    _addressListButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
+    _addressListButton.layer.cornerRadius = 15;
     _addressListButton.clipsToBounds = YES;
     [_addressListButton addTarget:self action:@selector(addressListButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_addressListButton];
@@ -57,11 +60,11 @@
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_helpMessage, _addressListButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_helpMessage]-(==8)-[_addressListButton]" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_helpLabel, _addressListButton);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_helpLabel]-(==8)-[_addressListButton(==50)]" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
-    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_helpMessage attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:-4];
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_helpLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:-4];
     [self addConstraint:centerYConstraint];
     
     for (UIView *view in views.allValues) {

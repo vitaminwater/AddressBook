@@ -8,13 +8,13 @@
 
 #import "CCAddressListSettingsTableViewCell.h"
 
-@interface CCAddressListSettingsTableViewCell()
-
-@property(nonatomic, strong)UIImageView *checkImageView;
-
-@end
 
 @implementation CCAddressListSettingsTableViewCell
+{
+    UIImageView *_checkImageView;
+    
+    UILabel *_addressNameLabel;
+}
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -24,42 +24,46 @@
         self.backgroundView = [UIView new];
         self.backgroundView.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
-        
-        self.textLabel.textColor = [UIColor whiteColor];
-        self.textLabel.backgroundColor = [UIColor clearColor];
-        self.textLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
-        
+
         [self setupCheckImageView];
+        [self setupAddressNameLabel];
+        [self setupLayout];
     }
     return self;
+}
+
+- (void)setupAddressNameLabel
+{
+    _addressNameLabel = [UILabel new];
+    _addressNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _addressNameLabel.textColor = [UIColor whiteColor];
+    _addressNameLabel.backgroundColor = [UIColor clearColor];
+    _addressNameLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
+    [self.contentView addSubview:_addressNameLabel];
 }
 
 - (void)setupCheckImageView
 {
     _checkImageView = [UIImageView new];
-    _checkImageView.contentMode = UIViewContentModeScaleAspectFit;
+    _checkImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    _checkImageView.contentMode = UIViewContentModeCenter;
     _checkImageView.image = [UIImage imageNamed:@"check_list_icon-off"];
-    [self addSubview:_checkImageView];
+    [self.contentView addSubview:_checkImageView];
 }
 
-- (void)layoutSubviews
+- (void)setupLayout
 {
-    [super layoutSubviews];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_checkImageView, _addressNameLabel);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_checkImageView(==25)]-[_addressNameLabel]|" options:0 metrics:nil views:views];
+    [self.contentView addConstraints:horizontalConstraints];
     
-    CGRect checkImageViewFrame = self.bounds;
-    checkImageViewFrame.size.width = checkImageViewFrame.size.height;
-    checkImageViewFrame.size.height -= 15;
-    checkImageViewFrame.origin.y = 7.5;
-    _checkImageView.frame = checkImageViewFrame;
-    
-    CGRect textLabelFrame = self.bounds;
-    textLabelFrame.origin.x = checkImageViewFrame.size.width;
-    self.textLabel.frame = textLabelFrame;
+    for (UIView *view in views.allValues) {
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        [self.contentView addConstraints:verticalConstraints];
+    }
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-}
+#pragma mark - setter methods
 
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated
 {
@@ -73,6 +77,11 @@
 {
     _isAdded = isAdded;
     _checkImageView.image = [UIImage imageNamed:_isAdded ? @"check_list_icon-on" : @"check_list_icon-off"];
+}
+
+- (void)setName:(NSString *)name
+{
+    _addressNameLabel.text = name;
 }
 
 @end

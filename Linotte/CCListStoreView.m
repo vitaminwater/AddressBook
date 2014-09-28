@@ -12,13 +12,11 @@
 
 #define kCCListStoreTableViewCell @"kCCListStoreTableViewCell"
 
-@interface CCListStoreView()
-
-@property(nonatomic, strong)UICollectionView *listView;
-
-@end
 
 @implementation CCListStoreView
+{
+    UICollectionView *_listView;
+}
 
 - (id)init
 {

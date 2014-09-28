@@ -17,17 +17,15 @@
 #import "CCAddressSettingsView.h"
 #import "CCAddressListSettingsView.h"
 
-@interface CCOutputView()
-
-@property(nonatomic, strong)GMSMarker *marker;
-@property(nonatomic, strong)GMSMapView *mapView;
-@property(nonatomic, strong)CCAddressSettingsView *addressSettingsView;
-@property(nonatomic, strong)CCAddressListSettingsView *listSettingsView;
-@property(nonatomic, strong)UITextView *infoView;
-
-@end
 
 @implementation CCOutputView
+{
+    GMSMarker *_marker;
+    GMSMapView *_mapView;
+    CCAddressSettingsView *_addressSettingsView;
+    CCAddressListSettingsView *_listSettingsView;
+    UITextView *_infoView;
+}
 
 - (id)initWithDelegate:(id<CCOutputViewDelegate>)delegate
 {
