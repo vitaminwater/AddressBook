@@ -10,7 +10,7 @@
 
 #import "CCListListExpandedSettingsViewDelegate.h"
 
-@interface CCListListExpandedSettingsView : UIView
+@interface CCListListExpandedSettingsView : UIView<UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, weak)id<CCListListExpandedSettingsViewDelegate> delegate;
 

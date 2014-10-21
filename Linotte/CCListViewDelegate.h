@@ -10,11 +10,6 @@
 
 @protocol CCListViewDelegate <NSObject>
 
-- (void)showOptionViewProgress:(CGFloat)pixels;
-- (void)showOptionView;
-- (void)hideOptionViewProgress:(CGFloat)pixels;
-- (void)hideOptionView;
-
 - (UIView *)getEmptyView;
 
 - (void)didSelectListItemAtIndex:(NSUInteger)index;

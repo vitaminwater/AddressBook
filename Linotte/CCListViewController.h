@@ -26,6 +26,6 @@
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;
 
-- (id)initWithProvider:(CCListViewContentProvider *)provider;
+- (instancetype)initWithProvider:(CCListViewContentProvider *)provider;
 
 @end

@@ -12,7 +12,7 @@
 
 @implementation CCListViewTableViewCellDetailLabel
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -32,7 +32,7 @@
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_imageView]-(==5)-[_label]" options:0 metrics:nil views:views];
         [self addConstraints:horizontalConstraints];
         
-        NSArray *imageVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView(==35)]|" options:0 metrics:nil views:views];
+        NSArray *imageVerticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView(==40)]|" options:0 metrics:nil views:views];
         [self addConstraints:imageVerticalConstraints];
         
         NSLayoutConstraint *labelVerticalConstraint = [NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_imageView attribute:NSLayoutAttributeCenterY multiplier:1 constant:3];

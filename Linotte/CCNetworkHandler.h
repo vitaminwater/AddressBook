@@ -10,15 +10,11 @@
 
 #import "CCModelChangeMonitorDelegate.h"
 
-@class CCAddress;
-
 @interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
 
 @property(nonatomic, assign)BOOL isLoggedIn;
 
 - (BOOL)connectionAvailable;
-
-- (void)sendAddress:(CCAddress *)address;
 
 - (void)resetAllAdresses;
 

@@ -24,7 +24,7 @@
     UITableView *_list;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -65,13 +65,13 @@
     [closeButton setBackgroundColor:[UIColor colorWithHexString:@"#ef9e54"] forState:UIControlStateHighlighted];
     [closeButton setTitle:NSLocalizedString(@"LIST_OUTPUT_ADDRESS_LIST_CLOSE", @"") forState:UIControlStateNormal];
     closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
-    closeButton.layer.cornerRadius = 15;
+    closeButton.layer.cornerRadius = 20;
     closeButton.clipsToBounds = YES;
     [closeButton addTarget:self action:@selector(closePressed:) forControlEvents:UIControlEventTouchUpInside];
     [_topView addSubview:closeButton];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(statusBar, helpLabel, closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[statusBar(==22)]-(==20)-[helpLabel]-[closeButton(==30)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[statusBar(==22)]-(==20)-[helpLabel]-[closeButton(==40)]|" options:0 metrics:nil views:views];
     [_topView addConstraints:verticalConstraints];
     
     // status bar
@@ -105,8 +105,13 @@
     _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
     _textField.textColor = [UIColor darkGrayColor];
     _textField.backgroundColor = [UIColor whiteColor];
-    _textField.placeholder = NSLocalizedString(@"LIST_NAME", @"");
+    _textField.placeholder = NSLocalizedString(@"LIST_OUTPUT_ADDRESS_LIST_SEARCH", @"");
     _textField.delegate = self;
+    
+    UIView *leftView = [UIView new];
+    leftView.frame = CGRectMake(0, 0, 20, 0);
+    _textField.leftView = leftView;
+    _textField.leftViewMode = UITextFieldViewModeAlways;
     
     UIButton *cancelButton = [UIButton new];
     [cancelButton setImage:[UIImage imageNamed:@"cancel_button"] forState:UIControlStateNormal];
@@ -125,6 +130,7 @@
     _list = [UITableView new];
     _list.translatesAutoresizingMaskIntoConstraints = NO;
     [_list registerClass:[CCListOutputAddressListTableViewCell class] forCellReuseIdentifier:kCCListOutputAddressListTableViewCell];
+    _list.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
     _list.delegate = self;
     _list.dataSource = self;
     _list.rowHeight = 70;
@@ -143,6 +149,11 @@
     }
 }
 
+- (void)reloadList
+{
+    [_list reloadData];
+}
+
 #pragma mark - UIButton target methods
 
 - (void)closePressed:(id)sender
@@ -155,7 +166,7 @@
     _textField.text = @"";
 }
 
-#pragma mark - UITextFieldDelegate/DataSource methods
+#pragma mark - UITableViewDelegate/DataSource methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -176,6 +187,7 @@
     cell.delegate = self;
     [cell setName:[_delegate nameForAddressAtIndex:indexPath.row]];
     [cell setAddress:[_delegate addressForAddressAtIndex:indexPath.row]];
+    cell.isAdded = [_delegate addressIsAddedAtIndex:indexPath.row];
     return cell;
 }
 
@@ -187,6 +199,21 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
+}
+
+#pragma mark - UITextField delegate methods
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newValue = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    [_delegate filterAddresses:newValue];
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return NO;
 }
 
 #pragma mark - CCListOutputAddressListTableViewCellDelegate methods

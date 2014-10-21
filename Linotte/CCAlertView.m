@@ -22,7 +22,7 @@
     UIView *_buttonView;
 }
 
-- (id)initWithText:(NSString *)text target:(id)target okAction:(SEL)okAction cancelAction:(SEL)cancelAction
+- (instancetype)initWithText:(NSString *)text target:(id)target okAction:(SEL)okAction cancelAction:(SEL)cancelAction
 {
     self = [super init];
     if (self) {

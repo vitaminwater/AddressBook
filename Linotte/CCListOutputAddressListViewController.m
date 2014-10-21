@@ -21,10 +21,10 @@
 {
     CCList *_list;
     
-    NSMutableArray *_addresses;
+    NSArray *_addresses;
 }
 
-- (id)initWithList:(CCList *)list
+- (instancetype)initWithList:(CCList *)list
 {
     self = [super init];
     if (self) {
@@ -39,7 +39,7 @@
     view.delegate = self;
     self.view = view;
     
-    [self loadAddresses];
+    [self loadAddresses:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -49,21 +49,32 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
-- (void)loadAddresses
+- (void)loadAddresses:(NSString *)filterString
 {
     _addresses = [@[] mutableCopy];
     
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
+    if ([filterString length]) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@ OR address CONTAINS[cd] %@", filterString, filterString];
+        [fetchRequest setPredicate:predicate];
+    }
+    
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
+    [fetchRequest setFetchBatchSize:50];
     
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    [_addresses addObjectsFromArray:addresses];
+    _addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 }
 
 #pragma mark CCListOutputAddressListViewDelegate methods
+
+- (void)filterAddresses:(NSString *)filterString
+{
+    [self loadAddresses:filterString];
+    [((CCListOutputAddressListView *)self.view) reloadList];
+}
 
 - (void)closePressed
 {
@@ -77,8 +88,8 @@
     
     [[CCModelChangeMonitor sharedInstance] address:address willMoveToList:_list];
     [_list addAddressesObject:address];
-    [[CCModelChangeMonitor sharedInstance] address:address didMoveToList:_list];
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] address:address didMoveToList:_list];
 }
 
 - (void)addressUnaddedAtIndex:(NSUInteger)index
@@ -88,8 +99,8 @@
     
     [[CCModelChangeMonitor sharedInstance] address:address willMoveFromList:_list];
     [_list removeAddressesObject:address];
-    [[CCModelChangeMonitor sharedInstance] address:address didMoveFromList:_list];
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] address:address didMoveFromList:_list];
 }
 
 - (BOOL)addressIsAddedAtIndex:(NSUInteger)index

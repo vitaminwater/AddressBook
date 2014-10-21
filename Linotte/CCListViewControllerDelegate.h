@@ -13,11 +13,6 @@
 
 @protocol CCListViewControllerDelegate <NSObject>
 
-- (void)showOptionViewProgress:(CGFloat)pixels;
-- (void)showOptionView;
-- (void)hideOptionViewProgress:(CGFloat)pixels;
-- (void)hideOptionView;
-
 - (UIView *)getEmptyView;
 
 - (void)addressSelected:(CCAddress *)address;

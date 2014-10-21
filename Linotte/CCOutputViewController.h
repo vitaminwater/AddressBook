@@ -24,7 +24,7 @@
 
 @property(nonatomic, assign)id<CCOutputViewControllerDelegate> delegate;
 
-- (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew;
-- (id)initWithAddress:(CCAddress *)address;
+- (instancetype)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew;
+- (instancetype)initWithAddress:(CCAddress *)address;
 
 @end

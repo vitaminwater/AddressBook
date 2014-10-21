@@ -8,6 +8,11 @@
 
 #import "CCListOutputView.h"
 
+#import "CCAnimationDelegator.h"
+
+#import "CCListView.h"
+
+#define kCCListOutputViewHeaderConstraintTimelineTween @"kCCListOutputViewHeaderConstraintTimelineTween"
 #define kCCListHeaderViewHeight @150
 
 
@@ -21,10 +26,12 @@
     UIButton *_listNotificationButton;
     
     UIView *_addView;
-    UIView *_listView;
+    CCListView *_listView;
+    
+    NSMutableArray *_constraints;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -77,6 +84,7 @@
 {
     _listNotificationView = [UIView new];
     _listNotificationView.translatesAutoresizingMaskIntoConstraints = NO;
+    _listNotificationView.backgroundColor = [UIColor whiteColor];
     [self addSubview:_listNotificationView];
     
     UILabel *listNotificationLabel = [UILabel new];
@@ -118,7 +126,7 @@
     [self addSubview:_addView];
 }
 
-- (void)setupListView:(UIView *)listView
+- (void)setupListView:(CCListView *)listView
 {
     _listView = listView;
     
@@ -128,34 +136,63 @@
 
 - (void)setupLayout
 {
-    [self removeConstraints:self.constraints];
-
+    if (_constraints)
+        [self removeConstraints:_constraints];
+    _constraints = [@[] mutableCopy];
+    
     // list header
     {
         NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listHeaderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        [self addConstraint:topConstraint];
+        [_constraints addObject:topConstraint];
     }
     
     // list notification view
     {
         NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listNotificationView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listHeaderView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [self addConstraint:topConstraint];
+        [_constraints addObject:topConstraint];
+        
+        __weak typeof(_listHeaderView) weakListHeaderView = _listHeaderView;
+        __weak typeof(self) weakSelf = self;
+        [_listView.animatorDelegator setTimeLineAnimationItemForKey:kCCListOutputViewHeaderConstraintTimelineTween animationBlock:^BOOL(CGFloat value) {
+            if (value > 0) {
+                if (topConstraint.constant >= 0)
+                    return NO;
+                topConstraint.constant = MIN(0, topConstraint.constant + value);
+                [weakSelf layoutIfNeeded];
+                return YES;
+            } else {
+                if (topConstraint.constant <= -weakListHeaderView.bounds.size.height)
+                    return NO;
+                topConstraint.constant = MAX(-weakListHeaderView.bounds.size.height, topConstraint.constant + value);
+                [weakSelf layoutIfNeeded];
+                return YES;
+            }
+            return NO;
+        } fingerLiftBlock:^(){
+            if (topConstraint.constant <= -weakListHeaderView.bounds.size.height / 2)
+                topConstraint.constant = -weakListHeaderView.bounds.size.height;
+            else
+                topConstraint.constant = 0;
+            [UIView animateWithDuration:0.1 animations:^{
+                [weakSelf layoutIfNeeded];
+            }];
+        }];
     }
     
     // add view
     {
         if (_addViewExpanded) {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-            [self addConstraint:topConstraint];
+            [_constraints addObject:topConstraint];
             
             NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
-            [self addConstraint:bottomConstraint];
+            [_constraints addObject:bottomConstraint];
         } else {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [self addConstraint:topConstraint];
+            [_constraints addObject:topConstraint];
             
             NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-            [self addConstraint:heightConstraint];
+            [_constraints addObject:heightConstraint];
         }
     }
     
@@ -163,14 +200,14 @@
     {
         if (_addViewExpanded) {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-            [self addConstraint:topConstraint];
+            [_constraints addObject:topConstraint];
         } else {
             NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [self addConstraint:topConstraint];
+            [_constraints addObject:topConstraint];
         }
         
         NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [self addConstraint:bottomConstraint];
+        [_constraints addObject:bottomConstraint];
     }
     
     // horizontal constraints
@@ -179,9 +216,11 @@
         
         for (UIView *view in views.allValues) {
             NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-            [self addConstraints:horizontalConstraints];
+            [_constraints addObjectsFromArray:horizontalConstraints];
         }
     }
+    
+    [self addConstraints:_constraints];
 }
 
 - (void)setListIconImage:(UIImage *)image
@@ -197,6 +236,24 @@
 - (void)setNotificationEnabled:(BOOL)notificationEnabled
 {
     _listNotificationButton.selected = notificationEnabled;
+}
+
+#pragma mark - setter methods
+
+- (void)setAddViewExpanded:(BOOL)addViewExpanded
+{
+    if (_addViewExpanded == addViewExpanded)
+        return;
+    
+    [self willChangeValueForKey:@"addViewExpanded"];
+    _addViewExpanded = addViewExpanded;
+    [self setupLayout];
+    
+    [UIView animateWithDuration:0.4 animations:^{
+        [self layoutIfNeeded];
+    }];
+    
+    [self didChangeValueForKey:@"addViewExpanded"];
 }
 
 #pragma mark - UIButton target methods

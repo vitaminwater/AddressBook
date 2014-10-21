@@ -14,7 +14,7 @@
     UIView *_topColorView;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {

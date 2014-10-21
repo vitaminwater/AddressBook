@@ -19,7 +19,7 @@
 
 @implementation CCSplashViewItem
 
-- (id)initWithImage:(UIImage *)image text:(NSString *)text
+- (instancetype)initWithImage:(UIImage *)image text:(NSString *)text
 {
     self = [super init];
     if (self) {

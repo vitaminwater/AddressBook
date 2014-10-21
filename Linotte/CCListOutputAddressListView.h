@@ -15,4 +15,6 @@
 
 @property(nonatomic, weak)id<CCListOutputAddressListViewDelegate> delegate;
 
+- (void)reloadList;
+
 @end

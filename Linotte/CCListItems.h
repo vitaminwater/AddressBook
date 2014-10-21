@@ -36,6 +36,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 
 - (double)distance;
 - (double)angleForHeading:(CLHeading *)heading;
+- (void)refreshData;
 
 @end
 

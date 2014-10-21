@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCListOutputSettingsViewDelegate <NSObject>
+#import "CCListOutputListEmptyViewDelegate.h"
+
+@protocol CCListOutputSettingsViewDelegate <CCListOutputListEmptyViewDelegate>
 
 @end

@@ -14,6 +14,6 @@
 
 @interface CCListOutputAddressListViewController : UIViewController<CCListOutputAddressListViewDelegate>
 
-- (id)initWithList:(CCList *)list;
+- (instancetype)initWithList:(CCList *)list;
 
 @end

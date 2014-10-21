@@ -7,19 +7,23 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *expanded;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
+	__unsafe_unretained NSString *last_update;
+	__unsafe_unretained NSString *last_update_latitude;
+	__unsafe_unretained NSString *last_update_longitude;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
-	__unsafe_unretained NSString *sent;
 } CCListAttributes;
 
 extern const struct CCListRelationships {
 	__unsafe_unretained NSString *addresses;
+	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *metas;
 } CCListRelationships;
 
-@class CCAddress;
+@class CCListAddressLink;
+@class CCNetworkEvent;
 @class CCListMeta;
 
 @interface CCListID : NSManagedObjectID {}
@@ -47,6 +51,26 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSDate* last_update;
+
+//- (BOOL)validateLast_update:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* last_update_latitude;
+
+@property (atomic) double last_update_latitudeValue;
+- (double)last_update_latitudeValue;
+- (void)setLast_update_latitudeValue:(double)value_;
+
+//- (BOOL)validateLast_update_latitude:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* last_update_longitude;
+
+@property (atomic) double last_update_longitudeValue;
+- (double)last_update_longitudeValue;
+- (void)setLast_update_longitudeValue:(double)value_;
+
+//- (BOOL)validateLast_update_longitude:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSString* name;
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -67,17 +91,13 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSNumber* sent;
-
-@property (atomic) BOOL sentValue;
-- (BOOL)sentValue;
-- (void)setSentValue:(BOOL)value_;
-
-//- (BOOL)validateSent:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSSet *addresses;
 
 - (NSMutableSet*)addressesSet;
+
+@property (nonatomic, strong) NSSet *events;
+
+- (NSMutableSet*)eventsSet;
 
 @property (nonatomic, strong) NSSet *metas;
 
@@ -88,8 +108,16 @@ extern const struct CCListRelationships {
 @interface _CCList (AddressesCoreDataGeneratedAccessors)
 - (void)addAddresses:(NSSet*)value_;
 - (void)removeAddresses:(NSSet*)value_;
-- (void)addAddressesObject:(CCAddress*)value_;
-- (void)removeAddressesObject:(CCAddress*)value_;
+- (void)addAddressesObject:(CCListAddressLink*)value_;
+- (void)removeAddressesObject:(CCListAddressLink*)value_;
+
+@end
+
+@interface _CCList (EventsCoreDataGeneratedAccessors)
+- (void)addEvents:(NSSet*)value_;
+- (void)removeEvents:(NSSet*)value_;
+- (void)addEventsObject:(CCNetworkEvent*)value_;
+- (void)removeEventsObject:(CCNetworkEvent*)value_;
 
 @end
 
@@ -115,6 +143,21 @@ extern const struct CCListRelationships {
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
+- (NSDate*)primitiveLast_update;
+- (void)setPrimitiveLast_update:(NSDate*)value;
+
+- (NSNumber*)primitiveLast_update_latitude;
+- (void)setPrimitiveLast_update_latitude:(NSNumber*)value;
+
+- (double)primitiveLast_update_latitudeValue;
+- (void)setPrimitiveLast_update_latitudeValue:(double)value_;
+
+- (NSNumber*)primitiveLast_update_longitude;
+- (void)setPrimitiveLast_update_longitude:(NSNumber*)value;
+
+- (double)primitiveLast_update_longitudeValue;
+- (void)setPrimitiveLast_update_longitudeValue:(double)value_;
+
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
@@ -130,14 +173,11 @@ extern const struct CCListRelationships {
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
 
-- (NSNumber*)primitiveSent;
-- (void)setPrimitiveSent:(NSNumber*)value;
-
-- (BOOL)primitiveSentValue;
-- (void)setPrimitiveSentValue:(BOOL)value_;
-
 - (NSMutableSet*)primitiveAddresses;
 - (void)setPrimitiveAddresses:(NSMutableSet*)value;
+
+- (NSMutableSet*)primitiveEvents;
+- (void)setPrimitiveEvents:(NSMutableSet*)value;
 
 - (NSMutableSet*)primitiveMetas;
 - (void)setPrimitiveMetas:(NSMutableSet*)value;

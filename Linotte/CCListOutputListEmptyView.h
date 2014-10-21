@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCListOutputEmptyViewDelegate.h"
+#import "CCListOutputListEmptyViewDelegate.h"
 
 @interface CCListOutputListEmptyView : UIView
 
-@property(nonatomic, weak)id<CCListOutputEmptyViewDelegate> delegate;
+@property(nonatomic, weak)id<CCListOutputListEmptyViewDelegate> delegate;
+
+- (void)setTextColor:(UIColor *)color;
 
 @end

@@ -13,7 +13,7 @@
 
 #import "CCNotificationGenerator.h"
 
-#import "CCLocalAPI.h"
+#import "CCLinotteAPI.h"
 
 #import "CCNetworkHandler.h"
 
@@ -116,7 +116,7 @@
         NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client"];
         NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
     #endif
-        [[CCLocalAPI sharedInstance] setClientId:clientId clientSecret:secret];
+        [[CCLinotteAPI sharedInstance] setClientId:clientId clientSecret:secret];
     }
     
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];

@@ -20,7 +20,7 @@
 
 @synthesize provider;
 
-- (id)initWithList:(CCList *)list
+- (instancetype)initWithList:(CCList *)list
 {
     self = [super init];
     if (self) {
@@ -40,30 +40,34 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)addressRemoved:(CCAddress *)address
+- (void)addressDidAdd:(CCAddress *)address
+{
+    if ([address.lists containsObject:_list])
+        [self.provider addAddress:address];
+}
+
+- (void)addressWillRemove:(CCAddress *)address
 {
     if ([address.lists containsObject:_list])
         [self.provider removeAddress:address];
 }
 
-- (void)addressUpdated:(CCAddress *)address
+- (void)addressDidUpdate:(CCAddress *)address
 {
     if ([address.lists containsObject:_list])
         [self.provider refreshListItemContentForObject:address];
 }
 
-- (BOOL)address:(CCAddress *)address didMoveToList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
     if (_list == list)
         [self.provider addAddress:address];
-    return NO;
 }
 
-- (BOOL)address:(CCAddress *)address didMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
 {
     if (_list == list)
         [self.provider removeAddress:address];
-    return NO;
 }
 
 @end

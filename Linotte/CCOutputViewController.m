@@ -41,7 +41,7 @@
     CLLocationDistance _distance;
 }
 
-- (id)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
+- (instancetype)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
 {
     self = [self initWithAddress:address];
     if (self) {
@@ -50,7 +50,7 @@
     return self;
 }
 
-- (id)initWithAddress:(CCAddress *)address
+- (instancetype)initWithAddress:(CCAddress *)address
 {
     self = [super init];
     if (self) {

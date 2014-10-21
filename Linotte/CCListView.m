@@ -10,6 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCAnimationDelegator.h"
+
 #import "CCActionResultHUD.h"
 
 #import "CCListViewContentProvider.h"
@@ -24,19 +26,14 @@
 {
     UIView *_emptyView;
     UITableView *_tableView;
-
-    UIPanGestureRecognizer *_panGestureRecognizer;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        
-        _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognizer:)];
-        _panGestureRecognizer.delegate = self;
-        [self addGestureRecognizer:_panGestureRecognizer];
+        _animatorDelegator = [CCAnimationDelegator new];
         
         [self setupTableView];
         [self setupLayout];
@@ -57,7 +54,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
-    _tableView.rowHeight = 100;
+    _tableView.rowHeight = 110;
         
     [_tableView registerClass:[CCListViewTableViewCell class] forCellReuseIdentifier:kCCListViewTableViewCellIdentifier];
     
@@ -87,11 +84,12 @@
     [self addSubview:_emptyView];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_emptyView);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_emptyView]|" options:0 metrics:nil views:views];
-    [self addConstraints:horizontalConstraints];
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_emptyView]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_emptyView]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
+    
+    NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_emptyView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    [self addConstraint:centerYConstraint];
     
     _emptyView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
@@ -195,17 +193,6 @@
     [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:detailText delay:1];
 }
 
-#pragma mark - UIGestureRecognizer target methods
-
-- (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer
-{
-    if (panGestureRecognizer.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [panGestureRecognizer translationInView:self];
-        if (fabs(translation.x) < fabs(translation.y) && translation.y < 0)
-            [_delegate hideOptionView];
-    }
-}
-
 #pragma mark - CCListViewTableViewCellDelegate methods
 
 - (void)deleteAddress:(CCListViewTableViewCell *)sender
@@ -232,7 +219,7 @@
 
 - (void)updateCell:(CCListViewTableViewCell *)cell atIndex:(NSUInteger)index
 {
-    cell.textLabel.text = [_delegate nameForListItemAtIndex:index];
+    cell.textLabel.text = [[_delegate nameForListItemAtIndex:index] uppercaseString];
     cell.detailTextLabel.text = [_delegate infoForListItemAtIndex:index];
     [cell setNotificationEnabled:[_delegate notificationEnabledForListItemAtIndex:index]];
     if ([_delegate orientationAvailableAtIndex:index]) {
@@ -265,15 +252,21 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    NSLog(@"%f", scrollView.contentOffset.y);
+    if (scrollView.decelerating == YES && scrollView.contentOffset.y < 0)
+        return;
+    if ([_animatorDelegator fingerMoved:-scrollView.contentOffset.y])
+        scrollView.contentOffset = CGPointZero;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if (scrollView.contentOffset.y < -30)
-        [_delegate showOptionView];
-    else if (scrollView.contentOffset.y > 0)
-        [_delegate hideOptionView];
+    if (decelerate == NO)
+        [_animatorDelegator fingerLifted];
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [_animatorDelegator fingerLifted];
 }
 
 #pragma mark - setter methods

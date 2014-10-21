@@ -76,6 +76,8 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 @implementation CCListItem
 
+- (void)refreshData {}
+
 - (double)distance
 {
     if (_farAway)
@@ -114,16 +116,18 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (self.distance < 0)
         return NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
     
+    if (self.farAway)
+        return NSLocalizedString(@"DISTANCE_TOO_FAR", @"");
+    
     double distance = self.distance;
-    NSString *distanceUnit = @"m";
     
     if (distance > 1000) {
         distance /= 1000;
-        distanceUnit = @"km";
+        return [NSString stringWithFormat:@"%.02f km", distance];
+    } else {
+        distance = (int)distance;
+        return [NSString stringWithFormat:@"%d m", (int)distance];
     }
-    
-    NSString *distanceText = [NSString stringWithFormat:@"%d %@", (int)distance, distanceUnit /*, [dateFormatter stringFromDate:lastNotif]*/];
-    return distanceText;
 }
 
 @end
@@ -183,8 +187,18 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 - (NSString *)info
 {
-    NSString *distanceInfo = [self distanceInfo];
-    return distanceInfo;
+    NSString *info = [self distanceInfo];
+    
+    if ([_address.lists count]) {
+        NSMutableString *listInfo = [NSLocalizedString(@"ADDRESS_LIST_IN", @"") mutableCopy];
+        for (CCList *list in _address.lists) {
+            [listInfo appendFormat:@"%@, ", list.name];
+        }
+        [listInfo replaceCharactersInRange:(NSRange){[listInfo length] - 2, 2} withString:@""];
+        info = [NSString stringWithFormat:@"%@\n%@", listInfo, info];
+    }
+    
+    return info;
 }
 
 - (BOOL)notify
@@ -270,6 +284,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     }
 }
 
+- (void)refreshData
+{
+    [self refreshListData];
+}
+
 #pragma mark - private methods
 
 - (void)refreshListData
@@ -326,6 +345,9 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     NSUInteger nAddresses = [_list.addresses count];
     NSString *localizedKey = nAddresses > 1 ? @"LIST_INFO_PLURAL" : @"LIST_INFO";
     NSString *listInfo = [NSString localizedStringByReplacingFromDictionnary:@{@"[nAddress]" : [@(nAddresses) stringValue]} localizedKey:localizedKey];
+    
+    if ([_list.addresses count] == 0)
+        return listInfo;
     return [NSString stringWithFormat:@"%@\n%@", listInfo, distanceInfo];
 }
 

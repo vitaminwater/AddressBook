@@ -26,6 +26,7 @@
 #define kCCLocalAPIUser @"/api/user/"
 #define kCCLocalAPIAddress @"/api/address/"
 #define kCCLocalAPIList @"/api/list/"
+#define kCCLocalAPILink @"/api/link/"
 
 @class RKObjectManager;
 

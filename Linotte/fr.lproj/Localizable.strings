@@ -6,7 +6,7 @@
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
 
-"PLACE_NAME" = "Ajouter un lieu";
+"PLACE_NAME" = "AJOUTER UN LIEU";
 "WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
 
 "NOTIFICATION_MULTI" = "Vous vous trouvez à proximité de [N] adresses: ";
@@ -31,6 +31,8 @@
 "NO_NOTE_SPLASH" = "ScreenLinotteBis";
 
 "DISTANCE_UNAVAILABLE" = "Position non disponible...";
+"DISTANCE_TOO_FAR" = "Très loin";
+"ADDRESS_LIST_IN" = "dans:";
 "SKIP_BUTTON_TEXT" = "Passer >";
 "LIST_INFO" = "[nAddress] adresses";
 "LIST_INFO_PLURAL" = "[nAddress] adresses";
@@ -64,8 +66,8 @@
 "OK" = "Ok";
 "MOVED_TO" = "Adresse déplacée vers [listName]";
 
-"EXPANDED_DISPLAYED_LIST" = "Mes carnets";
-"ADD_LIST" = "Découvrir";
+"EXPANDED_DISPLAYED_LIST" = "MES CARNETS";
+"ADD_LIST" = "DÉCOUVRIR";
 
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Voiture";
@@ -75,15 +77,15 @@
 "REQUEST_GEOLOC_ENABLED_TITLE" = "Géolocalisation";
 "REQUEST_GEOLOC_ENABLED_MESSAGE" = "La localisation doit être activée pour être notifié !";
 
-"LIST_CONFIG_CONTROLLER_TITLE" = "Mes carnets";
+"LIST_CONFIG_CONTROLLER_TITLE" = "MES CARNETS";
 "LIST_CONFIG_HELP1" = "Utilisez le champ ci-dessous pour créer un carnet.";
 "LIST_CONFIG_HELP2" = "Les carnets marqués d'une coche verte verront leur adresses affichées sur votre page d'accueil.";
 
-"LIST_STORE_CONTROLLER_TITLE" = "Découverte";
+"LIST_STORE_CONTROLLER_TITLE" = "DÉCOUVRIR";
+"MY_BOOKS" = "MES CARNETS";
 
-"MY_BOOKS" = "Mes carnets";
-
-"LIST_NAME" = "Nouveau carnet";
+"LIST_NAME" = "NOUVEAU CARNET";
+"SEARCH_LIST_NAME" = "RECHERCHER UN CARNET";
 
 "LIST_NOTIFICATION_LABEL" = "Activer les notifications du carnet";
 
@@ -92,4 +94,4 @@
 
 "LIST_OUTPUT_ADDRESS_LIST_HELP" = "Sélectionnez les adresses de votre Linotte que vous souhaitez ajouter au nouveau carnet.";
 "LIST_OUTPUT_ADDRESS_LIST_CLOSE" = "Terminer";
-"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "Rechercher un lieu";
+"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "RECHERCHER UN LIEU";

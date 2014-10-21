@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 
 #import "CCListOutputSettingsViewDelegate.h"
+#import "CCListOutputListEmptyViewDelegate.h"
 
-@interface CCListOutputSettingsView : UIView
+@interface CCListOutputSettingsView : UIView<CCListOutputListEmptyViewDelegate>
 
 @property(nonatomic, weak)id<CCListOutputSettingsViewDelegate> delegate;
 

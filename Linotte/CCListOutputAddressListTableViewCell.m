@@ -16,7 +16,7 @@
     UILabel *_addressAddressLabel;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -55,7 +55,7 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_checkImageView, _addressNameLabel, _addressAddressLabel);
     {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_checkImageView(==25)]-[_addressNameLabel]|" options:0 metrics:nil views:views];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(==15)-[_checkImageView(==25)]-[_addressNameLabel]-|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:horizontalConstraints];
         
         NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_checkImageView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_addressNameLabel attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];

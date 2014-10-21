@@ -9,7 +9,8 @@
 #import <Foundation/Foundation.h>
 
 #import "CCSettingsViewControllerDelegate.h"
+#import "CCListOutputListEmptyViewDelegate.h"
 
-@protocol CCListOutputSettingsViewControllerDelegate <CCSettingsViewControllerDelegate>
+@protocol CCListOutputSettingsViewControllerDelegate <CCSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate>
 
 @end

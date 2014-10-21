@@ -12,6 +12,7 @@ extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *latitude;
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *name;
+	__unsafe_unretained NSString *note;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
@@ -20,13 +21,13 @@ extern const struct CCAddressAttributes {
 
 extern const struct CCAddressRelationships {
 	__unsafe_unretained NSString *categories;
+	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *lists;
-	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
 @class CCCategory;
-@class CCList;
-@class CCAddressMeta;
+@class CCNetworkEvent;
+@class CCListAddressLink;
 
 @interface CCAddressID : NSManagedObjectID {}
 @end
@@ -77,6 +78,10 @@ extern const struct CCAddressRelationships {
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSString* note;
+
+//- (BOOL)validateNote:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSNumber* notify;
 
 @property (atomic) BOOL notifyValue;
@@ -105,13 +110,13 @@ extern const struct CCAddressRelationships {
 
 - (NSMutableSet*)categoriesSet;
 
+@property (nonatomic, strong) NSSet *events;
+
+- (NSMutableSet*)eventsSet;
+
 @property (nonatomic, strong) NSSet *lists;
 
 - (NSMutableSet*)listsSet;
-
-@property (nonatomic, strong) NSSet *metas;
-
-- (NSMutableSet*)metasSet;
 
 @end
 
@@ -123,19 +128,19 @@ extern const struct CCAddressRelationships {
 
 @end
 
-@interface _CCAddress (ListsCoreDataGeneratedAccessors)
-- (void)addLists:(NSSet*)value_;
-- (void)removeLists:(NSSet*)value_;
-- (void)addListsObject:(CCList*)value_;
-- (void)removeListsObject:(CCList*)value_;
+@interface _CCAddress (EventsCoreDataGeneratedAccessors)
+- (void)addEvents:(NSSet*)value_;
+- (void)removeEvents:(NSSet*)value_;
+- (void)addEventsObject:(CCNetworkEvent*)value_;
+- (void)removeEventsObject:(CCNetworkEvent*)value_;
 
 @end
 
-@interface _CCAddress (MetasCoreDataGeneratedAccessors)
-- (void)addMetas:(NSSet*)value_;
-- (void)removeMetas:(NSSet*)value_;
-- (void)addMetasObject:(CCAddressMeta*)value_;
-- (void)removeMetasObject:(CCAddressMeta*)value_;
+@interface _CCAddress (ListsCoreDataGeneratedAccessors)
+- (void)addLists:(NSSet*)value_;
+- (void)removeLists:(NSSet*)value_;
+- (void)addListsObject:(CCListAddressLink*)value_;
+- (void)removeListsObject:(CCListAddressLink*)value_;
 
 @end
 
@@ -171,6 +176,9 @@ extern const struct CCAddressRelationships {
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
+- (NSString*)primitiveNote;
+- (void)setPrimitiveNote:(NSString*)value;
+
 - (NSNumber*)primitiveNotify;
 - (void)setPrimitiveNotify:(NSNumber*)value;
 
@@ -192,10 +200,10 @@ extern const struct CCAddressRelationships {
 - (NSMutableSet*)primitiveCategories;
 - (void)setPrimitiveCategories:(NSMutableSet*)value;
 
+- (NSMutableSet*)primitiveEvents;
+- (void)setPrimitiveEvents:(NSMutableSet*)value;
+
 - (NSMutableSet*)primitiveLists;
 - (void)setPrimitiveLists:(NSMutableSet*)value;
-
-- (NSMutableSet*)primitiveMetas;
-- (void)setPrimitiveMetas:(NSMutableSet*)value;
 
 @end

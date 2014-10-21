@@ -18,6 +18,6 @@
 
 @property(nonatomic, assign)id<CCAddressSettingsViewControllerDelegate> delegate;
 
-- (id)initWithAddress:(CCAddress *)address;
+- (instancetype)initWithAddress:(CCAddress *)address;
 
 @end

@@ -43,7 +43,7 @@
     CLHeading *_currentHeading;
 }
 
-- (id)initWithProvider:(CCListViewContentProvider *)provider
+- (instancetype)initWithProvider:(CCListViewContentProvider *)provider
 {
     self = [super init];
     if (self) {
@@ -85,6 +85,8 @@
     
     CCListView *listView = (CCListView *)self.view;
     [listView unselect];
+    
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -105,7 +107,6 @@
     CLLocation *location = [locations lastObject];
     
     _provider.currentLocation = location;
-    [_provider resortListItems];
     [((CCListView *)self.view) reloadVisibleCells];
 }
 
@@ -132,9 +133,10 @@
                                                                          @"address": address.address ?: @"",
                                                                          @"identifier": address.identifier ?: @""}];
         
+        [[CCModelChangeMonitor sharedInstance] addressWillRemove:address];
         [managedObjectContext deleteObject:address];
-        [[CCModelChangeMonitor sharedInstance] addressRemoved:address];
         [managedObjectContext saveToPersistentStore:&error];
+        [[CCModelChangeMonitor sharedInstance] addressDidRemove:address];
         
         [((CCListView *)self.view) showConfirmationHUD:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"")];
     } else if (type == CCListItemTypeList) {
@@ -150,35 +152,7 @@
     [CCAlertView closeAlertView:sender];
 }
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0)
-        return;
-    
-
-}
-
 #pragma mark - CCListViewDelegate methods
-
-- (void)showOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)showOptionView
-{
-    [_delegate showOptionView];
-}
-
-- (void)hideOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)hideOptionView
-{
-    [_delegate hideOptionView];
-}
 
 - (UIView *)getEmptyView
 {
@@ -216,13 +190,13 @@
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
-        [[CCModelChangeMonitor sharedInstance] addressUpdated:address];
         [managedObjectContext saveToPersistentStore:NULL];
+        [[CCModelChangeMonitor sharedInstance] addressDidUpdate:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
-        [[CCModelChangeMonitor sharedInstance] listUpdated:list];
         [managedObjectContext saveToPersistentStore:NULL];
+        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list];
     }
 }
 

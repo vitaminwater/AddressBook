@@ -19,6 +19,6 @@
 
 @property(nonatomic, assign)id<CCFirstAddressDisplaySettingsViewControllerDelegate> delegate;
 
-- (id)initWithAddress:(CCAddress *)address;
+- (instancetype)initWithAddress:(CCAddress *)address;
 
 @end

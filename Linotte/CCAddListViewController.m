@@ -34,13 +34,11 @@
     
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    list.expanded = @YES;
     list.identifier = [[NSUUID UUID] UUIDString];
-    [[CCModelChangeMonitor sharedInstance] listAdded:list];
-    
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
     
-    [[Mixpanel sharedInstance] track:@"Address created" properties:@{@"name": list.name}];
+    [[Mixpanel sharedInstance] track:@"List created" properties:@{@"name": list.name}];
 }
 
 @end

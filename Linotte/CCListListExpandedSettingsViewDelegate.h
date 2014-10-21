@@ -10,4 +10,12 @@
 
 @protocol CCListListExpandedSettingsViewDelegate <NSObject>
 
+- (NSUInteger)numberOfLists;
+- (NSString *)listNameAtIndex:(NSUInteger)index;
+- (NSString *)listIconAtIndex:(NSUInteger)index;
+
+- (void)listSelectedAtIndex:(NSUInteger)index;
+- (void)listUnselectedAtIndex:(NSUInteger)index;
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index;
+
 @end

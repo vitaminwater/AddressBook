@@ -23,7 +23,7 @@
     CCAddress *_address;
 }
 
-- (id)initWithAddress:(CCAddress *)address
+- (instancetype)initWithAddress:(CCAddress *)address
 {
     self = [super init];
     if (self) {
@@ -50,8 +50,8 @@
 {
     _address.notify = @(enabled);
     
-    [[CCModelChangeMonitor sharedInstance] addressUpdated:_address];
     [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] addressDidUpdate:_address];
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": _address.notify}];
 }
 

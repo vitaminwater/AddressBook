@@ -20,10 +20,12 @@
     UIView *_contentView;
     UIPageControl *_pageControl;
     
+    NSLayoutConstraint *_pageControlHeight;
+    
     NSMutableArray *_buttons;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -65,8 +67,8 @@
 - (void)setupPageControl
 {
     _pageControl = [UIPageControl new];
+    _pageControl.hidesForSinglePage = YES;
     _pageControl.translatesAutoresizingMaskIntoConstraints = NO;
-    _pageControl.hidesForSinglePage = NO;
     _pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     _pageControl.currentPageIndicatorTintColor = [UIColor colorWithHexString:@"#5acfc4"];
     [_pageControl addTarget:self action:@selector(pageControl:) forControlEvents:UIControlEventValueChanged];
@@ -77,8 +79,11 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_scrollView, _pageControl);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView][_pageControl(==20)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView][_pageControl]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
+    
+    _pageControlHeight = [NSLayoutConstraint constraintWithItem:_pageControl attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
+    [self addConstraint:_pageControlHeight];
     
     for (UIView *view in views.allValues) {
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
@@ -104,6 +109,8 @@
     [_buttons addObject:button];
     
     _pageControl.numberOfPages = ceil([_buttons count] / 2);
+    
+    _pageControlHeight.constant = _pageControl.numberOfPages > 1 ? 20 : 0;
     
     [self setupConstraintsForButtons];
 }

@@ -6,11 +6,14 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCLocalAPI.h"
+#import "CCLinotteAPI.h"
 
 #import <SSKeychain/SSKeychain.h>
+#import <AFNetworking/AFNetworking.h>
 
 #import "CCRestKit.h"
+
+#import "CCIdentifierModel.h"
 
 #import "CCOAuthTokenResponse.h"
 #import "CCOAuthTokenRequest.h"
@@ -19,6 +22,7 @@
 #import "CCUserPostPutRequest.h"
 
 #import "CCAddress.h"
+#import "CCList.h"
 
 // SSKeychain accounts
 #if defined(DEBUG)
@@ -37,7 +41,7 @@
 #endif
 
 
-@implementation CCLocalAPI
+@implementation CCLinotteAPI
 {
     NSString *_clientId;
     NSString *_clientSecret;
@@ -47,7 +51,7 @@
     NSString *_expireTimeStamp;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self != nil) {
@@ -225,7 +229,7 @@
     _identifier = identifier;
 }
 
-#pragma mark - Address methods
+#pragma mark - Network data methods
 
 - (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
@@ -240,44 +244,73 @@
     }
 }
 
-- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
-{
-    
-}
-
-#pragma mark - List methods
-
 - (void)sendList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
+    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
+    [objectManager postObject:list path:kCCLocalAPIList parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+        completionBlock(YES);
+    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+        completionBlock(NO);
+    }];
+}
+
+- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
+{
+    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
+    
+    CCIdentifierModel *identifierModel = [[CCIdentifierModel alloc] initWithIdentifier:identifier];
+    [objectManager deleteObject:identifierModel path:kCCLocalAPIList parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+        completionBlock(YES);
+    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+        completionBlock(NO);
+    }];
+}
+
+- (void)sendLinkRequestForAddress:(CCAddress *)address withList:(CCList *)list method:(NSString *)method completionBlock:(void(^)(BOOL success))completionBlock
+{
+    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
+    
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:path]];
+    [request setHTTPMethod:method];
+    
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        completionBlock(YES);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completionBlock(NO);
+    }];
+    
+    [objectManager.HTTPClient enqueueHTTPRequestOperation:operation];
 }
 
 - (void)addAddress:(CCAddress *)address toList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    
+    [self sendLinkRequestForAddress:address withList:list method:@"POST" completionBlock:completionBlock];
 }
 
 - (void)removeAddress:(CCAddress *)address fromList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    
+    [self sendLinkRequestForAddress:address withList:list method:@"DELETE" completionBlock:completionBlock];
 }
 
-#pragma mark - recovery methods
-// TODO: following methods provide a way to recover old version to a stable state. Remove when unneeded
-
-/*- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock {
-    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+- (void)updateAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+{
     RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    AFHTTPClient *client = objectManager.HTTPClient;
-    [client getPath:[NSString stringWithFormat:@"%@me/", kCCLocalAPIUser] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSString *identifier = responseObject[@"identifier"];
-        [self saveUserIdentifier:identifier];
-        completionBlock(YES, identifier);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        completionBlock(NO, nil);
+
+    [objectManager putObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+        completionBlock(YES);
+    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+        completionBlock(NO);
     }];
-}*/
+}
+
+- (void)updateList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+{
+    
+}
 
 #pragma mark - Singleton method
 

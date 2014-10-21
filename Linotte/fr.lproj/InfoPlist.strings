@@ -1,2 +1,3 @@
 /* Localized versions of Info.plist keys */
 
+"NSLocationAlwaysUsageDescription" = "On veut pas vous embêter, mais si vous dites non, Linotte sera inutilisable.\nEt ça, ça serait vraiment dommage.\nDites oui, c’est pour la bonne cause ! La vôtre, en fait :)";

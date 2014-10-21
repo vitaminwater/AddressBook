@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class CCAddress;
+@class CCList;
 @class RKPaginator;
 
 typedef enum : NSUInteger {
@@ -18,7 +19,7 @@ typedef enum : NSUInteger {
     kCCFailed, // unknown error
 } CCLoggedState;
 
-@interface CCLocalAPI : NSObject
+@interface CCLinotteAPI : NSObject
 
 @property(nonatomic, strong)NSString *identifier;
 @property(nonatomic, readonly)CCLoggedState loggedState;
@@ -31,9 +32,17 @@ typedef enum : NSUInteger {
 - (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock;
 
 - (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
-//- (void)fetchIdentifier:(void(^)(BOOL success, NSString *identifier))completionBlock;
 
 - (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)sendList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
+
+- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock;
+
+- (void)addAddress:(CCAddress *)address toList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
+
+- (void)updateAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)updateList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
 
 + (instancetype)sharedInstance;
 

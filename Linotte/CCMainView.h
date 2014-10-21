@@ -10,14 +10,15 @@
 
 #import "CCMainViewDelegate.h"
 
+@class CCListView;
+
 @interface CCMainView : UIView
 
 @property(nonatomic, assign)BOOL addViewExpanded;
-@property(nonatomic, assign)BOOL optionViewExpanded;
 @property(nonatomic, assign)id<CCMainViewDelegate> delegate;
 
 - (void)setupAddView:(UIView *)addView;
-- (void)setupListView:(UIView *)listView;
+- (void)setupListView:(CCListView *)listView;
 
 - (void)setupLayout;
 

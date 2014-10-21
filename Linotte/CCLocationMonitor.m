@@ -20,7 +20,7 @@
     CLHeading *_currentHeading;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -28,12 +28,19 @@
         
         _locationManager = [CLLocationManager new];
         _locationManager.distanceFilter = kCLDistanceFilterNone;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
         _locationManager.delegate = self;
         
-        if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
-            [_locationManager startUpdatingLocation];
-            [_locationManager startUpdatingHeading];
+        CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
+        if (authorizationStatus == kCLAuthorizationStatusNotDetermined) {
+            [_locationManager requestAlwaysAuthorization];
+        } else if (authorizationStatus == kCLAuthorizationStatusAuthorizedAlways) {
+            if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+                [_locationManager startUpdatingLocation];
+                [_locationManager startUpdatingHeading];
+            }
+        } else {
+            // Print message. cf. didChangeAuthorizationStatus
         }
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -49,6 +56,9 @@
 
 - (void)addDelegate:(id<CLLocationManagerDelegate>)delegate
 {
+    if ([_delegates containsObject:delegate])
+        return;
+    
     [_delegates addObject:delegate];
     
     if (_currentLocation && [delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)])
@@ -68,14 +78,26 @@
 - (void)applicationActive:(NSNotification *)note
 {
     [_locationManager startUpdatingLocation];
+    [_locationManager startUpdatingHeading];
 }
 
 - (void)applicationBackground:(NSNotification *)note
 {
     [_locationManager stopUpdatingLocation];
+    [_locationManager stopUpdatingHeading];
 }
 
 #pragma mark - CLLocationManagerDelegate methods
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusAuthorizedAlways) {
+        [_locationManager startUpdatingLocation];
+        [_locationManager startUpdatingHeading];
+    } else if (status == kCLAuthorizationStatusDenied) {
+        // TODO print message
+    }
+}
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {

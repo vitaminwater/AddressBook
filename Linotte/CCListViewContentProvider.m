@@ -18,12 +18,15 @@
 #import "CCAddress.h"
 
 
+typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop);
+
+
 @implementation CCListViewContentProvider
 {
     NSMutableArray *_listItems;
 }
 
-- (id)initWithModel:(id<CCListViewModelProtocol>)model
+- (instancetype)initWithModel:(id<CCListViewModelProtocol>)model
 {
     self = [super init];
     if (self) {
@@ -118,6 +121,15 @@
     return index;
 }
 
+// TODO check of order change
+- (void)refreshListItemContentsForObjects:(NSArray *)objects
+{
+    NSIndexSet *indexes = [self indexesOfListItemContents:objects handler:^void(CCListItem *listItem) {
+        [listItem refreshData];
+    }];
+    [_delegate refreshCellsAtIndexes:indexes];
+}
+
 - (void)refreshListItemContentForObject:(id)object
 {
     NSUInteger index = [self indexOfListItemContent:object];
@@ -158,22 +170,43 @@
         return ((CCListItemList *)listItem).list;
 }
 
+- (NSIndexSet *)indexesOfListItemContents:(NSArray *)contents handler:(SearchHandlerBlockType)handler
+{
+    NSMutableArray *mutableContents = [contents mutableCopy];
+    
+    return [_listItems indexesOfObjectsPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
+        for (id content in contents) {
+            SearchBlockType searchBlock = [self listItemContentSearchBlock:content];
+            if (searchBlock(listItem, idx, stop)) {
+                handler(listItem);
+                [mutableContents removeObject:content];
+                return YES;
+            }
+        }
+        return NO;
+    }];
+}
+
 - (NSUInteger)indexOfListItemContent:(id)content
 {
-    CCListItemType contentType = [content isKindOfClass:[CCAddress class]] ? CCListItemTypeAddress : CCListItemTypeList;
-    typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop); // ...
-    SearchBlockType searchBlock = nil;
+    SearchBlockType searchBlock = [self listItemContentSearchBlock:content];
     
+    return [_listItems indexOfObjectPassingTest:searchBlock];
+}
+
+- (SearchBlockType)listItemContentSearchBlock:(id)content
+{
+    CCListItemType contentType = [content isKindOfClass:[CCAddress class]] ? CCListItemTypeAddress : CCListItemTypeList;
     if (contentType == CCListItemTypeAddress) {
-        searchBlock = ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
+        return ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
             if (listItem.type == CCListItemTypeAddress && ((CCListItemAddress *)listItem).address == content) {
                 *stop = YES;
                 return YES;
             }
             return NO;
         };
-    } else if (contentType == CCListItemTypeList) {
-        searchBlock = ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
+    } else {
+        return ^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
             if ([content isKindOfClass:[CCList class]] && listItem.type == CCListItemTypeList && ((CCListItemList *)listItem).list == content) {
                 *stop = YES;
                 return YES;
@@ -181,15 +214,10 @@
             return NO;
         };
     }
-    return [_listItems indexOfObjectPassingTest:searchBlock];
 }
 
 - (void)resortListItems
 {
-    for (CCListItem *listItem in _listItems) {
-        listItem.location = _currentLocation;
-    }
-    
     [_listItems sortUsingComparator:[self sortBlock]];
 }
 
@@ -264,6 +292,7 @@
     for (CCListItem *listItem in _listItems) {
         listItem.location = _currentLocation;
     }
+    [self resortListItems];
 }
 
 #pragma mark - sort methods

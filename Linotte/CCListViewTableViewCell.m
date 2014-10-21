@@ -27,9 +27,11 @@
     UIImageView *_compasView;
     
     NSLayoutConstraint *_rightEjectButtonConstraint;
+    
+    NSMutableArray *_constraints;
 }
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -99,55 +101,60 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton, _realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
     
-    [self.contentView removeConstraints:self.contentView.constraints];
+    if (_constraints)
+        [self.contentView removeConstraints:_constraints];
+    _constraints = [@[] mutableCopy];
+    
     // realTextLabel and reatDetailTextLabel
     {
         NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
-        [self.contentView addConstraint:topTextLabelConstraint];
+        [_constraints addObject:topTextLabelConstraint];
         
-        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
-        [self.contentView addConstraint:bottomDetailLabelConstraint];
+        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-20];
+        [_constraints addObject:bottomDetailLabelConstraint];
         
         for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {
-            NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:8];
-            [self.contentView addConstraint:leftConstraint];
+            NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:view == _realTextLabel ? 16 : 8];
+            [_constraints addObject:leftConstraint];
         }
     }
     
     // deleteButton
     {
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_deleteButton(==90)]" options:0 metrics:nil views:views];
-        [self.contentView addConstraints:horizontalConstraints];
+        [_constraints addObjectsFromArray:horizontalConstraints];
         
         _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        [self.contentView addConstraint:_rightEjectButtonConstraint];
+        [_constraints addObject:_rightEjectButtonConstraint];
         
         NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
-        [self.contentView addConstraints:verticalConstraints];
+        [_constraints addObjectsFromArray:verticalConstraints];
     }
     
     // compasView
     {
         if (_compasView.hidden == NO) {
             NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
-            [self.contentView addConstraint:horizontalConstraint];
+            [_constraints addObject:horizontalConstraint];
         } else {
             NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:-16];;
-            [self.contentView addConstraint:horizontalConstraint];
+            [_constraints addObject:horizontalConstraint];
         }
         
         NSLayoutConstraint *verticalConstraint = [NSLayoutConstraint constraintWithItem:_compasView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.35 constant:0];
-        [self.contentView addConstraint:verticalConstraint];
+        [_constraints addObject:verticalConstraint];
     }
     
     // bellButton
     {
         NSLayoutConstraint *horizontalConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeLeft multiplier:1 constant:-5];
-        [self.contentView addConstraint:horizontalConstraint];
+        [_constraints addObject:horizontalConstraint];
         
         NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_bellButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_compasView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-        [self.contentView addConstraint:centerYConstraint];
+        [_constraints addObject:centerYConstraint];
     }
+    
+    [self.contentView addConstraints:_constraints];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

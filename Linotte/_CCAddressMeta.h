@@ -14,7 +14,7 @@ extern const struct CCAddressMetaRelationships {
 	__unsafe_unretained NSString *address;
 } CCAddressMetaRelationships;
 
-@class CCAddress;
+@class CCListAddressLink;
 
 @interface CCAddressMetaID : NSManagedObjectID {}
 @end
@@ -41,7 +41,7 @@ extern const struct CCAddressMetaRelationships {
 
 //- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) CCAddress *address;
+@property (nonatomic, strong) CCListAddressLink *address;
 
 //- (BOOL)validateAddress:(id*)value_ error:(NSError**)error_;
 
@@ -61,7 +61,7 @@ extern const struct CCAddressMetaRelationships {
 - (NSString*)primitiveValue;
 - (void)setPrimitiveValue:(NSString*)value;
 
-- (CCAddress*)primitiveAddress;
-- (void)setPrimitiveAddress:(CCAddress*)value;
+- (CCListAddressLink*)primitiveAddress;
+- (void)setPrimitiveAddress:(CCListAddressLink*)value;
 
 @end

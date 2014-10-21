@@ -19,6 +19,13 @@
     self.contentView = view;
 }
 
-#pragma mark CCListOutputSettingsViewDelegate methods
+#pragma mark - CCListOutputSettingsViewDelegate methods
+
+#pragma mark CCListOutputListEmptyViewDelegate methods
+
+- (void)showAddressList
+{
+    [self.delegate showAddressList];
+}
 
 @end

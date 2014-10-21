@@ -53,7 +53,7 @@
     _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     _listViewController.delegate = self;
     [self addChildViewController:_listViewController];
-    [view setupListView:_listViewController.view];
+    [view setupListView:(CCListView *)_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
     
     [view setupLayout];
@@ -129,26 +129,6 @@
 }
 
 #pragma mark - CCListViewControllerDelegate methods
-
-- (void)showOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)showOptionView
-{
-    ((CCMainView *)self.view).optionViewExpanded = YES;
-}
-
-- (void)hideOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)hideOptionView
-{
-    ((CCMainView *)self.view).optionViewExpanded = NO;
-}
 
 - (UIView *)getEmptyView
 {

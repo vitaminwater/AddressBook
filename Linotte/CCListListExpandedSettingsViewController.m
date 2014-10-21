@@ -8,9 +8,27 @@
 
 #import "CCListListExpandedSettingsViewController.h"
 
+#import <RestKit/RestKit.h>
+
 #import "CCListListExpandedSettingsView.h"
 
+#import "CCModelChangeMonitor.h"
+
+#import "CCList.h"
+
 @implementation CCListListExpandedSettingsViewController
+{
+    NSArray *_lists;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self loadLists];
+    }
+    return self;
+}
 
 - (void)loadContentView
 {
@@ -19,6 +37,59 @@
     self.contentView = view;
 }
 
+- (void)loadLists
+{
+    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+    
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [fetchRequest setSortDescriptors:@[nameSortDescriptor]];
+    
+    _lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+}
+
 #pragma mark CCListListExpandedSettingsViewDelegate methods
+
+- (NSUInteger)numberOfLists
+{
+    return [_lists count];
+}
+
+- (NSString *)listNameAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    return list.name;
+}
+
+- (NSString *)listIconAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    return list.icon;
+}
+
+- (void)listSelectedAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    [[CCModelChangeMonitor sharedInstance] listWillExpand:list];
+    list.expanded = @(YES);
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] listDidExpand:list];
+}
+
+- (void)listUnselectedAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    [[CCModelChangeMonitor sharedInstance] listWillReduce:list];
+    list.expanded = @(NO);
+    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] listDidReduce:list];
+}
+
+- (BOOL)isListSelectedAtIndex:(NSUInteger)index
+{
+    CCList *list = _lists[index];
+    return list.expandedValue;
+}
 
 @end

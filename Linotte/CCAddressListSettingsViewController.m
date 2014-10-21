@@ -25,7 +25,7 @@
     CCAddress *_address;
 }
 
-- (id)initWithAddress:(CCAddress *)address
+- (instancetype)initWithAddress:(CCAddress *)address
 {
     self = [super init];
     if (self) {
@@ -53,16 +53,12 @@
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [fetchRequest setSortDescriptors:@[nameSortDescriptor]];
+    
     NSArray *result = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
     _lists = [result mutableCopy];
-    [self sortLists];
-}
-
-- (void)sortLists
-{
-    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    [_lists sortUsingDescriptors:@[nameSortDescriptor]];
 }
 
 #pragma mark - CCListSettingsViewDelegate
@@ -94,7 +90,8 @@
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    [[CCModelChangeMonitor sharedInstance] listAdded:list];
+    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
     
     NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
         return [obj1.name compare:obj2.name];
@@ -103,9 +100,8 @@
     
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
     [_address addListsObject:list];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
-    
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
     
     return insertIndex;
 }
@@ -117,12 +113,10 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] listWillRemove:list];
     [managedObjectContext deleteObject:list];
-    [[CCModelChangeMonitor sharedInstance] listRemoved:list];
-    
-    [_lists removeObject:list];
-    
     [managedObjectContext saveToPersistentStore:NULL];
-    
+    [[CCModelChangeMonitor sharedInstance] listDidRemove:list];
+
+    [_lists removeObject:list];
 }
 
 - (void)listSelectedAtIndex:(NSUInteger)index
@@ -130,9 +124,8 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
     [_address addListsObject:list];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
-    
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
@@ -140,9 +133,8 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveFromList:list];
     [_address removeListsObject:list];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list];
-    
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index

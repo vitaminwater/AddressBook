@@ -15,6 +15,9 @@
 #import "CCAddress.h"
 #import "CCList.h"
 
+#define kCCHomeListViewModelDeletedAddressListsKey @"kCCHomeListViewModelDeletedAddressListsKey"
+#define kCCHomeListViewModelAddressMovedFromListsKey @"kCCHomeListViewModelAddressMovedFromListsKey"
+
 @implementation CCHomeListViewModel
 
 @synthesize provider;
@@ -61,7 +64,7 @@
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(ANY lists.expanded = %@).@count = 1", list, @YES];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.expanded = %@).@count = 1", list, @YES];
     [fetchRequest setPredicate:predicate];
     
     NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
@@ -77,14 +80,14 @@
     NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(ANY lists.expanded = %@).@count = 0", list, @YES];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.expanded = %@).@count = 0", list, @YES];
     [fetchRequest setPredicate:predicate];
     
     NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     [self.provider removeAddresses:addresses];
 }
 
-- (void)addressAdded:(CCAddress *)address
+- (void)addressDidAdd:(CCAddress *)address
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.expanded = %@", @NO];
     NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
@@ -98,12 +101,28 @@
     }
 }
 
-- (void)addressRemoved:(CCAddress *)address
+- (void)addressWillRemove:(CCAddress *)address
 {
-    [self.provider removeAddress:address];
+    BOOL wasExpanded = [address.lists count] == 0;
+    if (wasExpanded == NO) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.expanded = %@", @YES];
+        NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
+        wasExpanded |= [match count] != 0;
+    }
+    
+    if (wasExpanded)
+        [self.provider removeAddress:address];
+    
+    [self pushCacheEntry:kCCHomeListViewModelDeletedAddressListsKey value:[address.lists allObjects]];
 }
 
-- (void)addressUpdated:(CCAddress *)address
+- (void)addressDidRemove:(CCAddress *)address
+{
+    NSArray *lists = [self popCacheEntry:kCCHomeListViewModelDeletedAddressListsKey];
+    [self.provider refreshListItemContentsForObjects:lists];
+}
+
+- (void)addressDidUpdate:(CCAddress *)address
 {
     BOOL  refreshListItem = [address.lists count] == 0;
     
@@ -118,7 +137,7 @@
     }
 }
 
-- (void)listAdded:(CCList *)list
+- (void)listDidAdd:(CCList *)list
 {
     if (list.expandedValue == YES) {
         for (CCAddress *address in list.addresses) {
@@ -145,13 +164,13 @@
     }
 }
 
-- (void)listUpdated:(CCList *)list
+- (void)listDidUpdate:(CCList *)list
 {
     if (list.expandedValue == NO)
         [self.provider refreshListItemContentForObject:list];
 }
 
-- (BOOL)address:(CCAddress *)address willMoveToList:(CCList *)list
+- (void)address:(CCAddress *)address willMoveToList:(CCList *)list
 {
     BOOL wasExpanded = [address.lists count] == 0;
     if (wasExpanded == NO) {
@@ -163,14 +182,16 @@
     if (list.expandedValue != wasExpanded) {
         if (list.expandedValue == YES) {
             [self.provider addAddress:address];
+        } else {
+            if ([address.lists count] == 0)
+                [self.provider removeAddress:address];
         }
     }
     if (list.expandedValue == NO)
         [self.provider addAddress:address toList:list];
-    return NO;
 }
 
-- (BOOL)address:(CCAddress *)address willMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list
 {
     if (list.expandedValue == YES && [address.lists count] > 1) {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.expanded = %@", @YES];
@@ -181,11 +202,17 @@
         }
     }
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.expanded = %@", @NO];
-    NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-    for (CCList *otherList in match) {
+    NSSet *lists = [address.lists filteredSetUsingPredicate:predicate];
+    
+    [self pushCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey value:lists.allObjects];
+}
+
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
+{
+    NSArray *lists = [self popCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey];
+    for (CCList *otherList in lists) {
         [self.provider removeAddress:address fromList:otherList];
     }
-    return NO;
 }
 
 @end

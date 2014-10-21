@@ -19,18 +19,14 @@
 
 @implementation CCAddressListSettingsView
 {
-    NSIndexPath *_selectedPath;
-    
     UITextView *_helpView;
     
     UITextField *_listName;
     UITableView *_listSelector;
     UIButton *_editListButton;
-    
-    NSLayoutConstraint *_listSelectorHeightConstraint;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -112,7 +108,7 @@
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_helpView, _listName, _editListButton, _listSelector);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==150)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_helpView]-[_listName(==40)]-(==4)-[_editListButton][_listSelector(==100)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

@@ -19,6 +19,8 @@
 @class CLLocation;
 @class CLHeading;
 
+typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
+
 @interface CCListViewContentProvider : NSObject
 
 @property(nonatomic, strong)id<CCListViewModelProtocol> model;
@@ -27,7 +29,7 @@
 
 @property(nonatomic, assign)id<CCListViewContentProviderDelegate> delegate;
 
-- (id)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
+- (instancetype)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
 
 - (void)deleteItemAtIndex:(NSUInteger)index;
 
@@ -44,9 +46,11 @@
 - (NSUInteger)addList:(CCList *)list;
 - (NSUInteger)removeList:(CCList *)list;
 
+- (void)refreshListItemContentsForObjects:(NSArray *)objects;
 - (void)refreshListItemContentForObject:(id)object;
 
 - (id)listItemContentAtIndex:(NSUInteger)index;
+- (NSIndexSet *)indexesOfListItemContents:(NSArray *)contents handler:(SearchHandlerBlockType)handler;
 - (NSUInteger)indexOfListItemContent:(id)content;
 
 - (double)distanceForListItemAtIndex:(NSUInteger)index;

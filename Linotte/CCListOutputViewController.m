@@ -45,7 +45,7 @@
     CCListOutputAddressListViewController *_listOutputAddressListViewController;
 }
 
-- (id)initWithList:(CCList *)list
+- (instancetype)initWithList:(CCList *)list
 {
     self = [super init];
     if (self) {
@@ -73,7 +73,7 @@
     _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     _listViewController.delegate = self;
     [self addChildViewController:_listViewController];
-    [view setupListView:_listViewController.view];
+    [view setupListView:(CCListView *)_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
     
     [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
@@ -156,6 +156,8 @@
     [self.view showSettingsView:listOutputSettingsViewController.view];
     
     [listOutputSettingsViewController didMoveToParentViewController:self];
+    
+    _settingsButton.enabled = NO;
 }
 
 #pragma mark - CCListOutputViewDelegate methods
@@ -163,11 +165,11 @@
 - (void)notificationEnabled:(BOOL)enabled
 {
     _list.notify = @(enabled);
-    [[CCModelChangeMonitor sharedInstance] listUpdated:_list];
     [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list];
 }
 
-#pragma mark - CCListOutputEmptyViewDelegate methods
+#pragma mark - CCListOutputListEmptyViewDelegate methods
 
 - (void)showAddressList
 {
@@ -176,26 +178,6 @@
 }
 
 #pragma mark - CCListViewControllerDelegate methods
-
-- (void)showOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)showOptionView
-{
-    
-}
-
-- (void)hideOptionViewProgress:(CGFloat)pixels
-{
-    
-}
-
-- (void)hideOptionView
-{
-    
-}
 
 - (UIView *)getEmptyView
 {
@@ -229,12 +211,14 @@
 
 - (void)expandAddView
 {
-    
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    view.addViewExpanded = YES;
 }
 
 - (void)reduceAddView
 {
-    
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    view.addViewExpanded = NO;
 }
 
 #pragma mark - CCSettingsViewControllerDelegate methods

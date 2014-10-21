@@ -6,7 +6,7 @@
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
 
-"PLACE_NAME" = "Add a venue";
+"PLACE_NAME" = "ADD A VENUE";
 "WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
 
 "NOTIFICATION_MULTI" = "You are close to [N] addresses: ";
@@ -31,6 +31,8 @@
 "NO_NOTE_SPLASH" = "ScreenLinotteBisEN";
 
 "DISTANCE_UNAVAILABLE" = "Looking for position...";
+"DISTANCE_TOO_FAR" = "Far away";
+"ADDRESS_LIST_IN" = "in:";
 "SKIP_BUTTON_TEXT" = "Skip >";
 "LIST_INFO" = "[nAddress] address";
 "LIST_INFO_PLURAL" = "[nAddress] addresses";
@@ -64,8 +66,8 @@
 "OK" = "Ok";
 "MOVED_TO" = "Moved to [listName]";
 
-"MY_LISTS" = "My books";
-"DISCOVER_LIST" = "Discover";
+"MY_LISTS" = "MY BOOKS";
+"DISCOVER_LIST" = "DISCOVER";
 
 "ROUTE_TRAIN" = "Train";
 "ROUTE_CAR" = "Car";
@@ -79,17 +81,20 @@
 "LIST_CONFIG_HELP1" = "Use the field below to create a new book.";
 "LIST_CONFIG_HELP2" = "Books marked with a green check will have there addresses visible on your front page.";
 
-"LIST_STORE_CONTROLLER_TITLE" = "Discover";
+"LIST_STORE_CONTROLLER_TITLE" = "DISCOVER";
 
-"MY_BOOKS" = "My books";
+"MY_BOOKS" = "MY BOOKS";
 
-"LIST_NAME" = "Create book";
+"LIST_NAME" = "CREATE BOOK";
+"SEARCH_LIST_NAME" = "SEARCH A BOOK";
 
 "LIST_NOTIFICATION_LABEL" = "Activate notifications on this book";
 
-"LIST_OUTPUT_EMPTY_MESSAGE" = "You may also add addresses that are already stored in you Linotte";
+"LIST_OUTPUT_EMPTY_MESSAGE" = "You may also add addresses that are already stored in your Linotte";
 "LIST_OUTPUT_EMPTY_BUTTON" = "Select addresses in my Linotte";
 
 "LIST_OUTPUT_ADDRESS_LIST_HELP" = "Select the addresses stored in you Linotte that you want to add to this book.";
 "LIST_OUTPUT_ADDRESS_LIST_CLOSE" = "Close";
-"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "Search a venue";
+"LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "SEARCH A VENUE";
+
+"LOCATION_EXPLAINATION" = "pouetEn";

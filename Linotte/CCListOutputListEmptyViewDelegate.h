@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCListOutputEmptyViewDelegate <NSObject>
+@protocol CCListOutputListEmptyViewDelegate <NSObject>
 
 - (void)showAddressList;
 

@@ -7,15 +7,18 @@ const struct CCListAttributes CCListAttributes = {
 	.expanded = @"expanded",
 	.icon = @"icon",
 	.identifier = @"identifier",
+	.last_update = @"last_update",
+	.last_update_latitude = @"last_update_latitude",
+	.last_update_longitude = @"last_update_longitude",
 	.name = @"name",
 	.notify = @"notify",
 	.provider = @"provider",
 	.providerId = @"providerId",
-	.sent = @"sent",
 };
 
 const struct CCListRelationships CCListRelationships = {
 	.addresses = @"addresses",
+	.events = @"events",
 	.metas = @"metas",
 };
 
@@ -50,13 +53,18 @@ const struct CCListRelationships CCListRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"notifyValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"notify"];
+	if ([key isEqualToString:@"last_update_latitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"last_update_latitude"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"sentValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"sent"];
+	if ([key isEqualToString:@"last_update_longitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"last_update_longitude"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"notifyValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"notify"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -88,6 +96,48 @@ const struct CCListRelationships CCListRelationships = {
 
 @dynamic identifier;
 
+@dynamic last_update;
+
+@dynamic last_update_latitude;
+
+- (double)last_update_latitudeValue {
+	NSNumber *result = [self last_update_latitude];
+	return [result doubleValue];
+}
+
+- (void)setLast_update_latitudeValue:(double)value_ {
+	[self setLast_update_latitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLast_update_latitudeValue {
+	NSNumber *result = [self primitiveLast_update_latitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLast_update_latitudeValue:(double)value_ {
+	[self setPrimitiveLast_update_latitude:[NSNumber numberWithDouble:value_]];
+}
+
+@dynamic last_update_longitude;
+
+- (double)last_update_longitudeValue {
+	NSNumber *result = [self last_update_longitude];
+	return [result doubleValue];
+}
+
+- (void)setLast_update_longitudeValue:(double)value_ {
+	[self setLast_update_longitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLast_update_longitudeValue {
+	NSNumber *result = [self primitiveLast_update_longitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLast_update_longitudeValue:(double)value_ {
+	[self setPrimitiveLast_update_longitude:[NSNumber numberWithDouble:value_]];
+}
+
 @dynamic name;
 
 @dynamic notify;
@@ -114,26 +164,6 @@ const struct CCListRelationships CCListRelationships = {
 
 @dynamic providerId;
 
-@dynamic sent;
-
-- (BOOL)sentValue {
-	NSNumber *result = [self sent];
-	return [result boolValue];
-}
-
-- (void)setSentValue:(BOOL)value_ {
-	[self setSent:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveSentValue {
-	NSNumber *result = [self primitiveSent];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveSentValue:(BOOL)value_ {
-	[self setPrimitiveSent:[NSNumber numberWithBool:value_]];
-}
-
 @dynamic addresses;
 
 - (NSMutableSet*)addressesSet {
@@ -142,6 +172,17 @@ const struct CCListRelationships CCListRelationships = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"addresses"];
 
 	[self didAccessValueForKey:@"addresses"];
+	return result;
+}
+
+@dynamic events;
+
+- (NSMutableSet*)eventsSet {
+	[self willAccessValueForKey:@"events"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"events"];
+
+	[self didAccessValueForKey:@"events"];
 	return result;
 }
 

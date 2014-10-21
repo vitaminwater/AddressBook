@@ -85,7 +85,7 @@
     NSMutableArray *_autocompletionResults;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -149,7 +149,7 @@
 
 - (void)autocompleteAddressName:(NSString *)addressName
 {
-    __weak id weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     if (_currentLocation)
         [self loadPlacesWebserviceByName:addressName];
     else
@@ -333,8 +333,8 @@
     }
     
     [_delegate preSaveAddress:address];
-    [[CCModelChangeMonitor sharedInstance] addressAdded:address];
     [managedObjectContext saveToPersistentStore:NULL];
+    [[CCModelChangeMonitor sharedInstance] addressDidAdd:address];
     [_delegate postSaveAddress:address];
     
     [self reduceAddView];

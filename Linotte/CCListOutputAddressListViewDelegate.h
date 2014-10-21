@@ -10,6 +10,8 @@
 
 @protocol CCListOutputAddressListViewDelegate <NSObject>
 
+- (void)filterAddresses:(NSString *)filterString;
+
 - (void)closePressed;
 
 - (void)addressAddedAtIndex:(NSUInteger)index;

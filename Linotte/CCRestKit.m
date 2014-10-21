@@ -40,10 +40,6 @@
 #define kFoursquareBaseUrl @"https://api.foursquare.com"
 
 #if defined DEBUG
-// #define kCCLocalApiServerUrl @"https://172.20.10.14:8001" // iOS
-// #define kCCLocalApiServerUrl @"https://192.168.11.111:8001" // Numa
-// #define kCCLocalApiServerUrl @"https://192.168.1.13:8001" // Pereire
-// #define kCCLocalApiServerUrl @"https://192.168.1.94:8001" // Gueux
 #define kCCLocalApiServerUrl @"https://192.168.1.11:8001" // La clef
 #else
 #define kCCLocalApiServerUrl @"http://www.getlinotte.com"
@@ -110,7 +106,8 @@ NSMutableDictionary *_objectManagers = nil;
     
     [self initializeOAuthMapping];
     [self initializeUserPostPutMapping];
-    [self initializeCoreDataMappings];
+    [self initializeAddressMapping];
+    [self initializeListMapping];
 }
 
 #pragma mark Google API
@@ -238,7 +235,9 @@ NSMutableDictionary *_objectManagers = nil;
     [objectManager addRequestDescriptor:requestDescriptor];
 }
 
-+ (void)initializeCoreDataMappings
+#pragma mark Core data mappings
+
++ (void)initializeAddressMapping
 {
     RKObjectManager *objectManager = [self addObjectManager:kCCLocalJSONObjectManager baseUrl:kCCLocalApiServerUrl addManagedObjectStore:YES mimeType:RKMIMETypeJSON];
     
@@ -249,23 +248,28 @@ NSMutableDictionary *_objectManagers = nil;
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:requestEntityMapping objectClass:[CCAddress class] rootKeyPath:nil method:RKRequestMethodPOST];
         
         [objectManager addRequestDescriptor:requestDescriptor];
-
+        
         RKEntityMapping *responsePOSTEntityMapping = [CCAddress responsePOSTEntityMapping];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responsePOSTEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIAddress keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
         
         [objectManager addResponseDescriptor:responseDescriptor];
     }
+}
+
++ (void)initializeListMapping
+{
+    RKObjectManager *objectManager = [self addObjectManager:kCCLocalJSONObjectManager baseUrl:kCCLocalApiServerUrl addManagedObjectStore:YES mimeType:RKMIMETypeJSON];
     
     /* CCList POST mapping */
     {
-        RKObjectMapping *requestEntityMapping = [CCAddress requestPOSTObjectMapping];
+        RKObjectMapping *requestEntityMapping = [CCList requestPOSTObjectMapping];
         
         RKRequestDescriptor *requestDescriptor = [RKRequestDescriptor requestDescriptorWithMapping:requestEntityMapping objectClass:[CCList class] rootKeyPath:nil method:RKRequestMethodGET];
         
         [objectManager addRequestDescriptor:requestDescriptor];
         
-        RKEntityMapping *responseEntityMapping = [CCAddress responsePOSTEntityMapping];
+        RKEntityMapping *responseEntityMapping = [CCList responsePOSTEntityMapping];
         
         RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor responseDescriptorWithMapping:responseEntityMapping method:RKRequestMethodPOST pathPattern:kCCLocalAPIList keyPath:nil statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
         

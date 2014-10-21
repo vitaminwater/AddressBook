@@ -32,7 +32,7 @@
     CCListViewController *_listViewController;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -142,6 +142,8 @@
     [self.view showSettingsView:listListExpandedSettingsViewController.view];
     
     [listListExpandedSettingsViewController didMoveToParentViewController:self];
+    
+    _settingsButton.enabled = NO;
 }
 
 #pragma mark - CCListListViewDelegate methods
@@ -149,14 +151,6 @@
 #pragma mark - CCAddListViewControllerDelegate methods
 
 #pragma mark - CCListViewControllerDelegate methods
-
-- (void)showOptionViewProgress:(CGFloat)pixels {}
-
-- (void)showOptionView {}
-
-- (void)hideOptionViewProgress:(CGFloat)pixels {}
-
-- (void)hideOptionView {}
 
 - (UIView *)getEmptyView
 {

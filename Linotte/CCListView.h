@@ -12,11 +12,13 @@
 
 #import "CCListViewTableViewCellDelegate.h"
 
+@class CCAnimationDelegator;
 @class CCListViewContentProvider;
 
 @interface CCListView : UIView<UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate, CCListViewTableViewCellDelegate>
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
+@property(nonatomic, strong)CCAnimationDelegator *animatorDelegator;
 
 - (void)setupEmptyView;
 - (void)removeEmptyView;

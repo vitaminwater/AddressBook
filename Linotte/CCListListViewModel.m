@@ -13,6 +13,9 @@
 #import "CCListViewContentProvider.h"
 
 #import "CCList.h"
+#import "CCAddress.h"
+
+#define kCCListListViewModelDeletedAddressListsKey @"kCCListListViewModelDeletedAddressListsKey"
 
 @implementation CCListListViewModel
 
@@ -35,31 +38,47 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listAdded:(CCList *)list
+- (void)addressDidAdd:(CCAddress *)address
+{
+    for (CCList *list in address.lists) {
+        [self.provider addAddress:address toList:list];
+    }
+}
+
+- (void)addressWillRemove:(CCAddress *)address
+{
+    [self pushCacheEntry:kCCListListViewModelDeletedAddressListsKey value:[address.lists allObjects]];
+}
+
+- (void)addressDidRemove:(CCAddress *)address
+{
+    NSArray *lists = [self popCacheEntry:kCCListListViewModelDeletedAddressListsKey];
+    [self.provider refreshListItemContentsForObjects:lists];
+}
+
+- (void)listDidAdd:(CCList *)list
 {
     [self.provider addList:list];
 }
 
-- (void)listRemoved:(CCList *)list
+- (void)listDidRemove:(CCList *)list
 {
     [self.provider removeList:list];
 }
 
-- (void)listUpdated:(CCList *)list
+- (void)listDidUpdate:(CCList *)list
 {
     [self.provider refreshListItemContentForObject:list];
 }
 
-- (BOOL)address:(CCAddress *)address didMoveToList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
     [self.provider addAddress:address toList:list];
-    return NO;
 }
 
-- (BOOL)address:(CCAddress *)address didMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
 {
     [self.provider removeAddress:address fromList:list];
-    return NO;
 }
 
 @end

@@ -10,13 +10,15 @@
 
 #import "CCListOutputViewDelegate.h"
 
+@class CCListView;
+
 @interface CCListOutputView : UIView
 
 @property(nonatomic, assign)id<CCListOutputViewDelegate> delegate;
 @property(nonatomic, assign)BOOL addViewExpanded;
 
 - (void)setupAddView:(UIView *)addView;
-- (void)setupListView:(UIView *)listView;
+- (void)setupListView:(CCListView *)listView;
 - (void)setupLayout;
 
 - (void)setListIconImage:(UIImage *)image;

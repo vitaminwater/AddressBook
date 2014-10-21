@@ -13,7 +13,7 @@
     UITextField *_textField;
 }
 
-- (id)init
+- (instancetype)init
 {
     self = [super init];
     if (self) {
@@ -110,6 +110,7 @@
     [textField resignFirstResponder];
     if ([textField.text length])
         [_delegate createListWithName:textField.text];
+    textField.text = @"";
     return NO;
 }
 

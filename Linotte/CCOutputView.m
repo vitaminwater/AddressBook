@@ -27,7 +27,7 @@
     UITextView *_infoView;
 }
 
-- (id)initWithDelegate:(id<CCOutputViewDelegate>)delegate
+- (instancetype)initWithDelegate:(id<CCOutputViewDelegate>)delegate
 {
     self = [super init];
     if (self) {

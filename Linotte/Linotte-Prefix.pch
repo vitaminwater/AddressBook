@@ -22,7 +22,8 @@
 
 #define kCCAddViewTextFieldHeight @70
 #define kCCAddViewKeyboardHeight @220
+#define kCCStatusBarHeight @20
 
-#define kCCAddViewTextFieldHeightMetric @{@"kCCAddViewTextFieldHeight" : kCCAddViewTextFieldHeight, @"kCCAddViewKeyboardHeight" : kCCAddViewKeyboardHeight}
+#define kCCAddViewTextFieldHeightMetric @{@"kCCStatusBarHeight" : kCCStatusBarHeight, @"kCCAddViewTextFieldHeight" : kCCAddViewTextFieldHeight, @"kCCAddViewKeyboardHeight" : kCCAddViewKeyboardHeight}
 
 #define kCCListDefaultProvider @"USER"

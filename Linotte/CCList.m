@@ -29,8 +29,7 @@
 {
     RKObjectMapping *objectMapping = [RKObjectMapping mappingForClass:[NSMutableDictionary class]];
     
-    [objectMapping addAttributeMappingsFromArray:@[CCListAttributes.name, CCListAttributes.icon, CCListAttributes.provider]];
-    [objectMapping addAttributeMappingsFromDictionary:@{CCListAttributes.providerId : @"provider_id"}];
+    [objectMapping addAttributeMappingsFromArray:@[CCListAttributes.name]];
     
     RKObjectMapping *addressesObjectMapping = [CCAddress requestPOSTObjectSlugMapping];
     [objectMapping addRelationshipMappingWithSourceKeyPath:@"addresses" mapping:addressesObjectMapping];

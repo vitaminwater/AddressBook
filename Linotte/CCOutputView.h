@@ -16,7 +16,7 @@
 
 @property(nonatomic, weak)id <CCOutputViewDelegate>delegate;
 
-- (id)initWithDelegate:(id<CCOutputViewDelegate>)delegate;
+- (instancetype)initWithDelegate:(id<CCOutputViewDelegate>)delegate;
 - (void)updateValues;
 
 @end
