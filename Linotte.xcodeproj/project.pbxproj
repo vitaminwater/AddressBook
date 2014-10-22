@@ -24,9 +24,8 @@
 		6F468212137B4D43BF3CB196 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741CE8E2CF64C42BEA00356 /* libPods.a */; };
 		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
 		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
-		C709B51219E045BA0028B389 /* CCIdentifierModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C709B51119E045BA0028B389 /* CCIdentifierModel.m */; };
-		C709B51619E2FF690028B389 /* CCListAddressLink.m in Sources */ = {isa = PBXBuildFile; fileRef = C709B51419E2FF690028B389 /* CCListAddressLink.m */; };
-		C709B51919E2FF790028B389 /* _CCListAddressLink.m in Sources */ = {isa = PBXBuildFile; fileRef = C709B51719E2FF790028B389 /* _CCListAddressLink.m */; };
+		C73E7D0519F7D92D00ADC1A2 /* CCAutoCompleteAddressName.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAutoCompleteAddressName.m */; };
+		C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */; };
 		C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */ = {isa = PBXBuildFile; fileRef = C75EF4F719D8AFBC009BAB3A /* CCAnimationDelegator.m */; };
 		C7619FAD19C4415700C09F0D /* CCListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FAC19C4415600C09F0D /* CCListViewModel.m */; };
 		C7619FB319C4419000C09F0D /* CCHomeListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FB219C4419000C09F0D /* CCHomeListViewModel.m */; };
@@ -46,7 +45,6 @@
 		C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C761A00919CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m */; };
 		C761A00D19CC5DB200C09F0D /* CCFirstDisplaySettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C761A00C19CC5DB200C09F0D /* CCFirstDisplaySettingsView.m */; };
 		C761A01919CC63D500C09F0D /* CCAddressListSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C761A01819CC63D500C09F0D /* CCAddressListSettingsViewController.m */; };
-		C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */; };
 		C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */; };
 		C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */; };
 		C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */; };
@@ -117,22 +115,8 @@
 		C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */; };
 		C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EA191A240700602A4D /* _CCAddress.m */; };
 		C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EC191A240700602A4D /* CCAddress.m */; };
-		C7E1E4F3191A46B200602A4D /* CCRestKit.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4F2191A46B200602A4D /* CCRestKit.m */; };
 		C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4F6191A46E700602A4D /* CCGeohashMonitor.m */; };
 		C7E1E4FB191A46FD00602A4D /* CCLinotteAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4FA191A46FD00602A4D /* CCLinotteAPI.m */; };
-		C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E500191A577700602A4D /* CCUserPostPutRequest.m */; };
-		C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E502191A577700602A4D /* CCUserPostPutResponse.m */; };
-		C7E1E509191A577F00602A4D /* CCOAuthTokenResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E506191A577F00602A4D /* CCOAuthTokenResponse.m */; };
-		C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E508191A577F00602A4D /* CCOAuthTokenRequest.m */; };
-		C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */; };
-		C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E519191A584700602A4D /* CCGoogleDetail.m */; };
-		C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E51B191A584700602A4D /* CCGoogleDetailResult.m */; };
-		C7E1E522191A585200602A4D /* CCGoogleGeocode.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E51F191A585200602A4D /* CCGoogleGeocode.m */; };
-		C7E1E523191A585200602A4D /* CCGoogleGeocodeResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E521191A585200602A4D /* CCGoogleGeocodeResult.m */; };
-		C7E1E528191A585E00602A4D /* CCGoogleSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E525191A585E00602A4D /* CCGoogleSearch.m */; };
-		C7E1E529191A585E00602A4D /* CCGoogleSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E527191A585E00602A4D /* CCGoogleSearchResult.m */; };
-		C7E1E52E191A586600602A4D /* CCGoogleAutocomplete.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E52B191A586600602A4D /* CCGoogleAutocomplete.m */; };
-		C7E1E52F191A586600602A4D /* CCGooglePrediction.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E52D191A586600602A4D /* CCGooglePrediction.m */; };
 		C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E534191A618900602A4D /* CCMainViewController.m */; };
 		C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E53B191A62D900602A4D /* CCMainView.m */; };
 		C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FE2C6D1996B56100D7D0DC /* CCListViewTableViewCellDetailLabel.m */; };
@@ -151,19 +135,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
+		2DF6C977A428448EC61830A0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		6741CE8E2CF64C42BEA00356 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A82545F81FB62D02945A6F11 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		C705882A192CEC500096A335 /* _CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCCategory.h; sourceTree = "<group>"; };
 		C705882B192CEC500096A335 /* _CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategory.m; sourceTree = "<group>"; };
 		C705882C192CEC500096A335 /* CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategory.h; sourceTree = "<group>"; };
 		C705882D192CEC500096A335 /* CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategory.m; sourceTree = "<group>"; };
-		C709B51019E045BA0028B389 /* CCIdentifierModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCIdentifierModel.h; sourceTree = "<group>"; };
-		C709B51119E045BA0028B389 /* CCIdentifierModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCIdentifierModel.m; sourceTree = "<group>"; };
-		C709B51419E2FF690028B389 /* CCListAddressLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListAddressLink.m; sourceTree = "<group>"; };
-		C709B51519E2FF690028B389 /* CCListAddressLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListAddressLink.h; sourceTree = "<group>"; };
-		C709B51719E2FF790028B389 /* _CCListAddressLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCListAddressLink.m; sourceTree = "<group>"; };
-		C709B51819E2FF790028B389 /* _CCListAddressLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCListAddressLink.h; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
+		C73E7D0319F7D92D00ADC1A2 /* CCAutoCompleteAddressName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAutoCompleteAddressName.h; sourceTree = "<group>"; };
+		C73E7D0419F7D92D00ADC1A2 /* CCAutoCompleteAddressName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAutoCompleteAddressName.m; sourceTree = "<group>"; };
+		C759A9CD19F6968A008549B3 /* CCCoreDataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCoreDataStack.h; sourceTree = "<group>"; };
+		C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCoreDataStack.m; sourceTree = "<group>"; };
 		C75EF4F619D8AFBC009BAB3A /* CCAnimationDelegator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAnimationDelegator.h; sourceTree = "<group>"; };
 		C75EF4F719D8AFBC009BAB3A /* CCAnimationDelegator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAnimationDelegator.m; sourceTree = "<group>"; };
 		C7619FAB19C4415600C09F0D /* CCListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListViewModel.h; sourceTree = "<group>"; };
@@ -217,8 +200,6 @@
 		C761A01719CC63D500C09F0D /* CCAddressListSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressListSettingsViewController.h; sourceTree = "<group>"; };
 		C761A01819CC63D500C09F0D /* CCAddressListSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressListSettingsViewController.m; sourceTree = "<group>"; };
 		C761A01B19CC650B00C09F0D /* CCAddressListSettingsViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressListSettingsViewControllerDelegate.h; sourceTree = "<group>"; };
-		C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareCategorie.h; sourceTree = "<group>"; };
-		C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareCategorie.m; sourceTree = "<group>"; };
 		C76A1CBE19BF2F4B00EE75E4 /* CCFlatColorButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatColorButton.h; sourceTree = "<group>"; };
 		C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFlatColorButton.m; sourceTree = "<group>"; };
 		C76A1CDA19BF70EC00EE75E4 /* CCListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewController.h; sourceTree = "<group>"; };
@@ -364,38 +345,10 @@
 		C7E1E4EA191A240700602A4D /* _CCAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCAddress.m; sourceTree = "<group>"; };
 		C7E1E4EB191A240700602A4D /* CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddress.h; sourceTree = "<group>"; };
 		C7E1E4EC191A240700602A4D /* CCAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddress.m; sourceTree = "<group>"; };
-		C7E1E4F1191A46B200602A4D /* CCRestKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRestKit.h; sourceTree = "<group>"; };
-		C7E1E4F2191A46B200602A4D /* CCRestKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCRestKit.m; sourceTree = "<group>"; };
 		C7E1E4F5191A46E700602A4D /* CCGeohashMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGeohashMonitor.h; sourceTree = "<group>"; };
 		C7E1E4F6191A46E700602A4D /* CCGeohashMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGeohashMonitor.m; sourceTree = "<group>"; };
 		C7E1E4F9191A46FD00602A4D /* CCLinotteAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteAPI.h; sourceTree = "<group>"; };
 		C7E1E4FA191A46FD00602A4D /* CCLinotteAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLinotteAPI.m; sourceTree = "<group>"; };
-		C7E1E4FF191A577700602A4D /* CCUserPostPutRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUserPostPutRequest.h; sourceTree = "<group>"; };
-		C7E1E500191A577700602A4D /* CCUserPostPutRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUserPostPutRequest.m; sourceTree = "<group>"; };
-		C7E1E501191A577700602A4D /* CCUserPostPutResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUserPostPutResponse.h; sourceTree = "<group>"; };
-		C7E1E502191A577700602A4D /* CCUserPostPutResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUserPostPutResponse.m; sourceTree = "<group>"; };
-		C7E1E505191A577F00602A4D /* CCOAuthTokenResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOAuthTokenResponse.h; sourceTree = "<group>"; };
-		C7E1E506191A577F00602A4D /* CCOAuthTokenResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOAuthTokenResponse.m; sourceTree = "<group>"; };
-		C7E1E507191A577F00602A4D /* CCOAuthTokenRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOAuthTokenRequest.h; sourceTree = "<group>"; };
-		C7E1E508191A577F00602A4D /* CCOAuthTokenRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOAuthTokenRequest.m; sourceTree = "<group>"; };
-		C7E1E50F191A579C00602A4D /* CCFoursquareVenues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareVenues.h; sourceTree = "<group>"; };
-		C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareVenues.m; sourceTree = "<group>"; };
-		C7E1E518191A584700602A4D /* CCGoogleDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleDetail.h; sourceTree = "<group>"; };
-		C7E1E519191A584700602A4D /* CCGoogleDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleDetail.m; sourceTree = "<group>"; };
-		C7E1E51A191A584700602A4D /* CCGoogleDetailResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleDetailResult.h; sourceTree = "<group>"; };
-		C7E1E51B191A584700602A4D /* CCGoogleDetailResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleDetailResult.m; sourceTree = "<group>"; };
-		C7E1E51E191A585200602A4D /* CCGoogleGeocode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleGeocode.h; sourceTree = "<group>"; };
-		C7E1E51F191A585200602A4D /* CCGoogleGeocode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleGeocode.m; sourceTree = "<group>"; };
-		C7E1E520191A585200602A4D /* CCGoogleGeocodeResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleGeocodeResult.h; sourceTree = "<group>"; };
-		C7E1E521191A585200602A4D /* CCGoogleGeocodeResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleGeocodeResult.m; sourceTree = "<group>"; };
-		C7E1E524191A585E00602A4D /* CCGoogleSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleSearch.h; sourceTree = "<group>"; };
-		C7E1E525191A585E00602A4D /* CCGoogleSearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleSearch.m; sourceTree = "<group>"; };
-		C7E1E526191A585E00602A4D /* CCGoogleSearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleSearchResult.h; sourceTree = "<group>"; };
-		C7E1E527191A585E00602A4D /* CCGoogleSearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleSearchResult.m; sourceTree = "<group>"; };
-		C7E1E52A191A586600602A4D /* CCGoogleAutocomplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGoogleAutocomplete.h; sourceTree = "<group>"; };
-		C7E1E52B191A586600602A4D /* CCGoogleAutocomplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGoogleAutocomplete.m; sourceTree = "<group>"; };
-		C7E1E52C191A586600602A4D /* CCGooglePrediction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGooglePrediction.h; sourceTree = "<group>"; };
-		C7E1E52D191A586600602A4D /* CCGooglePrediction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGooglePrediction.m; sourceTree = "<group>"; };
 		C7E1E533191A618900602A4D /* CCMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMainViewController.h; sourceTree = "<group>"; };
 		C7E1E534191A618900602A4D /* CCMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMainViewController.m; sourceTree = "<group>"; };
 		C7E1E536191A61A500602A4D /* CCListViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListViewControllerDelegate.h; sourceTree = "<group>"; };
@@ -440,24 +393,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C709B50F19E044E40028B389 /* common */ = {
+		83427CAEE4204CDFC49559AF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C709B51019E045BA0028B389 /* CCIdentifierModel.h */,
-				C709B51119E045BA0028B389 /* CCIdentifierModel.m */,
+				2DF6C977A428448EC61830A0 /* Pods.debug.xcconfig */,
+				A82545F81FB62D02945A6F11 /* Pods.release.xcconfig */,
 			);
-			name = common;
+			name = Pods;
 			sourceTree = "<group>";
 		};
-		C709B51319E2FF0D0028B389 /* list address link */ = {
+		C73E7D0119F7D91200ADC1A2 /* autocomplete */ = {
 			isa = PBXGroup;
 			children = (
-				C709B51819E2FF790028B389 /* _CCListAddressLink.h */,
-				C709B51719E2FF790028B389 /* _CCListAddressLink.m */,
-				C709B51519E2FF690028B389 /* CCListAddressLink.h */,
-				C709B51419E2FF690028B389 /* CCListAddressLink.m */,
+				C73E7D0219F7D91B00ADC1A2 /* name */,
 			);
-			name = "list address link";
+			name = autocomplete;
+			sourceTree = "<group>";
+		};
+		C73E7D0219F7D91B00ADC1A2 /* name */ = {
+			isa = PBXGroup;
+			children = (
+				C73E7D0319F7D92D00ADC1A2 /* CCAutoCompleteAddressName.h */,
+				C73E7D0419F7D92D00ADC1A2 /* CCAutoCompleteAddressName.m */,
+			);
+			name = name;
+			sourceTree = "<group>";
+		};
+		C759A99719F69459008549B3 /* core data stack */ = {
+			isa = PBXGroup;
+			children = (
+				C759A9CD19F6968A008549B3 /* CCCoreDataStack.h */,
+				C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */,
+			);
+			name = "core data stack";
 			sourceTree = "<group>";
 		};
 		C75EF4F519D8AFA5009BAB3A /* tween */ = {
@@ -1466,7 +1434,7 @@
 				C7CE2C891918E48800D37A64 /* LinotteTests */,
 				C7CE2C631918E48800D37A64 /* Frameworks */,
 				C7CE2C621918E48800D37A64 /* Products */,
-				43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */,
+				83427CAEE4204CDFC49559AF /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1542,7 +1510,6 @@
 		C7CE2C991918F06500D37A64 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				C7CE2C9B1918F07500D37A64 /* object */,
 				C7CE2C9A1918F07100D37A64 /* core data */,
 			);
 			name = model;
@@ -1551,7 +1518,6 @@
 		C7CE2C9A1918F07100D37A64 /* core data */ = {
 			isa = PBXGroup;
 			children = (
-				C709B51319E2FF0D0028B389 /* list address link */,
 				C7A1621819DEA396003EFE5B /* network event */,
 				C796D7BC19BB8B4A00B97879 /* list */,
 				C796D7B919BB8B2E00B97879 /* meta */,
@@ -1559,16 +1525,6 @@
 				C762975B192CCC2C00B9B6E5 /* category */,
 			);
 			name = "core data";
-			sourceTree = "<group>";
-		};
-		C7CE2C9B1918F07500D37A64 /* object */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E513191A581400602A4D /* google */,
-				C7E1E50B191A578600602A4D /* foursquare */,
-				C7E1E4FC191A573B00602A4D /* local API */,
-			);
-			name = object;
 			sourceTree = "<group>";
 		};
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
@@ -1689,6 +1645,8 @@
 		C7E1E4EF191A468800602A4D /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C73E7D0119F7D91200ADC1A2 /* autocomplete */,
+				C759A99719F69459008549B3 /* core data stack */,
 				C79D804819D408B70073F1CF /* location monitor */,
 				C7804C7019D1AA2900D546BD /* model change monitor */,
 				C7FE2C7D1998276E00D7D0DC /* ui */,
@@ -1698,18 +1656,8 @@
 				C799AB6919236D330096B5A8 /* geohash helper */,
 				C7E1E4F8191A46F100602A4D /* linotte API */,
 				C7E1E4F4191A46D800602A4D /* geohash monitor */,
-				C7E1E4F0191A469D00602A4D /* restkit */,
 			);
 			name = utils;
-			sourceTree = "<group>";
-		};
-		C7E1E4F0191A469D00602A4D /* restkit */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E4F1191A46B200602A4D /* CCRestKit.h */,
-				C7E1E4F2191A46B200602A4D /* CCRestKit.m */,
-			);
-			name = restkit;
 			sourceTree = "<group>";
 		};
 		C7E1E4F4191A46D800602A4D /* geohash monitor */ = {
@@ -1729,112 +1677,6 @@
 				C7E1E4FA191A46FD00602A4D /* CCLinotteAPI.m */,
 			);
 			name = "linotte API";
-			sourceTree = "<group>";
-		};
-		C7E1E4FC191A573B00602A4D /* local API */ = {
-			isa = PBXGroup;
-			children = (
-				C709B50F19E044E40028B389 /* common */,
-				C7E1E4FE191A576800602A4D /* oauth */,
-				C7E1E4FD191A576300602A4D /* user */,
-			);
-			name = "local API";
-			sourceTree = "<group>";
-		};
-		C7E1E4FD191A576300602A4D /* user */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E4FF191A577700602A4D /* CCUserPostPutRequest.h */,
-				C7E1E500191A577700602A4D /* CCUserPostPutRequest.m */,
-				C7E1E501191A577700602A4D /* CCUserPostPutResponse.h */,
-				C7E1E502191A577700602A4D /* CCUserPostPutResponse.m */,
-			);
-			name = user;
-			sourceTree = "<group>";
-		};
-		C7E1E4FE191A576800602A4D /* oauth */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E505191A577F00602A4D /* CCOAuthTokenResponse.h */,
-				C7E1E506191A577F00602A4D /* CCOAuthTokenResponse.m */,
-				C7E1E507191A577F00602A4D /* CCOAuthTokenRequest.h */,
-				C7E1E508191A577F00602A4D /* CCOAuthTokenRequest.m */,
-			);
-			name = oauth;
-			sourceTree = "<group>";
-		};
-		C7E1E50B191A578600602A4D /* foursquare */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E50C191A578E00602A4D /* nearby search */,
-			);
-			name = foursquare;
-			sourceTree = "<group>";
-		};
-		C7E1E50C191A578E00602A4D /* nearby search */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E50F191A579C00602A4D /* CCFoursquareVenues.h */,
-				C7E1E510191A579C00602A4D /* CCFoursquareVenues.m */,
-				C762975D192CCDB100B9B6E5 /* CCFoursquareCategorie.h */,
-				C762975E192CCDB100B9B6E5 /* CCFoursquareCategorie.m */,
-			);
-			name = "nearby search";
-			sourceTree = "<group>";
-		};
-		C7E1E513191A581400602A4D /* google */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E517191A583700602A4D /* autocomplete */,
-				C7E1E516191A582C00602A4D /* nearby search */,
-				C7E1E515191A582400602A4D /* geocode */,
-				C7E1E514191A581C00602A4D /* detail */,
-			);
-			name = google;
-			sourceTree = "<group>";
-		};
-		C7E1E514191A581C00602A4D /* detail */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E518191A584700602A4D /* CCGoogleDetail.h */,
-				C7E1E519191A584700602A4D /* CCGoogleDetail.m */,
-				C7E1E51A191A584700602A4D /* CCGoogleDetailResult.h */,
-				C7E1E51B191A584700602A4D /* CCGoogleDetailResult.m */,
-			);
-			name = detail;
-			sourceTree = "<group>";
-		};
-		C7E1E515191A582400602A4D /* geocode */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E51E191A585200602A4D /* CCGoogleGeocode.h */,
-				C7E1E51F191A585200602A4D /* CCGoogleGeocode.m */,
-				C7E1E520191A585200602A4D /* CCGoogleGeocodeResult.h */,
-				C7E1E521191A585200602A4D /* CCGoogleGeocodeResult.m */,
-			);
-			name = geocode;
-			sourceTree = "<group>";
-		};
-		C7E1E516191A582C00602A4D /* nearby search */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E524191A585E00602A4D /* CCGoogleSearch.h */,
-				C7E1E525191A585E00602A4D /* CCGoogleSearch.m */,
-				C7E1E526191A585E00602A4D /* CCGoogleSearchResult.h */,
-				C7E1E527191A585E00602A4D /* CCGoogleSearchResult.m */,
-			);
-			name = "nearby search";
-			sourceTree = "<group>";
-		};
-		C7E1E517191A583700602A4D /* autocomplete */ = {
-			isa = PBXGroup;
-			children = (
-				C7E1E52A191A586600602A4D /* CCGoogleAutocomplete.h */,
-				C7E1E52B191A586600602A4D /* CCGoogleAutocomplete.m */,
-				C7E1E52C191A586600602A4D /* CCGooglePrediction.h */,
-				C7E1E52D191A586600602A4D /* CCGooglePrediction.m */,
-			);
-			name = autocomplete;
 			sourceTree = "<group>";
 		};
 		C7E1E530191A614B00602A4D /* main */ = {
@@ -2069,7 +1911,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B6F35F87DA9F49ECA393063A /* Check Pods Manifest.lock */ = {
@@ -2108,12 +1950,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */,
-				C762975F192CCDB100B9B6E5 /* CCFoursquareCategorie.m in Sources */,
 				C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */,
 				C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */,
-				C709B51919E2FF790028B389 /* _CCListAddressLink.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */,
-				C7E1E4F3191A46B200602A4D /* CCRestKit.m in Sources */,
 				C7619FD919C6F22900C09F0D /* CCListOptionScrollView.m in Sources */,
 				C799AB4D1920CD150096B5A8 /* CCAddAddressViewTableViewCell.m in Sources */,
 				C76A1CE919C0CA2000EE75E4 /* CCListOutputViewController.m in Sources */,
@@ -2121,6 +1960,7 @@
 				C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */,
 				C7619FE319C97D6300C09F0D /* CCAddListView.m in Sources */,
 				C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */,
+				C73E7D0519F7D92D00ADC1A2 /* CCAutoCompleteAddressName.m in Sources */,
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
 				C7C2925319D4B7B100EBF5C3 /* CCListListEmptyView.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddAddressView.m in Sources */,
@@ -2140,15 +1980,10 @@
 				C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */,
 				C79578A519D86B34008B520E /* CCListListExpandedSettingsViewController.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
-				C7E1E522191A585200602A4D /* CCGoogleGeocode.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstDisplaySettingsView.m in Sources */,
 				C7619FFE19CC310A00C09F0D /* UIView+CCShowSettingsView.m in Sources */,
-				C7E1E51D191A584700602A4D /* CCGoogleDetailResult.m in Sources */,
-				C7E1E529191A585E00602A4D /* CCGoogleSearchResult.m in Sources */,
-				C7E1E523191A585200602A4D /* CCGoogleGeocodeResult.m in Sources */,
 				C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */,
-				C709B51219E045BA0028B389 /* CCIdentifierModel.m in Sources */,
 				C7C2924F19D4B35200EBF5C3 /* CCListOutputListEmptyView.m in Sources */,
 				C7619FD519C6DDAF00C09F0D /* CCListOptionButton.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
@@ -2158,12 +1993,7 @@
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
 				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
 				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
-				C7E1E509191A577F00602A4D /* CCOAuthTokenResponse.m in Sources */,
-				C7E1E528191A585E00602A4D /* CCGoogleSearch.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressViewController.m in Sources */,
-				C7E1E52F191A586600602A4D /* CCGooglePrediction.m in Sources */,
-				C7E1E512191A579C00602A4D /* CCFoursquareVenues.m in Sources */,
-				C7E1E52E191A586600602A4D /* CCGoogleAutocomplete.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
 				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
@@ -2179,10 +2009,7 @@
 				C7619FEB19CC228500C09F0D /* CCSettingsViewController.m in Sources */,
 				C7E1E535191A618900602A4D /* CCMainViewController.m in Sources */,
 				C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */,
-				C7E1E50A191A577F00602A4D /* CCOAuthTokenRequest.m in Sources */,
-				C7E1E504191A577700602A4D /* CCUserPostPutResponse.m in Sources */,
 				C7C2924C19D4B11300EBF5C3 /* CCMainListEmptyView.m in Sources */,
-				C709B51619E2FF690028B389 /* CCListAddressLink.m in Sources */,
 				C76A1CF219C0CA7F00EE75E4 /* CCListOutputView.m in Sources */,
 				C7619FD119C6D7C300C09F0D /* CCListOptionContainer.m in Sources */,
 				C7619FB319C4419000C09F0D /* CCHomeListViewModel.m in Sources */,
@@ -2190,13 +2017,12 @@
 				C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */,
 				C7A1621E19DEA5FE003EFE5B /* CCNetworkEvent.m in Sources */,
 				C7C2924119D47F1600EBF5C3 /* CCActionResultHUD.m in Sources */,
+				C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */,
 				C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */,
-				C7E1E503191A577700602A4D /* CCUserPostPutRequest.m in Sources */,
 				C7C2924419D482B300EBF5C3 /* CCAlertView.m in Sources */,
 				C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
-				C7E1E51C191A584700602A4D /* CCGoogleDetail.m in Sources */,
 				C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */,
 				C7619FF119CC233F00C09F0D /* CCSettingsView.m in Sources */,
 				C796D7D319BBA8F700B97879 /* CCAddressListSettingsView.m in Sources */,
@@ -2333,7 +2159,7 @@
 		};
 		C7CE2C941918E48800D37A64 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */;
+			baseConfigurationReference = 2DF6C977A428448EC61830A0 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -2347,16 +2173,18 @@
 					"COCOAPODS=1",
 				);
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4a532165-7896-4db2-ac9f-4dd7994bce11";
+				PROVISIONING_PROFILE = "4bc5af30-d7e9-4142-85ec-f03db782e14c";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		C7CE2C951918E48800D37A64 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 43A41532DEFE43A6A18F5FB2 /* Pods.xcconfig */;
+			baseConfigurationReference = A82545F81FB62D02945A6F11 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -2366,9 +2194,11 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "927107bd-f92f-4699-90bc-3d9b60373580";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

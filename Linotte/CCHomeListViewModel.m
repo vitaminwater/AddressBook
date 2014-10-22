@@ -8,7 +8,7 @@
 
 #import "CCHomeListViewModel.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "CCListViewContentProvider.h"
 
@@ -26,7 +26,7 @@
 
 - (void)loadListItems
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     // Addresses
     {
@@ -61,7 +61,7 @@
 {
     [self.provider removeList:list];
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.expanded = %@).@count = 1", list, @YES];
@@ -77,7 +77,7 @@
 {
     [self.provider addList:list];
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.expanded = %@).@count = 0", list, @YES];
@@ -151,7 +151,7 @@
 - (void)listWillRemove:(CCList *)list
 {
     if (list.expandedValue) {
-        NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(ANY lists.expanded = %@).@count = 1", list, @YES];

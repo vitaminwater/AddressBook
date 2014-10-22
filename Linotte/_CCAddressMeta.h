@@ -12,9 +12,11 @@ extern const struct CCAddressMetaAttributes {
 
 extern const struct CCAddressMetaRelationships {
 	__unsafe_unretained NSString *address;
+	__unsafe_unretained NSString *list;
 } CCAddressMetaRelationships;
 
-@class CCListAddressLink;
+@class CCAddress;
+@class CCList;
 
 @interface CCAddressMetaID : NSManagedObjectID {}
 @end
@@ -41,9 +43,13 @@ extern const struct CCAddressMetaRelationships {
 
 //- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) CCListAddressLink *address;
+@property (nonatomic, strong) CCAddress *address;
 
 //- (BOOL)validateAddress:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) CCList *list;
+
+//- (BOOL)validateList:(id*)value_ error:(NSError**)error_;
 
 @end
 
@@ -61,7 +67,10 @@ extern const struct CCAddressMetaRelationships {
 - (NSString*)primitiveValue;
 - (void)setPrimitiveValue:(NSString*)value;
 
-- (CCListAddressLink*)primitiveAddress;
-- (void)setPrimitiveAddress:(CCListAddressLink*)value;
+- (CCAddress*)primitiveAddress;
+- (void)setPrimitiveAddress:(CCAddress*)value;
+
+- (CCList*)primitiveList;
+- (void)setPrimitiveList:(CCList*)value;
 
 @end

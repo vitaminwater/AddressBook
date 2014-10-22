@@ -8,6 +8,8 @@
 
 #import "CCListViewController.h"
 
+#import "CCCoreDataStack.h"
+
 #import <Mixpanel/Mixpanel.h>
 
 #import <objc/runtime.h>
@@ -25,8 +27,6 @@
 
 #import "CCOutputViewController.h"
 #import "CCListOutputViewController.h"
-
-#import "CCRestKit.h"
 
 #import "CCListView.h"
 
@@ -126,8 +126,7 @@
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     
     if (type == CCListItemTypeAddress) {
-        NSError *error;
-        NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
                                                                          @"address": address.address ?: @"",
@@ -135,7 +134,7 @@
         
         [[CCModelChangeMonitor sharedInstance] addressWillRemove:address];
         [managedObjectContext deleteObject:address];
-        [managedObjectContext saveToPersistentStore:&error];
+        [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressDidRemove:address];
         
         [((CCListView *)self.view) showConfirmationHUD:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"")];
@@ -185,17 +184,16 @@
 
 - (void)setNotificationEnabled:(BOOL)enabled atIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
-        [managedObjectContext saveToPersistentStore:NULL];
+        [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressDidUpdate:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
-        [managedObjectContext saveToPersistentStore:NULL];
+        [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] listDidUpdate:list];
     }
 }

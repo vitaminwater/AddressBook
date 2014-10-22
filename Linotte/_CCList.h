@@ -7,9 +7,6 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *expanded;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
-	__unsafe_unretained NSString *last_update;
-	__unsafe_unretained NSString *last_update_latitude;
-	__unsafe_unretained NSString *last_update_longitude;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *provider;
@@ -17,12 +14,14 @@ extern const struct CCListAttributes {
 } CCListAttributes;
 
 extern const struct CCListRelationships {
+	__unsafe_unretained NSString *addressMetas;
 	__unsafe_unretained NSString *addresses;
 	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *metas;
 } CCListRelationships;
 
-@class CCListAddressLink;
+@class CCAddressMeta;
+@class CCAddress;
 @class CCNetworkEvent;
 @class CCListMeta;
 
@@ -51,26 +50,6 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSDate* last_update;
-
-//- (BOOL)validateLast_update:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* last_update_latitude;
-
-@property (atomic) double last_update_latitudeValue;
-- (double)last_update_latitudeValue;
-- (void)setLast_update_latitudeValue:(double)value_;
-
-//- (BOOL)validateLast_update_latitude:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* last_update_longitude;
-
-@property (atomic) double last_update_longitudeValue;
-- (double)last_update_longitudeValue;
-- (void)setLast_update_longitudeValue:(double)value_;
-
-//- (BOOL)validateLast_update_longitude:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSString* name;
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -91,6 +70,10 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) CCAddressMeta *addressMetas;
+
+//- (BOOL)validateAddressMetas:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSSet *addresses;
 
 - (NSMutableSet*)addressesSet;
@@ -108,8 +91,8 @@ extern const struct CCListRelationships {
 @interface _CCList (AddressesCoreDataGeneratedAccessors)
 - (void)addAddresses:(NSSet*)value_;
 - (void)removeAddresses:(NSSet*)value_;
-- (void)addAddressesObject:(CCListAddressLink*)value_;
-- (void)removeAddressesObject:(CCListAddressLink*)value_;
+- (void)addAddressesObject:(CCAddress*)value_;
+- (void)removeAddressesObject:(CCAddress*)value_;
 
 @end
 
@@ -143,21 +126,6 @@ extern const struct CCListRelationships {
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-- (NSDate*)primitiveLast_update;
-- (void)setPrimitiveLast_update:(NSDate*)value;
-
-- (NSNumber*)primitiveLast_update_latitude;
-- (void)setPrimitiveLast_update_latitude:(NSNumber*)value;
-
-- (double)primitiveLast_update_latitudeValue;
-- (void)setPrimitiveLast_update_latitudeValue:(double)value_;
-
-- (NSNumber*)primitiveLast_update_longitude;
-- (void)setPrimitiveLast_update_longitude:(NSNumber*)value;
-
-- (double)primitiveLast_update_longitudeValue;
-- (void)setPrimitiveLast_update_longitudeValue:(double)value_;
-
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
@@ -172,6 +140,9 @@ extern const struct CCListRelationships {
 
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
+
+- (CCAddressMeta*)primitiveAddressMetas;
+- (void)setPrimitiveAddressMetas:(CCAddressMeta*)value;
 
 - (NSMutableSet*)primitiveAddresses;
 - (void)setPrimitiveAddresses:(NSMutableSet*)value;

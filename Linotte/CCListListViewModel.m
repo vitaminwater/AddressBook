@@ -8,7 +8,7 @@
 
 #import "CCListListViewModel.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "CCListViewContentProvider.h"
 
@@ -25,7 +25,7 @@
 
 - (void)loadListItems
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     

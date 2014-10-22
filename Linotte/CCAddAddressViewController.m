@@ -8,8 +8,6 @@
 
 #import "CCAddAddressViewController.h"
 
-#import <RestKit/RestKit.h>
-
 #import <Reachability/Reachability.h>
 
 #import <MBProgressHUD/MBProgressHUD.h>
@@ -18,16 +16,13 @@
 
 #import <geohash/geohash.h>
 
+#import "CCCoreDataStack.h"
+
 #import "CCModelChangeMonitor.h"
 #import "CCLocationMonitor.h"
 
-#import "CCFoursquareVenues.h"
-#import "CCFoursquareCategorie.h"
-
 #import "CCGeohashHelper.h"
 #import "CCNetworkHandler.h"
-
-#import "CCRestKit.h"
 
 #import "CCAddAddressView.h"
 
@@ -153,7 +148,7 @@
     if (_currentLocation)
         [self loadPlacesWebserviceByName:addressName];
     else
-        [(CCAddAddressView *)self.view showLoading]; // Yeah this sucks
+        [(CCAddAddressView *)self.view showLoading:@"Awaiting location"]; // Yeah this sucks
     _geolocBlock = ^() {
         [weakSelf loadPlacesWebserviceByName:addressName];
     };
@@ -203,9 +198,9 @@
     }
     _isLoadingFoursquarePlace = YES;
     
-    [(CCAddAddressView *)self.view showLoading];
+    [(CCAddAddressView *)self.view showLoading:@"loading"];
     
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCFoursquareObjectManager];
+    /*RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCFoursquareObjectManager];
     [objectManager getObjectsAtPath:kCCFoursquareAPIVenueSearch parameters:args success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         NSArray *venues = mappingResult.array;
         
@@ -246,7 +241,7 @@
         [self endFoursquareRequest];
     } failure:^(RKObjectRequestOperation *operation, NSError *error) {
         [self endFoursquareRequest];
-    }];
+    }];*/
 }
 
 - (void)endFoursquareRequest
@@ -310,7 +305,7 @@
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
     CCAddViewAutocompletionResult *autocompletionResult = _autocompletionResults[index];
     
@@ -333,7 +328,7 @@
     }
     
     [_delegate preSaveAddress:address];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressDidAdd:address];
     [_delegate postSaveAddress:address];
     

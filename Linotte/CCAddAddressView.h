@@ -19,7 +19,7 @@
 - (void)enableField;
 - (void)disableField;
 
-- (void)showLoading;
+- (void)showLoading:(NSString *)message;
 - (void)hideLoading;
 
 @end

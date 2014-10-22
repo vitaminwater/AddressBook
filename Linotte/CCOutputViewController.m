@@ -21,8 +21,6 @@
 
 #import "CCOutputView.h"
 
-#import "CCRestKit.h"
-
 #import "CCAddress.h"
 #import "CCList.h"
 

@@ -8,7 +8,7 @@
 
 #import "CCListListExpandedSettingsViewController.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "CCListListExpandedSettingsView.h"
 
@@ -39,7 +39,7 @@
 
 - (void)loadLists
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
@@ -73,7 +73,7 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] listWillExpand:list];
     list.expanded = @(YES);
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidExpand:list];
 }
 
@@ -82,7 +82,7 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] listWillReduce:list];
     list.expanded = @(NO);
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidReduce:list];
 }
 

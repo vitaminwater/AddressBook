@@ -12,6 +12,7 @@ const struct CCAddressMetaAttributes CCAddressMetaAttributes = {
 
 const struct CCAddressMetaRelationships CCAddressMetaRelationships = {
 	.address = @"address",
+	.list = @"list",
 };
 
 @implementation CCAddressMetaID
@@ -52,6 +53,8 @@ const struct CCAddressMetaRelationships CCAddressMetaRelationships = {
 @dynamic value;
 
 @dynamic address;
+
+@dynamic list;
 
 @end
 

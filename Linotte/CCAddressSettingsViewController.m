@@ -10,9 +10,10 @@
 
 #import "CCAddressSettingsView.h"
 
-#import <RestKit/RestKit.h>
 #import <Mixpanel/Mixpanel.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+
+#import "CCCoreDataStack.h"
 
 #import "CCModelChangeMonitor.h"
 
@@ -54,7 +55,7 @@
 
 - (NSString *)currentListNames
 {
-    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"list.name" ascending:YES];
     NSArray *listArray = [[_address.lists allObjects] sortedArrayUsingDescriptors:@[nameSortDescriptor]];
     return [[listArray valueForKeyPath:@"@unionOfObjects.name"] componentsJoinedByString:@", "];
 }
@@ -64,7 +65,7 @@
 - (void)setNotificationEnabled:(BOOL)enabled
 {
     _address.notify = @(enabled);
-    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressDidUpdate:_address];
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": _address.notify}];
 }

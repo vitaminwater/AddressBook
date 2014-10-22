@@ -8,8 +8,6 @@
 
 #import "CCModelChangeMonitor.h"
 
-#import <RestKit/RestKit.h>
-
 #import "CCAddress.h"
 #import "CCList.h"
 
@@ -57,14 +55,16 @@
     }
 }
 
-#pragma mark - singelton method
+#pragma mark - Singleton method
 
 + (instancetype)sharedInstance
 {
     static id instance = nil;
+    static dispatch_once_t token;
     
-    if (instance == nil)
-        instance = [[self class] new];
+    dispatch_once(&token, ^{
+        instance = [self new];
+    });
     
     return instance;
 }

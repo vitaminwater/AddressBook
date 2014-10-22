@@ -60,11 +60,11 @@
 	<key>linotte_api_client</key>
 	<string>eda95b19f510ac1f217a</string>
 	<key>linotte_api_client_debug</key>
-	<string>317fad2ece10bd331120</string>
+	<string>client_id_12345</string>
 	<key>linotte_api_secret</key>
 	<string>03deca54e8ca4bc0afda684d06e4b3252fa61164</string>
 	<key>linotte_api_secret_debug</key>
-	<string>8b5d0f01bf26dca66b599779119aaeb97433b5f4</string>
+	<string>client_secret_12345</string>
 	<key>mixpanel_api_token</key>
 	<string>1dc69197f2069b1758b9f0b9b17b8f88</string>
 	<key>mixpanel_api_token_debug</key>

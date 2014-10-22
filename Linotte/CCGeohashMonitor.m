@@ -8,8 +8,6 @@
 
 #import "CCGeohashMonitor.h"
 
-#import <RestKit/RestKit.h>
-
 #import "CCGeohashHelper.h"
 
 
@@ -78,14 +76,16 @@
     [self updateMonitoredGeohashes:location.coordinate];
 }
 
-#pragma mark - singelton method
+#pragma mark - Singleton method
 
 + (instancetype)sharedInstance
 {
-    static CCGeohashMonitor *instance = nil;
+    static id instance = nil;
+    static dispatch_once_t token;
     
-    if (instance == nil)
-        instance = [CCGeohashMonitor new];
+    dispatch_once(&token, ^{
+        instance = [self new];
+    });
     
     return instance;
 }

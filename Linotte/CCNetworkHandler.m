@@ -12,9 +12,10 @@
 
 #import <Reachability/Reachability.h>
 
+#import "CCCoreDataStack.h"
+
 #import "CCModelChangeMonitor.h"
 
-#import "CCRestKit.h"
 #import "CCLinotteAPI.h"
 
 #import "CCNetworkEvent.h"
@@ -88,7 +89,7 @@
     if (_isSendingEvent)
         return;
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCNetworkEvent entityName]];
     fetchRequest.fetchLimit = 1;
@@ -97,17 +98,19 @@
     [fetchRequest setSortDescriptors:@[dateSortDescriptor]];
     
     NSArray *events = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-   [self sendEvent:[events firstObject]];
+    
+    if ([events count])
+        [self sendEvent:[events firstObject]];
 }
 
 - (void)sendEvent:(CCNetworkEvent *)event
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     _isSendingEvent = YES;
     switch (event.eventValue) {
         case CCNetworkEventEventAddressAdded:
         {
-            [[CCLinotteAPI sharedInstance] sendAddress:event.address completionBlock:^(BOOL success) {
+            [[CCLinotteAPI sharedInstance] createAddress:event.address completionBlock:^(BOOL success) {
                 if (success) {
                     _isSendingEvent = NO;
                     [managedObjectContext deleteObject:event];
@@ -118,7 +121,7 @@
             break;
         case CCNetworkEventEventListAdded:
         {
-            [[CCLinotteAPI sharedInstance] sendList:event.list completionBlock:^(BOOL success) {
+            [[CCLinotteAPI sharedInstance] createList:event.list completionBlock:^(BOOL success) {
                 if (success) {
                     _isSendingEvent = NO;
                     [managedObjectContext deleteObject:event];
@@ -204,7 +207,7 @@
 - (void)resetAllAdresses
 {
     NSError *error;
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent=%@", @YES];
@@ -223,8 +226,7 @@
         [self addressDidAdd:address];
     }
     
-    if ([managedObjectContext saveToPersistentStore:&error] == NO)
-        NSLog(@"%@", error);
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 #pragma mark - NSTimer management
@@ -257,18 +259,18 @@
 
 - (void)listDidAdd:(CCList *)list
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCNetworkEvent *listAddEvent = [CCNetworkEvent insertInManagedObjectContext:managedObjectContext];
     listAddEvent.eventValue = CCNetworkEventEventListAdded;
     listAddEvent.date = [NSDate date];
     listAddEvent.list = list;
-    [managedObjectContext saveToPersistentStore:NULL]; // TODO check error
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)listDidRemove:(CCList *)list
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     // remove useless events
     // not sure what to do actually... maybe keep the address flagged as "toDelete" and delete when all events are processed ? as of now delete rule is "cascade"
@@ -277,12 +279,12 @@
     listRemoveEvent.eventValue = CCNetworkEventEventListRemoved;
     listRemoveEvent.date = [NSDate date];
     listRemoveEvent.identifier = list.identifier;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)listDidUpdate:(CCList *)list
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     // remove useless events
     {
@@ -300,18 +302,18 @@
     listUpdateEvent.eventValue = CCNetworkEventEventListUpdated;
     listUpdateEvent.date = [NSDate date];
     listUpdateEvent.list = list;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)addressDidAdd:(CCAddress *)address
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCNetworkEvent *addressAddEvent = [CCNetworkEvent insertInManagedObjectContext:managedObjectContext];
     addressAddEvent.eventValue = CCNetworkEventEventAddressAdded;
     addressAddEvent.date = [NSDate date];
     addressAddEvent.address = address;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)addressDidRemove:(CCAddress *)address
@@ -331,7 +333,7 @@
 
 - (void)addressDidUpdate:(CCAddress *)address
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     // remove useless events
     {
@@ -351,24 +353,24 @@
     addressUpdateEvent.eventValue = CCNetworkEventEventAddressUpdated;
     addressUpdateEvent.date = [NSDate date];
     addressUpdateEvent.address = address;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCNetworkEvent *addressMovedToListEvent = [CCNetworkEvent insertInManagedObjectContext:managedObjectContext];
     addressMovedToListEvent.eventValue = CCNetworkEventEventAddressMovedToList;
     addressMovedToListEvent.address = address;
     addressMovedToListEvent.date = [NSDate date];
     addressMovedToListEvent.list = list;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
 
     // remove useless events
     {
@@ -390,7 +392,7 @@
     addressMovedFromListEvent.date = [NSDate date];
     addressMovedFromListEvent.address = address;
     addressMovedFromListEvent.list = list;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 #pragma mark - Singleton method
@@ -398,9 +400,11 @@
 + (instancetype)sharedInstance
 {
     static id instance = nil;
+    static dispatch_once_t token;
     
-    if (instance == nil)
+    dispatch_once(&token, ^{
         instance = [self new];
+    });
     
     return instance;
 }

@@ -11,6 +11,8 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import <Mixpanel/Mixpanel.h>
 
+#import "CCCoreDataStack.h"
+
 #import "CCNotificationGenerator.h"
 
 #import "CCLinotteAPI.h"
@@ -22,8 +24,6 @@
 
 #import "CCMainViewController.h"
 #import "CCOutputViewController.h"
-
-#import "CCRestKit.h"
 
 #import "CCAddress.h"
 
@@ -83,16 +83,13 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
-    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 #pragma mark - RestKit initialization
 
 - (void)initAll:(UIApplication *)application
 {
-    [self initRestkitCoreDataStack];
-    [self initRestKitMappings];
-    
     // Google map service initialization
     [GMSServices provideAPIKey:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"google_map_api_key"]];
     
@@ -124,40 +121,6 @@
     [CCNetworkHandler sharedInstance];
 }
 
-- (void)initRestkitCoreDataStack
-{
-    NSError *error = nil;
-    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Linotte" ofType:@"momd"]];
-    // NOTE: Due to an iOS 5 bug, the managed object model returned is immutable.
-    NSManagedObjectModel *managedObjectModel = [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] mutableCopy];
-    RKManagedObjectStore *managedObjectStore = [[RKManagedObjectStore alloc] initWithManagedObjectModel:managedObjectModel];
-    
-    // Initialize the Core Data stack
-    [managedObjectStore createPersistentStoreCoordinator];
-    
-    NSString *sqlitePath = [CCRestKit storePath];
-    
-    NSPersistentStore __unused *persistentStore = [managedObjectStore addSQLitePersistentStoreAtPath:sqlitePath
-                                                                              fromSeedDatabaseAtPath:nil
-                                                                                   withConfiguration:nil
-                                                                                             options:nil
-                                                                                               error:&error];
-    NSAssert(persistentStore, @"Failed to add persistent store: %@", error);
-    
-    if (![[NSFileManager defaultManager] setAttributes:@{NSFileProtectionKey: NSFileProtectionNone} ofItemAtPath:sqlitePath error:&error])
-        NSLog(@"%@", error);
-    
-    [managedObjectStore createManagedObjectContexts];
-    
-    // Set the default store shared instance
-    [RKManagedObjectStore setDefaultStore:managedObjectStore];
-}
-
-- (void)initRestKitMappings
-{
-    [CCRestKit initializeMappings];
-}
-
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
     if (application.applicationState == UIApplicationStateInactive)
@@ -183,7 +146,7 @@
     }
     
     NSString *objectID = notification.userInfo[@"addressId"];
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", objectID];
     [fetchRequest setPredicate:predicate];

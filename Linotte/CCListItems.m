@@ -10,7 +10,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "NSString+CCLocalizedString.h"
 
@@ -296,7 +296,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (self.location == nil)
         return;
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
     

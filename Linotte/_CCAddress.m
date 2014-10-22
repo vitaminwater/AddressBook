@@ -23,6 +23,7 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	.categories = @"categories",
 	.events = @"events",
 	.lists = @"lists",
+	.metas = @"metas",
 };
 
 @implementation CCAddressID
@@ -205,6 +206,8 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	[self didAccessValueForKey:@"lists"];
 	return result;
 }
+
+@dynamic metas;
 
 @end
 

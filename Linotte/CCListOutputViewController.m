@@ -8,8 +8,9 @@
 
 #import "CCListOutputViewController.h"
 
+#import "CCCoreDataStack.h"
+
 #import <HexColors/HexColor.h>
-#import <RestKit/RestKit.h>
 
 #import "UIView+CCShowSettingsView.h"
 
@@ -165,7 +166,7 @@
 - (void)notificationEnabled:(BOOL)enabled
 {
     _list.notify = @(enabled);
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list];
 }
 

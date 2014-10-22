@@ -8,8 +8,9 @@
 
 #import "CCFirstAddressDisplaySettingsViewController.h"
 
-#import <RestKit/RestKit.h>
 #import <Mixpanel/Mixpanel.h>
+
+#import "CCCoreDataStack.h"
 
 #import "CCFirstDisplaySettingsView.h"
 
@@ -50,7 +51,7 @@
 {
     _address.notify = @(enabled);
     
-    [[[RKManagedObjectStore defaultStore] mainQueueManagedObjectContext] saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressDidUpdate:_address];
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier, @"enabled": _address.notify}];
 }

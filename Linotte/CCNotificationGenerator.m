@@ -8,11 +8,12 @@
 
 #import "CCNotificationGenerator.h"
 
+#import "CCCoreDataStack.h"
+
 #import <SSKeyChain/SSKeychain.h>
 
 #import "NSString+CCLocalizedString.h"
 
-#import <RestKit/RestKit.h>
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCAddress.h"
@@ -26,7 +27,7 @@
 {
     // [CCNotificationGenerator scheduleTestLocalNotification:0];
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 8];
@@ -53,7 +54,7 @@
     else
         [self configureLocalNotificationForAddresses:results localNotification:localNotification];
 
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     [[Mixpanel sharedInstance] track:@"Local notification sent" properties:localNotification.userInfo];
@@ -104,7 +105,7 @@
 
 + (void)printLastNotif
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
@@ -116,7 +117,7 @@
 
 + (void)resetLastNotif
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24 * 2];
@@ -127,7 +128,7 @@
         address.lastnotif = date;
     }
     
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 #define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug32"
@@ -139,7 +140,7 @@
 + (void)scheduleTestLocalNotification:(NSUInteger)delay
 {
     NSError *error = NULL;
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSUInteger nAddresses = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
@@ -167,14 +168,16 @@
     }
 }
 
-#pragma mark - singelton method
+#pragma mark - Singleton method
 
 + (instancetype)sharedInstance
 {
     static id instance = nil;
+    static dispatch_once_t token;
     
-    if (instance == nil)
+    dispatch_once(&token, ^{
         instance = [self new];
+    });
     
     return instance;
 }

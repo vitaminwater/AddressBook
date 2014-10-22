@@ -8,8 +8,6 @@
 
 #import "CCListViewModel.h"
 
-#import <RestKit/RestKit.h>
-
 #import "CCModelChangeMonitor.h"
 
 #import "CCListViewModelProtocol.h"

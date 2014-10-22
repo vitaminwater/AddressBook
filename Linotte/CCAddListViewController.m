@@ -8,7 +8,8 @@
 
 #import "CCAddListViewController.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
+
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCModelChangeMonitor.h"
@@ -30,12 +31,12 @@
 
 - (void)createListWithName:(NSString *)name
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
     list.identifier = [[NSUUID UUID] UUIDString];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
     
     [[Mixpanel sharedInstance] track:@"List created" properties:@{@"name": list.name}];

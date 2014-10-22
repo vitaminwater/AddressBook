@@ -8,7 +8,7 @@
 
 #import "CCListOutputAddressListViewController.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "CCListOutputAddressListView.h"
 
@@ -53,7 +53,7 @@
 {
     _addresses = [@[] mutableCopy];
     
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     if ([filterString length]) {
@@ -83,23 +83,21 @@
 
 - (void)addressAddedAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCAddress *address = _addresses[index];
     
     [[CCModelChangeMonitor sharedInstance] address:address willMoveToList:_list];
     [_list addAddressesObject:address];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:address didMoveToList:_list];
 }
 
 - (void)addressUnaddedAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
     CCAddress *address = _addresses[index];
     
     [[CCModelChangeMonitor sharedInstance] address:address willMoveFromList:_list];
     [_list removeAddressesObject:address];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:address didMoveFromList:_list];
 }
 

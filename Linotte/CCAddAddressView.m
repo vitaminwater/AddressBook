@@ -20,6 +20,7 @@
 
     UITextField *_textField;
     UIView *_loadingView;
+    UILabel *_loadingLabel;
     UITableView *_tableView;
 
     NSLayoutConstraint *_loadingViewTopConstraint;
@@ -77,20 +78,20 @@
     [self insertSubview:_loadingView belowSubview:_textField];
     
     {
-        UILabel *loadingLabel = [UILabel new];
-        loadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        loadingLabel.text = @"Loading";
-        loadingLabel.textColor = [UIColor whiteColor];
-        loadingLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
-        [_loadingView addSubview:loadingLabel];
+        _loadingLabel = [UILabel new];
+        _loadingLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        _loadingLabel.text = @"Loading";
+        _loadingLabel.textColor = [UIColor whiteColor];
+        _loadingLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:16];
+        [_loadingView addSubview:_loadingLabel];
         
         UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = NO;
         [activityIndicatorView startAnimating];
         [_loadingView addSubview:activityIndicatorView];
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(loadingLabel, activityIndicatorView);
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[activityIndicatorView]-[loadingLabel]" options:0 metrics:nil views:views];
+        NSDictionary *views = NSDictionaryOfVariableBindings(_loadingLabel, activityIndicatorView);
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[activityIndicatorView]-[_loadingLabel]" options:0 metrics:nil views:views];
         [_loadingView addConstraints:horizontalConstraints];
         
         for (UIView *v in views.allValues) {
@@ -164,9 +165,10 @@
     _textField.enabled = NO;
 }
 
-- (void)showLoading
+- (void)showLoading:(NSString *)message
 {
     [self layoutIfNeeded];
+    _loadingLabel.text = message;
     _loadingViewTopConstraint.constant = 0;
     [UIView animateWithDuration:0.2 animations:^{
         _loadingView.alpha = 1;

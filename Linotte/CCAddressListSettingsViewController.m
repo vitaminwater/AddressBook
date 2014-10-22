@@ -8,7 +8,7 @@
 
 #import "CCAddressListSettingsViewController.h"
 
-#import <RestKit/RestKit.h>
+#import "CCCoreDataStack.h"
 
 #import "CCAddressListSettingsView.h"
 
@@ -49,7 +49,7 @@
 
 - (void)loadLists
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
@@ -87,10 +87,10 @@
 
 - (NSUInteger)createListWithName:(NSString *)name
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
     
     NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
@@ -100,7 +100,7 @@
     
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
     [_address addListsObject:list];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
     
     return insertIndex;
@@ -108,12 +108,12 @@
 
 - (void)removeListAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [RKManagedObjectStore defaultStore].mainQueueManagedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] listWillRemove:list];
     [managedObjectContext deleteObject:list];
-    [managedObjectContext saveToPersistentStore:NULL];
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidRemove:list];
 
     [_lists removeObject:list];
@@ -123,8 +123,10 @@
 {
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
+    
     [_address addListsObject:list];
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
 }
 
@@ -132,8 +134,10 @@
 {
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveFromList:list];
-    [_address removeListsObject:list];
-    [[RKManagedObjectStore defaultStore].mainQueueManagedObjectContext saveToPersistentStore:NULL];
+    
+    [_address addListsObject:list];
+    
+    [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list];
 }
 

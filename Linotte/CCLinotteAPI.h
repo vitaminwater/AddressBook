@@ -33,8 +33,8 @@ typedef enum : NSUInteger {
 
 - (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
 
-- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
-- (void)sendList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)createAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)createList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
 
 - (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock;
 

@@ -11,22 +11,18 @@
 #import <SSKeychain/SSKeychain.h>
 #import <AFNetworking/AFNetworking.h>
 
-#import "CCRestKit.h"
-
-#import "CCIdentifierModel.h"
-
-#import "CCOAuthTokenResponse.h"
-#import "CCOAuthTokenRequest.h"
-
-#import "CCUserPostPutResponse.h"
-#import "CCUserPostPutRequest.h"
-
 #import "CCAddress.h"
 #import "CCList.h"
 
+#if defined(DEBUG)
+#define kCCLinotteBaseUrl @"http://192.168.1.74:8000"
+#else
+#define kCCLinotteBaseUrl @"https://api.getlinotte.com"
+#endif
+
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug41"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug44"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -40,15 +36,27 @@
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
 #endif
 
+@interface CCLinotteAPICredentials : NSObject
+@property(nonatomic, strong)NSString *accessToken;
+@property(nonatomic, strong)NSString *refreshToken;
+@property(nonatomic, strong)NSString *expireTimeStamp;
+@end
+
+@implementation CCLinotteAPICredentials
+@end
+
 
 @implementation CCLinotteAPI
 {
+    
+    AFHTTPSessionManager *_apiManager;
+    AFHTTPSessionManager *_oauth2Manager;
+    
     NSString *_clientId;
     NSString *_clientSecret;
     
-    NSString *_accessToken;
-    NSString *_refreshToken;
-    NSString *_expireTimeStamp;
+    CCLinotteAPICredentials *_credentials;
+
 }
 
 - (instancetype)init
@@ -56,11 +64,20 @@
     self = [super init];
     if (self != nil) {
         [SSKeychain setAccessibilityType:kSecAttrAccessibleAlways];
-        _accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
-        _refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+        
+        _credentials = [CCLinotteAPICredentials new];
+        _credentials.accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
+        _credentials.refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
         _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-        _expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
-        // [@([[NSDate date] timeIntervalSince1970] + 60 * 60 * 24 * 15) stringValue];
+        _credentials.expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+        
+        _apiManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kCCLinotteBaseUrl]];
+        _apiManager.requestSerializer = [AFJSONRequestSerializer serializer];
+        _apiManager.responseSerializer = [AFJSONResponseSerializer serializer];
+        
+        _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kCCLinotteBaseUrl]];
+        _oauth2Manager.responseSerializer = [AFJSONResponseSerializer serializer];
+
         [self refreshLoggedState];
         if (_loggedState == kCCLoggedIn)
             [self setOAuth2HTTPHeader];
@@ -72,7 +89,7 @@
 {
     if ([self isFirstStart])
         _loggedState = kCCFirstStart;
-    else if (!_expireTimeStamp || [_expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
+    else if (!_credentials.expireTimeStamp || [_credentials.expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
         _loggedState = kCCRequestRefreshToken;
     else
         _loggedState = kCCLoggedIn;
@@ -117,10 +134,8 @@
 
 - (void)setOAuth2HTTPHeader
 {
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    NSString *oauth2Header = [NSString stringWithFormat:@"Bearer %@", _accessToken];
-    [objectManager.HTTPClient setDefaultHeader:@"Authorization" value:oauth2Header];
+    NSString *oauth2Header = [NSString stringWithFormat:@"Bearer %@", _credentials.accessToken];
+    [_apiManager.requestSerializer setValue:oauth2Header forHTTPHeaderField:@"Authorization"];
 }
 
 #pragma mark - Authentication methods
@@ -128,18 +143,14 @@
 - (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalUrlEncodedObjectManager];
     
-    CCOAuthTokenRequest *oauthTokenRequest = [self createOauthTokenRequest];
-    oauthTokenRequest.grantType = @"password";
-    oauthTokenRequest.username = username;
-    oauthTokenRequest.password = password;
-    
-    [objectManager postObject:oauthTokenRequest path:kCCLocalAPIAccessToken parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        CCOAuthTokenResponse *oauthTokenResponse = mappingResult.firstObject;
-        [self saveTokens:oauthTokenResponse];
+    NSDictionary *parameters = [self oauth2Parameters:@{@"grant_type" : @"password", @"username" : username, @"password" : password}];
+    [_oauth2Manager POST:@"/oauth2/access_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        NSNumber *expiresIn = response[@"expires_in"];
+        NSString *expiresInString = [NSString stringWithFormat:@"%d", (int)([[NSDate date] timeIntervalSince1970] + [expiresIn integerValue])];
+        [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:expiresInString];
         completionBlock(YES);
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO);
     }];
@@ -148,50 +159,46 @@
 - (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    NSAssert(_refreshToken != nil, @"Refresh token not set !");
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalUrlEncodedObjectManager];
-    
-    CCOAuthTokenRequest *oauthTokenRequest = [self createOauthTokenRequest];
-    oauthTokenRequest.grantType = @"refresh_token";
-    oauthTokenRequest.refreshToken = _refreshToken;
-    
-    [objectManager postObject:oauthTokenRequest path:kCCLocalAPIAccessToken parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        CCOAuthTokenResponse *oauthTokenResponse = mappingResult.firstObject;
-        [self saveTokens:oauthTokenResponse];
+    NSAssert(_credentials.refreshToken != nil, @"Refresh token not set !");
+
+    NSDictionary *parameters = [self oauth2Parameters:@{@"grantType" : @"refresh_token", @"refresh_token" : _credentials.refreshToken}];
+    [_oauth2Manager POST:@"/oauth2/refresh_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:response[@"expires_in"]];
         completionBlock(YES);
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
 
-- (void)saveTokens:(CCOAuthTokenResponse *)tokenResponse
+- (void)saveTokens:(NSString *)accessToken refreshToken:(NSString *)refreshToken expireTimeStamp:(NSString *)expireTimeStamp
 {
     NSError *error;
     
-    _accessToken = tokenResponse.accessToken;
-    _refreshToken = tokenResponse.refreshToken;
-    _expireTimeStamp = tokenResponse.expireTimeStampString;
-    if ([SSKeychain setPassword:_accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
+    _credentials.accessToken = accessToken;
+    _credentials.refreshToken = refreshToken;
+    _credentials.expireTimeStamp = expireTimeStamp;
+    if ([SSKeychain setPassword:accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
         NSLog(@"%@", error);
     }
     
-    if ([SSKeychain setPassword:_refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
+    if ([SSKeychain setPassword:refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
         NSLog(@"%@", error);
     }
     
-    if ([SSKeychain setPassword:_expireTimeStamp forService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName error:&error] == NO) {
+    if ([SSKeychain setPassword:expireTimeStamp forService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName error:&error] == NO) {
         NSLog(@"%@", error);
     }
     [self setOAuth2HTTPHeader];
 }
 
-- (CCOAuthTokenRequest *)createOauthTokenRequest
+- (NSDictionary *)oauth2Parameters:(NSDictionary *)parameters
 {
-    CCOAuthTokenRequest *oauthTokenRequest = [CCOAuthTokenRequest new];
-    oauthTokenRequest.clientId = _clientId;
-    oauthTokenRequest.clientSecret = _clientSecret;
-    oauthTokenRequest.scope = @"read+write";
-    return oauthTokenRequest;
+    NSMutableDictionary *mutableDictionnary = [parameters mutableCopy];
+    mutableDictionnary[@"client_id"] = _clientId;
+    mutableDictionnary[@"client_secret"] = _clientSecret;
+    mutableDictionnary[@"scope"] = @"read+write";
+    return [mutableDictionnary copy];
 }
 
 #pragma mark - User methods
@@ -199,23 +206,25 @@
 - (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
     
-    CCUserPostPutRequest *postPutRequest = [CCUserPostPutRequest new];
-    postPutRequest.username = [[[NSUUID UUID] UUIDString] substringToIndex:30];
-    postPutRequest.password = [[NSUUID UUID] UUIDString];
-    postPutRequest.firstName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
-    postPutRequest.lastName = [[[NSUUID UUID] UUIDString] substringToIndex:30];
-    postPutRequest.email = [NSString stringWithFormat:@"%@@getcairnsapp.com", [[NSUUID UUID] UUIDString]];
-    
-    [objectManager postObject:postPutRequest path:kCCLocalAPIUser parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        CCUserPostPutResponse *response = [mappingResult firstObject];
-        [self authenticate:postPutRequest.username password:postPutRequest.password completionBlock:^(BOOL success) {
+    NSString *(^UUID)(NSUInteger len) = ^NSString *(NSUInteger len){
+        if (len)
+            return [[[NSUUID UUID] UUIDString] substringToIndex:30];
+        return [[NSUUID UUID] UUIDString];
+        
+    };
+    NSString *email = [NSString stringWithFormat:@"%@@getcairnsapp.com", UUID(0)];
+    NSString *username = UUID(30);
+    NSString *password = UUID(0);
+    NSDictionary *parameters = @{@"username" : username, @"password" : password, @"first_name" : UUID(30), @"last_name" : UUID(30), @"email" : email};
+    [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        [self authenticate:username password:password completionBlock:^(BOOL success) {
+            NSString *identifier = response[@"identifier"];
             if (success)
-                [self saveUserIdentifier:response.identifier];
-            completionBlock(success, response.identifier);
+                [self saveUserIdentifier:identifier];
+            completionBlock(success, identifier);
         }];
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
     }];
@@ -231,85 +240,91 @@
 
 #pragma mark - Network data methods
 
-- (void)sendAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+- (void)createAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    if (address.identifier != nil) {
-        [objectManager postObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-            completionBlock(YES);
-        } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-            completionBlock(NO);
-        }];
-    }
+    CCList *list = [[address.lists allObjects] firstObject];
+    NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId, @"list" : list.identifier};
+    [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        address.identifier = response[@"identifier"];
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO);
+    }];
 }
 
-- (void)sendList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)createList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    [objectManager postObject:list path:kCCLocalAPIList parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+    NSDictionary *parameters = @{@"name" : list.name};
+    [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        list.identifier = response[@"identifier"];
         completionBlock(YES);
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO);
+    }];
+}
+
+- (void)addList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+{
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list];
+    [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         completionBlock(NO);
     }];
 }
 
 - (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
 {
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    CCIdentifierModel *identifierModel = [[CCIdentifierModel alloc] initWithIdentifier:identifier];
-    [objectManager deleteObject:identifierModel path:kCCLocalAPIList parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", identifier];
+    [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         completionBlock(NO);
     }];
-}
-
-- (void)sendLinkRequestForAddress:(CCAddress *)address withList:(CCList *)list method:(NSString *)method completionBlock:(void(^)(BOOL success))completionBlock
-{
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-    
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:path]];
-    [request setHTTPMethod:method];
-    
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        completionBlock(YES);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        completionBlock(NO);
-    }];
-    
-    [objectManager.HTTPClient enqueueHTTPRequestOperation:operation];
 }
 
 - (void)addAddress:(CCAddress *)address toList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    [self sendLinkRequestForAddress:address withList:list method:@"POST" completionBlock:completionBlock];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
+    
+    [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO);
+    }];
 }
 
 - (void)removeAddress:(CCAddress *)address fromList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    [self sendLinkRequestForAddress:address withList:list method:@"DELETE" completionBlock:completionBlock];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
+    
+    [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO);
+    }];
 }
 
 - (void)updateAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
-    RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCLocalJSONObjectManager];
-
-    [objectManager putObject:address path:kCCLocalAPIAddress parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
+    NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
+    NSString *path = [NSString stringWithFormat:@"/address/%@/", address.identifier];
+    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         completionBlock(NO);
     }];
 }
 
 - (void)updateList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    
+    NSDictionary *parameters = @{@"name" : list.name};
+    NSString *path = [NSString stringWithFormat:@"/list/%@/", list.identifier];
+    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO);
+    }];
 }
 
 #pragma mark - Singleton method
@@ -317,9 +332,11 @@
 + (instancetype)sharedInstance
 {
     static id instance = nil;
+    static dispatch_once_t token;
     
-    if (instance == nil)
+    dispatch_once(&token, ^{
         instance = [self new];
+    });
     
     return instance;
 }
