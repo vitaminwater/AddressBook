@@ -16,11 +16,13 @@
 #import "CCListOutputViewControllerDelegate.h"
 #import "CCAddAddressViewController.h"
 
+#import "CCOutputViewControllerDelegate.h"
+
 #import "CCListViewController.h"
 
 @class CCList;
 
-@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCAddAddressViewControllerDelegate>
+@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCAddAddressViewControllerDelegate, CCOutputViewControllerDelegate>
 
 @property(nonatomic, assign)id<CCListOutputViewControllerDelegate> delegate;
 

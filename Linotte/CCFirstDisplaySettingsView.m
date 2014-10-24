@@ -63,14 +63,14 @@
     [_enableNotificationButton setTitle:NSLocalizedString(@"ENABLE_NOTIF_BUTTON_TEXT", @"") forState:UIControlStateNormal];
     [_enableNotificationButton addTarget:self action:@selector(enableNotificationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     _enableNotificationButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    _enableNotificationButton.layer.borderWidth = 4;
+    _enableNotificationButton.layer.borderWidth = 0;
     
     _disableNotificationButton = [self createButton];
     _disableNotificationButton.backgroundColor = [UIColor colorWithHexString:@"#f4607c"];
     [_disableNotificationButton setTitle:NSLocalizedString(@"DISABLE_NOTIF_BUTTON_TEXT", @"") forState:UIControlStateNormal];
     [_disableNotificationButton addTarget:self action:@selector(disableNotificationButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     _disableNotificationButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    _disableNotificationButton.layer.borderWidth = 0;
+    _disableNotificationButton.layer.borderWidth = 4;
 }
 
 - (UIButton *)createButton

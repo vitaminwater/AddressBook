@@ -48,6 +48,9 @@
 "DISABLE_NOTIF_BUTTON_TEXT" = "Désactiver\nnotifications";
 "SHOW_LIST_SETTING" = "Placer cette adresse dans une liste.";
 
+"AWAITING_LOCATION" = "En attente de localisation";
+"LOADING" = "Chargement";
+
 "SETTINGS" = "Paramètres";
 "NOTIFICATION_SETTING" = "Activer notifications";
 "LIST_SETTING" = "Cette adresse est dans [ListNames]";
@@ -95,3 +98,5 @@
 "LIST_OUTPUT_ADDRESS_LIST_HELP" = "Sélectionnez les adresses de votre Linotte que vous souhaitez ajouter au nouveau carnet.";
 "LIST_OUTPUT_ADDRESS_LIST_CLOSE" = "Terminer";
 "LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "RECHERCHER UN LIEU";
+
+"DEFAULT_LIST_NAME" = "Mon carnet";

@@ -9,6 +9,7 @@
 #import "CCListListViewModel.h"
 
 #import "CCCoreDataStack.h"
+#import "CCDictStackCache.h"
 
 #import "CCListViewContentProvider.h"
 
@@ -16,6 +17,7 @@
 #import "CCAddress.h"
 
 #define kCCListListViewModelDeletedAddressListsKey @"kCCListListViewModelDeletedAddressListsKey"
+#define kCCListListViewModelDeletedListIndexKey @"kCCListListViewModelDeletedListIndexKey"
 
 @implementation CCListListViewModel
 
@@ -47,12 +49,12 @@
 
 - (void)addressWillRemove:(CCAddress *)address
 {
-    [self pushCacheEntry:kCCListListViewModelDeletedAddressListsKey value:[address.lists allObjects]];
+    [self.cache pushCacheEntry:kCCListListViewModelDeletedAddressListsKey value:[address.lists allObjects]];
 }
 
-- (void)addressDidRemove:(CCAddress *)address
+- (void)addressDidRemove:(NSString *)identifier
 {
-    NSArray *lists = [self popCacheEntry:kCCListListViewModelDeletedAddressListsKey];
+    NSArray *lists = [self.cache popCacheEntry:kCCListListViewModelDeletedAddressListsKey];
     [self.provider refreshListItemContentsForObjects:lists];
 }
 
@@ -61,9 +63,18 @@
     [self.provider addList:list];
 }
 
-- (void)listDidRemove:(CCList *)list
+- (void)listWillRemove:(CCList *)list
 {
-    [self.provider removeList:list];
+    NSUInteger index = [self.provider indexOfListItemContent:list];
+    [self.cache pushCacheEntry:kCCListListViewModelDeletedListIndexKey value:@(index)];
+}
+
+- (void)listDidRemove:(NSString *)identifier
+{
+    NSUInteger index = [[self.cache popCacheEntry:kCCListListViewModelDeletedListIndexKey] unsignedIntegerValue];
+    if (index == NSNotFound)
+        return;
+    [self.provider deleteItemAtIndex:index];
 }
 
 - (void)listDidUpdate:(CCList *)list

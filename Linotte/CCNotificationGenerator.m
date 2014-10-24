@@ -65,7 +65,7 @@
 - (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification
 {
     CCCategory *category = [address.categories.allObjects firstObject];
-    NSDictionary *userInfo = @{@"addressId" : address.identifier};
+    NSDictionary *userInfo = @{@"addressNotificationId" : address.notificationId}; // TODO set notification ID on migration
     int notifRand = rand() % 4 + 1;
     
     if (category == nil)

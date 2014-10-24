@@ -46,7 +46,10 @@
 "ADDRESSCREATED_SUBTEXT" = "You can now choose to be notified, or not.";
 "ENABLE_NOTIF_BUTTON_TEXT" = "Activate\nnotifications";
 "DISABLE_NOTIF_BUTTON_TEXT" = "Deactivate\nnotifications";
-"SHOW_LIST_SETTING" = "Move this address in a directory";
+"SHOW_LIST_SETTING" = "Move this address in a book";
+
+"AWAITING_LOCATION" = "Awaiting location";
+"LOADING" = "Loading";
 
 "SETTINGS" = "Settings";
 "NOTIFICATION_SETTING" = "Activate notifications";
@@ -98,3 +101,5 @@
 "LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "SEARCH A VENUE";
 
 "LOCATION_EXPLAINATION" = "pouetEn";
+
+"DEFAULT_LIST_NAME" = "My book";

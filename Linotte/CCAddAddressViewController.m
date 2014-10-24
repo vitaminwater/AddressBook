@@ -16,10 +16,11 @@
 
 #import <geohash/geohash.h>
 
+#import "CCAddressNameAutoCompleter.h"
+
 #import "CCCoreDataStack.h"
 
 #import "CCModelChangeMonitor.h"
-#import "CCLocationMonitor.h"
 
 #import "CCGeohashHelper.h"
 #import "CCNetworkHandler.h"
@@ -28,39 +29,7 @@
 
 #import "CCAddress.h"
 #import "CCCategory.h"
-
-
-/**
- * Address storage class
- */
-
-@interface CCAddViewAutocompletionResultCategorie : NSObject
-
-@property(nonatomic, strong)NSString *identifier;
-@property(nonatomic, strong)NSString *name;
-
-@end
-
-@implementation CCAddViewAutocompletionResultCategorie
-@end
-
-/***************/
-
-@interface CCAddViewAutocompletionResult : NSObject
-
-@property(nonatomic, strong)NSString *address;
-@property(nonatomic, strong)NSString *name;
-@property(nonatomic, strong)NSString *provider;
-@property(nonatomic, strong)NSString *providerId;
-
-@property(nonatomic, strong)NSArray *categories;
-
-@property(nonatomic, assign)CLLocationCoordinate2D coordinates;
-
-@end
-
-@implementation CCAddViewAutocompletionResult
-@end
+#import "CCList.h"
 
 /**
  * View controller implementation
@@ -68,23 +37,15 @@
 
 @implementation CCAddAddressViewController
 {
-    CLLocation *_currentLocation;
-    
-    NSDictionary *_nextFoursquarePlaceQuery;
-    BOOL _isLoadingFoursquarePlace;
-    
-    NSString *_currentGeohash;
-    
-    void (^_geolocBlock)();
-
-    NSMutableArray *_autocompletionResults;
+    CCAddressNameAutoCompleter *_autoComplete;
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        _autocompletionResults = [@[] mutableCopy];
+        _autoComplete = [CCAddressNameAutoCompleter new];
+        _autoComplete.delegate = self;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
@@ -97,7 +58,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadView
@@ -122,148 +82,26 @@
     [super viewDidDisappear:animated];
 }
 
-#pragma mark - CLLocationManagerDelegate methods
+#pragma mark - CCAddressNameAutocompletedDelegate methods
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+- (void)autocompeteWaitingLocation:(id)sender
 {
-    CLLocation *location = [locations lastObject];
-    _currentLocation = location;
-    
-    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:_currentLocation.coordinate];
-    
-    if ([_currentGeohash isEqualToString:geohash])
-        return;
-    
-    _currentGeohash = geohash;
-    
-    if (_geolocBlock)
-        _geolocBlock(location);
+    [(CCAddAddressView *)self.view showLoading:NSLocalizedString(@"AWAITING_LOCATION", @"")];
 }
 
-#pragma mark - API management
-
-- (void)autocompleteAddressName:(NSString *)addressName
+- (void)autocompleteStarted:(id)sender
 {
-    __weak typeof(self) weakSelf = self;
-    if (_currentLocation)
-        [self loadPlacesWebserviceByName:addressName];
-    else
-        [(CCAddAddressView *)self.view showLoading:@"Awaiting location"]; // Yeah this sucks
-    _geolocBlock = ^() {
-        [weakSelf loadPlacesWebserviceByName:addressName];
-    };
+    [(CCAddAddressView *)self.view showLoading:NSLocalizedString(@"LOADING", @"")];
 }
 
-- (void)stopGeoloc
+- (void)autocompleteResultsRecieved:(id)sender
 {
-    [[CCLocationMonitor sharedInstance] removeDelegate:self];
-    _geolocBlock = nil;
+    [((CCAddAddressView *)self.view) reloadAutocompletionResults];
 }
 
-- (void)startGeoloc
+- (void)autocompleteEnded:(id)sender
 {
-    [[CCLocationMonitor sharedInstance] addDelegate:self];
-}
-
-#pragma mark - Foursquare methods
-
-- (NSMutableDictionary *)defaultFoursquareArgs
-{
-    NSString *clientSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_client_secret"];
-    NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_client_id"];
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"foursquare_version"];
-    NSMutableDictionary *args = [@{@"client_id" : clientId, @"client_secret" : clientSecret, @"v" : version, @"intent" : @"checkin"} mutableCopy];
-    
-    if (_currentLocation) {
-        NSString *locationString = [NSString stringWithFormat:@"%f,%f", _currentLocation.coordinate.latitude, _currentLocation.coordinate.longitude];
-        args[@"ll"] = locationString;
-        args[@"radius"] = @"1000000000000";
-    }
-    
-    return args;
-}
-
-- (void)loadPlacesWebserviceByName:(NSString *)name
-{
-    NSMutableDictionary *args = [self defaultFoursquareArgs];
-    args[@"query"] = name;
-    [self loadFoursquareVenueSearchWebservice:args];
-}
-
-- (void)loadFoursquareVenueSearchWebservice:(NSDictionary *)args
-{
-    if (_isLoadingFoursquarePlace) {
-        _nextFoursquarePlaceQuery = args;
-        return;
-    }
-    _isLoadingFoursquarePlace = YES;
-    
-    [(CCAddAddressView *)self.view showLoading:@"loading"];
-    
-    /*RKObjectManager *objectManager = [CCRestKit getObjectManager:kCCFoursquareObjectManager];
-    [objectManager getObjectsAtPath:kCCFoursquareAPIVenueSearch parameters:args success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
-        NSArray *venues = mappingResult.array;
-        
-        // exclude categories
-        NSArray *excludedCategories = @[@"50aa9e094b90af0d42d5de0d", @"5345731ebcbc57f1066c39b2", @"530e33ccbcbc57f1066bbff7", @"4f2a25ac4b909258e854f55f", @"530e33ccbcbc57f1066bbff8", @"530e33ccbcbc57f1066bbff3", @"530e33ccbcbc57f1066bbff9"];
-        venues = [venues filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SUBQUERY(categories, $category, $category.identifier IN %@).@count = 0", excludedCategories]];
-        
-        [_autocompletionResults removeAllObjects];
-        
-        for (CCFoursquareVenues *result in venues) {
-            CCAddViewAutocompletionResult *autocompletionResult = [CCAddViewAutocompletionResult new];
-            NSString *addressString = @"";
-            for (NSString *addr in @[result.address ?: @"", result.city ?: @"", result.country ?: @""]) {
-                if (addr.length) {
-                    if (addressString.length)
-                        addressString = [addressString stringByAppendingString:@", "];
-                    addressString = [addressString stringByAppendingString:addr];
-                }
-            }
-            
-            NSMutableArray *categories = [@[] mutableCopy];
-            for (CCFoursquareCategorie *categorie in result.categories) {
-                CCAddViewAutocompletionResultCategorie *autocompletionCategorie = [CCAddViewAutocompletionResultCategorie new];
-                autocompletionCategorie.identifier = categorie.identifier;
-                autocompletionCategorie.name = categorie.name;
-                [categories addObject:autocompletionCategorie];
-            }
-            
-            autocompletionResult.name = result.name;
-            autocompletionResult.address = addressString;
-            autocompletionResult.categories = categories;
-            autocompletionResult.provider = @"foursquare";
-            autocompletionResult.providerId = result.identifier;
-            autocompletionResult.coordinates = CLLocationCoordinate2DMake([result.latitude doubleValue], [result.longitude doubleValue]);
-            [_autocompletionResults addObject:autocompletionResult];
-        }
-        [(CCAddAddressView *)self.view reloadAutocompletionResults];
-        [self endFoursquareRequest];
-    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
-        [self endFoursquareRequest];
-    }];*/
-}
-
-- (void)endFoursquareRequest
-{
-    _isLoadingFoursquarePlace = NO;
-    if (_nextFoursquarePlaceQuery != nil)
-        [self loadFoursquareVenueSearchWebservice:_nextFoursquarePlaceQuery];
-    else
-        [(CCAddAddressView *)self.view hideLoading];
-    _nextFoursquarePlaceQuery = nil;
-}
-
-#pragma mark - NSNotificationCenter methods
-
-- (void)reachabilityChanged:(NSNotification *)notification
-{
-    Reachability *reachability = notification.object;
-    if (reachability.isReachable) {
-        [((CCAddAddressView *)self.view) enableField];
-    } else {
-        [((CCAddAddressView *)self.view) disableField];
-    }
+    [(CCAddAddressView *)self.view hideLoading];
 }
 
 #pragma mark - CCAddAddressViewDelegate methods
@@ -271,43 +109,39 @@
 - (void)reduceAddView
 {
     [_delegate reduceAddView];
-    [self stopGeoloc];
+    [_autoComplete stopAutoComplete];
     
     [(CCAddAddressView *)self.view hideLoading];
-    
-    _nextFoursquarePlaceQuery = nil;
-    _isLoadingFoursquarePlace = NO;
 }
 
 - (void)autocompleteName:(NSString *)name
 {
-    [self autocompleteAddressName:name];
+    [_autoComplete autocompleteAddressName:name];
     [_delegate expandAddView];
-    [self startGeoloc];
 }
 
 - (NSString *)nameForAutocompletionResultAtIndex:(NSUInteger)index
 {
-    CCAddViewAutocompletionResult *autocompletionResult = _autocompletionResults[index];
+    CCAddViewAutocompletionResult *autocompletionResult = [_autoComplete autocompletionResultAtIndex:index];
     return autocompletionResult.name;
 }
 
 - (NSString *)addressForAutocompletionResultAtIndex:(NSUInteger)index
 {
-    CCAddViewAutocompletionResult *autocompletionResult = _autocompletionResults[index];
+    CCAddViewAutocompletionResult *autocompletionResult = [_autoComplete autocompletionResultAtIndex:index];
     return autocompletionResult.address;
 }
 
 - (NSUInteger)numberOfAutocompletionResults
 {
-    return [_autocompletionResults count];
+    return [_autoComplete numberOfAutocompletionResults];
 }
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index
 {
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
-    CCAddViewAutocompletionResult *autocompletionResult = _autocompletionResults[index];
+    CCAddViewAutocompletionResult *autocompletionResult = [_autoComplete autocompletionResultAtIndex:index];
     
     address.name = autocompletionResult.name;
     address.address = autocompletionResult.address;
@@ -316,7 +150,6 @@
     address.date = [NSDate date];
     address.latitude = @(autocompletionResult.coordinates.latitude);
     address.longitude = @(autocompletionResult.coordinates.longitude);
-    address.identifier = [[NSUUID UUID] UUIDString];
     
     address.geohash = [CCGeohashHelper geohashFromCoordinates:autocompletionResult.coordinates];
     
@@ -334,6 +167,18 @@
     
     [self reduceAddView];
     [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
+}
+
+#pragma mark - NSNotificationCenter methods
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    Reachability *reachability = notification.object;
+    if (reachability.isReachable) {
+        [((CCAddAddressView *)self.view) enableField];
+    } else {
+        [((CCAddAddressView *)self.view) disableField];
+    }
 }
 
 @end

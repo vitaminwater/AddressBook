@@ -77,7 +77,7 @@
         [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
     }
     
-    [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier ?: @"nb"}];
+    [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier ?: @"NEW"}];
 }
 
 - (void)viewDidLoad
@@ -176,7 +176,8 @@
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
     
-    [[Mixpanel sharedInstance] track:@"Google route" properties:@{@"mode": modes[@(type)], @"name": _address.name, @"address": _address.address, @"identifier": _address.identifier}];
+    NSString *identifier = _address.identifier ?: @"NEW";
+    [[Mixpanel sharedInstance] track:@"Google route" properties:@{@"mode": modes[@(type)], @"name": _address.name, @"address": _address.address, @"identifier": identifier}];
 }
 
 - (void)appleMapRoute:(CCRouteType)type
@@ -187,7 +188,8 @@
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
     
-    [[Mixpanel sharedInstance] track:@"Apple route" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier}];
+    NSString *identifier = _address.identifier ?: @"NEW";
+    [[Mixpanel sharedInstance] track:@"Apple route" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": identifier}];
 }
 
 #pragma mark - CLLocationManagerDelegate methods

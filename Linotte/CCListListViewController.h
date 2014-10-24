@@ -11,12 +11,11 @@
 #import "CCAddListViewControllerDelegate.h"
 #import "CCListViewControllerDelegate.h"
 
-#import "CCListListExpandedSettingsViewControllerDelegate.h"
-
 #import "CCListListViewDelegate.h"
 #import "CCListListViewControllerDelegate.h"
+#import "CCListOutputViewControllerDelegate.h"
 
-@interface CCListListViewController : UIViewController<CCAddListViewControllerDelegate, CCListViewControllerDelegate, CCListListExpandedSettingsViewControllerDelegate, CCListListViewDelegate>
+@interface CCListListViewController : UIViewController<CCAddListViewControllerDelegate, CCListViewControllerDelegate, CCListListViewDelegate, CCListOutputViewControllerDelegate>
 
 @property(nonatomic, assign)id<CCListListViewControllerDelegate> delegate;
 

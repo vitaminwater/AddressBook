@@ -12,7 +12,7 @@
 
 @property(nonatomic, strong)id userInfo;
 
-+ (instancetype)showAlertViewWithText:(NSString *)text target:(id)target okAction:(SEL)okAction cancelAction:(SEL)cancelAction;
++ (instancetype)showAlertViewWithText:(NSString *)text target:(id)target leftAction:(SEL)okAction rightAction:(SEL)cancelAction;
 + (void)closeAlertView:(CCAlertView *)alertView;
 
 @end

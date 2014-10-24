@@ -133,7 +133,7 @@
 
 #pragma mark - class methods
 
-+ (instancetype)showAlertViewWithText:(NSString *)text target:(id)target okAction:(SEL)okAction cancelAction:(SEL)cancelAction
++ (instancetype)showAlertViewWithText:(NSString *)text target:(id)target leftAction:(SEL)okAction rightAction:(SEL)cancelAction
 {
     CCAlertView *alertView = [[CCAlertView alloc] initWithText:text target:target okAction:okAction cancelAction:cancelAction];
     alertView.translatesAutoresizingMaskIntoConstraints = NO;

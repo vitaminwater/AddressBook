@@ -13,10 +13,10 @@ const struct CCAddressAttributes CCAddressAttributes = {
 	.longitude = @"longitude",
 	.name = @"name",
 	.note = @"note",
+	.notificationId = @"notificationId",
 	.notify = @"notify",
 	.provider = @"provider",
 	.providerId = @"providerId",
-	.sent = @"sent",
 };
 
 const struct CCAddressRelationships CCAddressRelationships = {
@@ -64,11 +64,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	}
 	if ([key isEqualToString:@"notifyValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"notify"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"sentValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"sent"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -130,6 +125,8 @@ const struct CCAddressRelationships CCAddressRelationships = {
 
 @dynamic note;
 
+@dynamic notificationId;
+
 @dynamic notify;
 
 - (BOOL)notifyValue {
@@ -153,26 +150,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 @dynamic provider;
 
 @dynamic providerId;
-
-@dynamic sent;
-
-- (BOOL)sentValue {
-	NSNumber *result = [self sent];
-	return [result boolValue];
-}
-
-- (void)setSentValue:(BOOL)value_ {
-	[self setSent:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveSentValue {
-	NSNumber *result = [self primitiveSent];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveSentValue:(BOOL)value_ {
-	[self setPrimitiveSent:[NSNumber numberWithBool:value_]];
-}
 
 @dynamic categories;
 

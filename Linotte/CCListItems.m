@@ -130,6 +130,13 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     }
 }
 
+#pragma mark - getter methods
+
+- (BOOL)deletable
+{
+    return YES;
+}
+
 @end
 
 
@@ -354,6 +361,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (BOOL)notify
 {
     return _list.notifyValue;
+}
+
+- (BOOL)deletable
+{
+    return _list.ownedValue && _list.isdefaultValue == NO;
 }
 
 @end

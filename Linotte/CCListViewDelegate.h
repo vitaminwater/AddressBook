@@ -23,6 +23,7 @@
 - (NSString *)nameForListItemAtIndex:(NSUInteger)index;
 - (NSString *)infoForListItemAtIndex:(NSUInteger)index;
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
+- (BOOL)deletableForListItemAtIndex:(NSUInteger)index;
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 

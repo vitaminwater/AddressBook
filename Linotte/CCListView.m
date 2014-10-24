@@ -188,11 +188,6 @@
     [_tableView deselectRowAtIndexPath:[_tableView indexPathForSelectedRow] animated:YES];
 }
 
-- (void)showConfirmationHUD:(NSString *)detailText
-{
-    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:detailText delay:1];
-}
-
 #pragma mark - CCListViewTableViewCellDelegate methods
 
 - (void)deleteAddress:(CCListViewTableViewCell *)sender
@@ -228,6 +223,7 @@
     } else {
         cell.directionHidden = YES;
     }
+    [cell setDeletable:[_delegate deletableForListItemAtIndex:index]];
     cell.markerImageView.image = [_delegate iconForListItemAtIndex:index];
 }
 

@@ -12,11 +12,9 @@
 
 @interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
 
-@property(nonatomic, assign)BOOL isLoggedIn;
+- (void)dequeueEvents:(NSUInteger)eventsSent eventChainEndBlock:(void(^)(NSUInteger eventsSent))eventChainEndBlock;
 
 - (BOOL)connectionAvailable;
-
-- (void)resetAllAdresses;
 
 + (instancetype)sharedInstance;
 

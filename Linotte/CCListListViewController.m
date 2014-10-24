@@ -10,15 +10,19 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCModelHelper.h"
+
 #import "UIView+CCShowSettingsView.h"
+
+#import "CCAlertView.h"
+#import "CCActionResultHUD.h"
 
 #import "CCListViewContentProvider.h"
 #import "CCListListViewModel.h"
 
-#import "CCListListExpandedSettingsViewController.h"
-
 #import "CCAddListViewController.h"
 #import "CCListViewController.h"
+#import "CCListOutputViewController.h"
 
 #import "CCListListEmptyView.h"
 
@@ -87,7 +91,7 @@
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
     
-    { // right bar button items
+    /*{ // right bar button items
         CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
         _settingsButton = [UIButton new];
         [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
@@ -98,7 +102,7 @@
         UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
         
         self.navigationItem.rightBarButtonItems = @[barButtonItem];
-    }
+    }*/
     
     self.navigationItem.hidesBackButton = YES;
     
@@ -135,14 +139,6 @@
 
 - (void)settingsButtonPressed:(id)sender
 {
-    CCListListExpandedSettingsViewController *listListExpandedSettingsViewController = [CCListListExpandedSettingsViewController new];
-    listListExpandedSettingsViewController.delegate = self;
-    [self addChildViewController:listListExpandedSettingsViewController];
-    
-    [self.view showSettingsView:listListExpandedSettingsViewController.view];
-    
-    [listListExpandedSettingsViewController didMoveToParentViewController:self];
-    
     _settingsButton.enabled = NO;
 }
 
@@ -161,7 +157,19 @@
 
 - (void)listSelected:(CCList *)list
 {
+    CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list];
+    listOutputViewController.delegate = self;
+    [self.navigationController pushViewController:listOutputViewController animated:YES];
+}
+
+- (void)deleteAddress:(CCAddress *)address {}
+
+- (void)deleteList:(CCList *)list
+{
+    NSString *alertTitle = NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
     
+    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self leftAction:@selector(alertViewDidSayYes:) rightAction:@selector(alertViewDidSayNo:)];
+    alertView.userInfo = list;
 }
 
 #pragma mark - CCSettingsViewControllerDelegate methods
@@ -171,9 +179,21 @@
     [sender willMoveToParentViewController:nil];
     [self.view hideSettingsView:sender.view];
     [sender removeFromParentViewController];
+}
+
+#pragma mark - CCAlertView target methods
+
+- (void)alertViewDidSayYes:(CCAlertView *)sender
+{
+    [CCModelHelper deleteList:sender.userInfo];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
     
-    if ([sender isKindOfClass:[CCListListExpandedSettingsViewController class]])
-        _settingsButton.enabled = YES;
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertViewDidSayNo:(CCAlertView *)sender
+{
+    [CCAlertView closeAlertView:sender];
 }
 
 @end

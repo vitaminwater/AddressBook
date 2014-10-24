@@ -16,6 +16,12 @@
     #import <CoreData/CoreData.h>
 #endif
 
+#if defined(DEBUG)
+#define kCCLinotteAPIServer @"192.168.1.74"
+#else
+#define kCCLinotteAPIServer @"api.getlinotte.com"
+#endif
+
 #define kCCWrongSetupMethodsOrderError @"wrong setup methods call order, fix it ffs."
 
 #define kCCLinotteColors @[@"#5acfc4", @"#ffae64", @"#f4607c"]

@@ -60,6 +60,7 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 - (NSString *)infoForListItemAtIndex:(NSUInteger)index;
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index;
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
+- (BOOL)deletableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
 
 @end

@@ -9,20 +9,19 @@
 #import "CCListViewModel.h"
 
 #import "CCModelChangeMonitor.h"
+#import "CCDictStackCache.h"
 
 #import "CCListViewModelProtocol.h"
 #import "CCModelChangeMonitorDelegate.h"
 
+
 @implementation CCListViewModel
-{
-    NSMutableDictionary *_cache;
-}
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        _cache = [@{} mutableCopy];
+        _cache = [CCDictStackCache new];
         
         if (![[self class] conformsToProtocol:@protocol(CCListViewModelProtocol)]) {
             @throw [NSException exceptionWithName:@"implementation error" reason:@"CCListViewModelProtocol not implemented" userInfo:nil];
@@ -38,18 +37,6 @@
 - (void)dealloc
 {
     [[CCModelChangeMonitor sharedInstance] removeDelegate:(id<CCModelChangeMonitorDelegate>)self];
-}
-
-- (void)pushCacheEntry:(NSString *)key value:(id)value
-{
-    _cache[key] = value;
-}
-
-- (id)popCacheEntry:(NSString *)key
-{
-    id value = _cache[key];
-    [_cache removeObjectForKey:key];
-    return value;
 }
 
 @end

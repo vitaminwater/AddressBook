@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import <CoreLocation/CoreLocation.h>
+#import "CCAddressNameAutocompleterDelegate.h"
 
 #import "CCAddAddressViewDelegate.h"
 
 #import "CCAddAddressViewControllerDelegate.h"
 
-@interface CCAddAddressViewController : UIViewController<CCAddAddressViewDelegate, CLLocationManagerDelegate>
+@interface CCAddAddressViewController : UIViewController<CCAddAddressViewDelegate, CCAddressNameAutocompleterDelegate>
 
 @property(nonatomic, weak)id<CCAddAddressViewControllerDelegate> delegate;
 

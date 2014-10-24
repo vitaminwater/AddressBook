@@ -4,11 +4,12 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCListAttributes {
-	__unsafe_unretained NSString *expanded;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
+	__unsafe_unretained NSString *isdefault;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
+	__unsafe_unretained NSString *owned;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
 } CCListAttributes;
@@ -34,14 +35,6 @@ extern const struct CCListRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCListID* objectID;
 
-@property (nonatomic, strong) NSNumber* expanded;
-
-@property (atomic) BOOL expandedValue;
-- (BOOL)expandedValue;
-- (void)setExpandedValue:(BOOL)value_;
-
-//- (BOOL)validateExpanded:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSString* icon;
 
 //- (BOOL)validateIcon:(id*)value_ error:(NSError**)error_;
@@ -49,6 +42,14 @@ extern const struct CCListRelationships {
 @property (nonatomic, strong) NSString* identifier;
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* isdefault;
+
+@property (atomic) BOOL isdefaultValue;
+- (BOOL)isdefaultValue;
+- (void)setIsdefaultValue:(BOOL)value_;
+
+//- (BOOL)validateIsdefault:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* name;
 
@@ -61,6 +62,14 @@ extern const struct CCListRelationships {
 - (void)setNotifyValue:(BOOL)value_;
 
 //- (BOOL)validateNotify:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* owned;
+
+@property (atomic) BOOL ownedValue;
+- (BOOL)ownedValue;
+- (void)setOwnedValue:(BOOL)value_;
+
+//- (BOOL)validateOwned:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* provider;
 
@@ -114,17 +123,17 @@ extern const struct CCListRelationships {
 
 @interface _CCList (CoreDataGeneratedPrimitiveAccessors)
 
-- (NSNumber*)primitiveExpanded;
-- (void)setPrimitiveExpanded:(NSNumber*)value;
-
-- (BOOL)primitiveExpandedValue;
-- (void)setPrimitiveExpandedValue:(BOOL)value_;
-
 - (NSString*)primitiveIcon;
 - (void)setPrimitiveIcon:(NSString*)value;
 
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
+
+- (NSNumber*)primitiveIsdefault;
+- (void)setPrimitiveIsdefault:(NSNumber*)value;
+
+- (BOOL)primitiveIsdefaultValue;
+- (void)setPrimitiveIsdefaultValue:(BOOL)value_;
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
@@ -134,6 +143,12 @@ extern const struct CCListRelationships {
 
 - (BOOL)primitiveNotifyValue;
 - (void)setPrimitiveNotifyValue:(BOOL)value_;
+
+- (NSNumber*)primitiveOwned;
+- (void)setPrimitiveOwned:(NSNumber*)value;
+
+- (BOOL)primitiveOwnedValue;
+- (void)setPrimitiveOwnedValue:(BOOL)value_;
 
 - (NSString*)primitiveProvider;
 - (void)setPrimitiveProvider:(NSString*)value;

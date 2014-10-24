@@ -15,6 +15,7 @@
 @property(nonatomic, weak)id<CCListViewTableViewCellDelegate> delegate;
 @property(nonatomic, readonly)UIImageView *markerImageView;
 @property(nonatomic, assign)BOOL directionHidden;
+@property(nonatomic, assign)BOOL deletable;
 
 - (void)setNotificationEnabled:(BOOL)notificationEnabled;
 - (void)setAngle:(double)angle;

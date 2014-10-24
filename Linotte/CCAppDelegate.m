@@ -86,6 +86,13 @@
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    [[CCNetworkHandler sharedInstance] dequeueEvents:0 eventChainEndBlock:^(NSUInteger eventsSent) {
+        completionHandler(eventsSent > 0 ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
+    }];
+}
+
 #pragma mark - RestKit initialization
 
 - (void)initAll:(UIApplication *)application
@@ -145,17 +152,18 @@
         return;
     }
     
-    NSString *objectID = notification.userInfo[@"addressId"];
+    NSString *objectID = notification.userInfo[@"addressNotificationId"];
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", objectID];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notificationId = %@", objectID];
     [fetchRequest setPredicate:predicate];
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     if ([results count]) {
         CCAddress *address = [results firstObject];
         CCOutputViewController *outPutViewController = [[CCOutputViewController alloc] initWithAddress:address];
         [((UINavigationController *)self.window.rootViewController) pushViewController:outPutViewController animated:YES];
-        [[Mixpanel sharedInstance] track:@"Local notification handled" properties:@{@"name": address.name, @"address": address.address, @"identifier": address.identifier}];
+        NSString *identifier = address.identifier ?: @"NEW";
+        [[Mixpanel sharedInstance] track:@"Local notification handled" properties:@{@"name": address.name, @"address": address.address, @"identifier": identifier}];
     }
 }
 

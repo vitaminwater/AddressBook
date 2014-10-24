@@ -111,10 +111,11 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCList *list = _lists[index];
+    NSString *identifier = list.identifier;
     [[CCModelChangeMonitor sharedInstance] listWillRemove:list];
     [managedObjectContext deleteObject:list];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidRemove:list];
+    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier];
 
     [_lists removeObject:list];
 }
@@ -135,7 +136,7 @@
     CCList *list = _lists[index];
     [[CCModelChangeMonitor sharedInstance] address:_address willMoveFromList:list];
     
-    [_address addListsObject:list];
+    [_address removeListsObject:list];
     
     [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list];

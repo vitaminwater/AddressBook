@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class CCDictStackCache;
 
 @interface CCListViewModel : NSObject
 
-- (void)pushCacheEntry:(NSString *)key value:(id)value;
-- (id)popCacheEntry:(NSString *)key;
+@property(nonatomic, strong)CCDictStackCache *cache;
 
 @end

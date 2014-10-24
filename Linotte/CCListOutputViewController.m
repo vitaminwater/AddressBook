@@ -12,9 +12,13 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCAlertView.h"
+#import "CCActionResultHUD.h"
+
 #import "UIView+CCShowSettingsView.h"
 
 #import "CCModelChangeMonitor.h"
+#import "CCModelHelper.h"
 
 #import "CCListOutputListEmptyView.h"
 
@@ -73,6 +77,7 @@
     CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
     _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     _listViewController.delegate = self;
+    _listViewController.deletableItems = _list.ownedValue;
     [self addChildViewController:_listViewController];
     [view setupListView:(CCListView *)_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
@@ -189,13 +194,22 @@
 
 - (void)addressSelected:(CCAddress *)address
 {
-    
+    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
+    outputViewController.delegate = self;
+    [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
-- (void)listSelected:(CCList *)list
+- (void)listSelected:(CCList *)list {}
+
+- (void)deleteAddress:(CCAddress *)address
 {
+    NSString *alertTitle = NSLocalizedString(@"NOTIF_ADDRESS_DELETE", @"");
     
+    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self leftAction:@selector(alertViewDidSayYes:) rightAction:@selector(alertViewDidSayNo:)];
+    alertView.userInfo = address;
 }
+
+- (void)deleteList:(CCList *)list {}
 
 #pragma mark - CCAddAddressViewControllerDelegate
 
@@ -232,6 +246,21 @@
     
     if ([sender isKindOfClass:[CCListOutputSettingsViewController class]])
         _settingsButton.enabled = YES;
+}
+
+#pragma mark - CCAlertView target methods
+
+- (void)alertViewDidSayYes:(CCAlertView *)sender
+{
+    [CCModelHelper deleteAddress:sender.userInfo];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
+    
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertViewDidSayNo:(CCAlertView *)sender
+{
+    [CCAlertView closeAlertView:sender];
 }
 
 @end

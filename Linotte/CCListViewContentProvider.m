@@ -75,6 +75,8 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
         }
         return NO;
     }];
+    if (index == NSNotFound)
+        return index;
     [_listItems removeObjectAtIndex:index];
     [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
     return index;
@@ -116,12 +118,14 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     NSUInteger index = [_listItems indexOfObjectPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
         return listItem.type == CCListItemTypeList && ((CCListItemList *)listItem).list == list;
     }];
+    if (index == NSNotFound)
+        return index;
     [_listItems removeObjectAtIndex:index];
     [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
     return index;
 }
 
-// TODO check of order change
+// TODO check for order change
 - (void)refreshListItemContentsForObjects:(NSArray *)objects
 {
     NSIndexSet *indexes = [self indexesOfListItemContents:objects handler:^void(CCListItem *listItem) {
@@ -133,6 +137,8 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
 - (void)refreshListItemContentForObject:(id)object
 {
     NSUInteger index = [self indexOfListItemContent:object];
+    if (index == NSNotFound)
+        return;
     [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
 }
 
@@ -272,6 +278,12 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     if (listItem.type == CCListItemTypeList)
         return !listItem.farAway;
     return YES;
+}
+
+- (BOOL)deletableAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    return listItem.deletable;
 }
 
 - (NSUInteger)numberOfListItems

@@ -58,6 +58,12 @@
         [self.provider refreshListItemContentForObject:address];
 }
 
+- (void)addressDidUpdateUserData:(CCAddress *)address
+{
+    if ([address.lists containsObject:_list])
+        [self.provider refreshListItemContentForObject:address];
+}
+
 - (void)address:(CCAddress *)address didMoveToList:(CCList *)list
 {
     if (_list == list)

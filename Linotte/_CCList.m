@@ -4,11 +4,12 @@
 #import "_CCList.h"
 
 const struct CCListAttributes CCListAttributes = {
-	.expanded = @"expanded",
 	.icon = @"icon",
 	.identifier = @"identifier",
+	.isdefault = @"isdefault",
 	.name = @"name",
 	.notify = @"notify",
+	.owned = @"owned",
 	.provider = @"provider",
 	.providerId = @"providerId",
 };
@@ -46,8 +47,8 @@ const struct CCListRelationships CCListRelationships = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
-	if ([key isEqualToString:@"expandedValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"expanded"];
+	if ([key isEqualToString:@"isdefaultValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isdefault"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -56,33 +57,38 @@ const struct CCListRelationships CCListRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"ownedValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"owned"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 
 	return keyPaths;
-}
-
-@dynamic expanded;
-
-- (BOOL)expandedValue {
-	NSNumber *result = [self expanded];
-	return [result boolValue];
-}
-
-- (void)setExpandedValue:(BOOL)value_ {
-	[self setExpanded:[NSNumber numberWithBool:value_]];
-}
-
-- (BOOL)primitiveExpandedValue {
-	NSNumber *result = [self primitiveExpanded];
-	return [result boolValue];
-}
-
-- (void)setPrimitiveExpandedValue:(BOOL)value_ {
-	[self setPrimitiveExpanded:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic icon;
 
 @dynamic identifier;
+
+@dynamic isdefault;
+
+- (BOOL)isdefaultValue {
+	NSNumber *result = [self isdefault];
+	return [result boolValue];
+}
+
+- (void)setIsdefaultValue:(BOOL)value_ {
+	[self setIsdefault:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsdefaultValue {
+	NSNumber *result = [self primitiveIsdefault];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsdefaultValue:(BOOL)value_ {
+	[self setPrimitiveIsdefault:[NSNumber numberWithBool:value_]];
+}
 
 @dynamic name;
 
@@ -104,6 +110,26 @@ const struct CCListRelationships CCListRelationships = {
 
 - (void)setPrimitiveNotifyValue:(BOOL)value_ {
 	[self setPrimitiveNotify:[NSNumber numberWithBool:value_]];
+}
+
+@dynamic owned;
+
+- (BOOL)ownedValue {
+	NSNumber *result = [self owned];
+	return [result boolValue];
+}
+
+- (void)setOwnedValue:(BOOL)value_ {
+	[self setOwned:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveOwnedValue {
+	NSNumber *result = [self primitiveOwned];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveOwnedValue:(BOOL)value_ {
+	[self setPrimitiveOwned:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic provider;

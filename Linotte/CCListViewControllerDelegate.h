@@ -18,4 +18,7 @@
 - (void)addressSelected:(CCAddress *)address;
 - (void)listSelected:(CCList *)list;
 
+- (void)deleteAddress:(CCAddress *)address;
+- (void)deleteList:(CCList *)list;
+
 @end

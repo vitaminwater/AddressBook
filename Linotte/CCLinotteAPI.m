@@ -14,19 +14,14 @@
 #import "CCAddress.h"
 #import "CCList.h"
 
-#if defined(DEBUG)
-#define kCCLinotteBaseUrl @"http://192.168.1.74:8000"
-#else
-#define kCCLinotteBaseUrl @"https://api.getlinotte.com"
-#endif
-
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug44"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug46"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
+#define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountNameDebug"
 #else
 // #define kCCKeyChainServiceName @"kCCKeyChainServiceName6" // test
 #define kCCKeyChainServiceName @"kCCKeyChainServiceName1000" // Apstore
@@ -34,12 +29,14 @@
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountName"
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
+#define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountName"
 #endif
 
 @interface CCLinotteAPICredentials : NSObject
 @property(nonatomic, strong)NSString *accessToken;
 @property(nonatomic, strong)NSString *refreshToken;
 @property(nonatomic, strong)NSString *expireTimeStamp;
+@property(nonatomic, strong)NSString *deviceId;
 @end
 
 @implementation CCLinotteAPICredentials
@@ -70,17 +67,27 @@
         _credentials.refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
         _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
         _credentials.expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+        _credentials.deviceId = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName];
         
-        _apiManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kCCLinotteBaseUrl]];
+#if defined(DEBUG)
+        NSURL *apiUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8000", kCCLinotteAPIServer]];
+#else
+        NSURL *apiUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", kCCLinotteAPIServer]];
+#endif
+        _apiManager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
         _apiManager.requestSerializer = [AFJSONRequestSerializer serializer];
         _apiManager.responseSerializer = [AFJSONResponseSerializer serializer];
         
-        _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:kCCLinotteBaseUrl]];
+        _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
         _oauth2Manager.responseSerializer = [AFJSONResponseSerializer serializer];
 
         [self refreshLoggedState];
-        if (_loggedState == kCCLoggedIn)
+        if (_loggedState != kCCFirstStart) {
             [self setOAuth2HTTPHeader];
+            if (_loggedState == kCCLoggedIn) {
+                [self setDeviceHTTPHeader];
+            }
+        }
     }
     return self;
 }
@@ -89,8 +96,10 @@
 {
     if ([self isFirstStart])
         _loggedState = kCCFirstStart;
-    else if (!_credentials.expireTimeStamp || [_credentials.expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
+    else if (_credentials.expireTimeStamp == nil || [_credentials.expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
         _loggedState = kCCRequestRefreshToken;
+    else if (_credentials.deviceId == nil)
+        _loggedState = kCCCreateDeviceId;
     else
         _loggedState = kCCLoggedIn;
 }
@@ -102,25 +111,40 @@
 
 #pragma mark - API initialization method
 
-- (void)APIIinitialization:(void(^)(BOOL newUserCreated))completionBlock
+- (void)APIIinitialization:(void(^)(CCLoggedState fromState))stateStepBlock completionBock:(void(^)(BOOL success))completionBlock
 {
     if (_loggedState == kCCFirstStart) {
-        [self createAndAuthenticateAnonymousUserWithCompletionBlock:^(BOOL success, NSString *identifier) {
-            _loggedState = success ? kCCLoggedIn : kCCFailed;
-            completionBlock(YES);
+        [self createAndAuthenticateAnonymousUserWithCompletionBlock:^(BOOL success) {
+            if (success) {
+                [self refreshLoggedState];
+                stateStepBlock(kCCFirstStart);
+                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
+                return;
+            }
+            completionBlock(NO);
         }];
     } else if (_loggedState == kCCRequestRefreshToken) {
         [self refreshTokenWithCompletionBlock:^(BOOL success) {
             if (success) {
                 [self refreshLoggedState];
-                [self APIIinitialization:completionBlock];
+                stateStepBlock(kCCRequestRefreshToken);
+                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
                 return;
             }
-            _loggedState = kCCFailed;
+            completionBlock(NO);
+        }];
+    } else if (_loggedState == kCCCreateDeviceId) {
+        [self createDevice:^(BOOL success) {
+            if (success) {
+                [self refreshLoggedState];
+                stateStepBlock(kCCCreateDeviceId);
+                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
+                return;
+            }
             completionBlock(NO);
         }];
     } else if (_loggedState == kCCLoggedIn) {
-        completionBlock(NO);
+        completionBlock(YES);
     }
 }
 
@@ -203,7 +227,7 @@
 
 #pragma mark - User methods
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
+- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     
@@ -222,11 +246,11 @@
             NSString *identifier = response[@"identifier"];
             if (success)
                 [self saveUserIdentifier:identifier];
-            completionBlock(success, identifier);
+            completionBlock(success);
         }];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
-        completionBlock(NO, nil);
+        completionBlock(NO);
     }];
 }
 
@@ -236,6 +260,34 @@
         NSLog(@"%@", error);
     }
     _identifier = identifier;
+}
+
+#pragma mark - Device methods
+
+- (void)createDevice:(void(^)(BOOL success))completionBlock
+{
+    [_apiManager POST:@"/user/device/" parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        [self saveDeviceId:response[@"identifier"]];
+        [self setDeviceHTTPHeader];
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO);
+    }];
+}
+
+- (void)saveDeviceId:(NSString *)deviceId
+{
+    NSError *error = nil;
+    _credentials.deviceId = deviceId;
+    if ([SSKeychain setPassword:deviceId forService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName error:&error] == NO) {
+        NSLog(@"%@", error);
+    }
+}
+
+- (void)setDeviceHTTPHeader
+{
+    [_apiManager.requestSerializer setValue:_credentials.deviceId forHTTPHeaderField:@"X-Linotte-Device-Id"];
 }
 
 #pragma mark - Network data methods
@@ -248,6 +300,7 @@
         address.identifier = response[@"identifier"];
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -259,6 +312,7 @@
         list.identifier = response[@"identifier"];
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -269,6 +323,7 @@
     [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -279,6 +334,18 @@
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO);
+    }];
+}
+
+- (void)removeAddress:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
+{
+    NSString *url = [NSString stringWithFormat:@"/user/address/%@/", identifier];
+    [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -290,6 +357,7 @@
     [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -301,6 +369,7 @@
     [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -309,9 +378,10 @@
 {
     NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
     NSString *path = [NSString stringWithFormat:@"/address/%@/", address.identifier];
-    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -320,9 +390,23 @@
 {
     NSDictionary *parameters = @{@"name" : list.name};
     NSString *path = [NSString stringWithFormat:@"/list/%@/", list.identifier];
+    [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        completionBlock(YES);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO);
+    }];
+}
+
+- (void)updateAddressUserData:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+{
+    NSString *note = address.note ? address.note : @"";
+    NSDictionary *parameters = @{@"note" : note, @"notification" : @(address.notifyValue)};
+    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address.identifier];
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
         completionBlock(NO);
     }];
 }

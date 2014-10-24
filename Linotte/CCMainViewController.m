@@ -8,6 +8,15 @@
 
 #import "CCMainViewController.h"
 
+#import <Mixpanel/Mixpanel.h>
+
+#import "CCCoreDataStack.h"
+#import "CCModelChangeMonitor.h"
+#import "CCModelHelper.h"
+
+#import "CCAlertView.h"
+#import "CCActionResultHUD.h"
+
 #import "CCSplashViewController.h"
 
 #import "CCListListViewController.h"
@@ -25,6 +34,9 @@
 #import "CCMainListEmptyView.h"
 
 #import "CCMainView.h"
+
+#import "CCAddress.h"
+#import "CCList.h"
 
 
 @implementation CCMainViewController
@@ -109,7 +121,7 @@
 
 - (void)preSaveAddress:(CCAddress *)address
 {
-    
+    [address addListsObject:[CCModelHelper defaultList]];
 }
 
 - (void)postSaveAddress:(CCAddress *)address
@@ -138,13 +150,31 @@
 - (void)addressSelected:(CCAddress *)address
 {
     CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
+    outputViewController.delegate = self;
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
 - (void)listSelected:(CCList *)list
 {
     CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list];
+    listOutputViewController.delegate = self;
     [self.navigationController pushViewController:listOutputViewController animated:YES];
+}
+
+- (void)deleteAddress:(CCAddress *)address
+{
+    NSString *alertTitle = NSLocalizedString(@"NOTIF_ADDRESS_DELETE", @"");
+    
+    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self leftAction:@selector(alertViewDidSayYesForAddress:) rightAction:@selector(alertViewDidSayNo:)];
+    alertView.userInfo = address;
+}
+
+- (void)deleteList:(CCList *)list
+{
+    NSString *alertTitle = NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
+    
+    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self leftAction:@selector(alertViewDidSayYesForList:) rightAction:@selector(alertViewDidSayNo:)];
+    alertView.userInfo = list;
 }
 
 #pragma mark - CCListListViewControllerDelegate
@@ -160,6 +190,29 @@
         [_splashViewController.view removeFromSuperview];
         [_splashViewController removeFromParentViewController];
     }];
+}
+
+#pragma mark - CCAlertView target methods
+
+- (void)alertViewDidSayYesForAddress:(CCAlertView *)sender
+{
+    [CCModelHelper deleteAddress:sender.userInfo];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
+    
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertViewDidSayYesForList:(CCAlertView *)sender
+{
+    [CCModelHelper deleteList:sender.userInfo];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
+    
+    [CCAlertView closeAlertView:sender];
+}
+
+- (void)alertViewDidSayNo:(CCAlertView *)sender
+{
+    [CCAlertView closeAlertView:sender];
 }
 
 @end

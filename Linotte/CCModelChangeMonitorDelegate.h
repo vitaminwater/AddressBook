@@ -23,16 +23,17 @@
 - (void)listDidAdd:(CCList *)list;
 
 - (void)listWillRemove:(CCList *)list;
-- (void)listDidRemove:(CCList *)list;
+- (void)listDidRemove:(NSString *)identifier;
 
 - (void)listDidUpdate:(CCList *)list;
 
 - (void)addressDidAdd:(CCAddress *)address;
 
 - (void)addressWillRemove:(CCAddress *)address;
-- (void)addressDidRemove:(CCAddress *)address;
+- (void)addressDidRemove:(NSString *)identifier;
 
 - (void)addressDidUpdate:(CCAddress *)address;
+- (void)addressDidUpdateUserData:(CCAddress *)address;
 
 - (void)address:(CCAddress *)address willMoveToList:(CCList *)list;
 - (void)address:(CCAddress *)address didMoveToList:(CCList *)list;

@@ -18,6 +18,9 @@
 #import "CCListListViewControllerDelegate.h"
 #import "CCListStoreViewControllerDelegate.h"
 
-@interface CCMainViewController : UIViewController<CCMainViewDelegate, CCListViewControllerDelegate, CCAddAddressViewControllerDelegate, CCSplashViewControllerDelegate, CCListListViewControllerDelegate, CCListStoreViewControllerDelegate>
+#import "CCListOutputViewControllerDelegate.h"
+#import "CCOutputViewControllerDelegate.h"
+
+@interface CCMainViewController : UIViewController<CCMainViewDelegate, CCListViewControllerDelegate, CCAddAddressViewControllerDelegate, CCSplashViewControllerDelegate, CCListListViewControllerDelegate, CCListStoreViewControllerDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate>
 
 @end

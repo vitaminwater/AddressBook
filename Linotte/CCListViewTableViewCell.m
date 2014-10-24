@@ -157,6 +157,22 @@
     [self.contentView addConstraints:_constraints];
 }
 
+- (void)showDeleteButton
+{
+    _rightEjectButtonConstraint.constant = 95;
+    [UIView animateWithDuration:0.2 animations:^{
+        [self.contentView layoutIfNeeded];
+    }];
+}
+
+- (void)hideDeleteButton
+{
+    _rightEjectButtonConstraint.constant = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        [self.contentView layoutIfNeeded];
+    }];
+}
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
@@ -214,15 +230,14 @@
 
 - (void)swipGestureRecognizer:(UISwipeGestureRecognizer *)swipGestureRecognizer
 {
+    if (_deletable == NO)
+        return;
     if (swipGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
-            _rightEjectButtonConstraint.constant = 95;
+            [self showDeleteButton];
         } else if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
-            _rightEjectButtonConstraint.constant = 0;
+            [self hideDeleteButton];
         }
-        [UIView animateWithDuration:0.2 animations:^{
-            [self.contentView layoutIfNeeded];
-        }];
     }
 }
 

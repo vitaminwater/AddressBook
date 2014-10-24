@@ -13,10 +13,10 @@ extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *note;
+	__unsafe_unretained NSString *notificationId;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
-	__unsafe_unretained NSString *sent;
 } CCAddressAttributes;
 
 extern const struct CCAddressRelationships {
@@ -84,6 +84,10 @@ extern const struct CCAddressRelationships {
 
 //- (BOOL)validateNote:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSString* notificationId;
+
+//- (BOOL)validateNotificationId:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSNumber* notify;
 
 @property (atomic) BOOL notifyValue;
@@ -99,14 +103,6 @@ extern const struct CCAddressRelationships {
 @property (nonatomic, strong) NSString* providerId;
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* sent;
-
-@property (atomic) BOOL sentValue;
-- (BOOL)sentValue;
-- (void)setSentValue:(BOOL)value_;
-
-//- (BOOL)validateSent:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSSet *categories;
 
@@ -185,6 +181,9 @@ extern const struct CCAddressRelationships {
 - (NSString*)primitiveNote;
 - (void)setPrimitiveNote:(NSString*)value;
 
+- (NSString*)primitiveNotificationId;
+- (void)setPrimitiveNotificationId:(NSString*)value;
+
 - (NSNumber*)primitiveNotify;
 - (void)setPrimitiveNotify:(NSNumber*)value;
 
@@ -196,12 +195,6 @@ extern const struct CCAddressRelationships {
 
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
-
-- (NSNumber*)primitiveSent;
-- (void)setPrimitiveSent:(NSNumber*)value;
-
-- (BOOL)primitiveSentValue;
-- (void)setPrimitiveSentValue:(BOOL)value_;
 
 - (NSMutableSet*)primitiveCategories;
 - (void)setPrimitiveCategories:(NSMutableSet*)value;

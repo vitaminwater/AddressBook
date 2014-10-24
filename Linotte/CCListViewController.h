@@ -25,6 +25,7 @@
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;
+@property(nonatomic, assign)BOOL deletableItems;
 
 - (instancetype)initWithProvider:(CCListViewContentProvider *)provider;
 

@@ -10,11 +10,7 @@
 
 #import "CCCoreDataStack.h"
 
-#import <Mixpanel/Mixpanel.h>
-
 #import <objc/runtime.h>
-
-#import "CCAlertView.h"
 
 #import "CCModelChangeMonitor.h"
 #import "CCLocationMonitor.h"
@@ -49,6 +45,7 @@
     if (self) {
         _provider = provider;
         _provider.delegate = self;
+        _deletableItems = YES;
     }
     return self;
 }
@@ -118,39 +115,6 @@
 
 #pragma mark - public methods
 
-#pragma mark - CCAlertView target methods
-
-- (void)alertViewDidSayYes:(CCAlertView *)sender
-{
-    NSUInteger index = [sender.userInfo integerValue];
-    CCListItemType type = [_provider listItemTypeAtIndex:index];
-    
-    if (type == CCListItemTypeAddress) {
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
-        [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
-                                                                         @"address": address.address ?: @"",
-                                                                         @"identifier": address.identifier ?: @""}];
-        
-        [[CCModelChangeMonitor sharedInstance] addressWillRemove:address];
-        [managedObjectContext deleteObject:address];
-        [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressDidRemove:address];
-        
-        [((CCListView *)self.view) showConfirmationHUD:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"")];
-    } else if (type == CCListItemTypeList) {
-        // CCList *list = (CCList *)[_addressContentProvider listItemContentAtIndex:[index unsignedIntegerValue]];
-        // TODO
-    }
-    
-    [CCAlertView closeAlertView:sender];
-}
-
-- (void)alertViewDidSayNo:(CCAlertView *)sender
-{
-    [CCAlertView closeAlertView:sender];
-}
-
 #pragma mark - CCListViewDelegate methods
 
 - (UIView *)getEmptyView
@@ -163,23 +127,23 @@
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
-        CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address];
-        outputViewController.delegate = self;
-        [self.navigationController pushViewController:outputViewController animated:YES];
+        [_delegate addressSelected:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
-        CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list];
-        listOutputViewController.delegate = self;
-        [self.navigationController pushViewController:listOutputViewController animated:YES];
+        [_delegate listSelected:list];
     }
 }
 
 - (void)deleteListItemAtIndex:(NSUInteger)index
 {
-    NSString *alertTitle = [_provider listItemTypeAtIndex:index] == CCListItemTypeAddress ? NSLocalizedString(@"NOTIF_ADDRESS_DELETE", @"") : NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
-    
-    CCAlertView *alertView = [CCAlertView showAlertViewWithText:alertTitle target:self okAction:@selector(alertViewDidSayYes:) cancelAction:@selector(alertViewDidSayNo:)];
-    alertView.userInfo = @(index);
+    CCListItemType type = [_provider listItemTypeAtIndex:index];
+    if (type == CCListItemTypeAddress) {
+        CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
+        [_delegate deleteAddress:address];
+    } else if (type == CCListItemTypeList) {
+        CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
+        [_delegate deleteList:list];
+    }
 }
 
 - (void)setNotificationEnabled:(BOOL)enabled atIndex:(NSUInteger)index
@@ -189,7 +153,7 @@
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressDidUpdate:address];
+        [[CCModelChangeMonitor sharedInstance] addressDidUpdateUserData:address];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
@@ -228,6 +192,11 @@
 - (BOOL)notificationEnabledForListItemAtIndex:(NSUInteger)index
 {
     return [_provider notificationEnabledForListItemAtIndex:index];
+}
+
+- (BOOL)deletableForListItemAtIndex:(NSUInteger)index
+{
+    return _deletableItems && [_provider deletableAtIndex:index];
 }
 
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index

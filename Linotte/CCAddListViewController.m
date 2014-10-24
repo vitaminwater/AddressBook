@@ -35,7 +35,6 @@
     
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    list.identifier = [[NSUUID UUID] UUIDString];
     [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
     

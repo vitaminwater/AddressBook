@@ -27,6 +27,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 @property(nonatomic, strong, readonly)NSString *info;
 @property(nonatomic, readonly)BOOL notify;
 @property(nonatomic, readonly)BOOL farAway;
+@property(nonatomic, readonly)BOOL deletable;
 @property(nonatomic, readonly, strong)CLLocation *itemLocation;
 @property(nonatomic, strong)CLLocation *location;
 

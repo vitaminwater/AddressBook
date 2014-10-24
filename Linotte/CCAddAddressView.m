@@ -47,7 +47,7 @@
     _textField.delegate = self;
     _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
     _textField.textColor = [UIColor darkGrayColor];
-    _textField.backgroundColor = [UIColor clearColor];
+    _textField.backgroundColor = [UIColor whiteColor];
     _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     
     UIImageView *leftView = [UIImageView new];
