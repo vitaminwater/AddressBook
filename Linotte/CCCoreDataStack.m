@@ -15,11 +15,13 @@
     NSPersistentStoreCoordinator *_persistentStoreCoordinator;
 }
 
-- (NSURL *)applicationDocumentsDirectory {
+- (NSURL *)applicationDocumentsDirectory
+{
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-- (NSManagedObjectModel *)managedObjectModel {
+- (NSManagedObjectModel *)managedObjectModel
+{
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
@@ -28,7 +30,8 @@
     return _managedObjectModel;
 }
 
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
+{
     // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
     if (_persistentStoreCoordinator != nil) {
         return _persistentStoreCoordinator;
@@ -54,7 +57,8 @@
     return _persistentStoreCoordinator;
 }
 
-- (NSManagedObjectContext *)managedObjectContext {
+- (NSManagedObjectContext *)managedObjectContext
+{
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
     if (_managedObjectContext != nil) {
         return _managedObjectContext;
@@ -64,24 +68,44 @@
     if (!coordinator) {
         return nil;
     }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
+    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     return _managedObjectContext;
 }
 
+- (NSManagedObjectContext *)childManagedObjectContext
+{
+    NSManagedObjectContext *parentManagedObjectContext = [self managedObjectContext];
+    NSManagedObjectContext *managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:parentManagedObjectContext.concurrencyType];
+    [managedObjectContext setParentContext:parentManagedObjectContext];
+    return managedObjectContext;
+}
+
+- (void)saveChildManagedObjectContext:(NSManagedObjectContext *)childManagedObjectContext
+{
+    [self performSaveContextForContext:childManagedObjectContext];
+    
+    [self performSaveContextForContext:_managedObjectContext];
+}
+
 #pragma mark - Core Data Saving support
 
-- (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
+- (void)performSaveContextForContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSError *error = nil;
+    if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
     }
+}
+
+- (void)saveContext
+{
+    if (_managedObjectContext == nil)
+        return;
+    [self performSaveContextForContext:self.managedObjectContext];
 }
 
 #pragma mark - Singleton method

@@ -25,8 +25,6 @@
         }
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
-        _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
-        _locationManager.distanceFilter = kCLDistanceFilterNone;
         
         [_locationManager startMonitoringSignificantLocationChanges];
     }
@@ -59,7 +57,7 @@
 {
     if ([region isKindOfClass:[CLCircularRegion class]]) {
         NSArray *geohashes = [CCGeohashHelper calculateAdjacentGeohashes:region.identifier];
-        [_delegate didEnterGeohash:geohashes];
+        [_delegate didEnterGeohashes:geohashes];
         [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
     }
 }

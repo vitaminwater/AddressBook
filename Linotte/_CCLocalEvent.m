@@ -1,40 +1,40 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to CCNetworkEvent.m instead.
+// Make changes to CCLocalEvent.m instead.
 
-#import "_CCNetworkEvent.h"
+#import "_CCLocalEvent.h"
 
-const struct CCNetworkEventAttributes CCNetworkEventAttributes = {
+const struct CCLocalEventAttributes CCLocalEventAttributes = {
 	.date = @"date",
 	.event = @"event",
 	.identifier = @"identifier",
 };
 
-const struct CCNetworkEventRelationships CCNetworkEventRelationships = {
+const struct CCLocalEventRelationships CCLocalEventRelationships = {
 	.address = @"address",
 	.list = @"list",
 };
 
-@implementation CCNetworkEventID
+@implementation CCLocalEventID
 @end
 
-@implementation _CCNetworkEvent
+@implementation _CCLocalEvent
 
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription insertNewObjectForEntityForName:@"CCNetworkEvent" inManagedObjectContext:moc_];
+	return [NSEntityDescription insertNewObjectForEntityForName:@"CCLocalEvent" inManagedObjectContext:moc_];
 }
 
 + (NSString*)entityName {
-	return @"CCNetworkEvent";
+	return @"CCLocalEvent";
 }
 
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_ {
 	NSParameterAssert(moc_);
-	return [NSEntityDescription entityForName:@"CCNetworkEvent" inManagedObjectContext:moc_];
+	return [NSEntityDescription entityForName:@"CCLocalEvent" inManagedObjectContext:moc_];
 }
 
-- (CCNetworkEventID*)objectID {
-	return (CCNetworkEventID*)[super objectID];
+- (CCLocalEventID*)objectID {
+	return (CCLocalEventID*)[super objectID];
 }
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {

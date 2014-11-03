@@ -18,6 +18,7 @@
 #import "CCLinotteAPI.h"
 
 #import "CCNetworkHandler.h"
+#import "CCSynchronizationHandler.h"
 
 #import "CCGeohashMonitor.h"
 #import "CCNotificationGenerator.h"
@@ -88,8 +89,10 @@
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    [[CCNetworkHandler sharedInstance] dequeueEvents:0 eventChainEndBlock:^(NSUInteger eventsSent) {
-        completionHandler(eventsSent > 0 ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:10 completionBlock:^{
+        [[CCNetworkHandler sharedInstance] dequeueOutputEvents:0 eventChainEndBlock:^(NSUInteger eventsSent) {
+            completionHandler(eventsSent > 0 ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
+        }];
     }];
 }
 
@@ -126,6 +129,7 @@
     [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
     
     [CCNetworkHandler sharedInstance];
+    [CCSynchronizationHandler sharedInstance];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification

@@ -19,7 +19,7 @@
 
 #import "CCGeohashHelper.h"
 
-#define kCCSmallGeohashLength 13
+#define kCCMediumGeohashLength 13
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define radiandsToDegrees(x) (x * 180.0 / M_PI)
@@ -130,13 +130,6 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     }
 }
 
-#pragma mark - getter methods
-
-- (BOOL)deletable
-{
-    return YES;
-}
-
 @end
 
 
@@ -170,9 +163,9 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (location == nil)
         return;
     
-    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
+    NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF = %@", [_address.geohash substringToIndex:kCCSmallGeohashLength]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF = %@", [_address.geohash substringToIndex:kCCMediumGeohashLength]];
     
     if ([[geohashesComp filteredArrayUsingPredicate:predicate] count] == 0)
         self.farAway = YES;
@@ -264,7 +257,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (self.location == nil)
         return;
     
-    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
+    NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
     BOOL tooFar = YES;
     for (NSString *geohash in geohashesComp) {
         if ([address.geohash hasPrefix:geohash]) {
@@ -305,7 +298,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    NSArray *geohashesComp = geohashLimit(self.location, kCCSmallGeohashLength);
+    NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
@@ -361,11 +354,6 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (BOOL)notify
 {
     return _list.notifyValue;
-}
-
-- (BOOL)deletable
-{
-    return _list.ownedValue && _list.isdefaultValue == NO;
 }
 
 @end

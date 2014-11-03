@@ -24,6 +24,7 @@
 "NOTIF_LIST_DELETE" = "Delete this book ?";
 "NOTIF_ADDRESS_DELETE_CONFIRM" = "Venue deleted";
 "NOTIF_LIST_DELETE_CONFIRM" = "Book deleted";
+"NOTIF_LIST_DELETE_INSTALL" = "Book installed";
 
 "YES" = "Yes";
 "NO" = "No";
@@ -103,3 +104,8 @@
 "LOCATION_EXPLAINATION" = "pouetEn";
 
 "DEFAULT_LIST_NAME" = "My book";
+
+"LIST_INFOS_FORMAT" = "By %@\n%d addresses - %d subscribers\nLast update at %@";
+"LIST_INSTALL_LABEL" = "Add this book to my Linotte";
+
+"MISSING_LOCATION" = "Missing connection";

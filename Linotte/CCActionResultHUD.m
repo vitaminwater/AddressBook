@@ -66,7 +66,7 @@
 
 #pragma mark - class methods
 
-+ (void)showActionResultWithImage:(UIImage *)image text:(NSString *)text delay:(NSTimeInterval)delay
++ (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image text:(NSString *)text delay:(NSTimeInterval)delay
 {
     CCActionResultHUD *actionResultHUD = [[CCActionResultHUD alloc] initWithImage:image text:text];
     actionResultHUD.translatesAutoresizingMaskIntoConstraints = NO;
@@ -85,13 +85,21 @@
         actionResultHUD.alpha = 1;
     }];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.2 animations:^{
-            actionResultHUD.alpha = 0;
-        } completion:^(BOOL finished) {
-            [actionResultHUD removeFromSuperview];
-        }];
-    });
+    if (delay > 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self removeActionResult:actionResultHUD];
+        });
+    }
+    return actionResultHUD;
+}
+
++ (void)removeActionResult:(CCActionResultHUD *)actionResultHUD
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        actionResultHUD.alpha = 0;
+    } completion:^(BOOL finished) {
+        [actionResultHUD removeFromSuperview];
+    }];
 }
 
 @end

@@ -161,7 +161,7 @@
     _textFieldValueSave = _textField.text;
     _textField.backgroundColor = [UIColor clearColor];
     _textField.text = @"";
-    _textField.placeholder = @"Missing connection";
+    _textField.placeholder = NSLocalizedString(@"MISSING_LOCATION", @"");
     _textField.enabled = NO;
 }
 

@@ -15,29 +15,29 @@
 
 @optional
 
-- (void)listWillExpand:(CCList *)list;
-- (void)listDidExpand:(CCList *)list;
-- (void)listWillReduce:(CCList *)list;
-- (void)listDidReduce:(CCList *)list;
+- (void)listWillExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listDidExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listWillReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listDidReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork;
 
-- (void)listDidAdd:(CCList *)list;
+- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork;
 
-- (void)listWillRemove:(CCList *)list;
-- (void)listDidRemove:(NSString *)identifier;
+- (void)listWillRemove:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork;
 
-- (void)listDidUpdate:(CCList *)list;
+- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork;
 
-- (void)addressDidAdd:(CCAddress *)address;
+- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
 
-- (void)addressWillRemove:(CCAddress *)address;
-- (void)addressDidRemove:(NSString *)identifier;
+- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
+- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork;
 
-- (void)addressDidUpdate:(CCAddress *)address;
-- (void)addressDidUpdateUserData:(CCAddress *)address;
+- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
+- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
 
-- (void)address:(CCAddress *)address willMoveToList:(CCList *)list;
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list;
-- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list;
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list;
+- (void)address:(CCAddress *)address willMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
 
 @end

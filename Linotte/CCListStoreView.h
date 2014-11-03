@@ -14,4 +14,12 @@
 
 @property(nonatomic, assign)id<CCListStoreViewDelegate> delegate;
 
+- (void)firstLoad;
+
+- (void)unreachable;
+- (void)reachable;
+
+- (void)addListInstallerView:(UIView *)view;
+- (void)removeListInstallerView:(UIView *)view completionBlock:(void(^)())completionBlock;
+
 @end

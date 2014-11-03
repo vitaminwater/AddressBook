@@ -67,11 +67,13 @@
     
     [view setNotificationEnabled:_list.notifyValue];
     
-    _addViewController = [CCAddAddressViewController new];
-    _addViewController.delegate = self;
-    [self addChildViewController:_addViewController];
-    [view setupAddView:_addViewController.view];
-    [_addViewController didMoveToParentViewController:self];
+    if (_list.ownedValue) {
+        _addViewController = [CCAddAddressViewController new];
+        _addViewController.delegate = self;
+        [self addChildViewController:_addViewController];
+        [view setupAddView:_addViewController.view];
+        [_addViewController didMoveToParentViewController:self];
+    }
     
     CCListOutputListViewModel *listModel = [[CCListOutputListViewModel alloc] initWithList:_list];
     CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
@@ -112,17 +114,19 @@
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
     
-    { // right bar button items
-        CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
-        _settingsButton = [UIButton new];
-        [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
-        _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _settingsButton.frame = settingsButtonFrame;
-        [_settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
-        
-        self.navigationItem.rightBarButtonItems = @[barButtonItem];
+    if (_list.ownedValue) {
+        { // right bar button items
+            CGRect settingsButtonFrame = CGRectMake(0, 0, 30, 30);
+            _settingsButton = [UIButton new];
+            [_settingsButton setImage:[UIImage imageNamed:@"settings_icon.png"] forState:UIControlStateNormal];
+            _settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+            _settingsButton.frame = settingsButtonFrame;
+            [_settingsButton addTarget:self action:@selector(settingsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            
+            UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_settingsButton];
+            
+            self.navigationItem.rightBarButtonItems = @[barButtonItem];
+        }
     }
     
     self.navigationItem.hidesBackButton = YES;
@@ -172,7 +176,7 @@
 {
     _list.notify = @(enabled);
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list];
+    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list fromNetwork:NO];
 }
 
 #pragma mark - CCListOutputListEmptyViewDelegate methods
@@ -187,6 +191,8 @@
 
 - (UIView *)getEmptyView
 {
+    if (_list.ownedValue == NO)
+        return nil;
     CCListOutputListEmptyView *emptyView = [CCListOutputListEmptyView new];
     emptyView.delegate = self;
     return emptyView;

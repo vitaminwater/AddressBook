@@ -1,30 +1,30 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to CCNetworkEvent.h instead.
+// Make changes to CCLocalEvent.h instead.
 
 #import <CoreData/CoreData.h>
 
-extern const struct CCNetworkEventAttributes {
+extern const struct CCLocalEventAttributes {
 	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *event;
 	__unsafe_unretained NSString *identifier;
-} CCNetworkEventAttributes;
+} CCLocalEventAttributes;
 
-extern const struct CCNetworkEventRelationships {
+extern const struct CCLocalEventRelationships {
 	__unsafe_unretained NSString *address;
 	__unsafe_unretained NSString *list;
-} CCNetworkEventRelationships;
+} CCLocalEventRelationships;
 
 @class CCAddress;
 @class CCList;
 
-@interface CCNetworkEventID : NSManagedObjectID {}
+@interface CCLocalEventID : NSManagedObjectID {}
 @end
 
-@interface _CCNetworkEvent : NSManagedObject {}
+@interface _CCLocalEvent : NSManagedObject {}
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-@property (nonatomic, readonly, strong) CCNetworkEventID* objectID;
+@property (nonatomic, readonly, strong) CCLocalEventID* objectID;
 
 @property (nonatomic, strong) NSDate* date;
 
@@ -52,7 +52,7 @@ extern const struct CCNetworkEventRelationships {
 
 @end
 
-@interface _CCNetworkEvent (CoreDataGeneratedPrimitiveAccessors)
+@interface _CCLocalEvent (CoreDataGeneratedPrimitiveAccessors)
 
 - (NSDate*)primitiveDate;
 - (void)setPrimitiveDate:(NSDate*)value;

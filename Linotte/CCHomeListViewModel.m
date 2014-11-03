@@ -33,7 +33,7 @@
     {
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lists.@count = 0 OR ANY lists.owned = %@", @YES];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists.owned = %@", @YES];
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
@@ -58,7 +58,7 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listDidExpand:(CCList *)list
+- (void)listDidExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     [self.provider removeList:list];
     
@@ -74,7 +74,7 @@
     }
 }
 
-- (void)listDidReduce:(CCList *)list
+- (void)listDidReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     [self.provider addList:list];
     
@@ -88,7 +88,7 @@
     [self.provider removeAddresses:addresses];
 }
 
-- (void)addressDidAdd:(CCAddress *)address
+- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
     NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
@@ -102,7 +102,7 @@
     }
 }
 
-- (void)addressWillRemove:(CCAddress *)address
+- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
@@ -120,7 +120,7 @@
     }
 }
 
-- (void)addressDidRemove:(NSString *)identifier
+- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
 {
     NSArray *lists = [self.cache popCacheEntry:kCCHomeListViewModelDeletedAddressListsKey];
     
@@ -128,7 +128,7 @@
         [self.provider refreshListItemContentsForObjects:lists];
 }
 
-- (void)addressDidUpdate:(CCAddress *)address
+- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
     NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
@@ -138,7 +138,7 @@
     }
 }
 
-- (void)addressDidUpdateUserData:(CCAddress *)address
+- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
     NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
@@ -148,7 +148,7 @@
     }
 }
 
-- (void)listDidAdd:(CCList *)list
+- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (list.ownedValue == YES) {
         for (CCAddress *address in list.addresses) {
@@ -159,7 +159,7 @@
     }
 }
 
-- (void)listWillRemove:(CCList *)list
+- (void)listWillRemove:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (list.ownedValue) {
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
@@ -175,13 +175,13 @@
     }
 }
 
-- (void)listDidUpdate:(CCList *)list
+- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (list.ownedValue == NO)
         [self.provider refreshListItemContentForObject:list];
 }
 
-- (void)address:(CCAddress *)address willMoveToList:(CCList *)list
+- (void)address:(CCAddress *)address willMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     BOOL wasExpanded = [address.lists count] == 0;
     if (wasExpanded == NO) {
@@ -202,7 +202,7 @@
         [self.provider addAddress:address toList:list];
 }
 
-- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (list.ownedValue == YES && [address.lists count] > 1) {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
@@ -218,7 +218,7 @@
     [self.cache pushCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey value:lists.allObjects];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     NSArray *lists = [self.cache popCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey];
     for (CCList *otherList in lists) {

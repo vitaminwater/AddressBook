@@ -40,37 +40,37 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)addressDidAdd:(CCAddress *)address
+- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     if ([address.lists containsObject:_list])
         [self.provider addAddress:address];
 }
 
-- (void)addressWillRemove:(CCAddress *)address
+- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     if ([address.lists containsObject:_list])
         [self.provider removeAddress:address];
 }
 
-- (void)addressDidUpdate:(CCAddress *)address
+- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     if ([address.lists containsObject:_list])
         [self.provider refreshListItemContentForObject:address];
 }
 
-- (void)addressDidUpdateUserData:(CCAddress *)address
+- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
 {
     if ([address.lists containsObject:_list])
         [self.provider refreshListItemContentForObject:address];
 }
 
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (_list == list)
         [self.provider addAddress:address];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list
+- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
 {
     if (_list == list)
         [self.provider removeAddress:address];

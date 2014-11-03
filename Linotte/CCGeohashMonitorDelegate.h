@@ -10,6 +10,6 @@
 
 @protocol CCGeohashMonitorDelegate <NSObject>
 
-- (void)didEnterGeohash:(NSArray *)geohash;
+- (void)didEnterGeohashes:(NSArray *)geohash;
 
 @end

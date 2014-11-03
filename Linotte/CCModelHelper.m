@@ -32,7 +32,7 @@
                                                                      @"address": address.address ?: @"",
                                                                      @"identifier": mixidentifier}];
     
-    [[CCModelChangeMonitor sharedInstance] addressWillRemove:address];
+    [[CCModelChangeMonitor sharedInstance] addressWillRemove:address fromNetwork:NO];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @YES];
     NSSet *lists = [address.lists filteredSetUsingPredicate:predicate];
@@ -43,7 +43,7 @@
     
     [[CCCoreDataStack sharedInstance] saveContext];
     
-    [[CCModelChangeMonitor sharedInstance] addressDidRemove:identifier];
+    [[CCModelChangeMonitor sharedInstance] addressDidRemove:identifier fromNetwork:NO];
 }
 
 + (void)deleteList:(CCList *)list
@@ -55,7 +55,7 @@
     [[Mixpanel sharedInstance] track:@"List deleted" properties:@{@"name": list.name,
                                                                      @"identifier": mixidentifier}];
     
-    [[CCModelChangeMonitor sharedInstance] listWillRemove:list];
+    [[CCModelChangeMonitor sharedInstance] listWillRemove:list fromNetwork:NO];
     
     [managedObjectContext deleteObject:list];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
@@ -70,7 +70,7 @@
     
     [[CCCoreDataStack sharedInstance] saveContext];
     
-    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier];
+    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier fromNetwork:NO];
 }
 
 + (CCList *)defaultList
@@ -89,7 +89,7 @@
     list.name = NSLocalizedString(@"DEFAULT_LIST_NAME", @"");
     list.isdefault = @(YES);
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list fromNetwork:NO];
     
     return list;
 }

@@ -1,4 +1,4 @@
-#import "_CCNetworkEvent.h"
+#import "_CCLocalEvent.h"
 
 typedef enum : int16_t {
     CCNetworkEventAddressAdded,
@@ -16,6 +16,6 @@ typedef enum : int16_t {
     CCNetworkEventAddressUserDataUpdated,
 } CCNetworkEventEvent;
 
-@interface CCNetworkEvent : _CCNetworkEvent {}
+@interface CCLocalEvent : _CCLocalEvent {}
 
 @end

@@ -4,9 +4,15 @@
 #import "_CCList.h"
 
 const struct CCListAttributes CCListAttributes = {
+	.avgInactiveDays = @"avgInactiveDays",
 	.icon = @"icon",
 	.identifier = @"identifier",
 	.isdefault = @"isdefault",
+	.lastDateUpdate = @"lastDateUpdate",
+	.lastOpened = @"lastOpened",
+	.lastZoneRefreshLatitude = @"lastZoneRefreshLatitude",
+	.lastZoneRefreshLongitude = @"lastZoneRefreshLongitude",
+	.lastZonesRefresh = @"lastZonesRefresh",
 	.name = @"name",
 	.notify = @"notify",
 	.owned = @"owned",
@@ -19,6 +25,8 @@ const struct CCListRelationships CCListRelationships = {
 	.addresses = @"addresses",
 	.events = @"events",
 	.metas = @"metas",
+	.server_events = @"server_events",
+	.zones = @"zones",
 };
 
 @implementation CCListID
@@ -47,8 +55,23 @@ const struct CCListRelationships CCListRelationships = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"avgInactiveDaysValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"avgInactiveDays"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"isdefaultValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isdefault"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"lastZoneRefreshLatitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"lastZoneRefreshLatitude"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"lastZoneRefreshLongitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"lastZoneRefreshLongitude"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -64,6 +87,26 @@ const struct CCListRelationships CCListRelationships = {
 	}
 
 	return keyPaths;
+}
+
+@dynamic avgInactiveDays;
+
+- (double)avgInactiveDaysValue {
+	NSNumber *result = [self avgInactiveDays];
+	return [result doubleValue];
+}
+
+- (void)setAvgInactiveDaysValue:(double)value_ {
+	[self setAvgInactiveDays:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveAvgInactiveDaysValue {
+	NSNumber *result = [self primitiveAvgInactiveDays];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveAvgInactiveDaysValue:(double)value_ {
+	[self setPrimitiveAvgInactiveDays:[NSNumber numberWithDouble:value_]];
 }
 
 @dynamic icon;
@@ -89,6 +132,52 @@ const struct CCListRelationships CCListRelationships = {
 - (void)setPrimitiveIsdefaultValue:(BOOL)value_ {
 	[self setPrimitiveIsdefault:[NSNumber numberWithBool:value_]];
 }
+
+@dynamic lastDateUpdate;
+
+@dynamic lastOpened;
+
+@dynamic lastZoneRefreshLatitude;
+
+- (double)lastZoneRefreshLatitudeValue {
+	NSNumber *result = [self lastZoneRefreshLatitude];
+	return [result doubleValue];
+}
+
+- (void)setLastZoneRefreshLatitudeValue:(double)value_ {
+	[self setLastZoneRefreshLatitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLastZoneRefreshLatitudeValue {
+	NSNumber *result = [self primitiveLastZoneRefreshLatitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLastZoneRefreshLatitudeValue:(double)value_ {
+	[self setPrimitiveLastZoneRefreshLatitude:[NSNumber numberWithDouble:value_]];
+}
+
+@dynamic lastZoneRefreshLongitude;
+
+- (double)lastZoneRefreshLongitudeValue {
+	NSNumber *result = [self lastZoneRefreshLongitude];
+	return [result doubleValue];
+}
+
+- (void)setLastZoneRefreshLongitudeValue:(double)value_ {
+	[self setLastZoneRefreshLongitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLastZoneRefreshLongitudeValue {
+	NSNumber *result = [self primitiveLastZoneRefreshLongitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLastZoneRefreshLongitudeValue:(double)value_ {
+	[self setPrimitiveLastZoneRefreshLongitude:[NSNumber numberWithDouble:value_]];
+}
+
+@dynamic lastZonesRefresh;
 
 @dynamic name;
 
@@ -168,6 +257,28 @@ const struct CCListRelationships CCListRelationships = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"metas"];
 
 	[self didAccessValueForKey:@"metas"];
+	return result;
+}
+
+@dynamic server_events;
+
+- (NSMutableSet*)server_eventsSet {
+	[self willAccessValueForKey:@"server_events"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"server_events"];
+
+	[self didAccessValueForKey:@"server_events"];
+	return result;
+}
+
+@dynamic zones;
+
+- (NSMutableSet*)zonesSet {
+	[self willAccessValueForKey:@"zones"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"zones"];
+
+	[self didAccessValueForKey:@"zones"];
 	return result;
 }
 

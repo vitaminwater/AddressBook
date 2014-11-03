@@ -12,7 +12,7 @@
 
 @interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
 
-- (void)dequeueEvents:(NSUInteger)eventsSent eventChainEndBlock:(void(^)(NSUInteger eventsSent))eventChainEndBlock;
+- (void)dequeueOutputEvents:(NSUInteger)eventsSent eventChainEndBlock:(void(^)(NSUInteger eventsSent))eventChainEndBlock;
 
 - (BOOL)connectionAvailable;
 

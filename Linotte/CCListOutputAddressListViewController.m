@@ -85,20 +85,20 @@
 {
     CCAddress *address = _addresses[index];
     
-    [[CCModelChangeMonitor sharedInstance] address:address willMoveToList:_list];
+    [[CCModelChangeMonitor sharedInstance] address:address willMoveToList:_list fromNetwork:NO];
     [_list addAddressesObject:address];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] address:address didMoveToList:_list];
+    [[CCModelChangeMonitor sharedInstance] address:address didMoveToList:_list fromNetwork:NO];
 }
 
 - (void)addressUnaddedAtIndex:(NSUInteger)index
 {
     CCAddress *address = _addresses[index];
     
-    [[CCModelChangeMonitor sharedInstance] address:address willMoveFromList:_list];
+    [[CCModelChangeMonitor sharedInstance] address:address willMoveFromList:_list fromNetwork:NO];
     [_list removeAddressesObject:address];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] address:address didMoveFromList:_list];
+    [[CCModelChangeMonitor sharedInstance] address:address didMoveFromList:_list fromNetwork:NO];
 }
 
 - (BOOL)addressIsAddedAtIndex:(NSUInteger)index

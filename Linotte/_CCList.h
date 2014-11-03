@@ -4,9 +4,15 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCListAttributes {
+	__unsafe_unretained NSString *avgInactiveDays;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *isdefault;
+	__unsafe_unretained NSString *lastDateUpdate;
+	__unsafe_unretained NSString *lastOpened;
+	__unsafe_unretained NSString *lastZoneRefreshLatitude;
+	__unsafe_unretained NSString *lastZoneRefreshLongitude;
+	__unsafe_unretained NSString *lastZonesRefresh;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
@@ -19,12 +25,16 @@ extern const struct CCListRelationships {
 	__unsafe_unretained NSString *addresses;
 	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *metas;
+	__unsafe_unretained NSString *server_events;
+	__unsafe_unretained NSString *zones;
 } CCListRelationships;
 
 @class CCAddressMeta;
 @class CCAddress;
-@class CCNetworkEvent;
+@class CCLocalEvent;
 @class CCListMeta;
+@class CCServerEvent;
+@class CCListZone;
 
 @interface CCListID : NSManagedObjectID {}
 @end
@@ -34,6 +44,14 @@ extern const struct CCListRelationships {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCListID* objectID;
+
+@property (nonatomic, strong) NSNumber* avgInactiveDays;
+
+@property (atomic) double avgInactiveDaysValue;
+- (double)avgInactiveDaysValue;
+- (void)setAvgInactiveDaysValue:(double)value_;
+
+//- (BOOL)validateAvgInactiveDays:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* icon;
 
@@ -50,6 +68,34 @@ extern const struct CCListRelationships {
 - (void)setIsdefaultValue:(BOOL)value_;
 
 //- (BOOL)validateIsdefault:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* lastDateUpdate;
+
+//- (BOOL)validateLastDateUpdate:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* lastOpened;
+
+//- (BOOL)validateLastOpened:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* lastZoneRefreshLatitude;
+
+@property (atomic) double lastZoneRefreshLatitudeValue;
+- (double)lastZoneRefreshLatitudeValue;
+- (void)setLastZoneRefreshLatitudeValue:(double)value_;
+
+//- (BOOL)validateLastZoneRefreshLatitude:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* lastZoneRefreshLongitude;
+
+@property (atomic) double lastZoneRefreshLongitudeValue;
+- (double)lastZoneRefreshLongitudeValue;
+- (void)setLastZoneRefreshLongitudeValue:(double)value_;
+
+//- (BOOL)validateLastZoneRefreshLongitude:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* lastZonesRefresh;
+
+//- (BOOL)validateLastZonesRefresh:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* name;
 
@@ -95,6 +141,14 @@ extern const struct CCListRelationships {
 
 - (NSMutableSet*)metasSet;
 
+@property (nonatomic, strong) NSSet *server_events;
+
+- (NSMutableSet*)server_eventsSet;
+
+@property (nonatomic, strong) NSSet *zones;
+
+- (NSMutableSet*)zonesSet;
+
 @end
 
 @interface _CCList (AddressesCoreDataGeneratedAccessors)
@@ -108,8 +162,8 @@ extern const struct CCListRelationships {
 @interface _CCList (EventsCoreDataGeneratedAccessors)
 - (void)addEvents:(NSSet*)value_;
 - (void)removeEvents:(NSSet*)value_;
-- (void)addEventsObject:(CCNetworkEvent*)value_;
-- (void)removeEventsObject:(CCNetworkEvent*)value_;
+- (void)addEventsObject:(CCLocalEvent*)value_;
+- (void)removeEventsObject:(CCLocalEvent*)value_;
 
 @end
 
@@ -121,7 +175,29 @@ extern const struct CCListRelationships {
 
 @end
 
+@interface _CCList (Server_eventsCoreDataGeneratedAccessors)
+- (void)addServer_events:(NSSet*)value_;
+- (void)removeServer_events:(NSSet*)value_;
+- (void)addServer_eventsObject:(CCServerEvent*)value_;
+- (void)removeServer_eventsObject:(CCServerEvent*)value_;
+
+@end
+
+@interface _CCList (ZonesCoreDataGeneratedAccessors)
+- (void)addZones:(NSSet*)value_;
+- (void)removeZones:(NSSet*)value_;
+- (void)addZonesObject:(CCListZone*)value_;
+- (void)removeZonesObject:(CCListZone*)value_;
+
+@end
+
 @interface _CCList (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSNumber*)primitiveAvgInactiveDays;
+- (void)setPrimitiveAvgInactiveDays:(NSNumber*)value;
+
+- (double)primitiveAvgInactiveDaysValue;
+- (void)setPrimitiveAvgInactiveDaysValue:(double)value_;
 
 - (NSString*)primitiveIcon;
 - (void)setPrimitiveIcon:(NSString*)value;
@@ -134,6 +210,27 @@ extern const struct CCListRelationships {
 
 - (BOOL)primitiveIsdefaultValue;
 - (void)setPrimitiveIsdefaultValue:(BOOL)value_;
+
+- (NSDate*)primitiveLastDateUpdate;
+- (void)setPrimitiveLastDateUpdate:(NSDate*)value;
+
+- (NSDate*)primitiveLastOpened;
+- (void)setPrimitiveLastOpened:(NSDate*)value;
+
+- (NSNumber*)primitiveLastZoneRefreshLatitude;
+- (void)setPrimitiveLastZoneRefreshLatitude:(NSNumber*)value;
+
+- (double)primitiveLastZoneRefreshLatitudeValue;
+- (void)setPrimitiveLastZoneRefreshLatitudeValue:(double)value_;
+
+- (NSNumber*)primitiveLastZoneRefreshLongitude;
+- (void)setPrimitiveLastZoneRefreshLongitude:(NSNumber*)value;
+
+- (double)primitiveLastZoneRefreshLongitudeValue;
+- (void)setPrimitiveLastZoneRefreshLongitudeValue:(double)value_;
+
+- (NSDate*)primitiveLastZonesRefresh;
+- (void)setPrimitiveLastZonesRefresh:(NSDate*)value;
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
@@ -167,5 +264,11 @@ extern const struct CCListRelationships {
 
 - (NSMutableSet*)primitiveMetas;
 - (void)setPrimitiveMetas:(NSMutableSet*)value;
+
+- (NSMutableSet*)primitiveServer_events;
+- (void)setPrimitiveServer_events:(NSMutableSet*)value;
+
+- (NSMutableSet*)primitiveZones;
+- (void)setPrimitiveZones:(NSMutableSet*)value;
 
 @end

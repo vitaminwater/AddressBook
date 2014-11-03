@@ -24,6 +24,7 @@
 "NOTIF_LIST_DELETE" = "Effacer ce carnet ?";
 "NOTIF_ADDRESS_DELETE_CONFIRM" = "Lieu effacé";
 "NOTIF_LIST_DELETE_CONFIRM" = "Carnet effacé";
+"NOTIF_LIST_DELETE_INSTALL" = "Carnet installé";
 
 "YES" = "Oui";
 "NO" = "Non";
@@ -100,3 +101,8 @@
 "LIST_OUTPUT_ADDRESS_LIST_SEARCH" = "RECHERCHER UN LIEU";
 
 "DEFAULT_LIST_NAME" = "Mon carnet";
+
+"LIST_INFOS_FORMAT" = "Par %@\n%d adresses - %d abonnés\nDernière mise à jour le %@";
+"LIST_INSTALL_LABEL" = "Ajouter le carnet à ma Linotte";
+
+"MISSING_LOCATION" = "Missing connection";

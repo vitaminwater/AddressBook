@@ -91,17 +91,17 @@
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list fromNetwork:NO];
     
     NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
         return [obj1.name compare:obj2.name];
     }];
     [_lists insertObject:list atIndex:insertIndex];
     
-    [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list fromNetwork:NO];
     [_address addListsObject:list];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list fromNetwork:NO];
     
     return insertIndex;
 }
@@ -112,10 +112,10 @@
     
     CCList *list = _lists[index];
     NSString *identifier = list.identifier;
-    [[CCModelChangeMonitor sharedInstance] listWillRemove:list];
+    [[CCModelChangeMonitor sharedInstance] listWillRemove:list fromNetwork:NO];
     [managedObjectContext deleteObject:list];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier];
+    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier fromNetwork:NO];
 
     [_lists removeObject:list];
 }
@@ -123,23 +123,23 @@
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
     CCList *list = _lists[index];
-    [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address willMoveToList:list fromNetwork:NO];
     
     [_address addListsObject:list];
     
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveToList:list fromNetwork:NO];
 }
 
 - (void)listUnselectedAtIndex:(NSUInteger)index
 {
     CCList *list = _lists[index];
-    [[CCModelChangeMonitor sharedInstance] address:_address willMoveFromList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address willMoveFromList:list fromNetwork:NO];
     
     [_address removeListsObject:list];
     
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list];
+    [[CCModelChangeMonitor sharedInstance] address:_address didMoveFromList:list fromNetwork:NO];
 }
 
 - (BOOL)isListSelectedAtIndex:(NSUInteger)index

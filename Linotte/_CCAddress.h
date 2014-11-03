@@ -27,7 +27,7 @@ extern const struct CCAddressRelationships {
 } CCAddressRelationships;
 
 @class CCCategory;
-@class CCNetworkEvent;
+@class CCLocalEvent;
 @class CCList;
 @class CCAddressMeta;
 
@@ -133,8 +133,8 @@ extern const struct CCAddressRelationships {
 @interface _CCAddress (EventsCoreDataGeneratedAccessors)
 - (void)addEvents:(NSSet*)value_;
 - (void)removeEvents:(NSSet*)value_;
-- (void)addEventsObject:(CCNetworkEvent*)value_;
-- (void)removeEventsObject:(CCNetworkEvent*)value_;
+- (void)addEventsObject:(CCLocalEvent*)value_;
+- (void)removeEventsObject:(CCLocalEvent*)value_;
 
 @end
 

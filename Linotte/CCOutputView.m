@@ -123,7 +123,10 @@
     
     UIFont *titleFont = [UIFont fontWithName:@"Montserrat-Bold" size:20];
     UIFont *detailFont = [UIFont fontWithName:@"Futura-Book" size:14];
-    NSString *string = [NSString stringWithFormat:@"%@\n%@\n%.02f m\n%@ %@", addressName, addressString, addressDistance, NSLocalizedString(@"PROVIDER_FROM", @""), [providerName capitalizedString]];
+    
+    NSString *distanceUnit = addressDistance > 1000 ? @"km" : @"m";
+    double displayDistance = addressDistance > 1000 ? addressDistance / 1000 : addressDistance;
+    NSString *string = [NSString stringWithFormat:@"%@\n%@\n%.02f %@\n%@ %@", addressName, addressString, displayDistance, distanceUnit, NSLocalizedString(@"PROVIDER_FROM", @""), [providerName capitalizedString]];
     NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:string];
     [attributedText setAttributes:@{NSFontAttributeName: titleFont, NSForegroundColorAttributeName: [UIColor colorWithHexString:color]} range:NSMakeRange(0, [addressName length])];
     [attributedText setAttributes:@{NSFontAttributeName: detailFont} range:NSMakeRange([addressName length], [string length] - [addressName length])];

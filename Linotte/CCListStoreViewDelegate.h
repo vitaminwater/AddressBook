@@ -10,8 +10,10 @@
 
 @protocol CCListStoreViewDelegate <NSObject>
 
+- (void)listSelectedAtIndex:(NSUInteger)index;
+
 - (NSUInteger)numberOfLists;
-- (NSString *)listNameAtIndex:(NSUInteger)index;
-- (NSString *)listIconAtIndex:(NSUInteger)index;
+- (NSString *)nameForListAtIndex:(NSUInteger)index;
+- (NSString *)iconForListAtIndex:(NSUInteger)index;
 
 @end

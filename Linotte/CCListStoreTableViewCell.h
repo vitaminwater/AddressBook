@@ -10,4 +10,7 @@
 
 @interface CCListStoreTableViewCell : UICollectionViewCell
 
+- (void)setImage:(UIImage *)image;
+- (void)setTitle:(NSString *)title;
+
 @end

@@ -131,7 +131,10 @@
     _listView = listView;
     
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self insertSubview:_listView belowSubview:_addView];
+    if (_addView != nil)
+        [self insertSubview:_listView belowSubview:_addView];
+    else
+        [self addSubview:_listView];
 }
 
 - (void)setupLayout
@@ -179,44 +182,65 @@
         }];
     }
     
-    // add view
-    {
-        if (_addViewExpanded) {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-            [_constraints addObject:topConstraint];
+    if (_addView != nil) {
+        // add view
+        {
+            if (_addViewExpanded) {
+                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+                [_constraints addObject:topConstraint];
+                
+                NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
+                [_constraints addObject:bottomConstraint];
+            } else {
+                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+                [_constraints addObject:topConstraint];
+                
+                NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
+                [_constraints addObject:heightConstraint];
+            }
+        }
+        
+        // list view
+        {
+            if (_addViewExpanded) {
+                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
+                [_constraints addObject:topConstraint];
+            } else {
+                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+                [_constraints addObject:topConstraint];
+            }
             
-            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
+            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
             [_constraints addObject:bottomConstraint];
-        } else {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        }
+        
+        // horizontal constraints
+        {
+            NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _addView, _listView);
+            
+            for (UIView *view in views.allValues) {
+                NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+                [_constraints addObjectsFromArray:horizontalConstraints];
+            }
+        }
+    } else {
+        // list view
+        {
+            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
             [_constraints addObject:topConstraint];
             
-            NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-            [_constraints addObject:heightConstraint];
-        }
-    }
-    
-    // list view
-    {
-        if (_addViewExpanded) {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-            [_constraints addObject:topConstraint];
-        } else {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [_constraints addObject:topConstraint];
+            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+            [_constraints addObject:bottomConstraint];
         }
         
-        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [_constraints addObject:bottomConstraint];
-    }
-    
-    // horizontal constraints
-    {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _addView, _listView);
-        
-        for (UIView *view in views.allValues) {
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-            [_constraints addObjectsFromArray:horizontalConstraints];
+        // horizontal constraints
+        {
+            NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _listView);
+            
+            for (UIView *view in views.allValues) {
+                NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+                [_constraints addObjectsFromArray:horizontalConstraints];
+            }
         }
     }
     

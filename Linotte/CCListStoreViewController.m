@@ -8,7 +8,14 @@
 
 #import "CCListStoreViewController.h"
 
+#import <Reachability/Reachability.h>
+
 #import <HexColors/HexColor.h>
+
+#import "CCLinotteAPI.h"
+#import "CCNetworkHandler.h"
+
+#import "CCLocationMonitor.h"
 
 #import "CCList.h"
 #import "CCListStoreView.h"
@@ -17,14 +24,28 @@
 @implementation CCListStoreViewController
 {
     NSMutableArray *_lists;
+    NSUInteger _totalLists;
+    
+    CLLocation *_location;
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
+        _lists = [@[] mutableCopy];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:kReachabilityChangedNotification
+                                                   object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)loadView
@@ -61,6 +82,12 @@
         self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
     }
     self.navigationItem.hidesBackButton = YES;
+    
+    if ([[CCNetworkHandler sharedInstance] connectionAvailable]) {
+        [((CCListStoreView *)self.view) reachable];
+    } else {
+        [((CCListStoreView *)self.view) unreachable];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -70,11 +97,43 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController setNavigationBarHidden:NO animated:animated];
+    
+    [[CCLocationMonitor sharedInstance] addDelegate:self];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+#pragma mark - Location methods
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    BOOL launchFetch = _location == nil;
+    _location = [locations lastObject];
+    
+    if (launchFetch)
+        [self loadLists:0];
+    
+    [[CCLocationMonitor sharedInstance] removeDelegate:self];
+}
+
+#pragma mark - Data methods
+
+- (void)loadLists:(NSUInteger)pageNumber
+{
+    [[CCLinotteAPI sharedInstance] fetchPublicLists:_location.coordinate completionBlock:^(BOOL success, NSArray *lists) {
+        if (success) {
+            [_lists addObjectsFromArray:lists];
+            [((CCListStoreView *)self.view) firstLoad];
+        }
+    }];
 }
 
 #pragma mark - UIBarButtons target methods
@@ -86,21 +145,54 @@
 
 #pragma mark - UIListStoreViewDelegate methods
 
+- (void)listSelectedAtIndex:(NSUInteger)index
+{
+    CCPublicListModel *list = _lists[index];
+    CCListInstallerViewController *listInstallerViewController = [[CCListInstallerViewController alloc] initWithIdentifier:list.identifier];
+    listInstallerViewController.delegate = self;
+    
+    [self addChildViewController:listInstallerViewController];
+    [((CCListStoreView *)self.view) addListInstallerView:listInstallerViewController.view];
+    [listInstallerViewController didMoveToParentViewController:self];
+}
+
 - (NSUInteger)numberOfLists
 {
     return [_lists count];
 }
 
-- (NSString *)listNameAtIndex:(NSUInteger)index
+- (NSString *)nameForListAtIndex:(NSUInteger)index
 {
-    CCList *list = _lists[index];
+    CCPublicListModel *list = _lists[index];
     return list.name;
 }
 
-- (NSString *)listIconAtIndex:(NSUInteger)index
+- (NSString *)iconForListAtIndex:(NSUInteger)index
 {
-    CCList *list = _lists[index];
+    CCPublicListModel *list = _lists[index];
     return list.icon;
+}
+
+#pragma mark - CCListInstallerViewControllerDelegate
+
+- (void)closeListInstaller:(CCListInstallerViewController *)sender
+{
+    [sender willMoveToParentViewController:nil];
+    [((CCListStoreView *)self.view) removeListInstallerView:sender.view completionBlock:^{
+        [sender removeFromParentViewController];
+    }];
+}
+
+#pragma mark - NSNotificationCenter methods
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    Reachability *reachability = notification.object;
+    if (reachability.isReachable) {
+        [((CCListStoreView *)self.view) reachable];
+    } else {
+        [((CCListStoreView *)self.view) unreachable];
+    }
 }
 
 @end

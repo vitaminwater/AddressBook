@@ -23,7 +23,7 @@
 
 #pragma mark - CCGeohashMonitorDelegate method
 
-- (void)didEnterGeohash:(NSArray *)geohash
+- (void)didEnterGeohashes:(NSArray *)geohash
 {
     // [CCNotificationGenerator scheduleTestLocalNotification:0];
     

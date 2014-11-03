@@ -280,12 +280,6 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     return YES;
 }
 
-- (BOOL)deletableAtIndex:(NSUInteger)index
-{
-    CCListItem *listItem = _listItems[index];
-    return listItem.deletable;
-}
-
 - (NSUInteger)numberOfListItems
 {
     return [_listItems count];

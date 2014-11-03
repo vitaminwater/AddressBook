@@ -80,6 +80,10 @@
         return;
 
     _emptyView = [_delegate getEmptyView];
+    
+    if (_emptyView == nil)
+        return;
+    
     _emptyView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_emptyView];
     

@@ -11,12 +11,16 @@
 #import <SSKeychain/SSKeychain.h>
 #import <AFNetworking/AFNetworking.h>
 
+#import "CCCoreDataStack.h"
+
+#import "CCGeohashHelper.h"
+
 #import "CCAddress.h"
 #import "CCList.h"
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug46"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug50"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -32,6 +36,50 @@
 #define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountName"
 #endif
 
+
+
+
+/**
+ * Model returned for public list
+ */
+
+@implementation CCPublicListModel
+@end
+
+
+/**
+ * Model returned for list complete infos
+ */
+
+@implementation CCCompleteListInfoModel
+@end
+
+/**
+ * Model returned for list geohash zones
+ */
+
+@implementation CCListGeohashZoneModel
+@end
+
+/**
+ * Model returned for address fetch
+ */
+
+@implementation CCAddressModel
+@end
+
+/**
+ * Model returned for event fetch
+ */
+
+@implementation CCServerEventModel
+@end
+
+/**
+ * CCLinotteAPI interface
+ */
+
+
 @interface CCLinotteAPICredentials : NSObject
 @property(nonatomic, strong)NSString *accessToken;
 @property(nonatomic, strong)NSString *refreshToken;
@@ -41,6 +89,7 @@
 
 @implementation CCLinotteAPICredentials
 @end
+
 
 
 @implementation CCLinotteAPI
@@ -54,21 +103,13 @@
     
     CCLinotteAPICredentials *_credentials;
 
+    NSDateFormatter *_dateFormatter;
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self != nil) {
-        [SSKeychain setAccessibilityType:kSecAttrAccessibleAlways];
-        
-        _credentials = [CCLinotteAPICredentials new];
-        _credentials.accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
-        _credentials.refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
-        _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-        _credentials.expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
-        _credentials.deviceId = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName];
-        
 #if defined(DEBUG)
         NSURL *apiUrl = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8000", kCCLinotteAPIServer]];
 #else
@@ -80,6 +121,20 @@
         
         _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
         _oauth2Manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        
+        [SSKeychain setAccessibilityType:kSecAttrAccessibleAlways];
+        
+        _credentials = [CCLinotteAPICredentials new];
+        _credentials.accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
+        _credentials.refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
+        _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
+        _credentials.expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
+        _credentials.deviceId = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName];
+        
+        _dateFormatter = [NSDateFormatter new];
+        [_dateFormatter setLocale:[NSLocale currentLocale]];
+        [_dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SS'Z'"];
+        [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
         [self refreshLoggedState];
         if (_loggedState != kCCFirstStart) {
@@ -290,7 +345,7 @@
     [_apiManager.requestSerializer setValue:_credentials.deviceId forHTTPHeaderField:@"X-Linotte-Device-Id"];
 }
 
-#pragma mark - Network data methods
+#pragma mark - Data management methods
 
 - (void)createAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
 {
@@ -319,7 +374,7 @@
 
 - (void)addList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list];
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list.identifier];
     [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -408,6 +463,120 @@
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO);
+    }];
+}
+
+#pragma mark - Fetch methods
+
+- (void)fetchPublicLists:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
+{
+    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
+    NSDictionary *parameters = @{@"geohash" : geohash};
+    [_apiManager GET:@"/list/public/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        NSMutableArray *result = [@[] mutableCopy];
+        for (NSDictionary *list in responses) {
+            CCPublicListModel *publicListModel = [CCPublicListModel new];
+            publicListModel.identifier = list[@"identifier"];
+            publicListModel.name = list[@"name"];
+            publicListModel.icon = list[@"icon"];
+            [result addObject:publicListModel];
+        }
+        completionBlock(YES, result);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (void)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, CCCompleteListInfoModel *completeListInfoModel))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/list/%@/", identifier];
+    [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        CCCompleteListInfoModel *listComplete = [CCCompleteListInfoModel new];
+        listComplete.identifier = identifier;
+        listComplete.name = response[@"name"];
+        listComplete.icon = response[@"icon"];
+        listComplete.numberOfAddresses = response[@"n_addresses"];
+        listComplete.numberOfInstalls = response[@"n_installs"];
+        listComplete.lastUpdate = [_dateFormatter dateFromString:response[@"last_update"]];
+        listComplete.author = response[@"author"];
+        listComplete.authorId = response[@"author_id"];
+        completionBlock(YES, listComplete);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (void)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/list/%@/zones/", identifier];
+    [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        NSMutableArray *results = [@[] mutableCopy];
+        for (NSDictionary *response in responses) {
+            CCListGeohashZoneModel *listGeohashZone = [CCListGeohashZoneModel new];
+            listGeohashZone.geohash = response[@"geohash"];
+            listGeohashZone.nAddresses = response[@"n_addresses"];
+            [results addObject:listGeohashZone];
+        }
+        completionBlock(YES, results);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (void)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/list/%@/addresses/", identifier];
+    NSDictionary *parameters;
+    if (lastAddressDate != nil) {
+        NSString *dateString = [_dateFormatter stringFromDate:lastAddressDate];
+        parameters = @{@"lastAddressDate" : dateString, @"limit" : @(limit), @"geohash" : geohash};
+    } else {
+        parameters = @{@"limit" : @(limit), @"geohash" : geohash};
+    }
+    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        NSMutableArray *addresses = [@[] mutableCopy];
+        for (NSDictionary *response in responses) {
+            CCAddressModel *address = [CCAddressModel new];
+            address.identifier = response[@"identifier"];
+            address.latitude = response[@"latitude"];
+            address.longitude = response[@"longitude"];
+            address.name = response[@"name"];
+            address.address = response[@"address"];
+            address.provider = response[@"provider"];
+            address.providerId = response[@"provider_id"];
+            NSDate *dateCreated = [_dateFormatter dateFromString:response[@"date_created"]];
+            address.dateCreated = dateCreated;
+            address.note = response[@"note"];
+            address.notification = response[@"notification"];
+            [addresses addObject:address];
+        }
+        completionBlock(YES, addresses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastId:(NSNumber *)lastId completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/event/%@/consume/", identifier];
+    NSDictionary *parameters = @{@"geohash" : geohash, @"last_id" : lastId};
+    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        NSMutableArray *serverEvents = [@[] mutableCopy];
+        for (NSDictionary *response in responses) {
+            CCServerEventModel *serverEventModel = [CCServerEventModel new];
+            serverEventModel.id = response[@"id"];
+            serverEventModel.event = response[@"event"];
+            serverEventModel.objectIdentifier = response[@"object_identifier"];
+            [serverEvents addObject:serverEventModel];
+        }
+        completionBlock(YES, serverEvents);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
     }];
 }
 

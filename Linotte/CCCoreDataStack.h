@@ -13,6 +13,8 @@
 @interface CCCoreDataStack : NSObject
 
 - (NSManagedObjectContext *)managedObjectContext;
+- (NSManagedObjectContext *)childManagedObjectContext;
+- (void)saveChildManagedObjectContext:(NSManagedObjectContext *)childManagedObjectContext;
 
 - (void)saveContext;
 

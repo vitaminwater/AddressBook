@@ -153,12 +153,12 @@
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressDidUpdateUserData:address];
+        [[CCModelChangeMonitor sharedInstance] addressDidUpdateUserData:address fromNetwork:NO];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list];
+        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list fromNetwork:NO];
     }
 }
 
@@ -196,7 +196,7 @@
 
 - (BOOL)deletableForListItemAtIndex:(NSUInteger)index
 {
-    return _deletableItems && [_provider deletableAtIndex:index];
+    return _deletableItems;
 }
 
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index
