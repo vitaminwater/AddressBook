@@ -38,13 +38,12 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 
 - (CCListItemType)listItemTypeAtIndex:(NSUInteger)index;
 
-- (NSUInteger)addAddress:(CCAddress *)address;
-- (void)addAddress:(CCAddress *)address toList:(CCList *)list;
-- (NSUInteger)removeAddress:(CCAddress *)address;
-- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list;
-- (NSIndexSet *)removeAddresses:(NSArray *)addresses;
-- (NSUInteger)addList:(CCList *)list;
-- (NSUInteger)removeList:(CCList *)list;
+- (void)addAddresses:(NSArray *)addresses;
+- (void)addAddresses:(NSArray *)addresses toList:(CCList *)list;
+- (void)removeAddresses:(NSArray *)addresses;
+- (void)removeAddresses:(NSArray *)addresses fromList:(CCList *)list;
+- (void)addList:(CCList *)list;
+- (void)removeList:(CCList *)list;
 
 - (void)refreshListItemContentsForObjects:(NSArray *)objects;
 - (void)refreshListItemContentForObject:(id)object;

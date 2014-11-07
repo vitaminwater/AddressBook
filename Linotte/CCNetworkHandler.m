@@ -26,7 +26,7 @@
 
 #define kCCEventChainLength 10
 
-#define kCCNetworkHandlerAddToListEventCacheKey @"kCCNetworkHandlerAddToListEventCacheKey"
+#define kCCLocalEventListRemoveLocalIdentifierCacheKey @"kCCLocalEventListRemoveLocalIdentifierCacheKey"
 
 
 @implementation CCNetworkHandler
@@ -145,53 +145,98 @@
     };
     
     switch (event.eventValue) {
-        case CCNetworkEventAddressAdded:
+        case CCLocalEventAddressCreated:
         {
-            [[CCLinotteAPI sharedInstance] createAddress:event.address completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] createAddress:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
+                if (success) {
+                    [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
+                    
+                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localAddressIdentifier];
+                    [fetchRequest setPredicate:predicate];
+                    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+
+                    if ([addresses count] != 0) {
+                        CCAddress *address = [addresses firstObject];
+                        address.identifier = identifier;
+                    }
+                    
+                    [[CCCoreDataStack sharedInstance] saveContext];
+                }
+                completionBlock(success);
+            }];
         }
             break;
-        case CCNetworkEventListAdded:
+        case CCLocalEventListCreated:
         {
-            [[CCLinotteAPI sharedInstance] createList:event.list completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] createList:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
+                if (success) {
+                    [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
+                    
+                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localListIdentifier];
+                    [fetchRequest setPredicate:predicate];
+                    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+                    
+                    if ([lists count] != 0) {
+                        CCList *list = [lists firstObject];
+                        list.identifier = identifier;
+                    }
+                    
+                    [[CCCoreDataStack sharedInstance] saveContext];
+                }
+                completionBlock(success);
+            }];
         }
             break;
-        case CCNetworkEventListRemoved:
+        case CCLocalEventListRemoved:
         {
-            [[CCLinotteAPI sharedInstance] removeList:event.identifier completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] removeList:event.parameters completionBlock:completionBlock];
         }
             break;
-        case CCNetworkEventAddressRemoved:
+        case CCLocalEventAddressMovedToList:
         {
-            [[CCLinotteAPI sharedInstance] removeAddress:event.identifier completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] addAddressToList:event.parameters completionBlock:completionBlock];
         }
             break;
-        case CCNetworkEventAddressMovedToList:
+        case CCLocalEventAddressMovedFromList:
         {
-            [[CCLinotteAPI sharedInstance] addAddress:event.address toList:event.list completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] removeAddressFromList:event.parameters completionBlock:completionBlock];
         }
             break;
-        case CCNetworkEventAddressMovedFromList:
+        case CCLocalEventAddressUpdated:
         {
-            [[CCLinotteAPI sharedInstance] removeAddress:event.address fromList:event.list completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] updateAddress:event.parameters completionBlock:completionBlock];
         }
             break;
-        case CCNetworkEventAddressUpdated:
+        case CCLocalEventListUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateAddress:event.address completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] updateList:event.parameters completionBlock:completionBlock];
         }
             break;
-        case CCNetworkEventListUpdated:
+        case CCLocalEventAddressUserDataUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateList:event.list completionBlock:completionBlock];
-        }
-            break;
-        case CCNetworkEventAddressUserDataUpdated:
-        {
-            [[CCLinotteAPI sharedInstance] updateAddressUserData:event.address completionBlock:completionBlock];
+            [[CCLinotteAPI sharedInstance] updateAddressUserData:event.parameters completionBlock:completionBlock];
         }
             break;
         default:
             break;
+    }
+}
+
+- (void)setValue:(NSString *)value forKey:(NSString *)key forEventsPredicate:(NSPredicate *)predicate
+{
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *addressEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    for (CCLocalEvent *addressEvent in addressEvents) {
+        NSMutableDictionary *parameters = [addressEvent.parameters mutableCopy];
+        parameters[key] = value;
+        addressEvent.parameters = parameters;
     }
 }
 
@@ -261,193 +306,135 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listDidAdd:(CCList *)list send:(BOOL)send
 {
-    if (fromNetwork)
+    if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listAddEvent.eventValue = CCNetworkEventListAdded;
+    listAddEvent.eventValue = CCLocalEventListCreated;
     listAddEvent.date = [NSDate date];
-    listAddEvent.list = list;
+    listAddEvent.localListIdentifier = list.localIdentifier;
+    listAddEvent.parameters = @{@"name" : list.name};
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)listDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
+- (void)listWillRemove:(CCList *)list send:(BOOL)send
 {
-    if (fromNetwork)
-        return;
+    [_cache pushCacheEntry:kCCLocalEventListRemoveLocalIdentifierCacheKey value:list.localIdentifier];
+}
 
-    if (identifier == nil)
+- (void)listDidRemove:(NSString *)identifier send:(BOOL)send
+{
+    if (send == NO)
         return;
+    
+    NSString *localIdentifier = [_cache popCacheEntry:kCCLocalEventListRemoveLocalIdentifierCacheKey];
     
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     CCLocalEvent *listRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listRemoveEvent.eventValue = CCNetworkEventListRemoved;
+    listRemoveEvent.eventValue = CCLocalEventListRemoved;
     listRemoveEvent.date = [NSDate date];
-    listRemoveEvent.identifier = identifier;
+    listRemoveEvent.localListIdentifier = localIdentifier;
+    if (identifier != nil)
+        listRemoveEvent.parameters = @{@"list": identifier};
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listDidUpdate:(CCList *)list send:(BOOL)send
 {
-    if (fromNetwork)
+    if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ AND event = %@", list, @(CCNetworkEventListUpdated)];
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-        [fetchRequest setPredicate:predicate];
-        
-        if ([managedObjectContext countForFetchRequest:fetchRequest error:NULL] != 0)
-            return;
-    }
     
     CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listUpdateEvent.eventValue = CCNetworkEventListUpdated;
+    listUpdateEvent.eventValue = CCLocalEventListUpdated;
     listUpdateEvent.date = [NSDate date];
-    listUpdateEvent.list = list;
+    listUpdateEvent.localListIdentifier = list.localIdentifier;
+    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"name" : list.name};
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
+- (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send
 {
-    if (fromNetwork)
+    if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    CCLocalEvent *addressAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressAddEvent.eventValue = CCNetworkEventAddressAdded;
-    addressAddEvent.date = [NSDate date];
-    addressAddEvent.address = address;
+    for (CCAddress *address in addresses) {
+        CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        addressUpdateEvent.eventValue = CCLocalEventAddressUpdated;
+        addressUpdateEvent.date = [NSDate date];
+        addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
+        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
+- (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send
 {
-    if (fromNetwork)
-        return;
-
-    if (identifier == nil)
-        return;
-    
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    
-    CCLocalEvent *addressRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressRemoveEvent.eventValue = CCNetworkEventAddressRemoved;
-    addressRemoveEvent.date = [NSDate date];
-    addressRemoveEvent.identifier = identifier;
-    [[CCCoreDataStack sharedInstance] saveContext];
-}
-
-- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    if (fromNetwork)
+    if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"address = %@ AND event = %@", address, @(CCNetworkEventAddressUpdated)];
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-        [fetchRequest setPredicate:predicate];
-        
-        if ([managedObjectContext countForFetchRequest:fetchRequest error:NULL] != 0)
-            return;
+    for (CCAddress *address in addresses) {
+        CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        addressUpdateEvent.eventValue = CCLocalEventAddressUserDataUpdated;
+        addressUpdateEvent.date = [NSDate date];
+        addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
+        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"note" : address.note, @"notification" : address.notify};
     }
     
-    CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressUpdateEvent.eventValue = CCNetworkEventAddressUpdated;
-    addressUpdateEvent.date = [NSDate date];
-    addressUpdateEvent.address = address;
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
 {
-    if (fromNetwork)
+    if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"address = %@ AND event = %@", address, @(CCNetworkEventAddressUserDataUpdated)];
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-        [fetchRequest setPredicate:predicate];
-        
-        if ([managedObjectContext countForFetchRequest:fetchRequest error:NULL] != 0)
-            return;
-    }
-    
-    CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressUpdateEvent.eventValue = CCNetworkEventAddressUserDataUpdated;
-    addressUpdateEvent.date = [NSDate date];
-    addressUpdateEvent.address = address;
-    [[CCCoreDataStack sharedInstance] saveContext];
-}
-
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
-{
-    if (fromNetwork)
-        return;
-
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    
-    // remove useless events
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ AND address = %@ AND event = %@", address, list, @(CCNetworkEventAddressMovedFromList)];
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-        [fetchRequest setPredicate:predicate];
-        
-        NSArray *removeFromListEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        if ([removeFromListEvents count]) {
-            for (CCLocalEvent *addToListEvent in removeFromListEvents) {
-                [managedObjectContext deleteObject:addToListEvent];
-            }
-            return;
+    for (CCAddress *address in addresses) {
+        if (address.identifier == nil && [address.lists count] == 1) {
+            CCLocalEvent *addressCreatedEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            addressCreatedEvent.eventValue = CCLocalEventAddressCreated;
+            addressCreatedEvent.date = [NSDate date];
+            addressCreatedEvent.localAddressIdentifier = address.localIdentifier;
+            addressCreatedEvent.parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId};
         }
+        
+        CCLocalEvent *addressMovedToListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        addressMovedToListEvent.eventValue = CCLocalEventAddressMovedToList;
+        addressMovedToListEvent.date = [NSDate date];
+        addressMovedToListEvent.localAddressIdentifier = address.localIdentifier;
+        addressMovedToListEvent.localListIdentifier = list.localIdentifier;
+        addressMovedToListEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"address" : address.identifier == nil ? @"" : address.identifier};
     }
-    CCLocalEvent *addressMovedToListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressMovedToListEvent.eventValue = CCNetworkEventAddressMovedToList;
-    addressMovedToListEvent.address = address;
-    addressMovedToListEvent.date = [NSDate date];
-    addressMovedToListEvent.list = list;
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send
 {
-    if (fromNetwork)
+    if (send == NO)
         return;
     
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
 
-    // remove useless events
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ AND address = %@ AND event = %@", address, list, @(CCNetworkEventAddressMovedToList)];
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-        [fetchRequest setPredicate:predicate];
-        
-        NSArray *addToListEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        if ([addToListEvents count]) {
-            for (CCLocalEvent *addToListEvent in addToListEvents) {
-                [managedObjectContext deleteObject:addToListEvent];
-            }
-            return;
-        }
+    for (CCAddress *address in addresses) {
+        CCLocalEvent *addressMovedFromListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        addressMovedFromListEvent.eventValue = CCLocalEventAddressMovedFromList;
+        addressMovedFromListEvent.date = [NSDate date];
+        addressMovedFromListEvent.localListIdentifier = list.localIdentifier;
+        addressMovedFromListEvent.localAddressIdentifier = address.localIdentifier;
+        addressMovedFromListEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"address" : address.identifier == nil ? @"" : address.identifier};
     }
-    
-    CCLocalEvent *addressMovedFromListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    addressMovedFromListEvent.eventValue = CCNetworkEventAddressMovedFromList;
-    addressMovedFromListEvent.date = [NSDate date];
-    addressMovedFromListEvent.address = address;
-    addressMovedFromListEvent.list = list;
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 

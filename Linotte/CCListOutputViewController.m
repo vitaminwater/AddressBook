@@ -176,7 +176,7 @@
 {
     _list.notify = @(enabled);
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list fromNetwork:NO];
+    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list send:YES];
 }
 
 #pragma mark - CCListOutputListEmptyViewDelegate methods
@@ -221,7 +221,10 @@
 
 - (void)preSaveAddress:(CCAddress *)address
 {
-    [address addListsObject:_list];
+    [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
+    [_list addAddressesObject:address];
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
 }
 
 - (void)postSaveAddress:(CCAddress *)address

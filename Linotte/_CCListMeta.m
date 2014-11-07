@@ -5,7 +5,7 @@
 
 const struct CCListMetaAttributes CCListMetaAttributes = {
 	.identifier = @"identifier",
-	.internal_name = @"internal_name",
+	.internalName = @"internalName",
 	.name = @"name",
 	.value = @"value",
 };
@@ -45,7 +45,7 @@ const struct CCListMetaRelationships CCListMetaRelationships = {
 
 @dynamic identifier;
 
-@dynamic internal_name;
+@dynamic internalName;
 
 @dynamic name;
 

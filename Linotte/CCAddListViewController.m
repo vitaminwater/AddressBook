@@ -36,7 +36,7 @@
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list fromNetwork:NO];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:YES];
     
     [[Mixpanel sharedInstance] track:@"List created" properties:@{@"name": list.name}];
 }

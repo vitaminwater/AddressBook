@@ -121,7 +121,11 @@
 
 - (void)preSaveAddress:(CCAddress *)address
 {
-    [address addListsObject:[CCModelHelper defaultList]];
+    CCList *list = [CCModelHelper defaultList];
+    [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:list send:YES];
+    [list addAddressesObject:address];
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:list send:YES];
 }
 
 - (void)postSaveAddress:(CCAddress *)address

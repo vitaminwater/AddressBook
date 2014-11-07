@@ -13,6 +13,7 @@ const struct CCListAttributes CCListAttributes = {
 	.lastZoneRefreshLatitude = @"lastZoneRefreshLatitude",
 	.lastZoneRefreshLongitude = @"lastZoneRefreshLongitude",
 	.lastZonesRefresh = @"lastZonesRefresh",
+	.localIdentifier = @"localIdentifier",
 	.name = @"name",
 	.notify = @"notify",
 	.owned = @"owned",
@@ -23,9 +24,8 @@ const struct CCListAttributes CCListAttributes = {
 const struct CCListRelationships CCListRelationships = {
 	.addressMetas = @"addressMetas",
 	.addresses = @"addresses",
-	.events = @"events",
 	.metas = @"metas",
-	.server_events = @"server_events",
+	.serverEvents = @"serverEvents",
 	.zones = @"zones",
 };
 
@@ -179,6 +179,8 @@ const struct CCListRelationships CCListRelationships = {
 
 @dynamic lastZonesRefresh;
 
+@dynamic localIdentifier;
+
 @dynamic name;
 
 @dynamic notify;
@@ -238,17 +240,6 @@ const struct CCListRelationships CCListRelationships = {
 	return result;
 }
 
-@dynamic events;
-
-- (NSMutableSet*)eventsSet {
-	[self willAccessValueForKey:@"events"];
-
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"events"];
-
-	[self didAccessValueForKey:@"events"];
-	return result;
-}
-
 @dynamic metas;
 
 - (NSMutableSet*)metasSet {
@@ -260,14 +251,14 @@ const struct CCListRelationships CCListRelationships = {
 	return result;
 }
 
-@dynamic server_events;
+@dynamic serverEvents;
 
-- (NSMutableSet*)server_eventsSet {
-	[self willAccessValueForKey:@"server_events"];
+- (NSMutableSet*)serverEventsSet {
+	[self willAccessValueForKey:@"serverEvents"];
 
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"server_events"];
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"serverEvents"];
 
-	[self didAccessValueForKey:@"server_events"];
+	[self didAccessValueForKey:@"serverEvents"];
 	return result;
 }
 

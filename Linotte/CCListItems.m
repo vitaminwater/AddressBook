@@ -252,34 +252,17 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 #pragma mark - public methods
 
-- (void)addAddress:(CCAddress *)address
+- (void)addAddresses:(NSArray *)addresses
 {
     if (self.location == nil)
         return;
     
-    NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
-    BOOL tooFar = YES;
-    for (NSString *geohash in geohashesComp) {
-        if ([address.geohash hasPrefix:geohash]) {
-            tooFar = NO;
-            break;
-        }
-    }
-    if (tooFar)
-        return;
-    
-    CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
-    double newDistance = [self.location distanceFromLocation:addressLocation];
-    if (self.farAway || newDistance < self.distance) {
-        self.itemLocation = addressLocation;
-        _closestAddress = address;
-        self.farAway = NO;
-    }
+    [self refreshListData];
 }
 
-- (void)removeAddress:(CCAddress *)address
+- (void)removeAddresses:(NSArray *)addresses
 {
-    if (_closestAddress == address) {
+    if ([addresses containsObject:_closestAddress]) {
         [self refreshListData];
     }
 }

@@ -15,29 +15,19 @@
 
 @optional
 
-- (void)listWillExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)listDidExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)listWillReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)listDidReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listDidAdd:(CCList *)list send:(BOOL)send;
 
-- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)listWillRemove:(CCList *)list send:(BOOL)send;
+- (void)listDidRemove:(NSString *)identifier send:(BOOL)send;
 
-- (void)listWillRemove:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)listDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork;
+- (void)listDidUpdate:(CCList *)list send:(BOOL)send;
 
-- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send;
+- (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send;
 
-- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
-
-- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
-- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork;
-
-- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
-- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork;
-
-- (void)address:(CCAddress *)address willMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork;
+- (void)addresses:(NSArray *)addresses willMoveToList:(CCList *)list send:(BOOL)send;
+- (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send;
+- (void)addresses:(NSArray *)addresses willMoveFromList:(CCList *)list send:(BOOL)send;
+- (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send;
 
 @end

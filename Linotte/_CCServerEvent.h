@@ -6,7 +6,7 @@
 extern const struct CCServerEventAttributes {
 	__unsafe_unretained NSString *event;
 	__unsafe_unretained NSString *id;
-	__unsafe_unretained NSString *object_identifier;
+	__unsafe_unretained NSString *objectIdentifier;
 } CCServerEventAttributes;
 
 extern const struct CCServerEventRelationships {
@@ -40,9 +40,9 @@ extern const struct CCServerEventRelationships {
 
 //- (BOOL)validateId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* object_identifier;
+@property (nonatomic, strong) NSString* objectIdentifier;
 
-//- (BOOL)validateObject_identifier:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateObjectIdentifier:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) CCList *list;
 
@@ -64,8 +64,8 @@ extern const struct CCServerEventRelationships {
 - (int64_t)primitiveIdValue;
 - (void)setPrimitiveIdValue:(int64_t)value_;
 
-- (NSString*)primitiveObject_identifier;
-- (void)setPrimitiveObject_identifier:(NSString*)value;
+- (NSString*)primitiveObjectIdentifier;
+- (void)setPrimitiveObjectIdentifier:(NSString*)value;
 
 - (CCList*)primitiveList;
 - (void)setPrimitiveList:(CCList*)value;

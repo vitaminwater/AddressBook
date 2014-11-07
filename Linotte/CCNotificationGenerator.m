@@ -65,7 +65,7 @@
 - (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification
 {
     CCCategory *category = [address.categories.allObjects firstObject];
-    NSDictionary *userInfo = @{@"addressNotificationId" : address.notificationId}; // TODO set notification ID on migration
+    NSDictionary *userInfo = @{@"addressLocalIdentifier" : address.localIdentifier}; // TODO set notification ID on migration
     int notifRand = rand() % 4 + 1;
     
     if (category == nil)
@@ -81,7 +81,7 @@
 - (void)configureLocalNotificationForAddresses:(NSArray *)addresses localNotification:(UILocalNotification *)localNotification
 {
     NSMutableString *alertBody = [[NSString localizedStringByReplacingFromDictionnary:@{@"[N]" : [@([addresses count]) stringValue]} localizedKey:@"NOTIFICATION_MULTI"] mutableCopy];
-    NSDictionary *userInfo = @{@"multiple" : @(YES)};
+    NSDictionary *userInfo = @{@"multiple" : @YES};
     
     for (CCAddress *address in addresses) {
         NSString *sep = @", ";

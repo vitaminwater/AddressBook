@@ -6,7 +6,7 @@
 const struct CCServerEventAttributes CCServerEventAttributes = {
 	.event = @"event",
 	.id = @"id",
-	.object_identifier = @"object_identifier",
+	.objectIdentifier = @"objectIdentifier",
 };
 
 const struct CCServerEventRelationships CCServerEventRelationships = {
@@ -93,7 +93,7 @@ const struct CCServerEventRelationships CCServerEventRelationships = {
 	[self setPrimitiveId:[NSNumber numberWithLongLong:value_]];
 }
 
-@dynamic object_identifier;
+@dynamic objectIdentifier;
 
 @dynamic list;
 

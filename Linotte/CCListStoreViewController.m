@@ -147,8 +147,8 @@
 
 - (void)listSelectedAtIndex:(NSUInteger)index
 {
-    CCPublicListModel *list = _lists[index];
-    CCListInstallerViewController *listInstallerViewController = [[CCListInstallerViewController alloc] initWithIdentifier:list.identifier];
+    NSDictionary *listDict = _lists[index];
+    CCListInstallerViewController *listInstallerViewController = [[CCListInstallerViewController alloc] initWithIdentifier:listDict[@"identifier"]];
     listInstallerViewController.delegate = self;
     
     [self addChildViewController:listInstallerViewController];
@@ -163,14 +163,14 @@
 
 - (NSString *)nameForListAtIndex:(NSUInteger)index
 {
-    CCPublicListModel *list = _lists[index];
-    return list.name;
+    NSDictionary *listDict = _lists[index];
+    return listDict[@"name"];
 }
 
 - (NSString *)iconForListAtIndex:(NSUInteger)index
 {
-    CCPublicListModel *list = _lists[index];
-    return list.icon;
+    NSDictionary *listDict = _lists[index];
+    return listDict[@"icon"];
 }
 
 #pragma mark - CCListInstallerViewControllerDelegate

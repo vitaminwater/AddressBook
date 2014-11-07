@@ -8,6 +8,4 @@
 
 @implementation CCLocalEvent
 
-
-
 @end

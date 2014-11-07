@@ -162,7 +162,6 @@
     
     [_delegate preSaveAddress:address];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] addressDidAdd:address fromNetwork:NO];
     [_delegate postSaveAddress:address];
     
     [self reduceAddView];

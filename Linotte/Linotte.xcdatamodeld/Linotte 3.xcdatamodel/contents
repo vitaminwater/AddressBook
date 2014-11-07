@@ -7,21 +7,20 @@
         <attribute name="identifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="lastnotif" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="localIdentifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="note" optional="YES" attributeType="String" defaultValueString=" " syncable="YES"/>
-        <attribute name="notificationId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notify" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="provider" attributeType="String" defaultValueString="foursquare" syncable="YES"/>
         <attribute name="providerId" attributeType="String" defaultValueString="0" syncable="YES"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCCategory" inverseName="address" inverseEntity="CCCategory" syncable="YES"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCLocalEvent" inverseName="address" inverseEntity="CCLocalEvent" syncable="YES"/>
         <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCList" inverseName="addresses" inverseEntity="CCList" syncable="YES"/>
         <relationship name="metas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddressMeta" inverseName="address" inverseEntity="CCAddressMeta" syncable="YES"/>
     </entity>
     <entity name="CCAddressMeta" representedClassName="CCAddressMeta" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="internal_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="internalName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="metas" inverseEntity="CCAddress" syncable="YES"/>
@@ -42,6 +41,7 @@
         <attribute name="lastZoneRefreshLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZoneRefreshLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZonesRefresh" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notify" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
@@ -49,14 +49,13 @@
         <attribute name="providerId" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>
         <relationship name="addressMetas" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddressMeta" inverseName="list" inverseEntity="CCAddressMeta" syncable="YES"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCLocalEvent" inverseName="list" inverseEntity="CCLocalEvent" syncable="YES"/>
         <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListMeta" inverseName="list" inverseEntity="CCListMeta" syncable="YES"/>
-        <relationship name="server_events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCServerEvent" inverseName="list" inverseEntity="CCServerEvent" syncable="YES"/>
+        <relationship name="serverEvents" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCServerEvent" inverseName="list" inverseEntity="CCServerEvent" syncable="YES"/>
         <relationship name="zones" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListZone" inverseName="list" inverseEntity="CCListZone" syncable="YES"/>
     </entity>
     <entity name="CCListMeta" representedClassName="CCListMeta" syncable="YES">
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="internal_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="internalName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="metas" inverseEntity="CCList" syncable="YES"/>
@@ -75,24 +74,24 @@
     <entity name="CCLocalEvent" representedClassName="CCLocalEvent" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="event" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="events" inverseEntity="CCAddress" syncable="YES"/>
-        <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="events" inverseEntity="CCList" syncable="YES"/>
+        <attribute name="localAddressIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="localListIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parameters" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <entity name="CCServerEvent" representedClassName="CCServerEvent" syncable="YES">
         <attribute name="event" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="object_identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="server_events" inverseEntity="CCList" syncable="YES"/>
+        <attribute name="objectIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="0" positionY="0" width="128" height="300"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="283"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
         <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
         <element name="CCList" positionX="0" positionY="0" width="128" height="343"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="178"/>
-        <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="120"/>
-        <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="118"/>
+        <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="103"/>
     </elements>
 </model>

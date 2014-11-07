@@ -16,7 +16,8 @@
 #import "CCAddress.h"
 #import "CCList.h"
 
-#define kCCHomeListViewModelDeletedAddressListsKey @"kCCHomeListViewModelDeletedAddressListsKey"
+#define kCCHomeListViewModelUnownedListsKey @"kCCHomeListViewModelUnownedListsKey"
+#define kCCHomeListViewModelUnownedAddressesKey @"kCCHomeListViewModelUnownedAddressesKey"
 #define kCCHomeListViewModelAddressMovedFromListsKey @"kCCHomeListViewModelAddressMovedFromListsKey"
 
 @implementation CCHomeListViewModel
@@ -37,9 +38,7 @@
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        for (CCAddress *address in addresses) {
-            [self.provider addAddress:address];
-        }
+        [self.provider addAddresses:addresses];
     }
     
     // Lists
@@ -58,172 +57,78 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listDidExpand:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send
 {
-    [self.provider removeList:list];
-    
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.owned = %@).@count = 1", list, @YES];
-    [fetchRequest setPredicate:predicate];
-    
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    for (CCAddress *address in addresses) {
-        [self.provider addAddress:address];
-    }
+    [self.provider refreshListItemContentsForObjects:[self ownedAddresses:addresses]];
 }
 
-- (void)listDidReduce:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send
 {
-    [self.provider addList:list];
-    
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.owned = %@).@count = 0", list, @YES];
-    [fetchRequest setPredicate:predicate];
-    
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    [self.provider removeAddresses:addresses];
+    [self.provider refreshListItemContentsForObjects:[self ownedAddresses:addresses]];
 }
 
-- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
+- (void)listDidAdd:(CCList *)list send:(BOOL)send
 {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
-    NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-    
-    if ([match count] == 0) {
-        [self.provider addAddress:address];
-    } else {
-        for (CCList *list in match) {
-            [self.provider addAddress:address toList:list];
-        }
-    }
-}
-
-- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
-        NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-        
-        if ([match count] > 0)
-            [self.provider removeAddress:address];
-    }
-    
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
-        NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-        
-        [self.cache pushCacheEntry:kCCHomeListViewModelDeletedAddressListsKey value:[match allObjects]];
-    }
-}
-
-- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
-{
-    NSArray *lists = [self.cache popCacheEntry:kCCHomeListViewModelDeletedAddressListsKey];
-    
-    if ([lists count])
-        [self.provider refreshListItemContentsForObjects:lists];
-}
-
-- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
-    NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-
-    if ([match count] != 0) {
-        [self.provider refreshListItemContentForObject:address];
-    }
-}
-
-- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
-    NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-
-    if ([match count] != 0) {
-        [self.provider refreshListItemContentForObject:address];
-    }
-}
-
-- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork
-{
-    if (list.ownedValue == YES) {
-        for (CCAddress *address in list.addresses) {
-            [self.provider addAddress:address];
-        }
-    } else {
+    if (list.ownedValue == NO) {
         [self.provider addList:list];
     }
 }
 
-- (void)listWillRemove:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listWillRemove:(CCList *)list send:(BOOL)send
 {
-    if (list.ownedValue) {
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND SUBQUERY(lists, $list, $list.owned = %@).@count = 1", list, @YES];
-        [fetchRequest setPredicate:predicate];
-        
-        NSArray *match = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        [self.provider removeAddresses:match];
-    } else {
+    if (list.ownedValue == NO) {
         [self.provider removeList:list];
     }
 }
 
-- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listDidUpdate:(CCList *)list send:(BOOL)send
 {
     if (list.ownedValue == NO)
         [self.provider refreshListItemContentForObject:list];
 }
 
-- (void)address:(CCAddress *)address willMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses willMoveToList:(CCList *)list send:(BOOL)send
 {
-    BOOL wasExpanded = [address.lists count] == 0;
-    if (wasExpanded == NO) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
-        NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-        wasExpanded |= [match count] != 0;
+    if (list.ownedValue == YES) {
+        NSArray *unownedAddresses = [self unownedAddresses:addresses];
+        [self.provider addAddresses:unownedAddresses];
+    } else {
+        [self.provider addAddresses:addresses toList:list];
     }
-    
-    if (list.ownedValue != wasExpanded) {
-        if (list.ownedValue == YES) {
-            [self.provider addAddress:address];
-        } else {
-            if ([address.lists count] == 0)
-                [self.provider removeAddress:address];
-        }
-    }
-    if (list.ownedValue == NO)
-        [self.provider addAddress:address toList:list];
 }
 
-- (void)address:(CCAddress *)address willMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send
 {
-    if (list.ownedValue == YES && [address.lists count] > 1) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @YES];
-        NSSet *match = [address.lists filteredSetUsingPredicate:predicate];
-        
-        if ([match count] == 1) {
-            [self.provider removeAddress:address];
-        }
+    if (list.ownedValue == YES) {
+        NSArray *unownedAddresses = [self unownedAddresses:addresses];
+        [self.provider removeAddresses:unownedAddresses];
+    } else {
+        [self.provider removeAddresses:addresses fromList:list];
     }
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
-    NSSet *lists = [address.lists filteredSetUsingPredicate:predicate];
-    
-    [self.cache pushCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey value:lists.allObjects];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+#pragma mark - utility methods
+
+- (NSArray *)ownedAddresses:(NSArray *)addresses
 {
-    NSArray *lists = [self.cache popCacheEntry:kCCHomeListViewModelAddressMovedFromListsKey];
-    for (CCList *otherList in lists) {
-        [self.provider removeAddress:address fromList:otherList];
-    }
+    NSPredicate *ownedAddressesPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(lists, $list, $list.owned = %@).@count != 0", @YES];
+    NSArray *ownedAddresses = [addresses filteredArrayUsingPredicate:ownedAddressesPredicate];
+    return ownedAddresses;
+}
+
+- (NSArray *)unownedAddresses:(NSArray *)addresses
+{
+    NSPredicate *unownedAddressesPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(lists, $list, $list.owned = %@).@count = 0", @YES];
+    NSArray *unownedAddresses = [addresses filteredArrayUsingPredicate:unownedAddressesPredicate];
+    return unownedAddresses;
+}
+
+- (NSArray *)unownedLists:(NSArray *)addresses
+{
+    NSPredicate *unownedListsPredicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
+    NSArray *lists = [addresses valueForKeyPath:@"@distinctUnionOfArrays.lists"];
+    NSArray *unownedLists = [lists filteredArrayUsingPredicate:unownedListsPredicate];
+    return unownedLists;
 }
 
 @end

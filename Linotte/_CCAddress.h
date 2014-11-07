@@ -10,10 +10,10 @@ extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *lastnotif;
 	__unsafe_unretained NSString *latitude;
+	__unsafe_unretained NSString *localIdentifier;
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *note;
-	__unsafe_unretained NSString *notificationId;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *provider;
 	__unsafe_unretained NSString *providerId;
@@ -21,13 +21,11 @@ extern const struct CCAddressAttributes {
 
 extern const struct CCAddressRelationships {
 	__unsafe_unretained NSString *categories;
-	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *lists;
 	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
 @class CCCategory;
-@class CCLocalEvent;
 @class CCList;
 @class CCAddressMeta;
 
@@ -68,6 +66,10 @@ extern const struct CCAddressRelationships {
 
 //- (BOOL)validateLatitude:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSString* localIdentifier;
+
+//- (BOOL)validateLocalIdentifier:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSNumber* longitude;
 
 @property (atomic) double longitudeValue;
@@ -83,10 +85,6 @@ extern const struct CCAddressRelationships {
 @property (nonatomic, strong) NSString* note;
 
 //- (BOOL)validateNote:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* notificationId;
-
-//- (BOOL)validateNotificationId:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* notify;
 
@@ -108,10 +106,6 @@ extern const struct CCAddressRelationships {
 
 - (NSMutableSet*)categoriesSet;
 
-@property (nonatomic, strong) NSSet *events;
-
-- (NSMutableSet*)eventsSet;
-
 @property (nonatomic, strong) NSSet *lists;
 
 - (NSMutableSet*)listsSet;
@@ -127,14 +121,6 @@ extern const struct CCAddressRelationships {
 - (void)removeCategories:(NSSet*)value_;
 - (void)addCategoriesObject:(CCCategory*)value_;
 - (void)removeCategoriesObject:(CCCategory*)value_;
-
-@end
-
-@interface _CCAddress (EventsCoreDataGeneratedAccessors)
-- (void)addEvents:(NSSet*)value_;
-- (void)removeEvents:(NSSet*)value_;
-- (void)addEventsObject:(CCLocalEvent*)value_;
-- (void)removeEventsObject:(CCLocalEvent*)value_;
 
 @end
 
@@ -169,6 +155,9 @@ extern const struct CCAddressRelationships {
 - (double)primitiveLatitudeValue;
 - (void)setPrimitiveLatitudeValue:(double)value_;
 
+- (NSString*)primitiveLocalIdentifier;
+- (void)setPrimitiveLocalIdentifier:(NSString*)value;
+
 - (NSNumber*)primitiveLongitude;
 - (void)setPrimitiveLongitude:(NSNumber*)value;
 
@@ -180,9 +169,6 @@ extern const struct CCAddressRelationships {
 
 - (NSString*)primitiveNote;
 - (void)setPrimitiveNote:(NSString*)value;
-
-- (NSString*)primitiveNotificationId;
-- (void)setPrimitiveNotificationId:(NSString*)value;
 
 - (NSNumber*)primitiveNotify;
 - (void)setPrimitiveNotify:(NSNumber*)value;
@@ -198,9 +184,6 @@ extern const struct CCAddressRelationships {
 
 - (NSMutableSet*)primitiveCategories;
 - (void)setPrimitiveCategories:(NSMutableSet*)value;
-
-- (NSMutableSet*)primitiveEvents;
-- (void)setPrimitiveEvents:(NSMutableSet*)value;
 
 - (NSMutableSet*)primitiveLists;
 - (void)setPrimitiveLists:(NSMutableSet*)value;

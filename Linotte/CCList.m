@@ -8,6 +8,12 @@
 
 @implementation CCList
 
+- (void)awakeFromInsert
+{
+    [super awakeFromInsert];
+    self.localIdentifier = [[NSUUID UUID] UUIDString];
+}
+
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location
 {
     if ([self.zones count] == 0)
@@ -27,6 +33,18 @@
             return NSOrderedAscending;
         return NSOrderedSame;
     }];
+}
+
++ (CCList *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
+{
+    CCList *list = [self insertInManagedObjectContext:managedObjectContext];
+    list.identifier = dict[@"identifier"];
+    list.name = dict[@"name"];
+    list.icon = dict[@"icon"];
+    list.provider = dict[@"provider"];
+    list.providerId = dict[@"provider_id"];
+    list.owned = @(NO);
+    return list;
 }
 
 @end

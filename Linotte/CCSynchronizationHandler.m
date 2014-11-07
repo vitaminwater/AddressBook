@@ -100,6 +100,7 @@
 {
     if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
         return;
+    
     NSTimeInterval startSync = [NSDate timeIntervalSinceReferenceDate];
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
@@ -110,26 +111,36 @@
         NSLog(@"%@", error);
         return;
     }
+    
     NSMutableArray *listSynchronizationProcessors = [@[] mutableCopy];
     for (CCList *list in lists) {
-        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list currentLocation:_lastCoordinate];
+        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list coordinates:_lastCoordinate];
         [listSynchronizationProcessors addObject:listSynchronizationProcessor];
     }
     [listSynchronizationProcessors sortUsingComparator:^NSComparisonResult(CCListSynchronizationProcessor *obj1, CCListSynchronizationProcessor *obj2) {
         if (obj1.priority < obj2.priority)
-            return NSOrderedDescending;
-        else if (obj1.priority > obj2.priority)
             return NSOrderedAscending;
+        else if (obj1.priority > obj2.priority)
+            return NSOrderedDescending;
         return NSOrderedSame;
     }];
-    
+
     __block NSUInteger listSynchronizationProcessorsIndex = 0;
     __block void (^recursiveBlock)();
     recursiveBlock = ^{
         if (listSynchronizationProcessorsIndex == [listSynchronizationProcessors count]) {
+            completionBlock();
             dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
                 recursiveBlock = nil;
+#pragma clang diagnostic pop
             });
+            return;
+        }
+        NSTimeInterval timeElapsed = [NSDate timeIntervalSinceReferenceDate] - startSync;
+        if (timeElapsed >= maxDuration) {
+            completionBlock();
             return;
         }
         CCListSynchronizationProcessor *listSynchronizationProcessor = listSynchronizationProcessors[listSynchronizationProcessorsIndex];
@@ -143,10 +154,13 @@
 {
     __block void(^recursiveBlock)();
     recursiveBlock = ^() {
-        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list currentLocation:_lastCoordinate];
+        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list coordinates:_lastCoordinate];
         if (listSynchronizationProcessor.synchronizationAction == nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
                 recursiveBlock = nil;
+#pragma clang diagnostic pop
             });
             completionBlock();
             return;

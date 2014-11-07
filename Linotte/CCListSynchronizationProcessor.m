@@ -15,15 +15,17 @@
 #import "CCCoreDataStack.h"
 
 #import "CCLinotteAPI.h"
-#import "CCListGeohashZone+CCListZone.h"
-#import "CCAddressModel+CCAddress.h"
 
 #import "CCList.h"
 #import "CCListZone.h"
 #import "CCServerEvent.h"
+#import "CCAddress.h"
 
-#define kCCMaxAddressesForList 1000
+#define kCCMaxAddressesForList 600
 #define kCCAddressFetchLimit 50
+
+
+
 
 /**
  * Base List synchronization Action
@@ -50,7 +52,12 @@
 
 - (void)performSynchronizationWithCompletionBlock:(void(^)())completionBlock {}
 
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates {return NO;}
+
 @end
+
+
+
 
 /**
  * Refresh zone action
@@ -66,10 +73,58 @@
     [[CCLinotteAPI sharedInstance] fetchListZones:self.list.identifier completionBlock:^(BOOL success, NSArray *listZones) {
         if (success) {
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            for (CCListGeohashZoneModel *listGeohashZone in listZones) {
-                CCListZone *listZone = [listGeohashZone toInsertedCCListZoneInManagedObjectContext:managedObjectContext];
-                [self.list addZonesObject:listZone];
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", self.list];
+            [fetchRequest setPredicate:predicate];
+            
+            NSMutableArray *currentListZones = [[managedObjectContext executeFetchRequest:fetchRequest error:NULL] mutableCopy];
+            NSMutableArray *listZonesToDelete = [@[] mutableCopy];
+            NSMutableArray *newListZones = [listZones mutableCopy];
+            
+            // first we remove already existing list zones
+            for (NSDictionary *listZoneDict in listZones) {
+                NSString *geohash = listZoneDict[@"geohash"];
+                for (CCListZone *currentListZone in currentListZones) {
+                    if ([currentListZone.geohash isEqualToString:geohash]) {
+                        [newListZones removeObject:listZoneDict];
+                        [currentListZones removeObject:currentListZone];
+                        break;
+                    }
+                }
             }
+            
+            // then we determine if the new list zones are splits of already existing listzones
+            // if yes, then we delete it
+            for (NSDictionary *listZoneDict in newListZones) {
+                NSString *geohash = listZoneDict[@"geohash"];
+                for (CCListZone *currentListZone in currentListZones) {
+                    if ([currentListZone.geohash rangeOfString:geohash].location == 0) {
+                        [currentListZones removeObject:currentListZone];
+                        [listZonesToDelete addObject:currentListZone];
+                        break;
+                    }
+                }
+            }
+            
+            // now we check the other way: if one of our zones have been merged in a bigger zone
+            // if yes, then we delete the merged zones
+            for (CCListZone *currentListZone in currentListZones) {
+                for (NSDictionary *listZoneDict in listZones) {
+                    NSString *geohash = listZoneDict[@"geohash"];
+                    if ([geohash rangeOfString:currentListZone.geohash].location == 0) {
+                        [listZonesToDelete addObject:currentListZone];
+                    }
+                }
+            }
+            
+            for (CCListZone *listZoneToDelete in listZonesToDelete) {
+                [managedObjectContext deleteObject:listZoneToDelete];
+            }
+            
+            for (NSDictionary *listZoneDict in listZones) {
+                [CCListZone insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listZoneDict];
+            }
+            
             self.list.lastZonesRefresh = [NSDate date];
             self.list.lastZoneRefreshLatitudeValue = self.coordinates.latitude;
             self.list.lastZoneRefreshLongitudeValue = self.coordinates.longitude;
@@ -79,7 +134,18 @@
     }];
 }
 
+//
+
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates
+{
+    NSDate *lastZonesRefresh = list.lastZonesRefresh;
+    NSTimeInterval timeIntervalSinceLastZonesRefresh = [[NSDate date] timeIntervalSinceDate:lastZonesRefresh];
+    return lastZonesRefresh == nil || timeIntervalSinceLastZonesRefresh > 3 * 24 * 60 * 60;
+}
+
 @end
+
+
 
 
 /**
@@ -96,7 +162,62 @@
     dispatch_async(dispatch_get_main_queue(), completionBlock);
 }
 
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates
+{
+    NSInteger totalNAddresses = [[list.zones valueForKeyPath:@"@sum.nAddresses"] integerValue];
+    NSInteger currentNAddresses = [list.addresses count];
+    if (currentNAddresses < totalNAddresses && currentNAddresses < kCCMaxAddressesForList)
+        return NO;
+    
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSArray *sortedZones = [list getListZonesSortedByDistanceFromLocation:coordinates];
+    BOOL firstFetchZoneFound = NO;
+    BOOL cleaned = NO;
+    NSMutableArray *removedAddresses = [@[] mutableCopy];
+    for (CCListZone *listZone in sortedZones) {
+        if (firstFetchZoneFound == NO) {
+            if (listZone.firstFetchValue == YES)
+                firstFetchZoneFound = YES;
+        } else {
+            if (listZone.firstFetchValue == NO) {
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", list, listZone.geohash];
+                [fetchRequest setPredicate:predicate];
+                
+                NSError *error = nil;
+                NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                if (error != nil) {
+                    NSLog(@"%@", error);
+                    continue;
+                }
+                
+                cleaned = YES;
+                
+                [removedAddresses addObjectsFromArray:addresses];
+                
+                listZone.firstFetch = @YES;
+                listZone.lastAddressFirstFetchDate = nil;
+                listZone.lastRefresh = nil;
+            }
+        }
+    }
+    
+    [[CCModelChangeMonitor sharedInstance] addresses:removedAddresses willMoveFromList:list send:NO];
+    [list removeAddresses:[NSSet setWithArray:removedAddresses]];
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] addresses:removedAddresses didMoveFromList:list send:NO];
+    
+    for (CCAddress *address in removedAddresses) {
+        if ([address.lists count] == 0)
+            [managedObjectContext deleteObject:address];
+    }
+    [[CCCoreDataStack sharedInstance] saveContext];
+    return cleaned;
+}
+
 @end
+
+
 
 
 /**
@@ -116,21 +237,26 @@
     for (CCListZone *zone in sortedZones) {
         if (zone.firstFetchValue == NO)
             continue;
-        [[CCLinotteAPI sharedInstance] fetchAddressesFromList:self.list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit completionBlock:^(BOOL success, NSArray *addresses) {
+        [[CCLinotteAPI sharedInstance] fetchAddressesFromList:self.list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit completionBlock:^(BOOL success, NSArray *addressesDicts) {
             if (success == NO) {
                 completionBlock();
                 return;
             }
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            if ([addresses count] != kCCAddressFetchLimit)
+            if ([addressesDicts count] != kCCAddressFetchLimit)
                 zone.firstFetchValue = NO;
             NSDate *lastAddressFirstFetchDate = nil;
-            for (CCAddressModel *addressModel in addresses) {
-                CCAddress *address = [addressModel toInsertedCCAddressZoneInManagedObjectContext:managedObjectContext];
-                [self.list addAddressesObject:address];
-                [[CCModelChangeMonitor sharedInstance] addressDidAdd:address fromNetwork:YES];
-                lastAddressFirstFetchDate = addressModel.dateCreated;
+            NSMutableArray *addresses = [@[] mutableCopy];
+            for (NSDictionary *addressDict in addressesDicts) {
+                CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:addressDict];
+                [addresses addObject:address];
+                lastAddressFirstFetchDate = addressDict[@"date_created"];
             }
+            
+            [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:self.list send:NO];
+            [self.list addAddresses:[NSSet setWithArray:addresses]];
+            [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:self.list send:NO];
+            
             zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
             [[CCCoreDataStack sharedInstance] saveContext];
             completionBlock();
@@ -139,7 +265,16 @@
     }
 }
 
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates
+{
+    NSInteger totalNAddresses = [[list.zones valueForKeyPath:@"@sum.nAddresses"] integerValue];
+    NSInteger currentNAddresses = [list.addresses count];
+    return currentNAddresses < totalNAddresses && currentNAddresses < kCCMaxAddressesForList;
+}
+
 @end
+
+
 
 
 /**
@@ -153,14 +288,13 @@
 
 - (void)performSynchronizationWithCompletionBlock:(void(^)())completionBlock
 {
-    dispatch_async(dispatch_get_main_queue(), completionBlock);
-    
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", self.list];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
+    fetchRequest.fetchLimit = 1;
     
     NSError *error = nil;
     NSArray *serverEvents = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -174,25 +308,120 @@
         return;
     }
     
-    
+    [self processServerEvent:[serverEvents lastObject] completionBlock:completionBlock];
 }
 
 - (void)fetchServerEventsWithCompletionBlock:(void(^)())completionBlock
 {
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and firstFetch = %@", self.list, @(NO)];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastRefresh" ascending:YES];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setSortDescriptors:@[sortDescriptor]];
+    fetchRequest.fetchLimit = 1;
     
-    [[CCLinotteAPI sharedInstance] fetchListEvents:self.list.identifier geohash:@"" lastId:@0 completionBlock:^(BOOL success, NSArray *events) {
+    NSError *error = nil;
+    NSArray *listZones = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (error != nil) {
+        dispatch_async(dispatch_get_main_queue(), completionBlock);
+        NSLog(@"%@", error);
+        return;
+    }
+    
+    if ([listZones count] == 0) {
+        dispatch_async(dispatch_get_main_queue(), completionBlock);
+        return;
+    }
+    
+    CCListZone *listZone = [listZones firstObject];
+    [[CCLinotteAPI sharedInstance] fetchListEvents:self.list.identifier geohash:listZone.geohash lastId:listZone.lastEventId completionBlock:^(BOOL success, NSArray *eventsDicts) {
         if (success) {
+            if ([eventsDicts count] == 0) {
+                completionBlock();
+                return;
+            }
             
+            NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+            NSNumber *lastEventId = nil;
+            for (NSDictionary *eventDict in eventsDicts) {
+                CCServerEvent *serverEvent = [CCServerEvent insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:eventDict];
+                [self.list addServerEventsObject:serverEvent];
+                lastEventId = serverEvent.id;
+            }
+            listZone.lastEventId = lastEventId;
+            listZone.lastRefresh = [NSDate date];
+            self.list.lastDateUpdate = [NSDate date];
+            [[CCCoreDataStack sharedInstance] saveContext];
+            completionBlock();
         }
     }];
 }
 
-- (void)processServerEvent:(CCServerEvent *)serverEvent
+- (void)processServerEvent:(CCServerEvent *)serverEvent completionBlock:(void(^)())completionBlock
 {
+    switch (serverEvent.eventValue) {
+        case CCServerEventListUpdated:
+            
+            break;
+        case CCServerEventListMetaAdded:
+            
+            break;
+        case CCServerEventListMetaUpdated:
+            
+            break;
+        case CCServerEventListMetaDeleted:
+            
+            break;
+        case CCServerEventAddressAddedToList:
+            
+            break;
+        case CCServerEventAddressMovedFromList:
+            
+            break;
+        case CCServerEventAddressUpdated:
+            
+            break;
+        case CCServerEventAddressUserDataUpdated:
+            
+            break;
+        case CCServerEventAddressMetaAdded:
+            
+            break;
+        case CCServerEventAddressMetaUpdated:
+            
+            break;
+        case CCServerEventAddressMetaDeleted:
+            
+            break;
+        default:
+            break;
+    }
+}
+
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates
+{
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", list];
+    [fetchRequest setPredicate:predicate];
     
+    NSError *error = nil;
+    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    if (error != nil) {
+        NSLog(@"%@", error);
+        return NO;
+    }
+    
+    NSTimeInterval timeSinceLastUpdate = [[NSDate date] timeIntervalSinceDate:list.lastDateUpdate];
+    if (count == 0 && timeSinceLastUpdate < 24 * 60 * 60)
+        return NO;
+    
+    return YES;
 }
 
 @end
+
 
 
 
@@ -201,7 +430,7 @@
     CLLocationCoordinate2D _currentLocation;
 }
 
-- (instancetype)initWithList:(CCList *)list currentLocation:(CLLocationCoordinate2D)currentLocation
+- (instancetype)initWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)currentLocation
 {
     self = [super init];
     if (self) {
@@ -214,35 +443,23 @@
 
 - (void)setupSynchronizationAction
 {
-    NSDate *lastZonesRefresh = _list.lastZonesRefresh;
-    if (lastZonesRefresh == nil || [[NSDate date] timeIntervalSinceDate:lastZonesRefresh] > 3 * 24 * 60 * 60) {
+    if ([CCListSynchronizationActionRefreshZone canTrigger:_list coordinates:_currentLocation]) {
         _priority = NSIntegerMax;
         _synchronizationAction = [[CCListSynchronizationActionRefreshZone alloc] initWithList:_list coordinates:_currentLocation];
         return;
     }
     
-    NSInteger totalNAddresses = [[_list.zones valueForKeyPath:@"@sum.nAddresses"] integerValue];
-    NSInteger currentNAddresses = [_list.addresses count];
-    
-    if (currentNAddresses < totalNAddresses && currentNAddresses < kCCMaxAddressesForList) {
+    if ([CCListSynchronizationActionCleanUselessZones canTrigger:_list coordinates:_currentLocation] || [CCListSynchronizationActionInitialAddressFetch canTrigger:_list coordinates:_currentLocation]) {
         _priority = NSIntegerMax;
         _synchronizationAction = [[CCListSynchronizationActionInitialAddressFetch alloc] initWithList:_list coordinates:_currentLocation];
         return;
     }
     
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:_currentLocation.latitude longitude:_currentLocation.longitude];
-    CLLocation *listLastZoneRefreshLocation = [[CLLocation alloc] initWithLatitude:_list.lastZoneRefreshLatitudeValue longitude:_list.lastZoneRefreshLongitudeValue];
-    CGFloat distance = [location distanceFromLocation:listLastZoneRefreshLocation];
-    
-    if (currentNAddresses < totalNAddresses && currentNAddresses >= kCCMaxAddressesForList && distance > 3000) {
-        _priority = NSIntegerMax;
-        _synchronizationAction = [[CCListSynchronizationActionCleanUselessZones alloc] initWithList:_list coordinates:_currentLocation];
-        return;
+    if ([CCListSynchronizationActionConsumeZoneEvent canTrigger:_list coordinates:_currentLocation]) {
+        NSDate *lastUpdate = _list.lastDateUpdate;
+        _priority = [[NSDate date] timeIntervalSinceDate:lastUpdate];
+        _synchronizationAction = [[CCListSynchronizationActionConsumeZoneEvent alloc] initWithList:_list coordinates:_currentLocation];
     }
-    
-    NSDate *lastUpdate = _list.lastDateUpdate;
-    _priority = [[NSDate date] timeIntervalSinceDate:lastUpdate];
-    _synchronizationAction = [[CCListSynchronizationActionConsumeZoneEvent alloc] initWithList:_list coordinates:_currentLocation];
 }
 
 @end

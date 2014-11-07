@@ -153,12 +153,12 @@
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         address.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressDidUpdateUserData:address fromNetwork:NO];
+        [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[address] send:YES];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list fromNetwork:NO];
+        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list send:YES];
     }
 }
 

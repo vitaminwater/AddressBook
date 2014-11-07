@@ -6,16 +6,12 @@
 extern const struct CCLocalEventAttributes {
 	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *event;
-	__unsafe_unretained NSString *identifier;
+	__unsafe_unretained NSString *localAddressIdentifier;
+	__unsafe_unretained NSString *localListIdentifier;
+	__unsafe_unretained NSString *parameters;
 } CCLocalEventAttributes;
 
-extern const struct CCLocalEventRelationships {
-	__unsafe_unretained NSString *address;
-	__unsafe_unretained NSString *list;
-} CCLocalEventRelationships;
-
-@class CCAddress;
-@class CCList;
+@class NSObject;
 
 @interface CCLocalEventID : NSManagedObjectID {}
 @end
@@ -38,17 +34,17 @@ extern const struct CCLocalEventRelationships {
 
 //- (BOOL)validateEvent:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* identifier;
+@property (nonatomic, strong) NSString* localAddressIdentifier;
 
-//- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateLocalAddressIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) CCAddress *address;
+@property (nonatomic, strong) NSString* localListIdentifier;
 
-//- (BOOL)validateAddress:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateLocalListIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) CCList *list;
+@property (nonatomic, strong) id parameters;
 
-//- (BOOL)validateList:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateParameters:(id*)value_ error:(NSError**)error_;
 
 @end
 
@@ -63,13 +59,13 @@ extern const struct CCLocalEventRelationships {
 - (int16_t)primitiveEventValue;
 - (void)setPrimitiveEventValue:(int16_t)value_;
 
-- (NSString*)primitiveIdentifier;
-- (void)setPrimitiveIdentifier:(NSString*)value;
+- (NSString*)primitiveLocalAddressIdentifier;
+- (void)setPrimitiveLocalAddressIdentifier:(NSString*)value;
 
-- (CCAddress*)primitiveAddress;
-- (void)setPrimitiveAddress:(CCAddress*)value;
+- (NSString*)primitiveLocalListIdentifier;
+- (void)setPrimitiveLocalListIdentifier:(NSString*)value;
 
-- (CCList*)primitiveList;
-- (void)setPrimitiveList:(CCList*)value;
+- (id)primitiveParameters;
+- (void)setPrimitiveParameters:(id)value;
 
 @end

@@ -25,25 +25,24 @@
 + (void)deleteAddress:(CCAddress *)address
 {
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    NSString *identifier = address.identifier;
     
-    NSString *mixidentifier = address.identifier ?: @"NEW";
     [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
                                                                      @"address": address.address ?: @"",
-                                                                     @"identifier": mixidentifier}];
-    
-    [[CCModelChangeMonitor sharedInstance] addressWillRemove:address fromNetwork:NO];
+                                                                     @"identifier": address.identifier ?: @"NEW"}];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @YES];
     NSSet *lists = [address.lists filteredSetUsingPredicate:predicate];
-    [address removeLists:lists];
+    for (CCList *list in lists) {
+        [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveFromList:list send:YES];
+        [address removeListsObject:list];
+        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveFromList:list send:YES];
+    }
     
     if ([address.lists count] == 0)
         [managedObjectContext deleteObject:address];
     
     [[CCCoreDataStack sharedInstance] saveContext];
-    
-    [[CCModelChangeMonitor sharedInstance] addressDidRemove:identifier fromNetwork:NO];
 }
 
 + (void)deleteList:(CCList *)list
@@ -51,26 +50,24 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSString *identifier = list.identifier;
 
-    NSString *mixidentifier = list.identifier ?: @"NEW";
     [[Mixpanel sharedInstance] track:@"List deleted" properties:@{@"name": list.name,
-                                                                     @"identifier": mixidentifier}];
+                                                                     @"identifier": list.identifier ?: @"NEW"}];
     
-    [[CCModelChangeMonitor sharedInstance] listWillRemove:list fromNetwork:NO];
-    
-    [managedObjectContext deleteObject:list];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lists.@count = 0"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND lists.@count = 1", list];
     
     [fetchRequest setPredicate:predicate];
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addressesToDelete = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
-    for (CCAddress *address in addresses) {
+    [[CCModelChangeMonitor sharedInstance] listWillRemove:list send:YES];
+    [managedObjectContext deleteObject:list];
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier send:YES];
+    
+    for (CCAddress *address in addressesToDelete) {
         [managedObjectContext deleteObject:address];
     }
-    
     [[CCCoreDataStack sharedInstance] saveContext];
-    
-    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier fromNetwork:NO];
 }
 
 + (CCList *)defaultList
@@ -78,7 +75,7 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isdefault = %@", @(YES)];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isdefault = %@", @YES];
     fetchRequest.predicate = predicate;
     NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     
@@ -87,9 +84,9 @@
     
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = NSLocalizedString(@"DEFAULT_LIST_NAME", @"");
-    list.isdefault = @(YES);
+    list.isdefault = @YES;
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list fromNetwork:NO];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:YES];
     
     return list;
 }

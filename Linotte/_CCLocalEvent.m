@@ -6,12 +6,9 @@
 const struct CCLocalEventAttributes CCLocalEventAttributes = {
 	.date = @"date",
 	.event = @"event",
-	.identifier = @"identifier",
-};
-
-const struct CCLocalEventRelationships CCLocalEventRelationships = {
-	.address = @"address",
-	.list = @"list",
+	.localAddressIdentifier = @"localAddressIdentifier",
+	.localListIdentifier = @"localListIdentifier",
+	.parameters = @"parameters",
 };
 
 @implementation CCLocalEventID
@@ -71,11 +68,11 @@ const struct CCLocalEventRelationships CCLocalEventRelationships = {
 	[self setPrimitiveEvent:[NSNumber numberWithShort:value_]];
 }
 
-@dynamic identifier;
+@dynamic localAddressIdentifier;
 
-@dynamic address;
+@dynamic localListIdentifier;
 
-@dynamic list;
+@dynamic parameters;
 
 @end
 

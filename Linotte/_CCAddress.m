@@ -10,10 +10,10 @@ const struct CCAddressAttributes CCAddressAttributes = {
 	.identifier = @"identifier",
 	.lastnotif = @"lastnotif",
 	.latitude = @"latitude",
+	.localIdentifier = @"localIdentifier",
 	.longitude = @"longitude",
 	.name = @"name",
 	.note = @"note",
-	.notificationId = @"notificationId",
 	.notify = @"notify",
 	.provider = @"provider",
 	.providerId = @"providerId",
@@ -21,7 +21,6 @@ const struct CCAddressAttributes CCAddressAttributes = {
 
 const struct CCAddressRelationships CCAddressRelationships = {
 	.categories = @"categories",
-	.events = @"events",
 	.lists = @"lists",
 	.metas = @"metas",
 };
@@ -101,6 +100,8 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	[self setPrimitiveLatitude:[NSNumber numberWithDouble:value_]];
 }
 
+@dynamic localIdentifier;
+
 @dynamic longitude;
 
 - (double)longitudeValue {
@@ -124,8 +125,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 @dynamic name;
 
 @dynamic note;
-
-@dynamic notificationId;
 
 @dynamic notify;
 
@@ -159,17 +158,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"categories"];
 
 	[self didAccessValueForKey:@"categories"];
-	return result;
-}
-
-@dynamic events;
-
-- (NSMutableSet*)eventsSet {
-	[self willAccessValueForKey:@"events"];
-
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"events"];
-
-	[self didAccessValueForKey:@"events"];
 	return result;
 }
 

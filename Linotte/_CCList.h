@@ -13,6 +13,7 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *lastZoneRefreshLatitude;
 	__unsafe_unretained NSString *lastZoneRefreshLongitude;
 	__unsafe_unretained NSString *lastZonesRefresh;
+	__unsafe_unretained NSString *localIdentifier;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
@@ -23,15 +24,13 @@ extern const struct CCListAttributes {
 extern const struct CCListRelationships {
 	__unsafe_unretained NSString *addressMetas;
 	__unsafe_unretained NSString *addresses;
-	__unsafe_unretained NSString *events;
 	__unsafe_unretained NSString *metas;
-	__unsafe_unretained NSString *server_events;
+	__unsafe_unretained NSString *serverEvents;
 	__unsafe_unretained NSString *zones;
 } CCListRelationships;
 
 @class CCAddressMeta;
 @class CCAddress;
-@class CCLocalEvent;
 @class CCListMeta;
 @class CCServerEvent;
 @class CCListZone;
@@ -97,6 +96,10 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateLastZonesRefresh:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSString* localIdentifier;
+
+//- (BOOL)validateLocalIdentifier:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSString* name;
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -133,17 +136,13 @@ extern const struct CCListRelationships {
 
 - (NSMutableSet*)addressesSet;
 
-@property (nonatomic, strong) NSSet *events;
-
-- (NSMutableSet*)eventsSet;
-
 @property (nonatomic, strong) NSSet *metas;
 
 - (NSMutableSet*)metasSet;
 
-@property (nonatomic, strong) NSSet *server_events;
+@property (nonatomic, strong) NSSet *serverEvents;
 
-- (NSMutableSet*)server_eventsSet;
+- (NSMutableSet*)serverEventsSet;
 
 @property (nonatomic, strong) NSSet *zones;
 
@@ -159,14 +158,6 @@ extern const struct CCListRelationships {
 
 @end
 
-@interface _CCList (EventsCoreDataGeneratedAccessors)
-- (void)addEvents:(NSSet*)value_;
-- (void)removeEvents:(NSSet*)value_;
-- (void)addEventsObject:(CCLocalEvent*)value_;
-- (void)removeEventsObject:(CCLocalEvent*)value_;
-
-@end
-
 @interface _CCList (MetasCoreDataGeneratedAccessors)
 - (void)addMetas:(NSSet*)value_;
 - (void)removeMetas:(NSSet*)value_;
@@ -175,11 +166,11 @@ extern const struct CCListRelationships {
 
 @end
 
-@interface _CCList (Server_eventsCoreDataGeneratedAccessors)
-- (void)addServer_events:(NSSet*)value_;
-- (void)removeServer_events:(NSSet*)value_;
-- (void)addServer_eventsObject:(CCServerEvent*)value_;
-- (void)removeServer_eventsObject:(CCServerEvent*)value_;
+@interface _CCList (ServerEventsCoreDataGeneratedAccessors)
+- (void)addServerEvents:(NSSet*)value_;
+- (void)removeServerEvents:(NSSet*)value_;
+- (void)addServerEventsObject:(CCServerEvent*)value_;
+- (void)removeServerEventsObject:(CCServerEvent*)value_;
 
 @end
 
@@ -232,6 +223,9 @@ extern const struct CCListRelationships {
 - (NSDate*)primitiveLastZonesRefresh;
 - (void)setPrimitiveLastZonesRefresh:(NSDate*)value;
 
+- (NSString*)primitiveLocalIdentifier;
+- (void)setPrimitiveLocalIdentifier:(NSString*)value;
+
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
@@ -259,14 +253,11 @@ extern const struct CCListRelationships {
 - (NSMutableSet*)primitiveAddresses;
 - (void)setPrimitiveAddresses:(NSMutableSet*)value;
 
-- (NSMutableSet*)primitiveEvents;
-- (void)setPrimitiveEvents:(NSMutableSet*)value;
-
 - (NSMutableSet*)primitiveMetas;
 - (void)setPrimitiveMetas:(NSMutableSet*)value;
 
-- (NSMutableSet*)primitiveServer_events;
-- (void)setPrimitiveServer_events:(NSMutableSet*)value;
+- (NSMutableSet*)primitiveServerEvents;
+- (void)setPrimitiveServerEvents:(NSMutableSet*)value;
 
 - (NSMutableSet*)primitiveZones;
 - (void)setPrimitiveZones:(NSMutableSet*)value;

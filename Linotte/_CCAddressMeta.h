@@ -5,7 +5,7 @@
 
 extern const struct CCAddressMetaAttributes {
 	__unsafe_unretained NSString *identifier;
-	__unsafe_unretained NSString *internal_name;
+	__unsafe_unretained NSString *internalName;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *value;
 } CCAddressMetaAttributes;
@@ -31,9 +31,9 @@ extern const struct CCAddressMetaRelationships {
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* internal_name;
+@property (nonatomic, strong) NSString* internalName;
 
-//- (BOOL)validateInternal_name:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateInternalName:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* name;
 
@@ -58,8 +58,8 @@ extern const struct CCAddressMetaRelationships {
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-- (NSString*)primitiveInternal_name;
-- (void)setPrimitiveInternal_name:(NSString*)value;
+- (NSString*)primitiveInternalName;
+- (void)setPrimitiveInternalName:(NSString*)value;
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;

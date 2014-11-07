@@ -50,7 +50,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 
 @property(nonatomic, strong)CCList *list;
 
-- (void)addAddress:(CCAddress *)address;
-- (void)removeAddress:(CCAddress *)address;
+- (void)addAddresses:(NSArray *)addresses;
+- (void)removeAddresses:(NSArray *)addresses;
 
 @end

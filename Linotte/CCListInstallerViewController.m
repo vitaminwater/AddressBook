@@ -111,7 +111,7 @@
             NSManagedObjectContext *managedObjectContext = [[CCCoreDataStack sharedInstance] managedObjectContext];
             list = (CCList *)[managedObjectContext objectWithID:[list objectID]];
             
-            [[CCModelChangeMonitor sharedInstance] listDidAdd:list fromNetwork:YES];
+            [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
             [[CCSynchronizationHandler sharedInstance] performListSynchronization:list completionBlock:^{}];
 
             [_delegate closeListInstaller:self];

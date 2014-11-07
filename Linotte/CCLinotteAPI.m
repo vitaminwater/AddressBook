@@ -40,42 +40,6 @@
 
 
 /**
- * Model returned for public list
- */
-
-@implementation CCPublicListModel
-@end
-
-
-/**
- * Model returned for list complete infos
- */
-
-@implementation CCCompleteListInfoModel
-@end
-
-/**
- * Model returned for list geohash zones
- */
-
-@implementation CCListGeohashZoneModel
-@end
-
-/**
- * Model returned for address fetch
- */
-
-@implementation CCAddressModel
-@end
-
-/**
- * Model returned for event fetch
- */
-
-@implementation CCServerEventModel
-@end
-
-/**
  * CCLinotteAPI interface
  */
 
@@ -347,34 +311,31 @@
 
 #pragma mark - Data management methods
 
-- (void)createAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+- (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
-    CCList *list = [[address.lists allObjects] firstObject];
-    NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId, @"list" : list.identifier};
+    //NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId, @"list" : list.identifier};
     [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        address.identifier = response[@"identifier"];
-        completionBlock(YES);
+        completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
-        completionBlock(NO);
+        completionBlock(NO, nil);
     }];
 }
 
-- (void)createList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
-    NSDictionary *parameters = @{@"name" : list.name};
+    //NSDictionary *parameters = @{@"name" : list.name};
     [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        list.identifier = response[@"identifier"];
-        completionBlock(YES);
+        completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
-        completionBlock(NO);
+        completionBlock(NO, nil);
     }];
 }
 
-- (void)addList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list.identifier];
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", parameters[@"list"]];
     [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -383,9 +344,9 @@
     }];
 }
 
-- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
+- (void)removeList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", identifier];
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", parameters[@"list"]];
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -394,9 +355,9 @@
     }];
 }
 
-- (void)removeAddress:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock
+- (void)removeAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/address/%@/", identifier];
+    NSString *url = [NSString stringWithFormat:@"/user/address/%@/", parameters[@"address"]];
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -405,9 +366,9 @@
     }];
 }
 
-- (void)addAddress:(CCAddress *)address toList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)addAddressToList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", parameters[@"list"], parameters[@"address"]];
     
     [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
@@ -417,9 +378,9 @@
     }];
 }
 
-- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)removeAddressFromList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list.identifier, address.identifier];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", parameters[@"list"], parameters[@"address"]];
     
     [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
@@ -429,10 +390,10 @@
     }];
 }
 
-- (void)updateAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+- (void)updateAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
-    NSString *path = [NSString stringWithFormat:@"/address/%@/", address.identifier];
+    //NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
+    NSString *path = [NSString stringWithFormat:@"/address/%@/", parameters[@"address"]];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -441,10 +402,10 @@
     }];
 }
 
-- (void)updateList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock
+- (void)updateList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSDictionary *parameters = @{@"name" : list.name};
-    NSString *path = [NSString stringWithFormat:@"/list/%@/", list.identifier];
+    //NSDictionary *parameters = @{@"name" : list.name};
+    NSString *path = [NSString stringWithFormat:@"/list/%@/", parameters[@"list"]];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -453,11 +414,11 @@
     }];
 }
 
-- (void)updateAddressUserData:(CCAddress *)address completionBlock:(void(^)(BOOL success))completionBlock
+- (void)updateAddressUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    NSString *note = address.note ? address.note : @"";
-    NSDictionary *parameters = @{@"note" : note, @"notification" : @(address.notifyValue)};
-    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address.identifier];
+    //NSString *note = address.note ? address.note : @"";
+    //NSDictionary *parameters = @{@"note" : note, @"notification" : @(address.notifyValue)};
+    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", parameters[@"address"]];
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -473,35 +434,20 @@
     NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
     NSDictionary *parameters = @{@"geohash" : geohash};
     [_apiManager GET:@"/list/public/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        NSMutableArray *result = [@[] mutableCopy];
-        for (NSDictionary *list in responses) {
-            CCPublicListModel *publicListModel = [CCPublicListModel new];
-            publicListModel.identifier = list[@"identifier"];
-            publicListModel.name = list[@"name"];
-            publicListModel.icon = list[@"icon"];
-            [result addObject:publicListModel];
-        }
-        completionBlock(YES, result);
+        completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
-- (void)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, CCCompleteListInfoModel *completeListInfoModel))completionBlock
+- (void)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/", identifier];
     [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        CCCompleteListInfoModel *listComplete = [CCCompleteListInfoModel new];
-        listComplete.identifier = identifier;
-        listComplete.name = response[@"name"];
-        listComplete.icon = response[@"icon"];
-        listComplete.numberOfAddresses = response[@"n_addresses"];
-        listComplete.numberOfInstalls = response[@"n_installs"];
-        listComplete.lastUpdate = [_dateFormatter dateFromString:response[@"last_update"]];
-        listComplete.author = response[@"author"];
-        listComplete.authorId = response[@"author_id"];
-        completionBlock(YES, listComplete);
+        NSMutableDictionary *mutableResponse = [response mutableCopy];
+        mutableResponse[@"last_update"] = [_dateFormatter dateFromString:mutableResponse[@"last_update"]];
+        completionBlock(YES, response);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
@@ -512,14 +458,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/zones/", identifier];
     [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        NSMutableArray *results = [@[] mutableCopy];
-        for (NSDictionary *response in responses) {
-            CCListGeohashZoneModel *listGeohashZone = [CCListGeohashZoneModel new];
-            listGeohashZone.geohash = response[@"geohash"];
-            listGeohashZone.nAddresses = response[@"n_addresses"];
-            [results addObject:listGeohashZone];
-        }
-        completionBlock(YES, results);
+        completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
@@ -539,19 +478,10 @@
     [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         NSMutableArray *addresses = [@[] mutableCopy];
         for (NSDictionary *response in responses) {
-            CCAddressModel *address = [CCAddressModel new];
-            address.identifier = response[@"identifier"];
-            address.latitude = response[@"latitude"];
-            address.longitude = response[@"longitude"];
-            address.name = response[@"name"];
-            address.address = response[@"address"];
-            address.provider = response[@"provider"];
-            address.providerId = response[@"provider_id"];
+            NSMutableDictionary *mutableResponse = [response mutableCopy];
             NSDate *dateCreated = [_dateFormatter dateFromString:response[@"date_created"]];
-            address.dateCreated = dateCreated;
-            address.note = response[@"note"];
-            address.notification = response[@"notification"];
-            [addresses addObject:address];
+            mutableResponse[@"date_created"] = dateCreated;
+            [addresses addObject:mutableResponse];
         }
         completionBlock(YES, addresses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -562,18 +492,10 @@
 
 - (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastId:(NSNumber *)lastId completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
 {
-    NSString *path = [NSString stringWithFormat:@"/event/%@/consume/", identifier];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSDictionary *parameters = @{@"geohash" : geohash, @"last_id" : lastId};
     [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        NSMutableArray *serverEvents = [@[] mutableCopy];
-        for (NSDictionary *response in responses) {
-            CCServerEventModel *serverEventModel = [CCServerEventModel new];
-            serverEventModel.id = response[@"id"];
-            serverEventModel.event = response[@"event"];
-            serverEventModel.objectIdentifier = response[@"object_identifier"];
-            [serverEvents addObject:serverEventModel];
-        }
-        completionBlock(YES, serverEvents);
+        completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);

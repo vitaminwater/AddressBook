@@ -33,47 +33,33 @@
 
 - (void)loadListItems
 {
-    for (CCAddress *address in _list.addresses) {
-        [self.provider addAddress:address];
-    }
+    [self.provider addAddresses:[_list.addresses allObjects]];
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    if ([address.lists containsObject:_list])
-        [self.provider addAddress:address];
-}
-
-- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    if ([address.lists containsObject:_list])
-        [self.provider removeAddress:address];
-}
-
-- (void)addressDidUpdate:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
+- (void)addressDidUpdate:(CCAddress *)address send:(BOOL)send
 {
     if ([address.lists containsObject:_list])
         [self.provider refreshListItemContentForObject:address];
 }
 
-- (void)addressDidUpdateUserData:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
+- (void)addressDidUpdateUserData:(CCAddress *)address send:(BOOL)send
 {
     if ([address.lists containsObject:_list])
         [self.provider refreshListItemContentForObject:address];
 }
 
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
 {
     if (_list == list)
-        [self.provider addAddress:address];
+        [self.provider addAddresses:addresses];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send
 {
     if (_list == list)
-        [self.provider removeAddress:address];
+        [self.provider removeAddresses:addresses];
 }
 
 @end

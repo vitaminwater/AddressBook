@@ -1,20 +1,19 @@
 #import "_CCLocalEvent.h"
 
 typedef enum : int16_t {
-    CCNetworkEventAddressAdded,
-    CCNetworkEventListAdded,
+    CCLocalEventAddressCreated = 1,
+    CCLocalEventListCreated,
     
-    CCNetworkEventListRemoved,
-    CCNetworkEventAddressRemoved,
+    CCLocalEventListRemoved,
     
-    CCNetworkEventAddressMovedToList,
-    CCNetworkEventAddressMovedFromList,
+    CCLocalEventAddressMovedToList,
+    CCLocalEventAddressMovedFromList,
     
-    CCNetworkEventAddressUpdated,
-    CCNetworkEventListUpdated,
+    CCLocalEventAddressUpdated,
+    CCLocalEventListUpdated,
 
-    CCNetworkEventAddressUserDataUpdated,
-} CCNetworkEventEvent;
+    CCLocalEventAddressUserDataUpdated,
+} CCLocalEventEvent;
 
 @interface CCLocalEvent : _CCLocalEvent {}
 

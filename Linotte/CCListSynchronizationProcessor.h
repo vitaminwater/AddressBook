@@ -15,6 +15,8 @@
 
 - (void)performSynchronizationWithCompletionBlock:(void(^)())completionBlock;
 
++ (BOOL)canTrigger:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates;
+
 @end
 
 @interface CCListSynchronizationProcessor : NSObject
@@ -23,6 +25,6 @@
 @property(nonatomic, readonly)NSInteger priority;
 @property(nonatomic, readonly)NSObject<CCListSynchronizationActionProtocol> *synchronizationAction;
 
-- (instancetype)initWithList:(CCList *)list currentLocation:(CLLocationCoordinate2D)currentLocation;
+- (instancetype)initWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)currentLocation;
 
 @end

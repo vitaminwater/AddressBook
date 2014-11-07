@@ -57,12 +57,9 @@
 		C76A1CFE19C0DEC600EE75E4 /* CCListItems.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CFD19C0DEC600EE75E4 /* CCListItems.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
 		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
-		C77F8DD41A00E59200AE2655 /* CCCompleteListInfoModel+CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD31A00E59200AE2655 /* CCCompleteListInfoModel+CCList.m */; };
 		C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */; };
-		C77F8DDF1A014E8100AE2655 /* CCListGeohashZone+CCListZone.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DDE1A014E8100AE2655 /* CCListGeohashZone+CCListZone.m */; };
 		C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */; };
 		C77F8E1D1A06218400AE2655 /* CCListSynchronizationProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E1C1A06218400AE2655 /* CCListSynchronizationProcessor.m */; };
-		C77F8E201A067B4F00AE2655 /* CCAddressModel+CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E1F1A067B4F00AE2655 /* CCAddressModel+CCAddress.m */; };
 		C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */; };
 		C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B119D873F6008B520E /* CCListOutputSettingsView.m */; };
 		C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B619D87417008B520E /* CCListOutputSettingsViewController.m */; };
@@ -239,18 +236,12 @@
 		C770A75119AB647700803E75 /* CCAddressSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsView.h; sourceTree = "<group>"; };
 		C770A75219AB647700803E75 /* CCAddressSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressSettingsView.m; sourceTree = "<group>"; };
 		C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsViewDelegate.h; sourceTree = "<group>"; };
-		C77F8DD21A00E59200AE2655 /* CCCompleteListInfoModel+CCList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCCompleteListInfoModel+CCList.h"; sourceTree = "<group>"; };
-		C77F8DD31A00E59200AE2655 /* CCCompleteListInfoModel+CCList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCCompleteListInfoModel+CCList.m"; sourceTree = "<group>"; };
 		C77F8DD61A00F6C400AE2655 /* CCListInstallerCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerCloseButton.h; sourceTree = "<group>"; };
 		C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerCloseButton.m; sourceTree = "<group>"; };
-		C77F8DDD1A014E8100AE2655 /* CCListGeohashZone+CCListZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCListGeohashZone+CCListZone.h"; sourceTree = "<group>"; };
-		C77F8DDE1A014E8100AE2655 /* CCListGeohashZone+CCListZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCListGeohashZone+CCListZone.m"; sourceTree = "<group>"; };
 		C77F8E051A023D0300AE2655 /* CCSynchronizationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationHandler.h; sourceTree = "<group>"; };
 		C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationHandler.m; sourceTree = "<group>"; };
 		C77F8E1B1A06218400AE2655 /* CCListSynchronizationProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSynchronizationProcessor.h; sourceTree = "<group>"; };
 		C77F8E1C1A06218400AE2655 /* CCListSynchronizationProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSynchronizationProcessor.m; sourceTree = "<group>"; };
-		C77F8E1E1A067B4F00AE2655 /* CCAddressModel+CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CCAddressModel+CCAddress.h"; sourceTree = "<group>"; };
-		C77F8E1F1A067B4F00AE2655 /* CCAddressModel+CCAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CCAddressModel+CCAddress.m"; sourceTree = "<group>"; };
 		C7804C7119D1AA3D00D546BD /* CCModelChangeMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitor.h; sourceTree = "<group>"; };
 		C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCModelChangeMonitor.m; sourceTree = "<group>"; };
 		C7804C7519D1AED700D546BD /* CCModelChangeMonitorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitorDelegate.h; sourceTree = "<group>"; };
@@ -1072,19 +1063,6 @@
 			name = sons;
 			sourceTree = "<group>";
 		};
-		C77F8DD11A00E56200AE2655 /* linotte api to core data */ = {
-			isa = PBXGroup;
-			children = (
-				C77F8DD21A00E59200AE2655 /* CCCompleteListInfoModel+CCList.h */,
-				C77F8DD31A00E59200AE2655 /* CCCompleteListInfoModel+CCList.m */,
-				C77F8DDD1A014E8100AE2655 /* CCListGeohashZone+CCListZone.h */,
-				C77F8DDE1A014E8100AE2655 /* CCListGeohashZone+CCListZone.m */,
-				C77F8E1E1A067B4F00AE2655 /* CCAddressModel+CCAddress.h */,
-				C77F8E1F1A067B4F00AE2655 /* CCAddressModel+CCAddress.m */,
-			);
-			name = "linotte api to core data";
-			sourceTree = "<group>";
-		};
 		C77F8DD51A00F6A300AE2655 /* close button */ = {
 			isa = PBXGroup;
 			children = (
@@ -1317,15 +1295,15 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
-		C7A1621819DEA396003EFE5B /* network event */ = {
+		C7A1621819DEA396003EFE5B /* local event */ = {
 			isa = PBXGroup;
 			children = (
-				C7A1621D19DEA5FE003EFE5B /* CCLocalEvent.h */,
-				C7A1621C19DEA5FE003EFE5B /* CCLocalEvent.m */,
 				C7A1621A19DEA48E003EFE5B /* _CCLocalEvent.h */,
 				C7A1621919DEA48E003EFE5B /* _CCLocalEvent.m */,
+				C7A1621D19DEA5FE003EFE5B /* CCLocalEvent.h */,
+				C7A1621C19DEA5FE003EFE5B /* CCLocalEvent.m */,
 			);
-			name = "network event";
+			name = "local event";
 			sourceTree = "<group>";
 		};
 		C7A2EB2D19BBBF34003EF099 /* cell */ = {
@@ -1604,7 +1582,7 @@
 			children = (
 				C7F4452219FCE718009AE1C9 /* server event */,
 				C7F4452119FCE70E009AE1C9 /* list zone */,
-				C7A1621819DEA396003EFE5B /* network event */,
+				C7A1621819DEA396003EFE5B /* local event */,
 				C796D7BC19BB8B4A00B97879 /* list */,
 				C796D7B919BB8B2E00B97879 /* meta */,
 				C762975C192CCC3500B9B6E5 /* address */,
@@ -1733,7 +1711,6 @@
 			isa = PBXGroup;
 			children = (
 				C77F8E041A023CBE00AE2655 /* synchronization */,
-				C77F8DD11A00E56200AE2655 /* linotte api to core data */,
 				C72B50E519F9844100F39E7F /* dict cache */,
 				C73E7D0819F9550B00ADC1A2 /* model helper */,
 				C73E7D0119F7D91200ADC1A2 /* autocomplete */,
@@ -2078,7 +2055,6 @@
 				C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */,
 				C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */,
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
-				C77F8DD41A00E59200AE2655 /* CCCompleteListInfoModel+CCList.m in Sources */,
 				C7C2925319D4B7B100EBF5C3 /* CCListListEmptyView.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddAddressView.m in Sources */,
 				C799AB6C19236D4B0096B5A8 /* CCGeohashHelper.m in Sources */,
@@ -2094,7 +2070,6 @@
 				C7619FC119C48C8B00C09F0D /* CCListListViewController.m in Sources */,
 				C77F8E1D1A06218400AE2655 /* CCListSynchronizationProcessor.m in Sources */,
 				C7619FDF19C97D4800C09F0D /* CCAddListViewController.m in Sources */,
-				C77F8E201A067B4F00AE2655 /* CCAddressModel+CCAddress.m in Sources */,
 				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
 				C7C2925919D4BA5200EBF5C3 /* CCListOutputAddressListViewController.m in Sources */,
 				C7F4451E19FCE708009AE1C9 /* _CCServerEvent.m in Sources */,
@@ -2154,7 +2129,6 @@
 				C7A1621B19DEA48E003EFE5B /* _CCLocalEvent.m in Sources */,
 				C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */,
 				C76A1CFE19C0DEC600EE75E4 /* CCListItems.m in Sources */,
-				C77F8DDF1A014E8100AE2655 /* CCListGeohashZone+CCListZone.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

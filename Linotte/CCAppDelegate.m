@@ -156,10 +156,10 @@
         return;
     }
     
-    NSString *objectID = notification.userInfo[@"addressNotificationId"];
+    NSString *objectID = notification.userInfo[@"addressLocalIdentifier"];
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notificationId = %@", objectID];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", objectID];
     [fetchRequest setPredicate:predicate];
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
     if ([results count]) {

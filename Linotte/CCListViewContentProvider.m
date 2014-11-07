@@ -46,54 +46,43 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     _listItems = [@[] mutableCopy];
 }
 
-- (NSUInteger)addAddress:(CCAddress *)address
+- (void)addAddresses:(NSArray *)addresses
 {
-    CCListItemAddress *listItemAddress = [CCListItemAddress new];
-    listItemAddress.address = address;
-    listItemAddress.location = _currentLocation;
+    NSMutableArray *addedListItems = [@[] mutableCopy];
+    
+    for (CCAddress *address in addresses) {
+        CCListItemAddress *listItemAddress = [CCListItemAddress new];
+        listItemAddress.address = address;
+        listItemAddress.location = _currentLocation;
+        [addedListItems addObject:listItemAddress];
+    }
 
-    return [self insertNewListItem:listItemAddress];
+    [self insertNewListItems:addedListItems];
 }
 
-- (void)addAddress:(CCAddress *)address toList:(CCList *)list
+- (void)addAddresses:(NSArray *)addresses toList:(CCList *)list
 {
     NSUInteger listItemIndex = [self indexOfListItemContent:list];
     if (listItemIndex == NSNotFound)
         return;
     
     CCListItemList *listItemList = _listItems[listItemIndex];
-    [listItemList addAddress:address];
+    [listItemList addAddresses:addresses];
     [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:listItemIndex]];
 }
 
-- (NSUInteger)removeAddress:(CCAddress *)address
-{
-    NSUInteger index = [_listItems indexOfObjectPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
-        if (listItem.type == CCListItemTypeAddress && ((CCListItemAddress *)listItem).address == address) {
-            *stop = YES;
-            return YES;
-        }
-        return NO;
-    }];
-    if (index == NSNotFound)
-        return index;
-    [_listItems removeObjectAtIndex:index];
-    [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
-    return index;
-}
-
-- (void)removeAddress:(CCAddress *)address fromList:(CCList *)list
+- (void)removeAddresses:(NSArray *)addresses fromList:(CCList *)list
 {
     NSUInteger listItemIndex = [self indexOfListItemContent:list];
     if (listItemIndex == NSNotFound)
         return;
     
     CCListItemList *listItemList = _listItems[listItemIndex];
-    [listItemList removeAddress:address];
+    [listItemList removeAddresses:addresses];
     [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:listItemIndex]];
 }
 
-- (NSIndexSet *)removeAddresses:(NSArray *)addresses
+- (void)removeAddresses:(NSArray *)addresses
 {
     NSIndexSet *toDelete = [_listItems indexesOfObjectsPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
         if (listItem.type == CCListItemTypeAddress && [addresses containsObject:((CCListItemAddress *)listItem).address])
@@ -102,27 +91,26 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     }];
     [_listItems removeObjectsAtIndexes:toDelete];
     [_delegate removeCellsAtIndexes:toDelete];
-    return toDelete;
 }
 
-- (NSUInteger)addList:(CCList *)list
+- (void)addList:(CCList *)list
 {
     CCListItemList *listItemList = [CCListItemList new];
     listItemList.list = list;
     listItemList.location = _currentLocation;
-    return [self insertNewListItem:listItemList];
+    [self insertNewListItems:@[listItemList]];
 }
 
-- (NSUInteger)removeList:(CCList *)list
+- (void)removeList:(CCList *)list
 {
     NSUInteger index = [_listItems indexOfObjectPassingTest:^BOOL(CCListItem *listItem, NSUInteger idx, BOOL *stop) {
         return listItem.type == CCListItemTypeList && ((CCListItemList *)listItem).list == list;
     }];
     if (index == NSNotFound)
-        return index;
+        return;
     [_listItems removeObjectAtIndex:index];
     [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
-    return index;
+    return;
 }
 
 // TODO check for order change
@@ -135,6 +123,7 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
 }
 
 - (void)refreshListItemContentForObject:(id)object
+
 {
     NSUInteger index = [self indexOfListItemContent:object];
     if (index == NSNotFound)
@@ -142,16 +131,19 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     [_delegate refreshCellsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
 }
 
-- (NSUInteger)insertNewListItem:(CCListItem *)listItem
+- (NSIndexSet *)insertNewListItems:(NSArray *)listItems
 {
-    NSUInteger newIndex = [_listItems indexOfObject:listItem
-                                      inSortedRange:(NSRange){0, [_listItems count]}
-                                            options:NSBinarySearchingInsertionIndex
-                                    usingComparator:[self sortBlock]];
-    
-    [_listItems insertObject:listItem atIndex:newIndex];
-    [_delegate insertCellsAtIndexes:[NSIndexSet indexSetWithIndex:newIndex]];
-    return newIndex;
+    NSMutableIndexSet *indexSet = [NSMutableIndexSet new];
+    for (CCListItem *listItem in listItems) {
+        NSUInteger newIndex = [_listItems indexOfObject:listItem
+                                          inSortedRange:(NSRange){0, [_listItems count]}
+                                                options:NSBinarySearchingInsertionIndex
+                                        usingComparator:[self sortBlock]];
+        [indexSet addIndex:newIndex];
+        [_listItems insertObject:listItem atIndex:newIndex];
+    }
+    [_delegate insertCellsAtIndexes:indexSet];
+    return [indexSet copy];
 }
 
 - (void)deleteItemAtIndex:(NSUInteger)index

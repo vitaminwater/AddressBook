@@ -40,36 +40,18 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)addressDidAdd:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    for (CCList *list in address.lists) {
-        [self.provider addAddress:address toList:list];
-    }
-}
-
-- (void)addressWillRemove:(CCAddress *)address fromNetwork:(BOOL)fromNetwork
-{
-    [self.cache pushCacheEntry:kCCListListViewModelDeletedAddressListsKey value:[address.lists allObjects]];
-}
-
-- (void)addressDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
-{
-    NSArray *lists = [self.cache popCacheEntry:kCCListListViewModelDeletedAddressListsKey];
-    [self.provider refreshListItemContentsForObjects:lists];
-}
-
-- (void)listDidAdd:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listDidAdd:(CCList *)list send:(BOOL)send
 {
     [self.provider addList:list];
 }
 
-- (void)listWillRemove:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listWillRemove:(CCList *)list send:(BOOL)send
 {
     NSUInteger index = [self.provider indexOfListItemContent:list];
     [self.cache pushCacheEntry:kCCListListViewModelDeletedListIndexKey value:@(index)];
 }
 
-- (void)listDidRemove:(NSString *)identifier fromNetwork:(BOOL)fromNetwork
+- (void)listDidRemove:(NSString *)identifier send:(BOOL)send
 {
     NSUInteger index = [[self.cache popCacheEntry:kCCListListViewModelDeletedListIndexKey] unsignedIntegerValue];
     if (index == NSNotFound)
@@ -77,19 +59,19 @@
     [self.provider deleteItemAtIndex:index];
 }
 
-- (void)listDidUpdate:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)listDidUpdate:(CCList *)list send:(BOOL)send
 {
     [self.provider refreshListItemContentForObject:list];
 }
 
-- (void)address:(CCAddress *)address didMoveToList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
 {
-    [self.provider addAddress:address toList:list];
+    [self.provider addAddresses:addresses toList:list];
 }
 
-- (void)address:(CCAddress *)address didMoveFromList:(CCList *)list fromNetwork:(BOOL)fromNetwork
+- (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send
 {
-    [self.provider removeAddress:address fromList:list];
+    [self.provider removeAddresses:addresses fromList:list];
 }
 
 @end
