@@ -313,7 +313,6 @@
 
 - (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
-    //NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId, @"list" : list.identifier};
     [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -324,7 +323,6 @@
 
 - (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
 {
-    //NSDictionary *parameters = @{@"name" : list.name};
     [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -392,8 +390,8 @@
 
 - (void)updateAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    //NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
-    NSString *path = [NSString stringWithFormat:@"/address/%@/", parameters[@"address"]];
+    NSString *address = [self popValueFromDict:@"address" dict:&parameters];
+    NSString *path = [NSString stringWithFormat:@"/address/%@/", address];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -404,8 +402,8 @@
 
 - (void)updateList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    //NSDictionary *parameters = @{@"name" : list.name};
-    NSString *path = [NSString stringWithFormat:@"/list/%@/", parameters[@"list"]];
+    NSString *list = [self popValueFromDict:@"list" dict:&parameters];
+    NSString *path = [NSString stringWithFormat:@"/list/%@/", list];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -416,15 +414,23 @@
 
 - (void)updateAddressUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock
 {
-    //NSString *note = address.note ? address.note : @"";
-    //NSDictionary *parameters = @{@"note" : note, @"notification" : @(address.notifyValue)};
-    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", parameters[@"address"]];
+    NSString *address = [self popValueFromDict:@"address" dict:&parameters];
+    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address];
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO);
     }];
+}
+
+- (id)popValueFromDict:(id)key dict:(NSDictionary **)dict
+{
+    NSMutableDictionary *mutableDict = [*dict mutableCopy];
+    id value = mutableDict[key];
+    [mutableDict removeObjectForKey:key];
+    *dict = mutableDict;
+    return value;
 }
 
 #pragma mark - Fetch methods
@@ -447,7 +453,7 @@
     [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         NSMutableDictionary *mutableResponse = [response mutableCopy];
         mutableResponse[@"last_update"] = [_dateFormatter dateFromString:mutableResponse[@"last_update"]];
-        completionBlock(YES, response);
+        completionBlock(YES, mutableResponse);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);

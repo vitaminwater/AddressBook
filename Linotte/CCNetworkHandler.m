@@ -388,7 +388,7 @@
         addressUpdateEvent.eventValue = CCLocalEventAddressUserDataUpdated;
         addressUpdateEvent.date = [NSDate date];
         addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
-        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"note" : address.note, @"notification" : address.notify};
+        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"note" : address.note, @"notification" : @(address.notifyValue)};
     }
     
     [[CCCoreDataStack sharedInstance] saveContext];

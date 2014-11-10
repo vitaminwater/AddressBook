@@ -139,7 +139,7 @@
             return;
         }
         NSTimeInterval timeElapsed = [NSDate timeIntervalSinceReferenceDate] - startSync;
-        if (timeElapsed >= maxDuration) {
+        if (maxDuration != 0 && timeElapsed >= maxDuration) {
             completionBlock();
             return;
         }
@@ -152,6 +152,9 @@
 
 - (void)performListSynchronization:(CCList *)list completionBlock:(void(^)())completionBlock
 {
+    if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
+        return;
+    
     __block void(^recursiveBlock)();
     recursiveBlock = ^() {
         CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list coordinates:_lastCoordinate];

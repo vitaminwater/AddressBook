@@ -41,12 +41,12 @@ typedef enum : NSUInteger {
 
 #pragma mark - Data management methods
 
-- (void)createAddress:(CCAddress *)address completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
-- (void)createList:(CCList *)list completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
+- (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
+- (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
 
-- (void)addList:(CCList *)list completionBlock:(void(^)(BOOL success))completionBlock;
-- (void)removeList:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock;
-- (void)removeAddress:(NSString *)identifier completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)removeList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)removeAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock;
 
 - (void)addAddressToList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock;
 - (void)removeAddressFromList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success))completionBlock;

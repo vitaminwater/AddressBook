@@ -16,8 +16,6 @@
 #import "CCModelHelper.h"
 
 #import "CCListInstallerView.h"
-#import "CCCompleteListInfoModel+CCList.h"
-#import "CCListGeohashZone+CCListZone.h"
 
 #import "CCAlertView.h"
 #import "CCActionResultHUD.h"
@@ -30,8 +28,8 @@
 @implementation CCListInstallerViewController
 {
     NSString *_identifier;
-    CCPublicListModel *_publicListModel;
-    CCCompleteListInfoModel *_completeListInfoModel;
+    NSDictionary *_publicListDict;
+    NSDictionary *_completeListInfoDict;
 }
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
@@ -43,12 +41,12 @@
     return self;
 }
 
-- (instancetype)initWithPublicListModel:(CCPublicListModel *)publicListModel
+- (instancetype)initWithpublicListDict:(NSDictionary *)publicListDict
 {
     self = [super init];
     if (self) {
-        _identifier = publicListModel.identifier;
-        _publicListModel = publicListModel;
+        _identifier = publicListDict[@"identifier"];
+        _publicListDict = publicListDict;
     }
     return self;
 }
@@ -64,10 +62,10 @@
 
 - (void)viewDidLoad
 {
-    if (_publicListModel != nil) {
+    if (_publicListDict != nil) {
         CCListInstallerView *view = (CCListInstallerView *)self.view;
         
-        [view setListName:_publicListModel.name];
+        [view setListName:_publicListDict[@"name"]];
         [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
     }
     [self loadCompleteList:_identifier];
@@ -75,14 +73,14 @@
 
 - (void)loadCompleteList:(NSString *)identifier
 {
-    [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:identifier completionBlock:^(BOOL success, CCCompleteListInfoModel *completeListInfoModel) {
+    [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:identifier completionBlock:^(BOOL success, NSDictionary *completeListInfoDict) {
         if (success) {
-            _completeListInfoModel = completeListInfoModel;
+            _completeListInfoDict = completeListInfoDict;
             CCListInstallerView *view = (CCListInstallerView *)self.view;
             
-            [view setListName:_completeListInfoModel.name];
+            [view setListName:_completeListInfoDict[@"name"]];
             [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
-            [view setListInfos:_completeListInfoModel.author numberOfAddresses:[_completeListInfoModel.numberOfAddresses unsignedIntegerValue] numberOfInstalls:[_completeListInfoModel.numberOfInstalls unsignedIntegerValue] lastUpdate:_completeListInfoModel.lastUpdate];
+            [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:_completeListInfoDict[@"last_update"]];
         }
     }];
 }
@@ -101,9 +99,10 @@
 - (void)addToLinotteButtonPressed
 {
     NSManagedObjectContext *childManagedObjectContext = [[CCCoreDataStack sharedInstance] childManagedObjectContext];
-    __block CCList *list = [_completeListInfoModel toInsertedCCListInManagedObjectContext:childManagedObjectContext];
+    __block CCList *list = [CCList insertInManagedObjectContext:childManagedObjectContext fromLinotteAPIDict:_completeListInfoDict];
+    list.identifier = _identifier;
     
-    [[CCLinotteAPI sharedInstance] addList:list completionBlock:^(BOOL success) {
+    [[CCLinotteAPI sharedInstance] addList:@{@"list" : list.identifier} completionBlock:^(BOOL success) {
         if (success) {
             [[CCCoreDataStack sharedInstance] saveChildManagedObjectContext:childManagedObjectContext];
             

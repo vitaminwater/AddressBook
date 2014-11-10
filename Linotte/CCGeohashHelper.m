@@ -25,7 +25,8 @@
 {
     NSAssert([geohashstring length] <= kCCGeohashHelperNDigits, @"Wrong geohash length");
     CCGeohashStruct geohash = {};
-    strncpy(geohash.hash, [geohashstring UTF8String], kCCGeohashHelperNDigits + 1);
+    memset(geohash.hash, '0', kCCGeohashHelperNDigits);
+    strncpy(geohash.hash, [geohashstring UTF8String], strlen([geohashstring UTF8String]));
     init_from_hash(&geohash);
     
     return CLLocationCoordinate2DMake(geohash.latitude, geohash.longitude);

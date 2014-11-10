@@ -56,7 +56,6 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
         listItemAddress.location = _currentLocation;
         [addedListItems addObject:listItemAddress];
     }
-
     [self insertNewListItems:addedListItems];
 }
 
@@ -139,7 +138,10 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
                                           inSortedRange:(NSRange){0, [_listItems count]}
                                                 options:NSBinarySearchingInsertionIndex
                                         usingComparator:[self sortBlock]];
-        [indexSet addIndex:newIndex];
+        NSUInteger indexForIndexSet = newIndex;
+        while ([indexSet containsIndex:indexForIndexSet])
+            indexForIndexSet++;
+        [indexSet addIndex:indexForIndexSet];
         [_listItems insertObject:listItem atIndex:newIndex];
     }
     [_delegate insertCellsAtIndexes:indexSet];

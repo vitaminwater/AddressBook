@@ -70,6 +70,7 @@
 
 - (void)performSynchronizationWithCompletionBlock:(void(^)())completionBlock
 {
+    NSLog(@"Stating CCListSynchronizationActionRefreshZone job");
     [[CCLinotteAPI sharedInstance] fetchListZones:self.list.identifier completionBlock:^(BOOL success, NSArray *listZones) {
         if (success) {
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
@@ -78,53 +79,73 @@
             [fetchRequest setPredicate:predicate];
             
             NSMutableArray *currentListZones = [[managedObjectContext executeFetchRequest:fetchRequest error:NULL] mutableCopy];
-            NSMutableArray *listZonesToDelete = [@[] mutableCopy];
             NSMutableArray *newListZones = [listZones mutableCopy];
+            NSMutableArray *splittedZones = [@[] mutableCopy];
+            NSMutableArray *listZonesToDelete = [@[] mutableCopy];
             
-            // first we remove already existing list zones
-            for (NSDictionary *listZoneDict in listZones) {
-                NSString *geohash = listZoneDict[@"geohash"];
-                for (CCListZone *currentListZone in currentListZones) {
-                    if ([currentListZone.geohash isEqualToString:geohash]) {
-                        [newListZones removeObject:listZoneDict];
-                        [currentListZones removeObject:currentListZone];
-                        break;
-                    }
-                }
-            }
-            
-            // then we determine if the new list zones are splits of already existing listzones
-            // if yes, then we delete it
-            for (NSDictionary *listZoneDict in newListZones) {
-                NSString *geohash = listZoneDict[@"geohash"];
-                for (CCListZone *currentListZone in currentListZones) {
-                    if ([currentListZone.geohash rangeOfString:geohash].location == 0) {
-                        [currentListZones removeObject:currentListZone];
-                        [listZonesToDelete addObject:currentListZone];
-                        break;
-                    }
-                }
-            }
-            
-            // now we check the other way: if one of our zones have been merged in a bigger zone
-            // if yes, then we delete the merged zones
-            for (CCListZone *currentListZone in currentListZones) {
+            NSLog(@"List zones recieved, processing results");
+            if ([currentListZones count] != 0) {
+                
+                // first we remove already existing list zones
                 for (NSDictionary *listZoneDict in listZones) {
                     NSString *geohash = listZoneDict[@"geohash"];
-                    if ([geohash rangeOfString:currentListZone.geohash].location == 0) {
-                        [listZonesToDelete addObject:currentListZone];
+                    for (CCListZone *currentListZone in currentListZones) {
+                        if ([currentListZone.geohash isEqualToString:geohash]) {
+                            [newListZones removeObject:listZoneDict];
+                            [currentListZones removeObject:currentListZone];
+                            NSLog(@"Zone %@ already exists", geohash);
+                            break;
+                        }
                     }
                 }
+                
+                // then we determine if the new list zones are splits of already existing listzones
+                // if yes, then we delete it
+                for (NSDictionary *listZoneDict in newListZones) {
+                    NSString *geohash = listZoneDict[@"geohash"];
+                    for (CCListZone *currentListZone in currentListZones) {
+                        if ([currentListZone.geohash rangeOfString:geohash].location == 0) {
+                            [splittedZones addObject:currentListZone];
+                            NSLog(@"Split zone %@", currentListZone.geohash);
+                            break;
+                        }
+                    }
+                }
+                [currentListZones removeObjectsInArray:splittedZones];
+                [listZonesToDelete addObjectsFromArray:splittedZones];
+                
+                // now we check the other way: if one of our zones have been merged in a bigger zone
+                // if yes, then we delete the merged zones
+                for (CCListZone *currentListZone in currentListZones) {
+                    for (NSDictionary *listZoneDict in listZones) {
+                        NSString *geohash = listZoneDict[@"geohash"];
+                        if ([geohash rangeOfString:currentListZone.geohash].location == 0) {
+                            [listZonesToDelete addObject:currentListZone];
+                            NSLog(@"Merge zone %@ into %@", currentListZone.geohash, geohash);
+                        }
+                    }
+                }
+                
             }
             
+            for (NSDictionary *listZoneDict in newListZones) {
+                CCListZone *listZone = [CCListZone insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listZoneDict];
+                for (CCListZone *splittedZone in splittedZones) {
+                    if ([splittedZone.geohash rangeOfString:listZone.geohash].location == 0) {
+                        listZone.lastEventId = splittedZone.lastEventId;
+                        listZone.firstFetchValue = NO;
+                        listZone.lastRefresh = splittedZone.lastRefresh;
+                        break;
+                    }
+                }
+                [self.list addZonesObject:listZone];
+            }
+            
+            NSLog(@"Deleting %lu zones", [listZonesToDelete count]);
             for (CCListZone *listZoneToDelete in listZonesToDelete) {
                 [managedObjectContext deleteObject:listZoneToDelete];
             }
-            
-            for (NSDictionary *listZoneDict in listZones) {
-                [CCListZone insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listZoneDict];
-            }
-            
+
             self.list.lastZonesRefresh = [NSDate date];
             self.list.lastZoneRefreshLatitudeValue = self.coordinates.latitude;
             self.list.lastZoneRefreshLongitudeValue = self.coordinates.longitude;
@@ -166,40 +187,38 @@
 {
     NSInteger totalNAddresses = [[list.zones valueForKeyPath:@"@sum.nAddresses"] integerValue];
     NSInteger currentNAddresses = [list.addresses count];
-    if (currentNAddresses < totalNAddresses && currentNAddresses < kCCMaxAddressesForList)
+    if (currentNAddresses == totalNAddresses)
         return NO;
     
+    NSLog(@"Starting CCListSynchronizationActionCleanUselessZones job");
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSArray *sortedZones = [list getListZonesSortedByDistanceFromLocation:coordinates];
-    BOOL firstFetchZoneFound = NO;
+    NSUInteger addressCounter = 0;
     BOOL cleaned = NO;
     NSMutableArray *removedAddresses = [@[] mutableCopy];
     for (CCListZone *listZone in sortedZones) {
-        if (firstFetchZoneFound == NO) {
-            if (listZone.firstFetchValue == YES)
-                firstFetchZoneFound = YES;
-        } else {
-            if (listZone.firstFetchValue == NO) {
-                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", list, listZone.geohash];
-                [fetchRequest setPredicate:predicate];
-                
-                NSError *error = nil;
-                NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-                if (error != nil) {
-                    NSLog(@"%@", error);
-                    continue;
-                }
-                
-                cleaned = YES;
-                
-                [removedAddresses addObjectsFromArray:addresses];
-                
-                listZone.firstFetch = @YES;
-                listZone.lastAddressFirstFetchDate = nil;
-                listZone.lastRefresh = nil;
+        if (addressCounter > kCCMaxAddressesForList && (listZone.firstFetchValue == NO || listZone.lastAddressFirstFetchDate != nil)) {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", list, listZone.geohash];
+            [fetchRequest setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+            if (error != nil) {
+                NSLog(@"%@", error);
+                continue;
             }
+            
+            cleaned = YES;
+            
+            NSLog(@"Cleaning %@ zone", listZone.geohash);
+            [removedAddresses addObjectsFromArray:addresses];
+            
+            listZone.firstFetch = @YES;
+            listZone.lastAddressFirstFetchDate = nil;
+            listZone.lastRefresh = nil;
         }
+        addressCounter += listZone.nAddressesValue;
     }
     
     [[CCModelChangeMonitor sharedInstance] addresses:removedAddresses willMoveFromList:list send:NO];
@@ -234,6 +253,7 @@
 {
     NSArray *sortedZones = [self.list getListZonesSortedByDistanceFromLocation:self.coordinates];
     
+    NSLog(@"Starting CCListSynchronizationActionInitialAddressFetch job");
     for (CCListZone *zone in sortedZones) {
         if (zone.firstFetchValue == NO)
             continue;
@@ -242,9 +262,12 @@
                 completionBlock();
                 return;
             }
+            NSLog(@"Fetching zone %@", zone.geohash);
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            if ([addressesDicts count] != kCCAddressFetchLimit)
+            if ([addressesDicts count] != kCCAddressFetchLimit) {
                 zone.firstFetchValue = NO;
+                NSLog(@"Zone %@ completed", zone.geohash);
+            }
             NSDate *lastAddressFirstFetchDate = nil;
             NSMutableArray *addresses = [@[] mutableCopy];
             for (NSDictionary *addressDict in addressesDicts) {
@@ -255,7 +278,10 @@
             
             [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:self.list send:NO];
             [self.list addAddresses:[NSSet setWithArray:addresses]];
+            [[CCCoreDataStack sharedInstance] saveContext];
             [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:self.list send:NO];
+            
+            self.list.lastDateUpdate = [NSDate date];
             
             zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
             [[CCCoreDataStack sharedInstance] saveContext];
@@ -288,6 +314,7 @@
 
 - (void)performSynchronizationWithCompletionBlock:(void(^)())completionBlock
 {
+    NSLog(@"Starting CCListSynchronizationActionConsumeZoneEvent job");
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", self.list];
@@ -342,6 +369,7 @@
                 return;
             }
             
+            NSLog(@"%lu events recieved", [eventsDicts count]);
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
             NSNumber *lastEventId = nil;
             for (NSDictionary *eventDict in eventsDicts) {
@@ -459,6 +487,7 @@
         NSDate *lastUpdate = _list.lastDateUpdate;
         _priority = [[NSDate date] timeIntervalSinceDate:lastUpdate];
         _synchronizationAction = [[CCListSynchronizationActionConsumeZoneEvent alloc] initWithList:_list coordinates:_currentLocation];
+        return;
     }
 }
 
