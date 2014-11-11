@@ -10,6 +10,13 @@
 
 #import <Reachability/Reachability.h>
 
+#import "CCSynchronizationActionProtocol.h"
+#import "CCSynchronizationActionSendLocalEvents.h"
+#import "CCSynchronizationActionRefreshZones.h"
+#import "CCSynchronizationActionCleanUselessZones.h"
+#import "CCSynchronizationActionInitialFetch.h"
+#import "CCSynchronizationActionConsumeEvents.h"
+
 #import "CCLinotteAPI.h"
 #import "CCNetworkHandler.h"
 
@@ -18,8 +25,6 @@
 
 #import "CCGeohashHelper.h"
 #import "CCCoreDataStack.h"
-
-#import "CCListSynchronizationProcessor.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -34,17 +39,20 @@
 
 @implementation CCSynchronizationHandler
 {
-    NSTimer *_timer;
-    
     CLLocationManager *_locationManager;
-    
     CLLocationCoordinate2D _lastCoordinate;
+    
+    BOOL _syncedListChanged;
+    NSUInteger _synchronizationActionIndex;
+    NSArray *_synchronizationActions;
+    CCList *_syncedList;
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
+        [self setupSynchronizationActions];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
                                                      name:kReachabilityChangedNotification
@@ -68,116 +76,74 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)setupSynchronizationActions
+{
+    _synchronizationActions = @[[CCSynchronizationActionSendLocalEvents new],
+                                [CCSynchronizationActionRefreshZones new],
+                                [CCSynchronizationActionCleanUselessZones new],
+                                [CCSynchronizationActionInitialFetch new],
+                                [CCSynchronizationActionConsumeEvents new]];
+}
+
 - (void)reachable
 {
-    [self startTimer];
 }
 
 - (void)unreachable
 {
-    [self stopTimer];
-}
-
-#pragma mark - NSTimer management
-
-- (void)startTimer
-{
-    if (_timer == nil) {
-        _timer = [NSTimer timerWithTimeInterval:10.0 target:self selector:@selector(timerTick:) userInfo:nil repeats:YES];
-        [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
-    }
-}
-
-- (void)stopTimer
-{
-    [_timer invalidate];
-    _timer = nil;
 }
 
 #pragma mark - Zone synchronization methods
 
-- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration completionBlock:(void(^)())completionBlock
+- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)())completionBlock
 {
     if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
         return;
     
+    if (list != _syncedList) {
+        _syncedList = list;
+        _syncedListChanged = YES;
+        _synchronizationActionIndex = 0;
+    }
+    
+    if (_syncing == YES)
+        return;
+    
+    _syncing = YES;
+    _synchronizationActionIndex = 0;
     NSTimeInterval startSync = [NSDate timeIntervalSinceReferenceDate];
-    NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    [fetchRequest setIncludesSubentities:NO];
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (error != nil) {
-        NSLog(@"%@", error);
+    [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration completionBlock:completionBlock];
+}
+
+- (void)performSynchronizationIterationWithStartSync:(NSTimeInterval)startSync maxDuration:(NSTimeInterval)maxDuration completionBlock:(void(^)())completionBlock
+{
+    if (_synchronizationActionIndex == [_synchronizationActions count]) {
+        _syncedList = nil;
+        _syncing = NO;
+        completionBlock();
         return;
     }
     
-    NSMutableArray *listSynchronizationProcessors = [@[] mutableCopy];
-    for (CCList *list in lists) {
-        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list coordinates:_lastCoordinate];
-        [listSynchronizationProcessors addObject:listSynchronizationProcessor];
+    NSTimeInterval timeElapsed = [NSDate timeIntervalSinceReferenceDate] - startSync;
+    if (maxDuration != 0 && timeElapsed >= maxDuration) {
+        _syncedList = nil;
+        _syncing = NO;
+        completionBlock();
+        return;
     }
-    [listSynchronizationProcessors sortUsingComparator:^NSComparisonResult(CCListSynchronizationProcessor *obj1, CCListSynchronizationProcessor *obj2) {
-        if (obj1.priority < obj2.priority)
-            return NSOrderedAscending;
-        else if (obj1.priority > obj2.priority)
-            return NSOrderedDescending;
-        return NSOrderedSame;
+    
+    id<CCSynchronizationActionProtocol> synchronizationAction = _synchronizationActions[_synchronizationActionIndex];
+    [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL done) {
+        if (_syncedListChanged == NO) {
+            if (done == YES)
+                _synchronizationActionIndex = 0;
+            else
+                _synchronizationActionIndex++;
+        } else {
+            _syncedListChanged = NO;
+        }
+        [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration completionBlock:completionBlock];
     }];
-
-    __block NSUInteger listSynchronizationProcessorsIndex = 0;
-    __block void (^recursiveBlock)();
-    recursiveBlock = ^{
-        if (listSynchronizationProcessorsIndex == [listSynchronizationProcessors count]) {
-            completionBlock();
-            dispatch_async(dispatch_get_main_queue(), ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-                recursiveBlock = nil;
-#pragma clang diagnostic pop
-            });
-            return;
-        }
-        NSTimeInterval timeElapsed = [NSDate timeIntervalSinceReferenceDate] - startSync;
-        if (maxDuration != 0 && timeElapsed >= maxDuration) {
-            completionBlock();
-            return;
-        }
-        CCListSynchronizationProcessor *listSynchronizationProcessor = listSynchronizationProcessors[listSynchronizationProcessorsIndex];
-        [listSynchronizationProcessor.synchronizationAction performSynchronizationWithCompletionBlock:recursiveBlock];
-        listSynchronizationProcessorsIndex++;
-    };
-    recursiveBlock();
-}
-
-- (void)performListSynchronization:(CCList *)list completionBlock:(void(^)())completionBlock
-{
-    if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
-        return;
-    
-    __block void(^recursiveBlock)();
-    recursiveBlock = ^() {
-        CCListSynchronizationProcessor *listSynchronizationProcessor = [[CCListSynchronizationProcessor alloc] initWithList:list coordinates:_lastCoordinate];
-        if (listSynchronizationProcessor.synchronizationAction == nil) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-retain-cycles"
-                recursiveBlock = nil;
-#pragma clang diagnostic pop
-            });
-            completionBlock();
-            return;
-        }
-        [listSynchronizationProcessor.synchronizationAction performSynchronizationWithCompletionBlock:recursiveBlock];
-    };
-    recursiveBlock();
-}
-
-#pragma mark - timer target
-
-- (void)timerTick:(NSTimer *)timer
-{
-    [self performSynchronizationsWithMaxDuration:0 completionBlock:^{}];
 }
 
 #pragma mark significant location change monitoring

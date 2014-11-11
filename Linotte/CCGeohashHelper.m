@@ -63,7 +63,7 @@
 
 + (NSArray *)calculateAdjacentGeohashes:(NSString *)geohashstring
 {
-    NSAssert([geohashstring length] != kCCGeohashHelperNDigits, @"Wrong geohash length");
+    NSAssert([geohashstring length] == kCCGeohashHelperNDigits, @"Wrong geohash length");
     NSMutableArray *results = [@[geohashstring] mutableCopy];
     CCGeohashStruct geohash = {};
     strncpy(geohash.hash, [geohashstring UTF8String], kCCGeohashHelperNDigits + 1);

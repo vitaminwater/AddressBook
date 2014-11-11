@@ -14,8 +14,9 @@
 
 @interface CCSynchronizationHandler : NSObject<CCModelChangeMonitorDelegate, CLLocationManagerDelegate>
 
-- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)duration completionBlock:(void(^)())completionBlock;
-- (void)performListSynchronization:(CCList *)list completionBlock:(void(^)())completionBlock;
+@property(nonatomic, assign)BOOL syncing;
+
+- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)())completionBlock;
 
 + (instancetype)sharedInstance;
 

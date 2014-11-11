@@ -38,6 +38,8 @@
         <attribute name="isdefault" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastDateUpdate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastOpened" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="lastZoneCleaningLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lastZoneCleaningLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZoneRefreshLatitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZoneRefreshLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZonesRefresh" optional="YES" attributeType="Date" syncable="YES"/>
@@ -64,7 +66,7 @@
         <attribute name="firstFetch" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastAddressFirstFetchDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="lastEventId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastEventDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="lastRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -73,14 +75,14 @@
     </entity>
     <entity name="CCLocalEvent" representedClassName="CCLocalEvent" syncable="YES">
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="event" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="localAddressIdentifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="localListIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="event" optional="YES" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="localAddressIdentifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="localListIdentifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="parameters" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <entity name="CCServerEvent" representedClassName="CCServerEvent" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="event" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="objectIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
@@ -88,7 +90,7 @@
         <element name="CCAddress" positionX="0" positionY="0" width="128" height="283"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
         <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="CCList" positionX="0" positionY="0" width="128" height="343"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="373"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="178"/>
         <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="118"/>

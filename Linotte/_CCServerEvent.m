@@ -4,8 +4,8 @@
 #import "_CCServerEvent.h"
 
 const struct CCServerEventAttributes CCServerEventAttributes = {
+	.date = @"date",
 	.event = @"event",
-	.id = @"id",
 	.objectIdentifier = @"objectIdentifier",
 };
 
@@ -44,14 +44,11 @@ const struct CCServerEventRelationships CCServerEventRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
-	if ([key isEqualToString:@"idValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"id"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
 
 	return keyPaths;
 }
+
+@dynamic date;
 
 @dynamic event;
 
@@ -71,26 +68,6 @@ const struct CCServerEventRelationships CCServerEventRelationships = {
 
 - (void)setPrimitiveEventValue:(int16_t)value_ {
 	[self setPrimitiveEvent:[NSNumber numberWithShort:value_]];
-}
-
-@dynamic id;
-
-- (int64_t)idValue {
-	NSNumber *result = [self id];
-	return [result longLongValue];
-}
-
-- (void)setIdValue:(int64_t)value_ {
-	[self setId:[NSNumber numberWithLongLong:value_]];
-}
-
-- (int64_t)primitiveIdValue {
-	NSNumber *result = [self primitiveId];
-	return [result longLongValue];
-}
-
-- (void)setPrimitiveIdValue:(int64_t)value_ {
-	[self setPrimitiveId:[NSNumber numberWithLongLong:value_]];
 }
 
 @dynamic objectIdentifier;

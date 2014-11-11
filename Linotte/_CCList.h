@@ -10,6 +10,8 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *isdefault;
 	__unsafe_unretained NSString *lastDateUpdate;
 	__unsafe_unretained NSString *lastOpened;
+	__unsafe_unretained NSString *lastZoneCleaningLatitude;
+	__unsafe_unretained NSString *lastZoneCleaningLongitude;
 	__unsafe_unretained NSString *lastZoneRefreshLatitude;
 	__unsafe_unretained NSString *lastZoneRefreshLongitude;
 	__unsafe_unretained NSString *lastZonesRefresh;
@@ -75,6 +77,22 @@ extern const struct CCListRelationships {
 @property (nonatomic, strong) NSDate* lastOpened;
 
 //- (BOOL)validateLastOpened:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* lastZoneCleaningLatitude;
+
+@property (atomic) double lastZoneCleaningLatitudeValue;
+- (double)lastZoneCleaningLatitudeValue;
+- (void)setLastZoneCleaningLatitudeValue:(double)value_;
+
+//- (BOOL)validateLastZoneCleaningLatitude:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* lastZoneCleaningLongitude;
+
+@property (atomic) double lastZoneCleaningLongitudeValue;
+- (double)lastZoneCleaningLongitudeValue;
+- (void)setLastZoneCleaningLongitudeValue:(double)value_;
+
+//- (BOOL)validateLastZoneCleaningLongitude:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* lastZoneRefreshLatitude;
 
@@ -207,6 +225,18 @@ extern const struct CCListRelationships {
 
 - (NSDate*)primitiveLastOpened;
 - (void)setPrimitiveLastOpened:(NSDate*)value;
+
+- (NSNumber*)primitiveLastZoneCleaningLatitude;
+- (void)setPrimitiveLastZoneCleaningLatitude:(NSNumber*)value;
+
+- (double)primitiveLastZoneCleaningLatitudeValue;
+- (void)setPrimitiveLastZoneCleaningLatitudeValue:(double)value_;
+
+- (NSNumber*)primitiveLastZoneCleaningLongitude;
+- (void)setPrimitiveLastZoneCleaningLongitude:(NSNumber*)value;
+
+- (double)primitiveLastZoneCleaningLongitudeValue;
+- (void)setPrimitiveLastZoneCleaningLongitudeValue:(double)value_;
 
 - (NSNumber*)primitiveLastZoneRefreshLatitude;
 - (void)setPrimitiveLastZoneRefreshLatitude:(NSNumber*)value;

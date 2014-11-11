@@ -10,6 +10,8 @@ const struct CCListAttributes CCListAttributes = {
 	.isdefault = @"isdefault",
 	.lastDateUpdate = @"lastDateUpdate",
 	.lastOpened = @"lastOpened",
+	.lastZoneCleaningLatitude = @"lastZoneCleaningLatitude",
+	.lastZoneCleaningLongitude = @"lastZoneCleaningLongitude",
 	.lastZoneRefreshLatitude = @"lastZoneRefreshLatitude",
 	.lastZoneRefreshLongitude = @"lastZoneRefreshLongitude",
 	.lastZonesRefresh = @"lastZonesRefresh",
@@ -62,6 +64,16 @@ const struct CCListRelationships CCListRelationships = {
 	}
 	if ([key isEqualToString:@"isdefaultValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isdefault"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"lastZoneCleaningLatitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"lastZoneCleaningLatitude"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"lastZoneCleaningLongitudeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"lastZoneCleaningLongitude"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -136,6 +148,46 @@ const struct CCListRelationships CCListRelationships = {
 @dynamic lastDateUpdate;
 
 @dynamic lastOpened;
+
+@dynamic lastZoneCleaningLatitude;
+
+- (double)lastZoneCleaningLatitudeValue {
+	NSNumber *result = [self lastZoneCleaningLatitude];
+	return [result doubleValue];
+}
+
+- (void)setLastZoneCleaningLatitudeValue:(double)value_ {
+	[self setLastZoneCleaningLatitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLastZoneCleaningLatitudeValue {
+	NSNumber *result = [self primitiveLastZoneCleaningLatitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLastZoneCleaningLatitudeValue:(double)value_ {
+	[self setPrimitiveLastZoneCleaningLatitude:[NSNumber numberWithDouble:value_]];
+}
+
+@dynamic lastZoneCleaningLongitude;
+
+- (double)lastZoneCleaningLongitudeValue {
+	NSNumber *result = [self lastZoneCleaningLongitude];
+	return [result doubleValue];
+}
+
+- (void)setLastZoneCleaningLongitudeValue:(double)value_ {
+	[self setLastZoneCleaningLongitude:[NSNumber numberWithDouble:value_]];
+}
+
+- (double)primitiveLastZoneCleaningLongitudeValue {
+	NSNumber *result = [self primitiveLastZoneCleaningLongitude];
+	return [result doubleValue];
+}
+
+- (void)setPrimitiveLastZoneCleaningLongitudeValue:(double)value_ {
+	[self setPrimitiveLastZoneCleaningLongitude:[NSNumber numberWithDouble:value_]];
+}
 
 @dynamic lastZoneRefreshLatitude;
 

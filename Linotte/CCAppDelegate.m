@@ -35,7 +35,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+{    
     [self initAll:application];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -89,10 +89,8 @@
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:10 completionBlock:^{
-        [[CCNetworkHandler sharedInstance] dequeueOutputEvents:0 eventChainEndBlock:^(NSUInteger eventsSent) {
-            completionHandler(eventsSent > 0 ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
-        }];
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^{
+        completionHandler(UIBackgroundFetchResultNewData); // TODO: did fetch data ?
     }];
 }
 

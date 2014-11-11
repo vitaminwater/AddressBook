@@ -78,9 +78,10 @@
             _completeListInfoDict = completeListInfoDict;
             CCListInstallerView *view = (CCListInstallerView *)self.view;
             
+            NSDate *lastUpdateDate = [[CCLinotteAPI sharedInstance] dateFromString:_completeListInfoDict[@"last_update"]];
             [view setListName:_completeListInfoDict[@"name"]];
             [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
-            [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:_completeListInfoDict[@"last_update"]];
+            [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:lastUpdateDate];
         }
     }];
 }
@@ -111,7 +112,7 @@
             list = (CCList *)[managedObjectContext objectWithID:[list objectID]];
             
             [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
-            [[CCSynchronizationHandler sharedInstance] performListSynchronization:list completionBlock:^{}];
+            [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^{}];
 
             [_delegate closeListInstaller:self];
             [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_INSTALL", @"") delay:1];

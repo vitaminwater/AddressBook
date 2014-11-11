@@ -451,9 +451,7 @@
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/", identifier];
     [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        NSMutableDictionary *mutableResponse = [response mutableCopy];
-        mutableResponse[@"last_update"] = [_dateFormatter dateFromString:mutableResponse[@"last_update"]];
-        completionBlock(YES, mutableResponse);
+        completionBlock(YES, response);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
@@ -476,36 +474,42 @@
     NSString *path = [NSString stringWithFormat:@"/list/%@/addresses/", identifier];
     NSDictionary *parameters;
     if (lastAddressDate != nil) {
-        NSString *dateString = [_dateFormatter stringFromDate:lastAddressDate];
-        parameters = @{@"lastAddressDate" : dateString, @"limit" : @(limit), @"geohash" : geohash};
+        NSString *lastAddressDateString = [self stringFromDate:lastAddressDate];
+        parameters = @{@"last_address_date" : lastAddressDateString, @"limit" : @(limit), @"geohash" : geohash};
     } else {
         parameters = @{@"limit" : @(limit), @"geohash" : geohash};
     }
-    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        NSMutableArray *addresses = [@[] mutableCopy];
-        for (NSDictionary *response in responses) {
-            NSMutableDictionary *mutableResponse = [response mutableCopy];
-            NSDate *dateCreated = [_dateFormatter dateFromString:response[@"date_created"]];
-            mutableResponse[@"date_created"] = dateCreated;
-            [addresses addObject:mutableResponse];
-        }
-        completionBlock(YES, addresses);
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
-        completionBlock(NO, nil);
-    }];
-}
-
-- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastId:(NSNumber *)lastId completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
-{
-    NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
-    NSDictionary *parameters = @{@"geohash" : geohash, @"last_id" : lastId};
     [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         NSLog(@"%@", error);
         completionBlock(NO, nil);
     }];
+}
+
+- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
+    NSString *lastDateString = [self stringFromDate:lastDate];
+    NSDictionary *parameters = @{@"geohash" : geohash, @"last_date" : lastDateString};
+    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+#pragma mark - Date conversion methods
+
+- (NSString *)stringFromDate:(NSDate *)date
+{
+    return [_dateFormatter stringFromDate:date];
+}
+
+- (NSDate *)dateFromString:(NSString *)dateString
+{
+    return [_dateFormatter dateFromString:dateString];
 }
 
 #pragma mark - Singleton method

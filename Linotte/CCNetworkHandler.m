@@ -15,6 +15,8 @@
 #import "CCCoreDataStack.h"
 #import "CCDictStackCache.h"
 
+#import "CCSynchronizationHandler.h"
+
 #import "CCModelChangeMonitor.h"
 
 #import "CCLinotteAPI.h"
@@ -35,8 +37,6 @@
     
     NSTimer *_timer;
     Reachability *_reachability;
-    
-    BOOL _isSendingEvent;
 }
 
 - (instancetype)init
@@ -44,7 +44,6 @@
     self = [super init];
     if (self) {
         _cache = [CCDictStackCache new];
-        _isSendingEvent = NO;
 
         if ([CCLinotteAPI sharedInstance].loggedState == kCCFirstStart)
             [self resetAllAdresses];
@@ -109,136 +108,7 @@
     }];
 }
 
-- (void)dequeueOutputEvents:(NSUInteger)eventsSent eventChainEndBlock:(void(^)(NSUInteger eventsSent))eventChainEndBlock
-{
-    if (eventsSent > kCCEventChainLength || _isSendingEvent || _reachability.isReachable == NO) {
-        eventChainEndBlock(eventsSent);
-        return;
-    }
-    
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-    fetchRequest.fetchLimit = 1;
-    
-    NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
-    [fetchRequest setSortDescriptors:@[dateSortDescriptor]];
-    
-    NSArray *events = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    
-    if ([events count])
-        [self sendEvent:[events firstObject] eventsSent:eventsSent eventChainEndBlock:eventChainEndBlock];
-}
 
-- (void)sendEvent:(CCLocalEvent *)event eventsSent:(NSUInteger)eventsSent eventChainEndBlock:(void(^)(NSUInteger eventsSent))eventChainEndBlock
-{
-    _isSendingEvent = YES;
-    
-    void (^completionBlock)(BOOL success) = ^(BOOL success) {
-        _isSendingEvent = NO;
-        if (success) {
-            NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            [managedObjectContext deleteObject:event];
-            [[CCCoreDataStack sharedInstance] saveContext];
-            [self dequeueOutputEvents:eventsSent + 1 eventChainEndBlock:eventChainEndBlock];
-        }
-    };
-    
-    switch (event.eventValue) {
-        case CCLocalEventAddressCreated:
-        {
-            [[CCLinotteAPI sharedInstance] createAddress:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
-                if (success) {
-                    [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
-                    
-                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localAddressIdentifier];
-                    [fetchRequest setPredicate:predicate];
-                    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-
-                    if ([addresses count] != 0) {
-                        CCAddress *address = [addresses firstObject];
-                        address.identifier = identifier;
-                    }
-                    
-                    [[CCCoreDataStack sharedInstance] saveContext];
-                }
-                completionBlock(success);
-            }];
-        }
-            break;
-        case CCLocalEventListCreated:
-        {
-            [[CCLinotteAPI sharedInstance] createList:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
-                if (success) {
-                    [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
-                    
-                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localListIdentifier];
-                    [fetchRequest setPredicate:predicate];
-                    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-                    
-                    if ([lists count] != 0) {
-                        CCList *list = [lists firstObject];
-                        list.identifier = identifier;
-                    }
-                    
-                    [[CCCoreDataStack sharedInstance] saveContext];
-                }
-                completionBlock(success);
-            }];
-        }
-            break;
-        case CCLocalEventListRemoved:
-        {
-            [[CCLinotteAPI sharedInstance] removeList:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        case CCLocalEventAddressMovedToList:
-        {
-            [[CCLinotteAPI sharedInstance] addAddressToList:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        case CCLocalEventAddressMovedFromList:
-        {
-            [[CCLinotteAPI sharedInstance] removeAddressFromList:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        case CCLocalEventAddressUpdated:
-        {
-            [[CCLinotteAPI sharedInstance] updateAddress:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        case CCLocalEventListUpdated:
-        {
-            [[CCLinotteAPI sharedInstance] updateList:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        case CCLocalEventAddressUserDataUpdated:
-        {
-            [[CCLinotteAPI sharedInstance] updateAddressUserData:event.parameters completionBlock:completionBlock];
-        }
-            break;
-        default:
-            break;
-    }
-}
-
-- (void)setValue:(NSString *)value forKey:(NSString *)key forEventsPredicate:(NSPredicate *)predicate
-{
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
-    [fetchRequest setPredicate:predicate];
-    
-    NSArray *addressEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-    for (CCLocalEvent *addressEvent in addressEvents) {
-        NSMutableDictionary *parameters = [addressEvent.parameters mutableCopy];
-        parameters[key] = value;
-        addressEvent.parameters = parameters;
-    }
-}
 
 #pragma mark - getter methods
 
@@ -300,8 +170,9 @@
 
 - (void)timerTick:(NSTimer *)timer
 {
-    if ([self canSend])
-        [self dequeueOutputEvents:0 eventChainEndBlock:^(NSUInteger eventsSent) {}];
+    if ([CCSynchronizationHandler sharedInstance].syncing == YES)
+        return;
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^{}];
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods

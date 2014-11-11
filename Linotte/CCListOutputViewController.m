@@ -17,6 +17,7 @@
 
 #import "UIView+CCShowSettingsView.h"
 
+#import "CCSynchronizationHandler.h"
 #import "CCModelChangeMonitor.h"
 #import "CCModelHelper.h"
 
@@ -143,6 +144,8 @@
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController setNavigationBarHidden:NO animated:animated];
+    
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:_list completionBlock:^{}];
 }
 
 - (void)didReceiveMemoryWarning

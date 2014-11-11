@@ -24,6 +24,11 @@
 		6F468212137B4D43BF3CB196 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741CE8E2CF64C42BEA00356 /* libPods.a */; };
 		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
 		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
+		C7216B031A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B021A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m */; };
+		C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */; };
+		C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */; };
+		C7216B141A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */; };
+		C7216B171A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */; };
 		C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B50E719F9845200F39E7F /* CCDictStackCache.m */; };
 		C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */; };
 		C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0A19F9551B00ADC1A2 /* CCModelHelper.m */; };
@@ -59,7 +64,6 @@
 		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
 		C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */; };
 		C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */; };
-		C77F8E1D1A06218400AE2655 /* CCListSynchronizationProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E1C1A06218400AE2655 /* CCListSynchronizationProcessor.m */; };
 		C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */; };
 		C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B119D873F6008B520E /* CCListOutputSettingsView.m */; };
 		C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B619D87417008B520E /* CCListOutputSettingsViewController.m */; };
@@ -150,6 +154,17 @@
 		C705882B192CEC500096A335 /* _CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategory.m; sourceTree = "<group>"; };
 		C705882C192CEC500096A335 /* CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategory.h; sourceTree = "<group>"; };
 		C705882D192CEC500096A335 /* CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategory.m; sourceTree = "<group>"; };
+		C7216B011A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionSendLocalEvents.h; sourceTree = "<group>"; };
+		C7216B021A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionSendLocalEvents.m; sourceTree = "<group>"; };
+		C7216B051A110BD200498CFE /* CCSynchronizationActionProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionProtocol.h; sourceTree = "<group>"; };
+		C7216B0C1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionRefreshZones.h; sourceTree = "<group>"; };
+		C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionRefreshZones.m; sourceTree = "<group>"; };
+		C7216B0F1A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionCleanUselessZones.h; sourceTree = "<group>"; };
+		C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionCleanUselessZones.m; sourceTree = "<group>"; };
+		C7216B121A110CCC00498CFE /* CCSynchronizationActionInitialFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionInitialFetch.h; sourceTree = "<group>"; };
+		C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionInitialFetch.m; sourceTree = "<group>"; };
+		C7216B151A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
+		C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
 		C72B50E619F9845200F39E7F /* CCDictStackCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDictStackCache.h; sourceTree = "<group>"; };
 		C72B50E719F9845200F39E7F /* CCDictStackCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDictStackCache.m; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -240,8 +255,6 @@
 		C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerCloseButton.m; sourceTree = "<group>"; };
 		C77F8E051A023D0300AE2655 /* CCSynchronizationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationHandler.h; sourceTree = "<group>"; };
 		C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationHandler.m; sourceTree = "<group>"; };
-		C77F8E1B1A06218400AE2655 /* CCListSynchronizationProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSynchronizationProcessor.h; sourceTree = "<group>"; };
-		C77F8E1C1A06218400AE2655 /* CCListSynchronizationProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSynchronizationProcessor.m; sourceTree = "<group>"; };
 		C7804C7119D1AA3D00D546BD /* CCModelChangeMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitor.h; sourceTree = "<group>"; };
 		C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCModelChangeMonitor.m; sourceTree = "<group>"; };
 		C7804C7519D1AED700D546BD /* CCModelChangeMonitorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitorDelegate.h; sourceTree = "<group>"; };
@@ -425,6 +438,72 @@
 				A82545F81FB62D02945A6F11 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		C7216B001A110B9800498CFE /* actions */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B041A110BBC00498CFE /* protocol */,
+				C7216B061A110BE100498CFE /* local events */,
+				C7216B071A110BEA00498CFE /* refresh zones */,
+				C7216B091A110C0300498CFE /* clean useless zones */,
+				C7216B0A1A110C0E00498CFE /* initial fetch */,
+				C7216B0B1A110C1800498CFE /* consume events */,
+			);
+			name = actions;
+			sourceTree = "<group>";
+		};
+		C7216B041A110BBC00498CFE /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B051A110BD200498CFE /* CCSynchronizationActionProtocol.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7216B061A110BE100498CFE /* local events */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B011A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.h */,
+				C7216B021A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m */,
+			);
+			name = "local events";
+			sourceTree = "<group>";
+		};
+		C7216B071A110BEA00498CFE /* refresh zones */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B0C1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.h */,
+				C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */,
+			);
+			name = "refresh zones";
+			sourceTree = "<group>";
+		};
+		C7216B091A110C0300498CFE /* clean useless zones */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B0F1A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.h */,
+				C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */,
+			);
+			name = "clean useless zones";
+			sourceTree = "<group>";
+		};
+		C7216B0A1A110C0E00498CFE /* initial fetch */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B121A110CCC00498CFE /* CCSynchronizationActionInitialFetch.h */,
+				C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */,
+			);
+			name = "initial fetch";
+			sourceTree = "<group>";
+		};
+		C7216B0B1A110C1800498CFE /* consume events */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B151A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.h */,
+				C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */,
+			);
+			name = "consume events";
 			sourceTree = "<group>";
 		};
 		C72B50E519F9844100F39E7F /* dict cache */ = {
@@ -1075,20 +1154,11 @@
 		C77F8E041A023CBE00AE2655 /* synchronization */ = {
 			isa = PBXGroup;
 			children = (
-				C77F8E1A1A06217000AE2655 /* synchronization actions */,
 				C77F8E051A023D0300AE2655 /* CCSynchronizationHandler.h */,
 				C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */,
+				C7216B001A110B9800498CFE /* actions */,
 			);
 			name = synchronization;
-			sourceTree = "<group>";
-		};
-		C77F8E1A1A06217000AE2655 /* synchronization actions */ = {
-			isa = PBXGroup;
-			children = (
-				C77F8E1B1A06218400AE2655 /* CCListSynchronizationProcessor.h */,
-				C77F8E1C1A06218400AE2655 /* CCListSynchronizationProcessor.m */,
-			);
-			name = "synchronization actions";
 			sourceTree = "<group>";
 		};
 		C7804C7019D1AA2900D546BD /* model change monitor */ = {
@@ -2041,12 +2111,14 @@
 			files = (
 				C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */,
 				C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */,
+				C7216B141A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m in Sources */,
 				C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */,
 				C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */,
 				C7F4451D19FCE708009AE1C9 /* _CCListZone.m in Sources */,
 				C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */,
 				C7619FD919C6F22900C09F0D /* CCListOptionScrollView.m in Sources */,
+				C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */,
 				C799AB4D1920CD150096B5A8 /* CCAddAddressViewTableViewCell.m in Sources */,
 				C76A1CE919C0CA2000EE75E4 /* CCListOutputViewController.m in Sources */,
 				C761A01919CC63D500C09F0D /* CCAddressListSettingsViewController.m in Sources */,
@@ -2061,6 +2133,7 @@
 				C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */,
 				C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */,
 				C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */,
+				C7216B031A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m in Sources */,
 				C7619FC819C48CAF00C09F0D /* CCListListView.m in Sources */,
 				C7CE2C7A1918E48800D37A64 /* Linotte.xcdatamodeld in Sources */,
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
@@ -2068,13 +2141,13 @@
 				C7A2EB3019BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m in Sources */,
 				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
 				C7619FC119C48C8B00C09F0D /* CCListListViewController.m in Sources */,
-				C77F8E1D1A06218400AE2655 /* CCListSynchronizationProcessor.m in Sources */,
 				C7619FDF19C97D4800C09F0D /* CCAddListViewController.m in Sources */,
 				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
 				C7C2925919D4BA5200EBF5C3 /* CCListOutputAddressListViewController.m in Sources */,
 				C7F4451E19FCE708009AE1C9 /* _CCServerEvent.m in Sources */,
 				C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
+				C7216B171A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m in Sources */,
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstDisplaySettingsView.m in Sources */,
@@ -2089,6 +2162,7 @@
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
 				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
 				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
+				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressViewController.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
 				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,

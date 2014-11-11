@@ -7,7 +7,7 @@ extern const struct CCListZoneAttributes {
 	__unsafe_unretained NSString *firstFetch;
 	__unsafe_unretained NSString *geohash;
 	__unsafe_unretained NSString *lastAddressFirstFetchDate;
-	__unsafe_unretained NSString *lastEventId;
+	__unsafe_unretained NSString *lastEventDate;
 	__unsafe_unretained NSString *lastRefresh;
 	__unsafe_unretained NSString *latitude;
 	__unsafe_unretained NSString *longitude;
@@ -45,13 +45,9 @@ extern const struct CCListZoneRelationships {
 
 //- (BOOL)validateLastAddressFirstFetchDate:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSNumber* lastEventId;
+@property (nonatomic, strong) NSDate* lastEventDate;
 
-@property (atomic) int64_t lastEventIdValue;
-- (int64_t)lastEventIdValue;
-- (void)setLastEventIdValue:(int64_t)value_;
-
-//- (BOOL)validateLastEventId:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateLastEventDate:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSDate* lastRefresh;
 
@@ -101,11 +97,8 @@ extern const struct CCListZoneRelationships {
 - (NSDate*)primitiveLastAddressFirstFetchDate;
 - (void)setPrimitiveLastAddressFirstFetchDate:(NSDate*)value;
 
-- (NSNumber*)primitiveLastEventId;
-- (void)setPrimitiveLastEventId:(NSNumber*)value;
-
-- (int64_t)primitiveLastEventIdValue;
-- (void)setPrimitiveLastEventIdValue:(int64_t)value_;
+- (NSDate*)primitiveLastEventDate;
+- (void)setPrimitiveLastEventDate:(NSDate*)value;
 
 - (NSDate*)primitiveLastRefresh;
 - (void)setPrimitiveLastRefresh:(NSDate*)value;

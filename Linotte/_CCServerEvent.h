@@ -4,8 +4,8 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCServerEventAttributes {
+	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *event;
-	__unsafe_unretained NSString *id;
 	__unsafe_unretained NSString *objectIdentifier;
 } CCServerEventAttributes;
 
@@ -24,6 +24,10 @@ extern const struct CCServerEventRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCServerEventID* objectID;
 
+@property (nonatomic, strong) NSDate* date;
+
+//- (BOOL)validateDate:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSNumber* event;
 
 @property (atomic) int16_t eventValue;
@@ -31,14 +35,6 @@ extern const struct CCServerEventRelationships {
 - (void)setEventValue:(int16_t)value_;
 
 //- (BOOL)validateEvent:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSNumber* id;
-
-@property (atomic) int64_t idValue;
-- (int64_t)idValue;
-- (void)setIdValue:(int64_t)value_;
-
-//- (BOOL)validateId:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* objectIdentifier;
 
@@ -52,17 +48,14 @@ extern const struct CCServerEventRelationships {
 
 @interface _CCServerEvent (CoreDataGeneratedPrimitiveAccessors)
 
+- (NSDate*)primitiveDate;
+- (void)setPrimitiveDate:(NSDate*)value;
+
 - (NSNumber*)primitiveEvent;
 - (void)setPrimitiveEvent:(NSNumber*)value;
 
 - (int16_t)primitiveEventValue;
 - (void)setPrimitiveEventValue:(int16_t)value_;
-
-- (NSNumber*)primitiveId;
-- (void)setPrimitiveId:(NSNumber*)value;
-
-- (int64_t)primitiveIdValue;
-- (void)setPrimitiveIdValue:(int64_t)value_;
 
 - (NSString*)primitiveObjectIdentifier;
 - (void)setPrimitiveObjectIdentifier:(NSString*)value;

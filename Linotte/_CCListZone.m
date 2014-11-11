@@ -7,7 +7,7 @@ const struct CCListZoneAttributes CCListZoneAttributes = {
 	.firstFetch = @"firstFetch",
 	.geohash = @"geohash",
 	.lastAddressFirstFetchDate = @"lastAddressFirstFetchDate",
-	.lastEventId = @"lastEventId",
+	.lastEventDate = @"lastEventDate",
 	.lastRefresh = @"lastRefresh",
 	.latitude = @"latitude",
 	.longitude = @"longitude",
@@ -46,11 +46,6 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 
 	if ([key isEqualToString:@"firstFetchValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"firstFetch"];
-		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
-		return keyPaths;
-	}
-	if ([key isEqualToString:@"lastEventIdValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"lastEventId"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -97,25 +92,7 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 
 @dynamic lastAddressFirstFetchDate;
 
-@dynamic lastEventId;
-
-- (int64_t)lastEventIdValue {
-	NSNumber *result = [self lastEventId];
-	return [result longLongValue];
-}
-
-- (void)setLastEventIdValue:(int64_t)value_ {
-	[self setLastEventId:[NSNumber numberWithLongLong:value_]];
-}
-
-- (int64_t)primitiveLastEventIdValue {
-	NSNumber *result = [self primitiveLastEventId];
-	return [result longLongValue];
-}
-
-- (void)setPrimitiveLastEventIdValue:(int64_t)value_ {
-	[self setPrimitiveLastEventId:[NSNumber numberWithLongLong:value_]];
-}
+@dynamic lastEventDate;
 
 @dynamic lastRefresh;
 

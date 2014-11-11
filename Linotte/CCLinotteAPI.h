@@ -62,7 +62,12 @@ typedef enum : NSUInteger {
 - (void)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock;
 - (void)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock;
 - (void)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock;
-- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastId:(NSNumber *)lastId completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
+- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
+
+#pragma mark - Date conversion methods
+
+- (NSString *)stringFromDate:(NSDate *)date;
+- (NSDate *)dateFromString:(NSString *)dateString;
 
 + (instancetype)sharedInstance;
 
