@@ -16,8 +16,19 @@
 
 + (CCAddress *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
-    CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
-    address.identifier = dict[@"identifier"];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchLimit:1];
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    CCAddress *address;
+    if ([addresses count] > 0)
+        address = [addresses firstObject];
+    else {
+        address = [CCAddress insertInManagedObjectContext:managedObjectContext];
+        address.identifier = dict[@"identifier"];
+    }
     address.latitude = dict[@"latitude"];
     address.longitude = dict[@"longitude"];
     address.geohash = [CCGeohashHelper geohashFromCoordinates:CLLocationCoordinate2DMake([address.latitude doubleValue], [address.longitude doubleValue])];

@@ -12,11 +12,48 @@
 
 #import "CCLinotteAPI.h"
 
+#import "CCServerEventConsumerProtocol.h"
+#import "CCServerEventListUpdatedConsumer.h"
+#import "CCServerEventListMetaAddedConsumer.h"
+#import "CCServerEventListMetaUpdatedConsumer.h"
+#import "CCServerEventListMetaDeletedConsumer.h"
+#import "CCServerEventAddressAddedToListConsumer.h"
+#import "CCServerEventAddressMovedFromListConsumer.h"
+#import "CCServerEventAddressUpdatedConsumer.h"
+#import "CCServerEventAddressUserDataUpdatedConsumer.h"
+#import "CCServerEventAddressMetaAddedConsumer.h"
+#import "CCServerEventAddressMetaUpdatedConsumer.h"
+#import "CCServerEventAddressMetaDeletedConsumer.h"
+
 #import "CCList.h"
 #import "CCListZone.h"
 #import "CCServerEvent.h"
 
 @implementation CCSynchronizationActionConsumeEvents
+{
+    NSArray *_consumers;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _consumers = @[
+                        [CCServerEventListUpdatedConsumer new],
+                        [CCServerEventListMetaAddedConsumer new],
+                        [CCServerEventListMetaUpdatedConsumer new],
+                        [CCServerEventListMetaDeletedConsumer new],
+                        [CCServerEventAddressAddedToListConsumer new],
+                        [CCServerEventAddressMovedFromListConsumer new],
+                        [CCServerEventAddressUpdatedConsumer new],
+                        [CCServerEventAddressUserDataUpdatedConsumer new],
+                        [CCServerEventAddressMetaAddedConsumer new],
+                        [CCServerEventAddressMetaUpdatedConsumer new],
+                        [CCServerEventAddressMetaDeletedConsumer new]
+        ];
+    }
+    return self;
+}
 
 - (BOOL)listNeedProcess:(CCList *)list
 {
@@ -72,13 +109,10 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", list];
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
     [fetchRequest setPredicate:predicate];
-    [fetchRequest setSortDescriptors:@[sortDescriptor]];
-    fetchRequest.fetchLimit = 1;
     
     NSError *error = nil;
-    NSArray *serverEvents = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSUInteger eventCount = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
     if (error != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
             completionBlock(NO);
@@ -87,20 +121,22 @@
         return;
     }
     
-    if ([serverEvents count] == 0) {
+    if (eventCount == 0) {
         [self fetchServerEventsWithList:list completionBlock:^{
             completionBlock(YES);
         }];
         return;
     }
     
-    CCServerEvent *serverEvent = [serverEvents lastObject];
-    [self processServerEvent:serverEvent completionBlock:^(BOOL success){
-        if (success) {
-            [managedObjectContext deleteObject:serverEvent];
+    for (id<CCServerEventConsumerProtocol> consumer in _consumers) {
+        if ([consumer hasEventsForList:list]) {
+            [consumer triggerWithList:list completionBlock:^{
+                completionBlock(YES);
+            }];
+            return;
         }
-        completionBlock(success);
-    }];
+    }
+    completionBlock(YES);
 }
 
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)())completionBlock
@@ -149,70 +185,6 @@
             completionBlock();
         }
     }];
-}
-
-- (void)processServerEvent:(CCServerEvent *)serverEvent completionBlock:(void(^)(BOOL success))completionBlock
-{
-    switch (serverEvent.eventValue) {
-        case CCServerEventListUpdated:
-        {
-            [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:serverEvent.list.identifier completionBlock:^(BOOL success, NSDictionary *listInfo) {
-                if (success) {
-                    
-                }
-                completionBlock(success);
-            }];
-        }
-            break;
-        case CCServerEventListMetaAdded:
-        case CCServerEventListMetaUpdated:
-        {
-            
-        }
-            break;
-        case CCServerEventListMetaDeleted:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressAddedToList:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressMovedFromList:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressUpdated:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressUserDataUpdated:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressMetaAdded:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressMetaUpdated:
-        {
-            
-        }
-            break;
-        case CCServerEventAddressMetaDeleted:
-        {
-            
-        }
-            break;
-        default:
-            break;
-    }
 }
 
 @end

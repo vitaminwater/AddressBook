@@ -47,8 +47,19 @@
 
 + (CCList *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
-    CCList *list = [self insertInManagedObjectContext:managedObjectContext];
-    list.identifier = dict[@"identifier"];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchLimit:1];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    CCList *list;
+    if ([lists count] > 0)
+        list = [lists firstObject];
+    else {
+        list = [self insertInManagedObjectContext:managedObjectContext];
+        list.identifier = dict[@"identifier"];
+    }
     list.name = dict[@"name"];
     list.icon = dict[@"icon"];
     list.provider = dict[@"provider"];

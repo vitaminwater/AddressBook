@@ -6,7 +6,9 @@
 const struct CCServerEventAttributes CCServerEventAttributes = {
 	.date = @"date",
 	.event = @"event",
+	.eventId = @"eventId",
 	.objectIdentifier = @"objectIdentifier",
+	.objectIdentifier2 = @"objectIdentifier2",
 };
 
 const struct CCServerEventRelationships CCServerEventRelationships = {
@@ -44,6 +46,11 @@ const struct CCServerEventRelationships CCServerEventRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"eventIdValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"eventId"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 
 	return keyPaths;
 }
@@ -70,7 +77,29 @@ const struct CCServerEventRelationships CCServerEventRelationships = {
 	[self setPrimitiveEvent:[NSNumber numberWithShort:value_]];
 }
 
+@dynamic eventId;
+
+- (int64_t)eventIdValue {
+	NSNumber *result = [self eventId];
+	return [result longLongValue];
+}
+
+- (void)setEventIdValue:(int64_t)value_ {
+	[self setEventId:[NSNumber numberWithLongLong:value_]];
+}
+
+- (int64_t)primitiveEventIdValue {
+	NSNumber *result = [self primitiveEventId];
+	return [result longLongValue];
+}
+
+- (void)setPrimitiveEventIdValue:(int64_t)value_ {
+	[self setPrimitiveEventId:[NSNumber numberWithLongLong:value_]];
+}
+
 @dynamic objectIdentifier;
+
+@dynamic objectIdentifier2;
 
 @dynamic list;
 

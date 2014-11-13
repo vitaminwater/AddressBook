@@ -11,6 +11,8 @@
 @class CCAddress;
 @class CCList;
 
+@class CCListMeta;
+
 @protocol CCModelChangeMonitorDelegate <NSObject>
 
 @optional
@@ -29,5 +31,13 @@
 - (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send;
 - (void)addresses:(NSArray *)addresses willMoveFromList:(CCList *)list send:(BOOL)send;
 - (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send;
+
+- (void)listMetasAdd:(NSArray *)listMetas;
+- (void)listMetasUpdate:(NSArray *)listMetas;
+- (void)listMetasRemove:(NSArray *)listMetas;
+
+- (void)addressMetasAdd:(NSArray *)addressMetas;
+- (void)addressMetasUpdate:(NSArray *)addressMetas;
+- (void)addressMetasRemove:(NSArray *)addressMetas;
 
 @end
