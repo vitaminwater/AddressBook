@@ -8,8 +8,9 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *isdefault;
-	__unsafe_unretained NSString *lastDateUpdate;
+	__unsafe_unretained NSString *lastEventDate;
 	__unsafe_unretained NSString *lastOpened;
+	__unsafe_unretained NSString *lastUpdate;
 	__unsafe_unretained NSString *lastZoneCleaningLatitude;
 	__unsafe_unretained NSString *lastZoneCleaningLongitude;
 	__unsafe_unretained NSString *lastZoneRefreshLatitude;
@@ -70,13 +71,17 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateIsdefault:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSDate* lastDateUpdate;
+@property (nonatomic, strong) NSDate* lastEventDate;
 
-//- (BOOL)validateLastDateUpdate:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateLastEventDate:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSDate* lastOpened;
 
 //- (BOOL)validateLastOpened:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* lastUpdate;
+
+//- (BOOL)validateLastUpdate:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* lastZoneCleaningLatitude;
 
@@ -146,9 +151,9 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) CCAddressMeta *addressMetas;
+@property (nonatomic, strong) NSSet *addressMetas;
 
-//- (BOOL)validateAddressMetas:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)addressMetasSet;
 
 @property (nonatomic, strong) NSSet *addresses;
 
@@ -165,6 +170,14 @@ extern const struct CCListRelationships {
 @property (nonatomic, strong) NSSet *zones;
 
 - (NSMutableSet*)zonesSet;
+
+@end
+
+@interface _CCList (AddressMetasCoreDataGeneratedAccessors)
+- (void)addAddressMetas:(NSSet*)value_;
+- (void)removeAddressMetas:(NSSet*)value_;
+- (void)addAddressMetasObject:(CCAddressMeta*)value_;
+- (void)removeAddressMetasObject:(CCAddressMeta*)value_;
 
 @end
 
@@ -220,11 +233,14 @@ extern const struct CCListRelationships {
 - (BOOL)primitiveIsdefaultValue;
 - (void)setPrimitiveIsdefaultValue:(BOOL)value_;
 
-- (NSDate*)primitiveLastDateUpdate;
-- (void)setPrimitiveLastDateUpdate:(NSDate*)value;
+- (NSDate*)primitiveLastEventDate;
+- (void)setPrimitiveLastEventDate:(NSDate*)value;
 
 - (NSDate*)primitiveLastOpened;
 - (void)setPrimitiveLastOpened:(NSDate*)value;
+
+- (NSDate*)primitiveLastUpdate;
+- (void)setPrimitiveLastUpdate:(NSDate*)value;
 
 - (NSNumber*)primitiveLastZoneCleaningLatitude;
 - (void)setPrimitiveLastZoneCleaningLatitude:(NSNumber*)value;
@@ -277,8 +293,8 @@ extern const struct CCListRelationships {
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
 
-- (CCAddressMeta*)primitiveAddressMetas;
-- (void)setPrimitiveAddressMetas:(CCAddressMeta*)value;
+- (NSMutableSet*)primitiveAddressMetas;
+- (void)setPrimitiveAddressMetas:(NSMutableSet*)value;
 
 - (NSMutableSet*)primitiveAddresses;
 - (void)setPrimitiveAddresses:(NSMutableSet*)value;

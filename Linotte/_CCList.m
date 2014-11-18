@@ -8,8 +8,9 @@ const struct CCListAttributes CCListAttributes = {
 	.icon = @"icon",
 	.identifier = @"identifier",
 	.isdefault = @"isdefault",
-	.lastDateUpdate = @"lastDateUpdate",
+	.lastEventDate = @"lastEventDate",
 	.lastOpened = @"lastOpened",
+	.lastUpdate = @"lastUpdate",
 	.lastZoneCleaningLatitude = @"lastZoneCleaningLatitude",
 	.lastZoneCleaningLongitude = @"lastZoneCleaningLongitude",
 	.lastZoneRefreshLatitude = @"lastZoneRefreshLatitude",
@@ -145,9 +146,11 @@ const struct CCListRelationships CCListRelationships = {
 	[self setPrimitiveIsdefault:[NSNumber numberWithBool:value_]];
 }
 
-@dynamic lastDateUpdate;
+@dynamic lastEventDate;
 
 @dynamic lastOpened;
+
+@dynamic lastUpdate;
 
 @dynamic lastZoneCleaningLatitude;
 
@@ -280,6 +283,15 @@ const struct CCListRelationships CCListRelationships = {
 @dynamic providerId;
 
 @dynamic addressMetas;
+
+- (NSMutableSet*)addressMetasSet {
+	[self willAccessValueForKey:@"addressMetas"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"addressMetas"];
+
+	[self didAccessValueForKey:@"addressMetas"];
+	return result;
+}
 
 @dynamic addresses;
 

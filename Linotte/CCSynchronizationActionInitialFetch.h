@@ -10,6 +10,8 @@
 
 #import "CCSynchronizationActionProtocol.h"
 
-@interface CCSynchronizationActionInitialFetch : NSObject<CCSynchronizationActionProtocol>
+#import "CCModelChangeMonitorDelegate.h"
+
+@interface CCSynchronizationActionInitialFetch : NSObject<CCModelChangeMonitorDelegate, CCSynchronizationActionProtocol>
 
 @end

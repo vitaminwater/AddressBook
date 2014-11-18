@@ -97,7 +97,7 @@
         
         _dateFormatter = [NSDateFormatter new];
         [_dateFormatter setLocale:[NSLocale currentLocale]];
-        [_dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SS'Z'"];
+        [_dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSS'Z'"];
         [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
         [self refreshLoggedState];
@@ -194,7 +194,7 @@
         [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:expiresInString];
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -209,7 +209,7 @@
         [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:response[@"expires_in"]];
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -222,15 +222,15 @@
     _credentials.refreshToken = refreshToken;
     _credentials.expireTimeStamp = expireTimeStamp;
     if ([SSKeychain setPassword:accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
     }
     
     if ([SSKeychain setPassword:refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
     }
     
     if ([SSKeychain setPassword:expireTimeStamp forService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
     }
     [self setOAuth2HTTPHeader];
 }
@@ -268,7 +268,7 @@
             completionBlock(success);
         }];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -276,7 +276,7 @@
 - (void)saveUserIdentifier:(NSString *)identifier {
     NSError *error;
     if ([SSKeychain setPassword:identifier forService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
     }
     _identifier = identifier;
 }
@@ -290,7 +290,7 @@
         [self setDeviceHTTPHeader];
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -300,7 +300,7 @@
     NSError *error = nil;
     _credentials.deviceId = deviceId;
     if ([SSKeychain setPassword:deviceId forService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName error:&error] == NO) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
     }
 }
 
@@ -316,7 +316,7 @@
     [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
@@ -326,7 +326,7 @@
     [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
@@ -337,7 +337,7 @@
     [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -348,7 +348,7 @@
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -359,7 +359,7 @@
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -371,7 +371,7 @@
     [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -383,7 +383,7 @@
     [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -395,7 +395,7 @@
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -407,7 +407,7 @@
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -419,7 +419,7 @@
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO);
     }];
 }
@@ -435,41 +435,41 @@
 
 #pragma mark - Fetch methods
 
-- (void)fetchPublicLists:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
+- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
 {
     NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
     NSDictionary *parameters = @{@"geohash" : geohash};
-    [_apiManager GET:@"/list/public/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:@"/list/public/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
-- (void)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock
+- (NSURLSessionTask *)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/", identifier];
-    [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    return [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, response);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
-- (void)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock
+- (NSURLSessionTask *)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/zones/", identifier];
-    [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
-- (void)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+- (NSURLSessionTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/addresses/", identifier];
     NSDictionary *parameters;
@@ -479,28 +479,83 @@
     } else {
         parameters = @{@"limit" : @(limit), @"geohash" : geohash};
     }
-    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
-- (void)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSString *lastDateString = [self stringFromDate:lastDate];
     NSDictionary *parameters = @{@"geohash" : geohash, @"last_date" : lastDateString};
-    [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        NSLog(@"%@", error);
+        CCLog(@"%@", error);
         completionBlock(NO, nil);
     }];
 }
 
+- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
+    NSString *lastDateString = [self stringFromDate:lastDate];
+    NSDictionary *parameters = @{@"last_date" : lastDateString};
+    return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
 
+- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+{
+    NSDictionary *parameters = @{@"e" : eventIds};
+    return [_apiManager GET:@"/event/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (NSURLSessionTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addressMetas))completionBlock
+{
+    NSDictionary *parameters = @{@"e" : eventIds};
+    return [_apiManager GET:@"/event/address_meta/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (NSURLSessionTask *)fetchListMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *listMetas))completionBlock
+{
+    NSDictionary *parameters = @{@"e" : eventIds};
+    return [_apiManager GET:@"/event/list_meta/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (NSURLSessionTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock
+{
+    NSDictionary *parameters = @{@"e" : eventIds};
+    return [_apiManager GET:@"/event/address_user_data/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        completionBlock(YES, responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
 
 #pragma mark - Date conversion methods
 

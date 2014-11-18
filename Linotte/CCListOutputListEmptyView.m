@@ -36,6 +36,7 @@
 {
     _helpLabel = [UILabel new];
     _helpLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _helpLabel.userInteractionEnabled = NO;
     _helpLabel.textColor = [UIColor darkGrayColor];
     _helpLabel.numberOfLines = 0;
     _helpLabel.textAlignment = NSTextAlignmentCenter;

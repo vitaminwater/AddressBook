@@ -8,22 +8,81 @@
 
 #import "CCServerEventAddressMetaAddedConsumer.h"
 
-#import "CCServerEventConsumerUtils.h"
+#import "CCLinotteAPI.h"
+#import "CCModelChangeMonitor.h"
+#import "CCCoreDataStack.h"
+
+#import "CCServerEvent.h"
+#import "CCAddressMeta.h"
+#import "CCAddress.h"
+#import "CCList.h"
 
 @implementation CCServerEventAddressMetaAddedConsumer
 {
     NSArray *_events;
+    
+    CCList *_currentList;
+    NSURLSessionTask *_currentConnection;
 }
 
 - (BOOL)hasEventsForList:(CCList *)list
 {
-    _events = [CCServerEventConsumerUtils eventsWithEventType:CCServerEventAddressMetaAdded list:list];
+    _events = [CCServerEvent eventsWithEventType:CCServerEventAddressMetaAdded list:list];
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)())completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
-    
+    NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
+    _currentList = list;
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressMetasForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressMetaDicts) {
+        
+        _currentList = nil;
+        _currentConnection = nil;
+        if (success == NO) {
+            completionBlock(NO);
+            return;
+        }
+        
+        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSSortDescriptor *objectIdentifier2SortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"objectIdentifier2" ascending:YES];
+        NSArray *sortedAddressMetasDict = [addressMetaDicts sortedArrayUsingDescriptors:@[objectIdentifier2SortDescriptor]];
+        NSArray *addressIdentifiers = [sortedAddressMetasDict valueForKeyPath:@"objectIdentifier2"];
+        NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:sortedAddressMetasDict];
+        
+        NSSortDescriptor *identifierSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"identifier" ascending:YES];
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressIdentifiers];
+        [fetchRequest setPredicate:predicate];
+        [fetchRequest setSortDescriptors:@[identifierSortDescriptor]];
+        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        
+        NSUInteger index = 0;
+        for (CCAddress *address in addresses) {
+            for (; index < [addressMetas count]; ++index) {
+                if ([addressIdentifiers[index] isEqualToString:address.identifier] == NO)
+                    break;
+                CCAddressMeta *addressMeta = addressMetas[index];
+                [list addAddressMetasObject:addressMeta];
+                [address addMetasObject:addressMeta];
+            }
+        }
+        
+        [CCServerEvent deleteEvents:_events];
+        _events = nil;
+
+        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCModelChangeMonitor sharedInstance] addressMetasAdd:addressMetas];
+        completionBlock(YES);
+    }];
+}
+
+#pragma mark - CCModelChangeMonitorDelegate
+
+- (void)listWillRemove:(CCList *)list send:(BOOL)send
+{
+    if (_currentList == list)
+        [_currentConnection cancel];
 }
 
 @end

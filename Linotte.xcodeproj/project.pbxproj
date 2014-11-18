@@ -28,7 +28,7 @@
 		C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */; };
 		C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */; };
 		C7216B141A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */; };
-		C7216B171A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */; };
+		C7216B171A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B161A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m */; };
 		C7216B2C1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B2B1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m */; };
 		C7216B2F1A13C80300498CFE /* CCServerEventListMetaAddedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B2E1A13C80300498CFE /* CCServerEventListMetaAddedConsumer.m */; };
 		C7216B321A13C81300498CFE /* CCServerEventListMetaUpdatedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B311A13C81300498CFE /* CCServerEventListMetaUpdatedConsumer.m */; };
@@ -40,7 +40,9 @@
 		C7216B441A13C89900498CFE /* CCServerEventAddressMetaAddedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B431A13C89900498CFE /* CCServerEventAddressMetaAddedConsumer.m */; };
 		C7216B471A13C8A900498CFE /* CCServerEventAddressMetaUpdatedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B461A13C8A900498CFE /* CCServerEventAddressMetaUpdatedConsumer.m */; };
 		C7216B4A1A13C8B800498CFE /* CCServerEventAddressMetaDeletedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B491A13C8B800498CFE /* CCServerEventAddressMetaDeletedConsumer.m */; };
-		C7216B4E1A13D44C00498CFE /* CCServerEventConsumerUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B4D1A13D44C00498CFE /* CCServerEventConsumerUtils.m */; };
+		C7216B901A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B8F1A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m */; };
+		C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B921A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m */; };
+		C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */; };
 		C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B50E719F9845200F39E7F /* CCDictStackCache.m */; };
 		C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */; };
 		C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0A19F9551B00ADC1A2 /* CCModelHelper.m */; };
@@ -175,8 +177,8 @@
 		C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionCleanUselessZones.m; sourceTree = "<group>"; };
 		C7216B121A110CCC00498CFE /* CCSynchronizationActionInitialFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionInitialFetch.h; sourceTree = "<group>"; };
 		C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionInitialFetch.m; sourceTree = "<group>"; };
-		C7216B151A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
-		C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
+		C7216B151A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
+		C7216B161A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
 		C7216B291A13C7A900498CFE /* CCServerEventConsumerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventConsumerProtocol.h; sourceTree = "<group>"; };
 		C7216B2A1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventListUpdatedConsumer.h; sourceTree = "<group>"; };
 		C7216B2B1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventListUpdatedConsumer.m; sourceTree = "<group>"; };
@@ -200,8 +202,12 @@
 		C7216B461A13C8A900498CFE /* CCServerEventAddressMetaUpdatedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventAddressMetaUpdatedConsumer.m; sourceTree = "<group>"; };
 		C7216B481A13C8B800498CFE /* CCServerEventAddressMetaDeletedConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventAddressMetaDeletedConsumer.h; sourceTree = "<group>"; };
 		C7216B491A13C8B800498CFE /* CCServerEventAddressMetaDeletedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventAddressMetaDeletedConsumer.m; sourceTree = "<group>"; };
-		C7216B4C1A13D44C00498CFE /* CCServerEventConsumerUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventConsumerUtils.h; sourceTree = "<group>"; };
-		C7216B4D1A13D44C00498CFE /* CCServerEventConsumerUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventConsumerUtils.m; sourceTree = "<group>"; };
+		C7216B8E1A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListZoneSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
+		C7216B8F1A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListZoneSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
+		C7216B911A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
+		C7216B921A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
+		C7216BA71A1B635B00498CFE /* CCNetworkLogs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNetworkLogs.h; sourceTree = "<group>"; };
+		C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworkLogs.m; sourceTree = "<group>"; };
 		C72B50E619F9845200F39E7F /* CCDictStackCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDictStackCache.h; sourceTree = "<group>"; };
 		C72B50E719F9845200F39E7F /* CCDictStackCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDictStackCache.m; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -537,9 +543,11 @@
 		C7216B0B1A110C1800498CFE /* consume events */ = {
 			isa = PBXGroup;
 			children = (
-				C7216B1C1A13C70300498CFE /* consumers */,
-				C7216B151A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.h */,
-				C7216B161A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m */,
+				C7216B8D1A19E5E300498CFE /* consumers protocol */,
+				C7216B8B1A19E5C300498CFE /* list events */,
+				C7216B8A1A19E5B800498CFE /* list zone events */,
+				C7216B151A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.h */,
+				C7216B161A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m */,
 			);
 			name = "consume events";
 			sourceTree = "<group>";
@@ -547,7 +555,6 @@
 		C7216B1C1A13C70300498CFE /* consumers */ = {
 			isa = PBXGroup;
 			children = (
-				C7216B4B1A13D43200498CFE /* utils */,
 				C7216B281A13C78900498CFE /* address meta deleted */,
 				C7216B271A13C77F00498CFE /* address meta updated */,
 				C7216B261A13C77300498CFE /* address meta added */,
@@ -555,21 +562,8 @@
 				C7216B241A13C75A00498CFE /* address updated */,
 				C7216B231A13C75000498CFE /* address moved from list */,
 				C7216B221A13C74600498CFE /* address added to list */,
-				C7216B211A13C73E00498CFE /* list meta deleted */,
-				C7216B201A13C73700498CFE /* list meta updated */,
-				C7216B1F1A13C72D00498CFE /* list meta added */,
-				C7216B1E1A13C71E00498CFE /* list update */,
-				C7216B1D1A13C71900498CFE /* protocol */,
 			);
 			name = consumers;
-			sourceTree = "<group>";
-		};
-		C7216B1D1A13C71900498CFE /* protocol */ = {
-			isa = PBXGroup;
-			children = (
-				C7216B291A13C7A900498CFE /* CCServerEventConsumerProtocol.h */,
-			);
-			name = protocol;
 			sourceTree = "<group>";
 		};
 		C7216B1E1A13C71E00498CFE /* list update */ = {
@@ -671,13 +665,52 @@
 			name = "address meta deleted";
 			sourceTree = "<group>";
 		};
-		C7216B4B1A13D43200498CFE /* utils */ = {
+		C7216B8A1A19E5B800498CFE /* list zone events */ = {
 			isa = PBXGroup;
 			children = (
-				C7216B4C1A13D44C00498CFE /* CCServerEventConsumerUtils.h */,
-				C7216B4D1A13D44C00498CFE /* CCServerEventConsumerUtils.m */,
+				C7216B1C1A13C70300498CFE /* consumers */,
+				C7216B8E1A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.h */,
+				C7216B8F1A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m */,
 			);
-			name = utils;
+			name = "list zone events";
+			sourceTree = "<group>";
+		};
+		C7216B8B1A19E5C300498CFE /* list events */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B8C1A19E5CF00498CFE /* consumers */,
+				C7216B911A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.h */,
+				C7216B921A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m */,
+			);
+			name = "list events";
+			sourceTree = "<group>";
+		};
+		C7216B8C1A19E5CF00498CFE /* consumers */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B211A13C73E00498CFE /* list meta deleted */,
+				C7216B201A13C73700498CFE /* list meta updated */,
+				C7216B1F1A13C72D00498CFE /* list meta added */,
+				C7216B1E1A13C71E00498CFE /* list update */,
+			);
+			name = consumers;
+			sourceTree = "<group>";
+		};
+		C7216B8D1A19E5E300498CFE /* consumers protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B291A13C7A900498CFE /* CCServerEventConsumerProtocol.h */,
+			);
+			name = "consumers protocol";
+			sourceTree = "<group>";
+		};
+		C7216BA61A1B62BD00498CFE /* network logs */ = {
+			isa = PBXGroup;
+			children = (
+				C7216BA71A1B635B00498CFE /* CCNetworkLogs.h */,
+				C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */,
+			);
+			name = "network logs";
 			sourceTree = "<group>";
 		};
 		C72B50E519F9844100F39E7F /* dict cache */ = {
@@ -1954,6 +1987,7 @@
 		C7E1E4EF191A468800602A4D /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C7216BA61A1B62BD00498CFE /* network logs */,
 				C77F8E041A023CBE00AE2655 /* synchronization */,
 				C72B50E519F9844100F39E7F /* dict cache */,
 				C73E7D0819F9550B00ADC1A2 /* model helper */,
@@ -2285,6 +2319,7 @@
 			files = (
 				C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */,
 				C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */,
+				C7216B901A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m in Sources */,
 				C7216B141A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m in Sources */,
 				C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */,
 				C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */,
@@ -2316,6 +2351,7 @@
 				C7CE2CAC1918F11600D37A64 /* CCListViewController.m in Sources */,
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
 				C7A2EB3019BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m in Sources */,
+				C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */,
 				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
 				C7216B2C1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m in Sources */,
 				C7619FC119C48C8B00C09F0D /* CCListListViewController.m in Sources */,
@@ -2325,7 +2361,7 @@
 				C7F4451E19FCE708009AE1C9 /* _CCServerEvent.m in Sources */,
 				C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
-				C7216B171A110CDE00498CFE /* CCSynchronizationActionConsumeEvents.m in Sources */,
+				C7216B171A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m in Sources */,
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstDisplaySettingsView.m in Sources */,
@@ -2336,6 +2372,7 @@
 				C7619FD519C6DDAF00C09F0D /* CCListOptionButton.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
 				C796D7C119BB8C0000B97879 /* _CCList.m in Sources */,
+				C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */,
 				C7F4451F19FCE708009AE1C9 /* CCListZone.m in Sources */,
 				C7619FAD19C4415700C09F0D /* CCListViewModel.m in Sources */,
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
@@ -2352,7 +2389,6 @@
 				C7F4452019FCE708009AE1C9 /* CCServerEvent.m in Sources */,
 				C796D7CE19BB8C1300B97879 /* CCAddressMeta.m in Sources */,
 				C7216B351A13C83F00498CFE /* CCServerEventListMetaDeletedConsumer.m in Sources */,
-				C7216B4E1A13D44C00498CFE /* CCServerEventConsumerUtils.m in Sources */,
 				C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */,
 				C7619FB919C441BC00C09F0D /* CCListListViewModel.m in Sources */,
 				C796D7C219BB8C0000B97879 /* CCList.m in Sources */,

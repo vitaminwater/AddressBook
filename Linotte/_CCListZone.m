@@ -8,7 +8,7 @@ const struct CCListZoneAttributes CCListZoneAttributes = {
 	.geohash = @"geohash",
 	.lastAddressFirstFetchDate = @"lastAddressFirstFetchDate",
 	.lastEventDate = @"lastEventDate",
-	.lastRefresh = @"lastRefresh",
+	.lastUpdate = @"lastUpdate",
 	.latitude = @"latitude",
 	.longitude = @"longitude",
 	.nAddresses = @"nAddresses",
@@ -94,7 +94,7 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 
 @dynamic lastEventDate;
 
-@dynamic lastRefresh;
+@dynamic lastUpdate;
 
 @dynamic latitude;
 

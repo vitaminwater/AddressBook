@@ -12,6 +12,7 @@
 
 @interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
 
+- (BOOL)canSend;
 - (BOOL)connectionAvailable;
 
 + (instancetype)sharedInstance;

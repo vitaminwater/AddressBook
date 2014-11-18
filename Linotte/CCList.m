@@ -14,6 +14,8 @@
 {
     [super awakeFromInsert];
     self.localIdentifier = [[NSUUID UUID] UUIDString];
+    self.lastUpdate = [NSDate date];
+    self.lastEventDate = [NSDate date];
 }
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location
@@ -45,13 +47,19 @@
     return sortedListZones;
 }
 
-+ (CCList *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
++ (CCList *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     CCList *list;
     if ([lists count] > 0)

@@ -110,9 +110,9 @@ extern const struct CCAddressRelationships {
 
 - (NSMutableSet*)listsSet;
 
-@property (nonatomic, strong) CCAddressMeta *metas;
+@property (nonatomic, strong) NSSet *metas;
 
-//- (BOOL)validateMetas:(id*)value_ error:(NSError**)error_;
+- (NSMutableSet*)metasSet;
 
 @end
 
@@ -129,6 +129,14 @@ extern const struct CCAddressRelationships {
 - (void)removeLists:(NSSet*)value_;
 - (void)addListsObject:(CCList*)value_;
 - (void)removeListsObject:(CCList*)value_;
+
+@end
+
+@interface _CCAddress (MetasCoreDataGeneratedAccessors)
+- (void)addMetas:(NSSet*)value_;
+- (void)removeMetas:(NSSet*)value_;
+- (void)addMetasObject:(CCAddressMeta*)value_;
+- (void)removeMetasObject:(CCAddressMeta*)value_;
 
 @end
 
@@ -188,7 +196,7 @@ extern const struct CCAddressRelationships {
 - (NSMutableSet*)primitiveLists;
 - (void)setPrimitiveLists:(NSMutableSet*)value;
 
-- (CCAddressMeta*)primitiveMetas;
-- (void)setPrimitiveMetas:(CCAddressMeta*)value;
+- (NSMutableSet*)primitiveMetas;
+- (void)setPrimitiveMetas:(NSMutableSet*)value;
 
 @end

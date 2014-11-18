@@ -88,11 +88,20 @@
 
 - (BOOL)alreadyInstalled
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", _identifier];
     [fetchRequest setPredicate:predicate];
-    return [managedObjectContext countForFetchRequest:fetchRequest error:NULL] > 0;
+    
+    BOOL installed = [managedObjectContext countForFetchRequest:fetchRequest error:&error] > 0;
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return NO;
+    }
+    
+    return installed;
 }
 
 #pragma mark - CCListInstallerViewDelegate methods
@@ -100,7 +109,7 @@
 - (void)addToLinotteButtonPressed
 {
     NSManagedObjectContext *childManagedObjectContext = [[CCCoreDataStack sharedInstance] childManagedObjectContext];
-    __block CCList *list = [CCList insertInManagedObjectContext:childManagedObjectContext fromLinotteAPIDict:_completeListInfoDict];
+    __block CCList *list = [CCList insertOrUpdateInManagedObjectContext:childManagedObjectContext fromLinotteAPIDict:_completeListInfoDict];
     list.identifier = _identifier;
     
     [[CCLinotteAPI sharedInstance] addList:@{@"list" : list.identifier} completionBlock:^(BOOL success) {
@@ -112,7 +121,7 @@
             list = (CCList *)[managedObjectContext objectWithID:[list objectID]];
             
             [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
-            [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^{}];
+            [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
 
             [_delegate closeListInstaller:self];
             [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_INSTALL", @"") delay:1];

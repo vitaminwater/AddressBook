@@ -49,6 +49,7 @@
 
 - (void)loadLists
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
@@ -56,9 +57,14 @@
     NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     [fetchRequest setSortDescriptors:@[nameSortDescriptor]];
     
-    NSArray *result = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *result = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
-    _lists = [result mutableCopy];
+    if (error != nil) {
+        CCLog(@"%@", error);
+        _lists = [@[] mutableCopy];
+    } else {
+        _lists = [result mutableCopy];
+    }
 }
 
 #pragma mark - CCListSettingsViewDelegate

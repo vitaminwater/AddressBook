@@ -66,15 +66,8 @@
     return [farLists firstObject];
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL done))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
-    if (list != nil && [self listNeedProcess:list] == NO) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
-        });
-        return;
-    }
-    
     list = list ?: [self findNextListToProcess:coordinates];
     if (list == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -83,7 +76,7 @@
         return;
     }
     
-    NSLog(@"Starting CCListSynchronizationActionCleanUselessZones job");
+    CCLog(@"Starting CCListSynchronizationActionCleanUselessZones job");
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSArray *sortedZones = [list getListZonesSortedByDistanceFromLocation:coordinates];
     NSUInteger addressCounter = 0;
@@ -101,18 +94,19 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completionBlock(NO);
                 });
-                NSLog(@"%@", error);
+                CCLog(@"%@", error);
                 continue;
             }
             
             cleaned = YES;
             
-            NSLog(@"Cleaning %@ zone", listZone.geohash);
+            CCLog(@"Cleaning %@ zone", listZone.geohash);
             [removedAddresses addObjectsFromArray:addresses];
             
             listZone.firstFetch = @YES;
             listZone.lastAddressFirstFetchDate = nil;
-            listZone.lastRefresh = nil;
+            listZone.lastEventDate = nil;
+            listZone.lastUpdate = nil;
         }
         addressCounter += listZone.nAddressesValue;
     }

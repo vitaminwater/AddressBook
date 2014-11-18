@@ -32,25 +32,36 @@
     
     // Addresses
     {
+        NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists.owned = %@", @YES];
         [fetchRequest setPredicate:predicate];
         
-        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        [self.provider addAddresses:addresses];
+        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        if (error != nil)
+            CCLog(@"%@", error);
+        else
+            [self.provider addAddresses:addresses];
     }
     
     // Lists
     {
+        NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @NO];
         [fetchRequest setPredicate:predicate];
         
-        NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-        for (CCList *list in lists) {
-            [self.provider addList:list];
+        NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        if (error != nil)
+            CCLog(@"%@", error);
+        else {
+            for (CCList *list in lists) {
+                [self.provider addList:list];
+            }
         }
     }
 }

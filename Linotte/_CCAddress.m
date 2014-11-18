@@ -174,5 +174,14 @@ const struct CCAddressRelationships CCAddressRelationships = {
 
 @dynamic metas;
 
+- (NSMutableSet*)metasSet {
+	[self willAccessValueForKey:@"metas"];
+
+	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"metas"];
+
+	[self didAccessValueForKey:@"metas"];
+	return result;
+}
+
 @end
 

@@ -145,7 +145,7 @@
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController setNavigationBarHidden:NO animated:animated];
     
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:_list completionBlock:^{}];
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:_list completionBlock:^(BOOL didSync){}];
 }
 
 - (void)didReceiveMemoryWarning

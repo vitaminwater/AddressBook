@@ -14,21 +14,118 @@
     self.localIdentifier = [[NSUUID UUID] UUIDString];
 }
 
-+ (CCAddress *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
++ (CCAddress *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     CCAddress *address;
     if ([addresses count] > 0)
         address = [addresses firstObject];
     else {
         address = [CCAddress insertInManagedObjectContext:managedObjectContext];
-        address.identifier = dict[@"identifier"];
     }
+    [self setValuesForAddress:address fromLinotteDict:dict];
+    return address;
+}
+
++ (NSArray *)insertOrUpdateInManageObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
+{
+    NSError *error = nil;
+    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    if (list != nil) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, identifiers];
+        [fetchRequest setPredicate:predicate];
+    } else {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
+        [fetchRequest setPredicate:predicate];
+    }
+    NSArray *alreadyInstalledAddresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    NSArray *alreadyInstalledAddressIdentifiers = [alreadyInstalledAddresses valueForKeyPath:@"identifier"]; // TODO: check is same order
+    
+    NSMutableArray *addresses = [@[] mutableCopy];
+    for (NSDictionary *addressDict in dictArray) {
+        NSUInteger addressIndex = [alreadyInstalledAddressIdentifiers indexOfObject:addressDict[@"identifier"]];
+        CCAddress *address;
+        
+        if (addressIndex == NSNotFound) {
+            address = [CCAddress insertInManagedObjectContext:managedObjectContext];
+        } else {
+            address = alreadyInstalledAddresses[addressIndex];
+        }
+        [self setValuesForAddress:address fromLinotteDict:addressDict];
+        
+        [addresses addObject:address];
+    }
+    return addresses;
+}
+
++ (NSArray *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
+{
+    NSMutableArray *addresses = [@[] mutableCopy];
+    for (NSDictionary *addressDict in dictArray) {
+        CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
+        [self setValuesForAddress:address fromLinotteDict:addressDict];
+        
+        [addresses addObject:address];
+    }
+    return addresses;
+}
+
++ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
+{
+    NSError *error = nil;
+    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    if (list != nil) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, identifiers];
+        [fetchRequest setPredicate:predicate];
+    } else {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
+        [fetchRequest setPredicate:predicate];
+    }
+    
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    NSArray *addressIdentifiers = [addresses valueForKeyPath:@"identifier"];
+    
+    for (NSDictionary *addressDict in dictArray) {
+        NSUInteger addressIndex = [addressIdentifiers indexOfObject:addressDict[@"identifier"]];
+        if (addressIndex != NSNotFound) {
+            CCAddress *address = addresses[addressIndex];
+            address.note = addressDict[@"note"];
+            address.notify = addressDict[@"notification"];
+        }
+    }
+    return addresses;
+}
+
++ (void)setValuesForAddress:(CCAddress *)address fromLinotteDict:(NSDictionary *)dict
+{
+    address.identifier = dict[@"identifier"];
     address.latitude = dict[@"latitude"];
     address.longitude = dict[@"longitude"];
     address.geohash = [CCGeohashHelper geohashFromCoordinates:CLLocationCoordinate2DMake([address.latitude doubleValue], [address.longitude doubleValue])];
@@ -38,7 +135,6 @@
     address.providerId = dict[@"provider_id"];
     address.note = dict[@"note"];
     address.notify = dict[@"notification"];
-    return address;
 }
 
 @end

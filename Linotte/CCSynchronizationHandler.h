@@ -10,13 +10,13 @@
 
 #import <CoreLocation/CoreLocation.h>
 
-#import "CCModelChangeMonitorDelegate.h"
+@class CCList;
 
-@interface CCSynchronizationHandler : NSObject<CCModelChangeMonitorDelegate, CLLocationManagerDelegate>
+@interface CCSynchronizationHandler : NSObject<CLLocationManagerDelegate>
 
 @property(nonatomic, assign)BOOL syncing;
 
-- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)())completionBlock;
+- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)(BOOL didSync))completionBlock;
 
 + (instancetype)sharedInstance;
 

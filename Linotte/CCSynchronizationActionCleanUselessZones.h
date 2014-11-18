@@ -10,6 +10,8 @@
 
 #import "CCSynchronizationActionProtocol.h"
 
-@interface CCSynchronizationActionCleanUselessZones : NSObject<CCSynchronizationActionProtocol>
+#import "CCModelChangeMonitorDelegate.h"
+
+@interface CCSynchronizationActionCleanUselessZones : NSObject<CCModelChangeMonitorDelegate, CCSynchronizationActionProtocol>
 
 @end

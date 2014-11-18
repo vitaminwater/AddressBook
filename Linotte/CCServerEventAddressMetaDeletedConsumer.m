@@ -11,8 +11,7 @@
 #import "CCCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
-#import "CCServerEventConsumerUtils.h"
-
+#import "CCServerEvent.h"
 #import "CCAddressMeta.h"
 
 @implementation CCServerEventAddressMetaDeletedConsumer
@@ -22,15 +21,15 @@
 
 - (BOOL)hasEventsForList:(CCList *)list
 {
-    _events = [CCServerEventConsumerUtils eventsWithEventType:CCServerEventAddressMetaDeleted list:list];
+    _events = [CCServerEvent eventsWithEventType:CCServerEventAddressMetaDeleted list:list];
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)())completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.object_identifier"];
+    NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];
@@ -41,7 +40,14 @@
         [managedObjectContext deleteObject:meta];
     }
     
+    [CCServerEvent deleteEvents:_events];
+    _events = nil;
+    
     [[CCCoreDataStack sharedInstance] saveContext];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        completionBlock(YES);
+    });
 }
 
 @end

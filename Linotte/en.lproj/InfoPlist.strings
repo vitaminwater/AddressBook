@@ -1,3 +1,4 @@
 /* Localized versions of Info.plist keys */
 
-"NSLocationAlwaysUsageDescription" = "We don’t want to bother you, but if you say no, Linotte is not going to be very useful:(\nAnd that would be a shame.\nSay yes ! It’s for a good cause! Yours by the way :)";
+"NSLocationAlwaysUsageDescription" = "           ,,\n           /        \\\n            (      o    <\n           )           /\n^____/           )\n\\                   /\n  \\  ______ /\n     \\\\\nIt's just me, Linotte !\nI need this to whistle !";
+//"NSLocationAlwaysUsageDescription" = "We don’t want to bother you, but if you say no, Linotte is not going to be very useful:(\nAnd that would be a shame.\nSay yes ! It’s for a good cause! Yours by the way :)";

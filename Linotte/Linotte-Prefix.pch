@@ -14,10 +14,12 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
+
+    #import "CCNetworkLogs.h"
 #endif
 
 #if defined(DEBUG)
-#define kCCLinotteAPIServer @"192.168.1.109"
+#define kCCLinotteAPIServer @"192.168.1.23"
 #else
 #define kCCLinotteAPIServer @"api.getlinotte.com"
 #endif
@@ -36,3 +38,25 @@
 #define kCCAddViewTextFieldHeightMetric @{@"kCCStatusBarHeight" : kCCStatusBarHeight, @"kCCAddViewTextFieldHeight" : kCCAddViewTextFieldHeight, @"kCCAddViewKeyboardHeight" : kCCAddViewKeyboardHeight}
 
 #define kCCListDefaultProvider @"USER"
+
+/*
+      ,
+     --
+    ( ˚ <
+ ^_/   |
+ \_    /
+    ||
+*/
+
+/*
+
+        "
+      /    \
+     |   °  <
+     )     /
+^___/      )
+\         /
+  \_____/
+     ll
+
+*/

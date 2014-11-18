@@ -89,8 +89,11 @@
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^{
-        completionHandler(UIBackgroundFetchResultNewData); // TODO: did fetch data ?
+    if ([[CCNetworkHandler sharedInstance] canSend] == NO)
+        return;
+    
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^(BOOL didSync){
+        completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
     }];
 }
 
@@ -154,12 +157,18 @@
         return;
     }
     
+    NSError *error = nil;
     NSString *objectID = notification.userInfo[@"addressLocalIdentifier"];
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", objectID];
     [fetchRequest setPredicate:predicate];
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+    }
+    
     if ([results count]) {
         CCAddress *address = [results firstObject];
         CCOutputViewController *outPutViewController = [[CCOutputViewController alloc] initWithAddress:address];

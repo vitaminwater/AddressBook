@@ -13,6 +13,6 @@
 @protocol CCServerEventConsumerProtocol <NSObject>
 
 - (BOOL)hasEventsForList:(CCList *)list;
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)())completionBlock;
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock;
 
 @end

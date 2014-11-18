@@ -15,10 +15,12 @@
 #import "CCSynchronizationActionRefreshZones.h"
 #import "CCSynchronizationActionCleanUselessZones.h"
 #import "CCSynchronizationActionInitialFetch.h"
-#import "CCSynchronizationActionConsumeEvents.h"
+#import "CCListSynchronizationActionConsumeEvents.h"
+#import "CCListZoneSynchronizationActionConsumeEvents.h"
 
 #import "CCLinotteAPI.h"
 #import "CCNetworkHandler.h"
+#import "CCNetworkLogs.h"
 
 #import "CCModelChangeMonitor.h"
 #import "CCLocationMonitor.h"
@@ -58,8 +60,6 @@
                                                      name:kReachabilityChangedNotification
                                                    object:nil];
         
-        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
-        
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
         
@@ -72,7 +72,6 @@
 
 - (void)dealloc
 {
-    [[CCModelChangeMonitor sharedInstance] removeDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -82,7 +81,8 @@
                                 [CCSynchronizationActionRefreshZones new],
                                 [CCSynchronizationActionCleanUselessZones new],
                                 [CCSynchronizationActionInitialFetch new],
-                                [CCSynchronizationActionConsumeEvents new]];
+                                [CCListSynchronizationActionConsumeEvents new],
+                                [CCListZoneSynchronizationActionConsumeEvents new]];
 }
 
 - (void)reachable
@@ -95,7 +95,7 @@
 
 #pragma mark - Zone synchronization methods
 
-- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)())completionBlock
+- (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)(BOOL didSync))completionBlock
 {
     if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
         return;
@@ -103,7 +103,7 @@
     if (list != _syncedList) {
         _syncedList = list;
         _syncedListChanged = YES;
-        _synchronizationActionIndex = 0;
+        _synchronizationActionIndex = 1;
     }
     
     if (_syncing == YES)
@@ -112,15 +112,15 @@
     _syncing = YES;
     _synchronizationActionIndex = 0;
     NSTimeInterval startSync = [NSDate timeIntervalSinceReferenceDate];
-    [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration completionBlock:completionBlock];
+    [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration didSync:NO completionBlock:completionBlock];
 }
 
-- (void)performSynchronizationIterationWithStartSync:(NSTimeInterval)startSync maxDuration:(NSTimeInterval)maxDuration completionBlock:(void(^)())completionBlock
+- (void)performSynchronizationIterationWithStartSync:(NSTimeInterval)startSync maxDuration:(NSTimeInterval)maxDuration didSync:(BOOL)didSync completionBlock:(void(^)(BOOL didSync))completionBlock
 {
     if (_synchronizationActionIndex == [_synchronizationActions count]) {
         _syncedList = nil;
         _syncing = NO;
-        completionBlock();
+        completionBlock(didSync);
         return;
     }
     
@@ -128,21 +128,21 @@
     if (maxDuration != 0 && timeElapsed >= maxDuration) {
         _syncedList = nil;
         _syncing = NO;
-        completionBlock();
+        completionBlock(didSync);
         return;
     }
     
     id<CCSynchronizationActionProtocol> synchronizationAction = _synchronizationActions[_synchronizationActionIndex];
-    [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL done) {
+    [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL goOnSyncing) {
         if (_syncedListChanged == NO) {
-            if (done == YES)
-                _synchronizationActionIndex = 0;
+            if (goOnSyncing == YES)
+                _synchronizationActionIndex = _syncedList ? 1 : 0;
             else
                 _synchronizationActionIndex++;
         } else {
             _syncedListChanged = NO;
         }
-        [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration completionBlock:completionBlock];
+        [self performSynchronizationIterationWithStartSync:startSync maxDuration:maxDuration didSync:didSync | goOnSyncing completionBlock:completionBlock];
     }];
 }
 

@@ -70,6 +70,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>mixpanel_api_token_debug</key>
 	<string>a1b283da0d87c55e595424a57cd16f77</string>

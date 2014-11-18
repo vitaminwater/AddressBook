@@ -11,25 +11,87 @@
 
 @implementation CCAddressMeta
 
-+ (CCAddressMeta *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
++ (CCAddressMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
-    NSArray *addressMetas = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addressMetas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     CCAddressMeta *addressMeta;
     if ([addressMetas count] > 0)
         addressMeta = [addressMetas firstObject];
     else {
         addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
-        addressMeta.identifier = dict[@"identifier"];
     }
+    [self setValuesForAddressMeta:addressMeta fromLinotteDict:dict];
+    return addressMeta;
+}
+
++ (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
+{
+    NSError *error = nil;
+    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
+    if (list != nil) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and identifier in %@", list, identifiers];
+        [fetchRequest setPredicate:predicate];
+    } else {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
+        [fetchRequest setPredicate:predicate];
+    }
+    NSArray *alreadyInstalledAddressMetas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    NSArray *alreadyInstalledAddressMetaIdentifiers = [alreadyInstalledAddressMetas valueForKeyPath:@"identifier"];
+    
+    NSMutableArray *addressMetas = [@[] mutableCopy];
+    for (NSDictionary *addressDict in dictArray) {
+        NSUInteger addressMetaIndex = [alreadyInstalledAddressMetaIdentifiers indexOfObject:addressDict[@"identifier"]];
+        CCAddressMeta *addressMeta;
+        
+        if (addressMetaIndex == NSNotFound) {
+            addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
+        } else {
+            addressMeta = alreadyInstalledAddressMetas[addressMetaIndex];
+        }
+        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressDict];
+        
+        [addressMetas addObject:addressMeta];
+    }
+    return addressMetas;
+}
+
++ (NSArray *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
+{
+    NSMutableArray *addressMetas = [@[] mutableCopy];
+    for (NSDictionary *addressMetaDict in dictArray) {
+        CCAddressMeta *addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
+        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressMetaDict];
+        
+        [addressMetas addObject:addressMeta];
+    }
+    return addressMetas;
+}
+
++ (void)setValuesForAddressMeta:(CCAddressMeta *)addressMeta fromLinotteDict:(NSDictionary *)dict
+{
+    addressMeta.identifier = dict[@"identifier"];
     addressMeta.name = dict[@"name"];
     addressMeta.internalName = dict[@"internal_name"];
     addressMeta.value = dict[@"value"];
-    return addressMeta;
 }
 
 @end

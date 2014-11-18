@@ -279,6 +279,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (self.location == nil)
         return;
     
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
@@ -288,7 +289,12 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@)", _list, geohashesComp[0], geohashesComp[1], geohashesComp[2], geohashesComp[3], geohashesComp[4], geohashesComp[5], geohashesComp[6], geohashesComp[7], geohashesComp[8]]; // TODO store pre calculated small geohash in model !
     [fetchRequest setPredicate:predicate];
     
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
     
     if ([addresses count] == 0) {
         self.itemLocation = nil;

@@ -170,9 +170,9 @@
 
 - (void)timerTick:(NSTimer *)timer
 {
-    if ([CCSynchronizationHandler sharedInstance].syncing == YES)
+    if ([CCSynchronizationHandler sharedInstance].syncing == YES || [self canSend] == NO)
         return;
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^{}];
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^(BOOL didSync){}];
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
