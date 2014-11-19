@@ -14,9 +14,11 @@
 
 #import "CCListStoreViewControllerDelegate.h"
 
-#import "CCListInstallerViewController.h"
+#import "CCListInstallerViewControllerDelegate.h"
 
-@interface CCListStoreViewController : UIViewController<CCListStoreViewDelegate, CCListInstallerViewControllerDelegate, CLLocationManagerDelegate>
+#import "CCListOutputViewControllerDelegate.h"
+
+@interface CCListStoreViewController : UIViewController<CCListStoreViewDelegate, CCListInstallerViewControllerDelegate, CCListOutputViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, assign)id<CCListStoreViewControllerDelegate> delegate;
 

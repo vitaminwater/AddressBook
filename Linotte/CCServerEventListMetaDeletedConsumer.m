@@ -14,6 +14,7 @@
 #import "CCServerEvent.h"
 
 #import "CCListMeta.h"
+#import "CCList.h"
 
 @implementation CCServerEventListMetaDeletedConsumer
 {
@@ -28,14 +29,21 @@
 
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];
-    NSArray *metas = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *metas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
+    CCLog(@"Removing %lu metas for list %@", [metas count], list.identifier);
     [[CCModelChangeMonitor sharedInstance] addressMetasRemove:metas];
     for (CCListMeta *meta in metas) {
         [managedObjectContext deleteObject:meta];

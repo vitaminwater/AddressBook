@@ -34,11 +34,21 @@
 {
     NSArray *addressIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
     
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressIdentifiers];
     [fetchRequest setPredicate:predicate];
-    NSArray *alreadyInstalledAddresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *alreadyInstalledAddresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO);
+        });
+        return;
+    }
+    
     NSArray *alreadyInstalledAddressIdentifiers = [alreadyInstalledAddresses valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSPredicate *eventFilter = [NSPredicate predicateWithFormat:@"not (objectIdentifier in %@)", alreadyInstalledAddressIdentifiers];

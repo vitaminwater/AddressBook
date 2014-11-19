@@ -13,5 +13,6 @@
 @property (strong, nonatomic) UIWindow *window;
 
 - (NSURL *)applicationDocumentsDirectory;
+- (NSURL *)applicationLibraryDirectory;
 
 @end

@@ -13,11 +13,17 @@
 
 + (CCListMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
-    NSArray *listMetas = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *listMetas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     CCListMeta *listMeta;
     if ([listMetas count] > 0)
@@ -31,6 +37,7 @@
 
 + (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
 {
+    NSError *error = nil;
     NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListMeta entityName]];
@@ -41,7 +48,13 @@
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
         [fetchRequest setPredicate:predicate];
     }
-    NSArray *alreadyInstalledListMetas = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *alreadyInstalledListMetas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
     NSArray *alreadyInstalledListMetaIdentifiers = [alreadyInstalledListMetas valueForKeyPath:@"identifier"];
     
     NSMutableArray *listMetas = [@[] mutableCopy];

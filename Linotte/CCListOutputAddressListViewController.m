@@ -51,8 +51,7 @@
 
 - (void)loadAddresses:(NSString *)filterString
 {
-    _addresses = [@[] mutableCopy];
-    
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
@@ -65,7 +64,12 @@
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     [fetchRequest setFetchBatchSize:50];
     
-    _addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    _addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        _addresses = @[];
+        CCLog(@"%@", error);
+    }
 }
 
 #pragma mark CCListOutputAddressListViewDelegate methods

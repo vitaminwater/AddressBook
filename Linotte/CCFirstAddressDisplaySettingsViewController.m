@@ -11,10 +11,9 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCCoreDataStack.h"
-
-#import "CCFirstDisplaySettingsView.h"
-
 #import "CCModelChangeMonitor.h"
+
+#import "CCFirstAddressDisplaySettingsView.h"
 
 #import "CCAddress.h"
 
@@ -35,7 +34,7 @@
 
 - (void)loadContentView
 {
-    CCFirstDisplaySettingsView *view = [CCFirstDisplaySettingsView new];
+    CCFirstAddressDisplaySettingsView *view = [CCFirstAddressDisplaySettingsView new];
     view.delegate = self;
     self.contentView = view;
 }

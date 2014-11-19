@@ -27,6 +27,7 @@
 
 #import "CCListViewController.h"
 #import "CCAddAddressViewController.h"
+#import "CCFirstListDisplaySettingsViewController.h"
 
 #import "CCListOutputListViewModel.h"
 #import "CCListViewContentProvider.h"
@@ -41,6 +42,7 @@
 
 @implementation CCListOutputViewController
 {
+    BOOL _listIsNew;
     CCList *_list;
     
     UIButton *_settingsButton;
@@ -49,6 +51,15 @@
     CCAddAddressViewController *_addViewController;
     
     CCListOutputAddressListViewController *_listOutputAddressListViewController;
+}
+
+- (instancetype)initWithList:(CCList *)list listIsNew:(BOOL)listIsNew
+{
+    self = [self initWithList:list];
+    if (self) {
+        _listIsNew = listIsNew;
+    }
+    return self;
 }
 
 - (instancetype)initWithList:(CCList *)list
@@ -87,6 +98,16 @@
     
     [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
     [view setListInfosText:_list.name];
+    
+    if (_listIsNew) {
+        CCFirstListDisplaySettingsViewController *firstAddressDisplaySettingsViewController = [[CCFirstListDisplaySettingsViewController alloc] initWithList:_list];
+        firstAddressDisplaySettingsViewController.delegate = self;
+        [self addChildViewController:firstAddressDisplaySettingsViewController];
+        
+        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view];
+        
+        [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
+    }
 
     [view setupLayout];
 }

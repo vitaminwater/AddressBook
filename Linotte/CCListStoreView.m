@@ -36,6 +36,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    if (_actionResult != nil)
+        [CCActionResultHUD removeActionResult:_actionResult];
+}
+
 - (void)setupList
 {
     CGSize screenSize = [UIScreen mainScreen].bounds.size;

@@ -124,7 +124,8 @@
             [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
 
             [_delegate closeListInstaller:self];
-            [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_INSTALL", @"") delay:1];
+            [_delegate listInstaller:self listInstalled:list];
+            //[CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_INSTALL", @"") delay:1];
         } else {
             [childManagedObjectContext rollback];
         }

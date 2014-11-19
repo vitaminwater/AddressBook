@@ -230,6 +230,21 @@
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
+- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+{
+    if (send == NO)
+        return;
+    
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    
+    CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+    listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
+    listUpdateEvent.date = [NSDate date];
+    listUpdateEvent.localListIdentifier = list.localIdentifier;
+    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notify" : list.notify};
+    [[CCCoreDataStack sharedInstance] saveContext];
+}
+
 - (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send
 {
     if (send == NO)

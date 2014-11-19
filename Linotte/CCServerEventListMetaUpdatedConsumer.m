@@ -46,11 +46,13 @@
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         NSArray *listMetas = [CCListMeta insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts list:list];
 
+        CCLog(@"Updating %lu metas for list %@", [listMetas count], list.identifier);
+
         [CCServerEvent deleteEvents:_events];
         _events = nil;
 
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressMetasAdd:listMetas];
+        [[CCModelChangeMonitor sharedInstance] addressMetasUpdate:listMetas];
         completionBlock(YES);
     }];
 }

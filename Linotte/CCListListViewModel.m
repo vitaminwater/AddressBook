@@ -27,11 +27,17 @@
 
 - (void)loadListItems
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
     
     for (CCList *list in lists) {
         [self.provider addList:list];

@@ -23,6 +23,7 @@
 - (void)listDidRemove:(NSString *)identifier send:(BOOL)send;
 
 - (void)listDidUpdate:(CCList *)list send:(BOOL)send;
+- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send;
 
 - (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send;
 - (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send;

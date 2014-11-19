@@ -10,7 +10,7 @@
 
 #import "CCFirstDisplaySettingsViewDelegate.h"
 
-@interface CCFirstDisplaySettingsView : UIView
+@interface CCFirstAddressDisplaySettingsView : UIView
 
 @property(nonatomic, assign)id<CCFirstDisplaySettingsViewDelegate> delegate;
 

@@ -20,6 +20,7 @@
 
 - (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
@@ -28,7 +29,12 @@
     NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
     [fetchRequest setSortDescriptors:@[dateSortDescriptor]];
     
-    NSArray *events = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *events = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
     
     if ([events count])
         [self sendEvent:[events firstObject] completionBlock:completionBlock];
@@ -57,11 +63,17 @@
                 if (success) {
                     [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
                     
+                    NSError *error = nil;
                     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
                     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localAddressIdentifier];
                     [fetchRequest setPredicate:predicate];
-                    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+                    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                    
+                    if (error != nil) {
+                        CCLog(@"%@", error);
+                        return;
+                    }
                     
                     if ([addresses count] != 0) {
                         CCAddress *address = [addresses firstObject];
@@ -80,11 +92,17 @@
                 if (success) {
                     [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
                     
+                    NSError *error = nil;
                     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
                     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localListIdentifier];
                     [fetchRequest setPredicate:predicate];
-                    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+                    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                    
+                    if (error != nil) {
+                        CCLog(@"%@", error);
+                        return;
+                    }
                     
                     if ([lists count] != 0) {
                         CCList *list = [lists firstObject];
@@ -134,11 +152,18 @@
 
 - (void)setValue:(NSString *)value forKey:(NSString *)key forEventsPredicate:(NSPredicate *)predicate
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
     [fetchRequest setPredicate:predicate];
     
-    NSArray *addressEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addressEvents = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
     for (CCLocalEvent *addressEvent in addressEvents) {
         NSMutableDictionary *parameters = [addressEvent.parameters mutableCopy];
         parameters[key] = value;

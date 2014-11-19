@@ -27,6 +27,7 @@
 {
     // [CCNotificationGenerator scheduleTestLocalNotification:0];
     
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
@@ -35,7 +36,12 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@) && notify = %@", geohash, date, @YES];
     [fetchRequest setPredicate:predicate];
     
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
     
     if ([results count] == 0) {
         return;
@@ -105,10 +111,16 @@
 
 + (void)printLastNotif
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        NSLog(@"%@", error);
+        return;
+    }
     
     for (CCAddress *address in results) {
         NSLog(@"%@ %@", address.name, address.lastnotif);
@@ -117,12 +129,18 @@
 
 + (void)resetLastNotif
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24 * 2];
     
-    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        NSLog(@"%@", error);
+        return;
+    }
     
     for (CCAddress *address in results) {
         address.lastnotif = date;

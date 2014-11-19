@@ -27,13 +27,19 @@
 
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];
-    NSArray *metas = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *metas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
     
     [[CCModelChangeMonitor sharedInstance] addressMetasRemove:metas];
     for (CCAddressMeta *meta in metas) {

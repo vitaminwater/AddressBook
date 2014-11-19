@@ -30,6 +30,7 @@
 - (CCList *)findNextListToProcess
 {
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:-(3 * 24 * 60 * 60)];
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastZonesRefresh < %@", minDate];
@@ -37,7 +38,12 @@
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     [fetchRequest setFetchLimit:1];
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     if ([lists count] == 0)
         return nil;
@@ -74,12 +80,19 @@
         }
         
         BOOL done = NO;
+        NSError *error = nil;
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", list];
         [fetchRequest setPredicate:predicate];
         
-        NSMutableArray *currentListZones = [[managedObjectContext executeFetchRequest:fetchRequest error:NULL] mutableCopy];
+        NSMutableArray *currentListZones = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+            return;
+        }
+        
         NSMutableArray *newListZones = [listZones mutableCopy];
         NSMutableArray *splittedZones = [@[] mutableCopy];
         NSMutableArray *listZonesToDelete = [@[] mutableCopy];

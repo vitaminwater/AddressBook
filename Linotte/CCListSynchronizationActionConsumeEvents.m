@@ -12,13 +12,10 @@
 
 #import "CCLinotteAPI.h"
 
-#import "CCServerEventAddressAddedToListConsumer.h"
-#import "CCServerEventAddressMovedFromListConsumer.h"
-#import "CCServerEventAddressUpdatedConsumer.h"
-#import "CCServerEventAddressUserDataUpdatedConsumer.h"
-#import "CCServerEventAddressMetaAddedConsumer.h"
-#import "CCServerEventAddressMetaUpdatedConsumer.h"
-#import "CCServerEventAddressMetaDeletedConsumer.h"
+#import "CCServerEventListUpdatedConsumer.h"
+#import "CCServerEventListMetaAddedConsumer.h"
+#import "CCServerEventListMetaUpdatedConsumer.h"
+#import "CCServerEventListMetaDeletedConsumer.h"
 
 #import "CCList.h"
 #import "CCListZone.h"
@@ -41,26 +38,29 @@
 - (NSArray *)consumers
 {
     return @[
-             [CCServerEventAddressAddedToListConsumer new],
-             [CCServerEventAddressMovedFromListConsumer new],
-             [CCServerEventAddressUpdatedConsumer new],
-             [CCServerEventAddressUserDataUpdatedConsumer new],
-             [CCServerEventAddressMetaAddedConsumer new],
-             [CCServerEventAddressMetaUpdatedConsumer new],
-             [CCServerEventAddressMetaDeletedConsumer new],
-             ];
+             [CCServerEventListUpdatedConsumer new],
+             [CCServerEventListMetaAddedConsumer new],
+             [CCServerEventListMetaUpdatedConsumer new],
+             [CCServerEventListMetaDeletedConsumer new],
+        ];
 }
 
 - (CCList *)findNextListToProcess
 {
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:-(12 * 60 * 60)];
     
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastUpdate < %@ or serverEvents.@count > 0", minDate];
     [fetchRequest setPredicate:predicate];
     
-    NSMutableArray *lists = [[managedObjectContext executeFetchRequest:fetchRequest error:NULL] mutableCopy];
+    NSMutableArray *lists = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
     
     if ([lists count] == 0)
         return nil;

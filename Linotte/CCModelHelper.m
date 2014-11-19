@@ -47,6 +47,7 @@
 
 + (void)deleteList:(CCList *)list
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSString *identifier = list.identifier;
 
@@ -57,7 +58,12 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND lists.@count = 1", list];
     
     [fetchRequest setPredicate:predicate];
-    NSArray *addressesToDelete = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *addressesToDelete = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        addressesToDelete = @[];
+    }
     
     [[CCModelChangeMonitor sharedInstance] listWillRemove:list send:YES];
     [managedObjectContext deleteObject:list];
@@ -72,12 +78,17 @@
 
 + (CCList *)defaultList
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isdefault = %@", @YES];
     fetchRequest.predicate = predicate;
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+    }
     
     if ([lists count])
         return [lists firstObject];

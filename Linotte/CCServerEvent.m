@@ -22,12 +22,20 @@
 
 + (NSArray *)eventsWithEventType:(CCServerEventEvent)event list:(CCList *)list
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and event = %@", list, @(event)];
     [fetchRequest setPredicate:predicate];
     
-    return [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *events = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    return events;
 }
 
 + (void)deleteEvents:(NSArray *)events

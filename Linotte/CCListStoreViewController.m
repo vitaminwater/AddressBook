@@ -17,6 +17,9 @@
 
 #import "CCLocationMonitor.h"
 
+#import "CCListInstallerViewController.h"
+#import "CCListOutputViewController.h"
+
 #import "CCList.h"
 #import "CCListStoreView.h"
 
@@ -181,6 +184,13 @@
     [((CCListStoreView *)self.view) removeListInstallerView:sender.view completionBlock:^{
         [sender removeFromParentViewController];
     }];
+}
+
+- (void)listInstaller:(CCListInstallerViewController *)sender listInstalled:(CCList *)list
+{
+    CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list listIsNew:YES];
+    listOutputViewController.delegate = self;
+    [self.navigationController pushViewController:listOutputViewController animated:YES];
 }
 
 #pragma mark - NSNotificationCenter methods

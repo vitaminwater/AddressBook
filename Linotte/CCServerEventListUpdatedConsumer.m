@@ -45,6 +45,8 @@
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listInfo];
         
+        CCLog(@"Updating list %@", list.identifier);
+
         [CCServerEvent deleteEvents:_events];
         _events = nil;
 

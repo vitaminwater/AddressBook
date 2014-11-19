@@ -44,6 +44,7 @@
             return;
         }
         
+        NSError *error = nil;
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         NSSortDescriptor *objectIdentifier2SortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"objectIdentifier2" ascending:YES];
         NSArray *sortedAddressMetasDict = [addressMetaDicts sortedArrayUsingDescriptors:@[objectIdentifier2SortDescriptor]];
@@ -55,7 +56,12 @@
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressIdentifiers];
         [fetchRequest setPredicate:predicate];
         [fetchRequest setSortDescriptors:@[identifierSortDescriptor]];
-        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+            return;
+        }
         
         NSUInteger index = 0;
         for (CCAddress *address in addresses) {

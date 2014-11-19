@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCFirstDisplaySettingsView.h"
+#import "CCFirstAddressDisplaySettingsView.h"
 
 #import <HexColors/HexColor.h>
 
 
-@implementation CCFirstDisplaySettingsView
+@implementation CCFirstAddressDisplaySettingsView
 {
     UITextView *_textView;
     UIButton *_enableNotificationButton;

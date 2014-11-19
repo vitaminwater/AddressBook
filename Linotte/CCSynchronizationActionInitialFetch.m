@@ -33,12 +33,19 @@
 
 - (CCList *)findNextListToProcess
 {
+    NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"addresses.@count < zones.@sum.nAddresses and addresses.@count < %@", @(kCCMaxAddressesForList)];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
-    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
+    
     return [lists firstObject];
 }
 

@@ -12,6 +12,7 @@ typedef enum : int16_t {
     CCServerEventAddressMetaAdded,
     CCServerEventAddressMetaUpdated,
     CCServerEventAddressMetaDeleted,
+    CCServerEventListUserDataUpdated,
 } CCServerEventEvent;
 
 @interface CCServerEvent : _CCServerEvent {}
