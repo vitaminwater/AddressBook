@@ -66,14 +66,90 @@
         list = [lists firstObject];
     else {
         list = [self insertInManagedObjectContext:managedObjectContext];
-        list.identifier = dict[@"identifier"];
     }
+    [self setValuesForlist:list fromLinotteDict:dict];
+    return list;
+}
+
++ (NSArray *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
+{
+    NSMutableArray *lists = [@[] mutableCopy];
+    for (NSDictionary *listDict in dictArray) {
+        CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
+        [self setValuesForlist:list fromLinotteDict:listDict];
+        
+        [lists addObject:list];
+    }
+    return lists;
+}
+
++ (NSArray *)insertOrIgnoreInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
+{
+    NSError *error = nil;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+    
+    NSArray *dictArrayIdentifiers = [dictArray valueForKeyPath:@"@unionOfObjects.identifier"];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", dictArrayIdentifiers];
+    [fetchRequest setPredicate:predicate];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
+    
+    NSArray *listIdentifiers = [lists valueForKeyPath:@"@unionOfObjects.identifier"];
+
+    NSMutableArray *insertedLists = [@[] mutableCopy];
+    for (NSDictionary *dict in dictArray) {
+        if ([listIdentifiers containsObject:dict[@"identifier"]] == NO) {
+            CCList *list = [self insertInManagedObjectContext:managedObjectContext];
+            [self setValuesForlist:list fromLinotteDict:dict];
+            [insertedLists addObject:list];
+        }
+    }
+    return insertedLists;
+}
+
++ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
+{
+    NSError *error = nil;
+    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
+    [fetchRequest setPredicate:predicate];
+
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    NSArray *listIdentifiers = [lists valueForKeyPath:@"identifier"];
+    
+    for (NSDictionary *listUserDataDict in dictArray) {
+        NSUInteger listIndex = [listIdentifiers indexOfObject:listUserDataDict[@"identifier"]];
+        if (listIndex != NSNotFound) {
+            CCList *list = lists[listIndex];
+            list.notify = listUserDataDict[@"notification"];
+        }
+    }
+    return lists;
+}
+
++ (void)setValuesForlist:(CCList *)list fromLinotteDict:(NSDictionary *)dict
+{
+    list.identifier = dict[@"identifier"];
     list.name = dict[@"name"];
     list.icon = dict[@"icon"];
-    list.provider = dict[@"provider"];
-    list.providerId = dict[@"provider_id"];
+    list.author = dict[@"author"];
+    list.authorIdentifier = dict[@"author_id"];
+    list.notify = dict[@"notification"] ?: @NO;
     list.owned = @(NO);
-    return list;
 }
 
 @end

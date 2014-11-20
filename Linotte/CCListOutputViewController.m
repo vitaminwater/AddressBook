@@ -200,7 +200,7 @@
 {
     _list.notify = @(enabled);
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidUpdate:_list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:_list send:YES];
 }
 
 #pragma mark - CCListOutputListEmptyViewDelegate methods

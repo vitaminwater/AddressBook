@@ -118,6 +118,12 @@
     }
 }
 
+- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+{
+    if (list.ownedValue == NO)
+        [self.provider refreshListItemContentForObject:list];
+}
+
 #pragma mark - utility methods
 
 - (NSArray *)ownedAddresses:(NSArray *)addresses

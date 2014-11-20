@@ -108,31 +108,19 @@
 
 - (void)addToLinotteButtonPressed
 {
-    NSManagedObjectContext *childManagedObjectContext = [[CCCoreDataStack sharedInstance] childManagedObjectContext];
-    __block CCList *list = [CCList insertOrUpdateInManagedObjectContext:childManagedObjectContext fromLinotteAPIDict:_completeListInfoDict];
+    NSManagedObjectContext *managedObjectContext = [[CCCoreDataStack sharedInstance] managedObjectContext];
+    CCList *list = [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:_completeListInfoDict];
     list.identifier = _identifier;
+    [[CCCoreDataStack sharedInstance] saveContext];
     
-    [[CCLinotteAPI sharedInstance] addList:@{@"list" : list.identifier} completionBlock:^(BOOL success) {
-        if (success) {
-            [[CCCoreDataStack sharedInstance] saveChildManagedObjectContext:childManagedObjectContext];
-            
-            // Get CCList object from main managed object context
-            NSManagedObjectContext *managedObjectContext = [[CCCoreDataStack sharedInstance] managedObjectContext];
-            list = (CCList *)[managedObjectContext objectWithID:[list objectID]];
-            
-            [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
-            [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
-
-            [_delegate closeListInstaller:self];
-            [_delegate listInstaller:self listInstalled:list];
-            //[CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_INSTALL", @"") delay:1];
-        } else {
-            [childManagedObjectContext rollback];
-        }
-    }];
+    [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:YES];
+    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
+    
+    [_delegate closeListInstaller:self];
+    [_delegate listInstaller:self listInstalled:list];
 }
 
-- (void)removeToLinotteButtonPressed
+- (void)removeFromLinotteButtonPressed
 {
     NSString *alertTitle = NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
     

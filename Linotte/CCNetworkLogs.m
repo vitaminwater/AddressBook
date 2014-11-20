@@ -25,7 +25,7 @@
 #define kCCMaxLogsFileSize 1024 * 20
 #define kCCMaxLogsFileToSend 10
 
-#define kCCLogFilePurgeInterval 30
+#define kCCLogFilePurgeInterval 10
 
 @implementation CCNetworkLogs
 {

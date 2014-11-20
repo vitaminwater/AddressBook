@@ -21,9 +21,16 @@
     NSArray *_events;
 }
 
+@dynamic event;
+
+- (CCServerEventEvent)event
+{
+    return CCServerEventAddressMovedFromList;
+}
+
 - (BOOL)hasEventsForList:(CCList *)list
 {
-    _events = [CCServerEvent eventsWithEventType:CCServerEventAddressMovedFromList list:list];
+    _events = [CCServerEvent eventsWithEventType:[self event] list:list];
     return [_events count] != 0;
 }
 
@@ -40,6 +47,9 @@
     
     if (error != nil) {
         CCLog(@"%@", error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO);
+        });
         return;
     }
     

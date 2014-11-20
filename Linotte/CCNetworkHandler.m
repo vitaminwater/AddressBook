@@ -17,10 +17,13 @@
 
 #import "CCSynchronizationHandler.h"
 
+#import "CCUserSynchronizationActionConsumeEvents.h"
+
 #import "CCModelChangeMonitor.h"
 
 #import "CCLinotteAPI.h"
 
+#import "CCUserDefaults.h"
 #import "CCLocalEvent.h"
 #import "CCAddress.h"
 #import "CCList.h"
@@ -93,6 +96,7 @@
             [mixpanel identify:[CCLinotteAPI sharedInstance].identifier];
             if (fromState == kCCFirstStart) {
                 [[mixpanel people] set:@"$created" to:[NSDate date]];
+                CCUD.lastUserEventDate = [NSDate date]; // TODO set this for migration
             }
         }
     } completionBock:^(BOOL success) {
@@ -107,8 +111,6 @@
         }
     }];
 }
-
-
 
 #pragma mark - getter methods
 
@@ -183,12 +185,17 @@
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    
     CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listAddEvent.eventValue = CCLocalEventListCreated;
     listAddEvent.date = [NSDate date];
     listAddEvent.localListIdentifier = list.localIdentifier;
-    listAddEvent.parameters = @{@"name" : list.name};
+    
+    if (list.identifier == nil) {
+        listAddEvent.eventValue = CCLocalEventListCreated;
+        listAddEvent.parameters = @{@"name" : list.name};
+    } else {
+        listAddEvent.eventValue = CCLocalEventListAdded;
+        listAddEvent.parameters = @{@"list" : list.identifier};
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
@@ -241,7 +248,7 @@
     listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
     listUpdateEvent.date = [NSDate date];
     listUpdateEvent.localListIdentifier = list.localIdentifier;
-    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notify" : list.notify};
+    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notification" : @(list.notifyValue)};
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 

@@ -24,9 +24,16 @@
     NSURLSessionTask *_currentConnection;
 }
 
+@dynamic event;
+
+- (CCServerEventEvent)event
+{
+    return CCServerEventListMetaUpdated;
+}
+
 - (BOOL)hasEventsForList:(CCList *)list
 {
-    _events = [CCServerEvent eventsWithEventType:CCServerEventListMetaUpdated list:list];
+    _events = [CCServerEvent eventsWithEventType:[self event] list:list];
     return [_events count] != 0;
 }
 

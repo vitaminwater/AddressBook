@@ -158,7 +158,7 @@
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         list.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list send:YES];
+        [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:list send:YES];
     }
 }
 

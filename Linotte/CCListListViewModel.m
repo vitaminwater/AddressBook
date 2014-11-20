@@ -80,4 +80,9 @@
     [self.provider removeAddresses:addresses fromList:list];
 }
 
+- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+{
+    [self.provider refreshListItemContentForObject:list];
+}
+
 @end

@@ -20,6 +20,13 @@
 
 - (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
+    if (list != nil) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO);
+        });
+        return;
+    }
+    
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
@@ -47,8 +54,8 @@
 
 - (void)sendEvent:(CCLocalEvent *)event completionBlock:(void(^)(BOOL done))completionBlock
 {
-    void (^eventSendRequestEnd)(BOOL success) = ^(BOOL success) {
-        if (success) {
+    void (^eventSendRequestEnd)(BOOL success, NSInteger statusCode) = ^(BOOL success, NSInteger statusCode) {
+        if (success || statusCode == 401) {
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
             [managedObjectContext deleteObject:event];
             [[CCCoreDataStack sharedInstance] saveContext];
@@ -59,7 +66,7 @@
     switch (event.eventValue) {
         case CCLocalEventAddressCreated:
         {
-            [[CCLinotteAPI sharedInstance] createAddress:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
+            [[CCLinotteAPI sharedInstance] createAddress:event.parameters completionBlock:^(BOOL success, NSString *identifier, NSInteger statusCode) {
                 if (success) {
                     [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
                     
@@ -82,13 +89,13 @@
                     
                     [[CCCoreDataStack sharedInstance] saveContext];
                 }
-                eventSendRequestEnd(success);
+                eventSendRequestEnd(success, statusCode);
             }];
         }
             break;
         case CCLocalEventListCreated:
         {
-            [[CCLinotteAPI sharedInstance] createList:event.parameters completionBlock:^(BOOL success, NSString *identifier) {
+            [[CCLinotteAPI sharedInstance] createList:event.parameters completionBlock:^(BOOL success, NSString *identifier, NSInteger statusCode) {
                 if (success) {
                     [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
                     
@@ -111,7 +118,7 @@
                     
                     [[CCCoreDataStack sharedInstance] saveContext];
                 }
-                eventSendRequestEnd(success);
+                eventSendRequestEnd(success, statusCode);
             }];
         }
             break;
@@ -143,6 +150,16 @@
         case CCLocalEventAddressUserDataUpdated:
         {
             [[CCLinotteAPI sharedInstance] updateAddressUserData:event.parameters completionBlock:eventSendRequestEnd];
+        }
+            break;
+        case CCLocalEventListUserDataUpdated:
+        {
+            [[CCLinotteAPI sharedInstance] updateListUserData:event.parameters completionBlock:eventSendRequestEnd];
+        }
+            break;
+        case CCLocalEventListAdded:
+        {
+            [[CCLinotteAPI sharedInstance] addList:event.parameters completionBlock:eventSendRequestEnd];
         }
             break;
         default:

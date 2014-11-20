@@ -1,25 +1,24 @@
 //
-//  CCServerEventAddressMetaUpdatedConsumer.m
+//  CCServerEventListAddedConsumer.m
 //  Linotte
 //
-//  Created by stant on 12/11/14.
+//  Created by stant on 20/11/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCServerEventAddressMetaUpdatedConsumer.h"
+#import "CCServerEventListAddedConsumer.h"
 
-#import "CCLinotteAPI.h"
 #import "CCCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
-#import "CCServerEvent.h"
-#import "CCAddressMeta.h"
+#import "CCLinotteAPI.h"
 
-@implementation CCServerEventAddressMetaUpdatedConsumer
+#import "CCList.h"
+
+@implementation CCServerEventListAddedConsumer
 {
     NSArray *_events;
-    
-    CCList *_currentList;
+
     NSURLSessionTask *_currentConnection;
 }
 
@@ -27,7 +26,7 @@
 
 - (CCServerEventEvent)event
 {
-    return CCServerEventAddressMetaUpdated;
+    return CCServerEventListAdded;
 }
 
 - (BOOL)hasEventsForList:(CCList *)list
@@ -39,10 +38,8 @@
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
-    _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressMetasForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressMetaDicts) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListsForEventIds:eventIds completionBlock:^(BOOL success, NSArray *listsDicts) {
         
-        _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
             completionBlock(NO);
@@ -50,23 +47,19 @@
         }
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSArray *addressMetas = [CCAddressMeta insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts list:list];
+        NSArray *lists = [CCList insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:listsDicts];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
+        
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressMetasUpdate:addressMetas];
+        
+        for (CCList *list in lists) {
+            [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
+        }
+        
         completionBlock(YES);
     }];
-}
-
-#pragma mark - CCModelChangeMonitorDelegate
-
-- (void)listWillRemove:(CCList *)list send:(BOOL)send
-{
-    if (_currentList == list)
-        [_currentConnection cancel];
 }
 
 @end

@@ -4,6 +4,8 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCListAttributes {
+	__unsafe_unretained NSString *author;
+	__unsafe_unretained NSString *authorIdentifier;
 	__unsafe_unretained NSString *avgInactiveDays;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
@@ -20,8 +22,6 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
-	__unsafe_unretained NSString *provider;
-	__unsafe_unretained NSString *providerId;
 } CCListAttributes;
 
 extern const struct CCListRelationships {
@@ -46,6 +46,14 @@ extern const struct CCListRelationships {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCListID* objectID;
+
+@property (nonatomic, strong) NSString* author;
+
+//- (BOOL)validateAuthor:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSString* authorIdentifier;
+
+//- (BOOL)validateAuthorIdentifier:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* avgInactiveDays;
 
@@ -143,14 +151,6 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateOwned:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* provider;
-
-//- (BOOL)validateProvider:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* providerId;
-
-//- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
-
 @property (nonatomic, strong) NSSet *addressMetas;
 
 - (NSMutableSet*)addressMetasSet;
@@ -214,6 +214,12 @@ extern const struct CCListRelationships {
 @end
 
 @interface _CCList (CoreDataGeneratedPrimitiveAccessors)
+
+- (NSString*)primitiveAuthor;
+- (void)setPrimitiveAuthor:(NSString*)value;
+
+- (NSString*)primitiveAuthorIdentifier;
+- (void)setPrimitiveAuthorIdentifier:(NSString*)value;
 
 - (NSNumber*)primitiveAvgInactiveDays;
 - (void)setPrimitiveAvgInactiveDays:(NSNumber*)value;
@@ -286,12 +292,6 @@ extern const struct CCListRelationships {
 
 - (BOOL)primitiveOwnedValue;
 - (void)setPrimitiveOwnedValue:(BOOL)value_;
-
-- (NSString*)primitiveProvider;
-- (void)setPrimitiveProvider:(NSString*)value;
-
-- (NSString*)primitiveProviderId;
-- (void)setPrimitiveProviderId:(NSString*)value;
 
 - (NSMutableSet*)primitiveAddressMetas;
 - (void)setPrimitiveAddressMetas:(NSMutableSet*)value;

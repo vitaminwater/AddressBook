@@ -35,7 +35,7 @@
 - (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
     list = list ?: [_provider findNextListToProcess];
-    if (list == nil) {
+    if (list == nil && [_provider requiresList]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             completionBlock(NO);
         });

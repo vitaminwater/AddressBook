@@ -76,6 +76,12 @@
 		C76A1CFE19C0DEC600EE75E4 /* CCListItems.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CFD19C0DEC600EE75E4 /* CCListItems.m */; };
 		C76C3BD31A1CE8E5000B0DD8 /* CCFirstListDisplaySettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BD21A1CE8E5000B0DD8 /* CCFirstListDisplaySettingsView.m */; };
 		C76C3BD61A1CE907000B0DD8 /* CCFirstListDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BD51A1CE907000B0DD8 /* CCFirstListDisplaySettingsViewController.m */; };
+		C76C3BDF1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BDE1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m */; };
+		C76C3BE51A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BE41A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m */; };
+		C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BE71A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m */; };
+		C76C3BEB1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BEA1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m */; };
+		C76C3BEF1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BEE1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m */; };
+		C76C3BF31A1E411F000B0DD8 /* CCUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BF21A1E411F000B0DD8 /* CCUserDefaults.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
 		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
 		C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */; };
@@ -299,6 +305,18 @@
 		C76C3BD41A1CE907000B0DD8 /* CCFirstListDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFirstListDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		C76C3BD51A1CE907000B0DD8 /* CCFirstListDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFirstListDisplaySettingsViewController.m; sourceTree = "<group>"; };
 		C76C3BD91A1CE928000B0DD8 /* CCFirstListDisplaySettingsViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFirstListDisplaySettingsViewDelegate.h; sourceTree = "<group>"; };
+		C76C3BDD1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUserSynchronizationActionConsumeEvents.h; sourceTree = "<group>"; };
+		C76C3BDE1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUserSynchronizationActionConsumeEvents.m; sourceTree = "<group>"; };
+		C76C3BE31A1E0285000B0DD8 /* CCServerEventListAddedConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventListAddedConsumer.h; sourceTree = "<group>"; };
+		C76C3BE41A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventListAddedConsumer.m; sourceTree = "<group>"; };
+		C76C3BE61A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventListRemovedConsumer.h; sourceTree = "<group>"; };
+		C76C3BE71A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventListRemovedConsumer.m; sourceTree = "<group>"; };
+		C76C3BE91A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCServerEventListUserDataUpdatedConsumer.h; sourceTree = "<group>"; };
+		C76C3BEA1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCServerEventListUserDataUpdatedConsumer.m; sourceTree = "<group>"; };
+		C76C3BED1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionInitialListFetch.h; sourceTree = "<group>"; };
+		C76C3BEE1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionInitialListFetch.m; sourceTree = "<group>"; };
+		C76C3BF11A1E411F000B0DD8 /* CCUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUserDefaults.h; sourceTree = "<group>"; };
+		C76C3BF21A1E411F000B0DD8 /* CCUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUserDefaults.m; sourceTree = "<group>"; };
 		C770A75119AB647700803E75 /* CCAddressSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsView.h; sourceTree = "<group>"; };
 		C770A75219AB647700803E75 /* CCAddressSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressSettingsView.m; sourceTree = "<group>"; };
 		C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsViewDelegate.h; sourceTree = "<group>"; };
@@ -496,9 +514,10 @@
 			children = (
 				C7216B041A110BBC00498CFE /* protocol */,
 				C7216B061A110BE100498CFE /* local events */,
+				C76C3BEC1A1E32A9000B0DD8 /* initial list fetch */,
 				C7216B071A110BEA00498CFE /* refresh zones */,
 				C7216B091A110C0300498CFE /* clean useless zones */,
-				C7216B0A1A110C0E00498CFE /* initial fetch */,
+				C7216B0A1A110C0E00498CFE /* initial zone fetch */,
 				C7216B0B1A110C1800498CFE /* consume events */,
 			);
 			name = actions;
@@ -539,19 +558,20 @@
 			name = "clean useless zones";
 			sourceTree = "<group>";
 		};
-		C7216B0A1A110C0E00498CFE /* initial fetch */ = {
+		C7216B0A1A110C0E00498CFE /* initial zone fetch */ = {
 			isa = PBXGroup;
 			children = (
 				C7216B121A110CCC00498CFE /* CCSynchronizationActionInitialFetch.h */,
 				C7216B131A110CCC00498CFE /* CCSynchronizationActionInitialFetch.m */,
 			);
-			name = "initial fetch";
+			name = "initial zone fetch";
 			sourceTree = "<group>";
 		};
 		C7216B0B1A110C1800498CFE /* consume events */ = {
 			isa = PBXGroup;
 			children = (
 				C7216B8D1A19E5E300498CFE /* consumers protocol */,
+				C76C3BDC1A1E0206000B0DD8 /* user events */,
 				C7216B8B1A19E5C300498CFE /* list events */,
 				C7216B8A1A19E5B800498CFE /* list zone events */,
 				C7216B151A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.h */,
@@ -700,6 +720,7 @@
 				C7216B201A13C73700498CFE /* list meta updated */,
 				C7216B1F1A13C72D00498CFE /* list meta added */,
 				C7216B1E1A13C71E00498CFE /* list update */,
+				C76C3BDA1A1E01E9000B0DD8 /* list user data updated */,
 			);
 			name = consumers;
 			sourceTree = "<group>";
@@ -1413,6 +1434,70 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
+		C76C3BDA1A1E01E9000B0DD8 /* list user data updated */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BE91A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.h */,
+				C76C3BEA1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m */,
+			);
+			name = "list user data updated";
+			sourceTree = "<group>";
+		};
+		C76C3BDC1A1E0206000B0DD8 /* user events */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BE01A1E0250000B0DD8 /* consumers */,
+				C76C3BDD1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.h */,
+				C76C3BDE1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m */,
+			);
+			name = "user events";
+			sourceTree = "<group>";
+		};
+		C76C3BE01A1E0250000B0DD8 /* consumers */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BE11A1E0258000B0DD8 /* list added */,
+				C76C3BE21A1E0263000B0DD8 /* list removed */,
+			);
+			name = consumers;
+			sourceTree = "<group>";
+		};
+		C76C3BE11A1E0258000B0DD8 /* list added */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BE31A1E0285000B0DD8 /* CCServerEventListAddedConsumer.h */,
+				C76C3BE41A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m */,
+			);
+			name = "list added";
+			sourceTree = "<group>";
+		};
+		C76C3BE21A1E0263000B0DD8 /* list removed */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BE61A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.h */,
+				C76C3BE71A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m */,
+			);
+			name = "list removed";
+			sourceTree = "<group>";
+		};
+		C76C3BEC1A1E32A9000B0DD8 /* initial list fetch */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BED1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.h */,
+				C76C3BEE1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m */,
+			);
+			name = "initial list fetch";
+			sourceTree = "<group>";
+		};
+		C76C3BF01A1E40FB000B0DD8 /* user defaults */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3BF11A1E411F000B0DD8 /* CCUserDefaults.h */,
+				C76C3BF21A1E411F000B0DD8 /* CCUserDefaults.m */,
+			);
+			name = "user defaults";
+			sourceTree = "<group>";
+		};
 		C77F8DD51A00F6A300AE2655 /* close button */ = {
 			isa = PBXGroup;
 			children = (
@@ -1911,6 +1996,7 @@
 		C7CE2C991918F06500D37A64 /* model */ = {
 			isa = PBXGroup;
 			children = (
+				C76C3BF01A1E40FB000B0DD8 /* user defaults */,
 				C7CE2C9A1918F07100D37A64 /* core data */,
 			);
 			name = model;
@@ -2391,6 +2477,7 @@
 				C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCMainView.m in Sources */,
 				C7619FD919C6F22900C09F0D /* CCListOptionScrollView.m in Sources */,
+				C76C3BEB1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m in Sources */,
 				C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */,
 				C799AB4D1920CD150096B5A8 /* CCAddAddressViewTableViewCell.m in Sources */,
 				C7216B2F1A13C80300498CFE /* CCServerEventListMetaAddedConsumer.m in Sources */,
@@ -2403,6 +2490,8 @@
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
 				C7C2925319D4B7B100EBF5C3 /* CCListListEmptyView.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddAddressView.m in Sources */,
+				C76C3BE51A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m in Sources */,
+				C76C3BEF1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m in Sources */,
 				C799AB6C19236D4B0096B5A8 /* CCGeohashHelper.m in Sources */,
 				C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */,
 				C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */,
@@ -2444,6 +2533,7 @@
 				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressViewController.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
+				C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */,
 				C7216B411A13C88900498CFE /* CCServerEventAddressUserDataUpdatedConsumer.m in Sources */,
 				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
@@ -2467,6 +2557,7 @@
 				C7619FD119C6D7C300C09F0D /* CCListOptionContainer.m in Sources */,
 				C7619FB319C4419000C09F0D /* CCHomeListViewModel.m in Sources */,
 				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
+				C76C3BF31A1E411F000B0DD8 /* CCUserDefaults.m in Sources */,
 				C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */,
 				C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */,
 				C7A1621E19DEA5FE003EFE5B /* CCLocalEvent.m in Sources */,
@@ -2476,6 +2567,7 @@
 				C7216B441A13C89900498CFE /* CCServerEventAddressMetaAddedConsumer.m in Sources */,
 				C7C2924419D482B300EBF5C3 /* CCAlertView.m in Sources */,
 				C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */,
+				C76C3BDF1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m in Sources */,
 				C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,

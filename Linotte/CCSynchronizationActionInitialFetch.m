@@ -76,19 +76,21 @@
         _currentList = list;
         _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesFromList:list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit completionBlock:^(BOOL success, NSArray *addressesDicts) {
             
-            _currentList = nil;
-            _currentConnection = nil;
             if (success == NO) {
+                _currentList = nil;
+                _currentConnection = nil;
                 completionBlock(NO);
                 return;
             }
             
+            BOOL finished = NO;
             CCLog(@"Fetching zone %@", zone.geohash);
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
             if ([addressesDicts count] != kCCAddressFetchLimit) {
-                zone.firstFetchValue = NO;
+                finished = YES;
                 CCLog(@"Zone %@ completed", zone.geohash);
             }
+            
             NSDate *lastAddressFirstFetchDate = nil;
             NSMutableArray *addresses = [@[] mutableCopy];
             for (NSDictionary *addressDict in addressesDicts) {
@@ -105,11 +107,31 @@
             zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
             if (zone.firstFetchValue == NO) {
                 zone.lastUpdate = [NSDate date];
-                zone.lastEventDate = zone.lastAddressFirstFetchDate;
             }
             
             [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(YES);
+            
+            if (finished == YES) {
+                _currentConnection = [[CCLinotteAPI sharedInstance] fetchListZoneLastEventDate:list.identifier geohash:zone.geohash completionBlock:^(BOOL success, NSDate *lastEventDate) {
+                    
+                    _currentList = nil;
+                    _currentConnection = nil;
+                    if (success == NO) {
+                        completionBlock(NO);
+                        return;
+                    }
+                    
+                    zone.firstFetchValue = NO;
+                    zone.lastEventDate = lastEventDate;
+                    [[CCCoreDataStack sharedInstance] saveContext];
+                    
+                    completionBlock(YES);
+                }];
+            } else {
+                _currentList = nil;
+                _currentConnection = nil;
+                completionBlock(YES);
+            }
         }];
         return;
     }

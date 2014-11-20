@@ -22,6 +22,7 @@
 - (CCList *)findNextListToProcess;
 - (NSArray *)eventsList;
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock;
+- (BOOL)requiresList;
 
 @end
 

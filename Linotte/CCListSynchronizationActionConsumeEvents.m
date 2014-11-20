@@ -25,24 +25,29 @@
 {
     CCList *_currentList;
     NSURLSessionTask *_currentConnection;
+    
+    NSArray *_consumers;
+    NSArray *_events;
 }
 
 - (instancetype)init
 {
     self = [super initWithProvider:self];
     if (self) {
+        _consumers = @[
+                       [CCServerEventListUpdatedConsumer new],
+                       [CCServerEventListMetaAddedConsumer new],
+                       [CCServerEventListMetaUpdatedConsumer new],
+                       [CCServerEventListMetaDeletedConsumer new],
+                       ];
+        _events = [_consumers valueForKeyPath:@"@unionOfObjects.event"];
     }
     return self;
 }
 
 - (NSArray *)consumers
 {
-    return @[
-             [CCServerEventListUpdatedConsumer new],
-             [CCServerEventListMetaAddedConsumer new],
-             [CCServerEventListMetaUpdatedConsumer new],
-             [CCServerEventListMetaDeletedConsumer new],
-        ];
+    return _consumers;
 }
 
 - (CCList *)findNextListToProcess
@@ -79,12 +84,30 @@
 
 - (NSArray *)eventsList
 {
-    return @[@5, @6, @7, @8, @9, @10, @11];
+    return _events;
 }
 
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
     _currentList = list;
+    
+    if (list.lastEventDate == nil) {
+        _currentConnection = [[CCLinotteAPI sharedInstance] fetchListLastEventDate:list.identifier completionBlock:^(BOOL success, NSDate *lastEventDate) {
+        
+            _currentList = nil;
+            _currentConnection = nil;
+            if (success == NO) {
+                completionBlock(NO);
+                return;
+            }
+
+            list.lastEventDate = lastEventDate;
+            [[CCCoreDataStack sharedInstance] saveContext];
+            completionBlock(YES);
+        }];
+        return;
+    }
+    
     _currentConnection = [[CCLinotteAPI sharedInstance] fetchListEvents:list.identifier lastDate:list.lastEventDate completionBlock:^(BOOL success, NSArray *eventsDicts) {
         
         _currentList = nil;
@@ -114,6 +137,11 @@
         [[CCCoreDataStack sharedInstance] saveContext];
         completionBlock(YES);
     }];
+}
+
+- (BOOL)requiresList
+{
+    return YES;
 }
 
 #pragma mark - CCModelChangeMonitorDelegate

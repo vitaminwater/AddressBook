@@ -1,21 +1,21 @@
 //
-//  CCServerEventAddressMetaUpdatedConsumer.m
+//  CCServerEventListUserDataUpdatedConsumer.m
 //  Linotte
 //
-//  Created by stant on 12/11/14.
+//  Created by stant on 20/11/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCServerEventAddressMetaUpdatedConsumer.h"
+#import "CCServerEventListUserDataUpdatedConsumer.h"
 
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
+#import "CCCoreDataStack.h"
 
 #import "CCServerEvent.h"
-#import "CCAddressMeta.h"
+#import "CCList.h"
 
-@implementation CCServerEventAddressMetaUpdatedConsumer
+@implementation CCServerEventListUserDataUpdatedConsumer
 {
     NSArray *_events;
     
@@ -27,7 +27,7 @@
 
 - (CCServerEventEvent)event
 {
-    return CCServerEventAddressMetaUpdated;
+    return CCServerEventAddressUserDataUpdated;
 }
 
 - (BOOL)hasEventsForList:(CCList *)list
@@ -40,7 +40,7 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressMetasForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressMetaDicts) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressUserDataForEventIds:eventIds completionBlock:^(BOOL success, NSArray *userDatas) {
         
         _currentList = nil;
         _currentConnection = nil;
@@ -50,13 +50,17 @@
         }
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSArray *addressMetas = [CCAddressMeta insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts list:list];
+        
+        NSArray *lists = [CCList updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
+        
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] addressMetasUpdate:addressMetas];
+        
+        for (CCList *list in lists) {
+            [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:list send:NO];
+        }
         completionBlock(YES);
     }];
 }

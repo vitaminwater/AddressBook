@@ -11,7 +11,7 @@
 @protocol CCListInstallerViewDelegate <NSObject>
 
 - (void)addToLinotteButtonPressed;
-- (void)removeToLinotteButtonPressed;
+- (void)removeFromLinotteButtonPressed;
 - (void)closeButtonPressed;
 
 @end

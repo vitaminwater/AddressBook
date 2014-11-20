@@ -28,28 +28,32 @@
 {
     CCList *_currentList;
     NSURLSessionTask *_currentConnection;
+    
+    NSArray *_consumers;
+    NSArray *_events;
 }
 
 - (instancetype)init
 {
     self = [super initWithProvider:self];
     if (self) {
-        
+        _consumers = @[
+                       [CCServerEventAddressAddedToListConsumer new],
+                       [CCServerEventAddressMovedFromListConsumer new],
+                       [CCServerEventAddressUpdatedConsumer new],
+                       [CCServerEventAddressUserDataUpdatedConsumer new],
+                       [CCServerEventAddressMetaAddedConsumer new],
+                       [CCServerEventAddressMetaUpdatedConsumer new],
+                       [CCServerEventAddressMetaDeletedConsumer new],
+                       ];
+        _events = [_consumers valueForKeyPath:@"@unionOfObjects.event"];
     }
     return self;
 }
 
 - (NSArray *)consumers
 {
-    return @[
-             [CCServerEventAddressAddedToListConsumer new],
-             [CCServerEventAddressMovedFromListConsumer new],
-             [CCServerEventAddressUpdatedConsumer new],
-             [CCServerEventAddressUserDataUpdatedConsumer new],
-             [CCServerEventAddressMetaAddedConsumer new],
-             [CCServerEventAddressMetaUpdatedConsumer new],
-             [CCServerEventAddressMetaDeletedConsumer new],
-        ];
+    return _consumers;
 }
 
 - (CCList *)findNextListToProcess
@@ -86,7 +90,7 @@
 
 - (NSArray *)eventsList
 {
-    return @[@1, @2, @3, @4];
+    return _events;
 }
 
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
@@ -149,6 +153,11 @@
         [[CCCoreDataStack sharedInstance] saveContext];
         completionBlock(YES);
     }];
+}
+
+- (BOOL)requiresList
+{
+    return YES;
 }
 
 #pragma mark - CCModelChangeMonitorDelegate

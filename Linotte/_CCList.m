@@ -4,6 +4,8 @@
 #import "_CCList.h"
 
 const struct CCListAttributes CCListAttributes = {
+	.author = @"author",
+	.authorIdentifier = @"authorIdentifier",
 	.avgInactiveDays = @"avgInactiveDays",
 	.icon = @"icon",
 	.identifier = @"identifier",
@@ -20,8 +22,6 @@ const struct CCListAttributes CCListAttributes = {
 	.name = @"name",
 	.notify = @"notify",
 	.owned = @"owned",
-	.provider = @"provider",
-	.providerId = @"providerId",
 };
 
 const struct CCListRelationships CCListRelationships = {
@@ -101,6 +101,10 @@ const struct CCListRelationships CCListRelationships = {
 
 	return keyPaths;
 }
+
+@dynamic author;
+
+@dynamic authorIdentifier;
 
 @dynamic avgInactiveDays;
 
@@ -277,10 +281,6 @@ const struct CCListRelationships CCListRelationships = {
 - (void)setPrimitiveOwnedValue:(BOOL)value_ {
 	[self setPrimitiveOwned:[NSNumber numberWithBool:value_]];
 }
-
-@dynamic provider;
-
-@dynamic providerId;
 
 @dynamic addressMetas;
 

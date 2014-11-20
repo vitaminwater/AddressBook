@@ -12,6 +12,7 @@
 
 #import "CCSynchronizationActionProtocol.h"
 #import "CCSynchronizationActionSendLocalEvents.h"
+#import "CCUserSynchronizationActionConsumeEvents.h"
 #import "CCSynchronizationActionRefreshZones.h"
 #import "CCSynchronizationActionCleanUselessZones.h"
 #import "CCSynchronizationActionInitialFetch.h"
@@ -78,6 +79,7 @@
 - (void)setupSynchronizationActions
 {
     _synchronizationActions = @[[CCSynchronizationActionSendLocalEvents new],
+                                [CCUserSynchronizationActionConsumeEvents new],
                                 [CCSynchronizationActionRefreshZones new],
                                 [CCSynchronizationActionCleanUselessZones new],
                                 [CCSynchronizationActionInitialFetch new],
@@ -103,7 +105,7 @@
     if (list != _syncedList) {
         _syncedList = list;
         _syncedListChanged = YES;
-        _synchronizationActionIndex = 1;
+        _synchronizationActionIndex = 0;
     }
     
     if (_syncing == YES)
@@ -117,7 +119,7 @@
 
 - (void)performSynchronizationIterationWithStartSync:(NSTimeInterval)startSync maxDuration:(NSTimeInterval)maxDuration didSync:(BOOL)didSync completionBlock:(void(^)(BOOL didSync))completionBlock
 {
-    if (_synchronizationActionIndex == [_synchronizationActions count]) {
+    if (_synchronizationActionIndex >= [_synchronizationActions count]) {
         _syncedList = nil;
         _syncing = NO;
         completionBlock(didSync);
@@ -136,7 +138,7 @@
     [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL goOnSyncing) {
         if (_syncedListChanged == NO) {
             if (goOnSyncing == YES)
-                _synchronizationActionIndex = _syncedList ? 1 : 0;
+                _synchronizationActionIndex = 0;
             else
                 _synchronizationActionIndex++;
         } else {

@@ -1,22 +1,19 @@
 //
-//  CCServerEventListMetaDeletedConsumer.m
+//  CCServerEventListRemovedConsumer.m
 //  Linotte
 //
-//  Created by stant on 12/11/14.
+//  Created by stant on 20/11/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCServerEventListMetaDeletedConsumer.h"
+#import "CCServerEventListRemovedConsumer.h"
 
 #import "CCCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
-#import "CCServerEvent.h"
-
-#import "CCListMeta.h"
 #import "CCList.h"
 
-@implementation CCServerEventListMetaDeletedConsumer
+@implementation CCServerEventListRemovedConsumer
 {
     NSArray *_events;
 }
@@ -25,7 +22,7 @@
 
 - (CCServerEventEvent)event
 {
-    return CCServerEventListMetaDeleted;
+    return CCServerEventListRemoved;
 }
 
 - (BOOL)hasEventsForList:(CCList *)list
@@ -40,10 +37,10 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListMeta entityName]];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];
-    NSArray *metas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
     if (error != nil) {
         CCLog(@"%@", error);
@@ -53,10 +50,11 @@
         return;
     }
     
-    CCLog(@"Removing %lu metas for list %@", [metas count], list.identifier);
-    [[CCModelChangeMonitor sharedInstance] addressMetasRemove:metas];
-    for (CCListMeta *meta in metas) {
-        [managedObjectContext deleteObject:meta];
+    for (CCList *list in lists) {
+        NSString *identifier = [list.identifier copy];
+        [[CCModelChangeMonitor sharedInstance] listWillRemove:list send:NO];
+        [managedObjectContext deleteObject:list];
+        [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier send:NO];
     }
     
     [CCServerEvent deleteEvents:_events];

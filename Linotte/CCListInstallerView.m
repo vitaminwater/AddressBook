@@ -179,7 +179,7 @@
     if (sender.selected)
         [_delegate addToLinotteButtonPressed];
     else
-        [_delegate removeToLinotteButtonPressed];
+        [_delegate removeFromLinotteButtonPressed];
 }
 
 - (void)closeButtonPressed:(id)sender

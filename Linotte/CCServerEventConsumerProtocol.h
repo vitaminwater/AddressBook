@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CCServerEvent.h"
+
 @class CCList;
 
 @protocol CCServerEventConsumerProtocol <NSObject>
+
+@property(nonatomic, readonly)CCServerEventEvent event;
 
 - (BOOL)hasEventsForList:(CCList *)list;
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock;

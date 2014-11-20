@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14A389" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CCAddress" representedClassName="CCAddress" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
@@ -32,6 +32,8 @@
         <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="categories" inverseEntity="CCAddress" syncable="YES"/>
     </entity>
     <entity name="CCList" representedClassName="CCList" syncable="YES">
+        <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="authorIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="avgInactiveDays" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="icon" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -46,10 +48,8 @@
         <attribute name="lastZonesRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="notify" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="notify" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
-        <attribute name="provider" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="providerId" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>
         <relationship name="addressMetas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCAddressMeta" inverseName="list" inverseEntity="CCAddressMeta" syncable="YES"/>
         <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListMeta" inverseName="list" inverseEntity="CCListMeta" syncable="YES"/>
