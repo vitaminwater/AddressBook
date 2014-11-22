@@ -45,11 +45,13 @@
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         NSArray *lists = [CCList insertOrIgnoreInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:listsDictArray];
         
+        for (CCList *list in lists) {
+            list.ownedValue = [list.authorIdentifier isEqualToString:[CCLinotteAPI sharedInstance].identifier];
+        }
+        
         [[CCCoreDataStack sharedInstance] saveContext];
         
-        for (CCList *list in lists) {
-            [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:NO];
-        }
+        [[CCModelChangeMonitor sharedInstance] listsDidAdd:lists send:NO];
         
         [[CCLinotteAPI sharedInstance] fetchUserLastEventDateWithCompletionBlock:^(BOOL success, NSDate *lastEventDate) {
             if (success == NO) {

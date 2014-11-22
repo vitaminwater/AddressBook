@@ -38,7 +38,7 @@
 + (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
 {
     NSError *error = nil;
-    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    NSArray *identifiers = [dictArray valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListMeta entityName]];
     if (list != nil) {
@@ -55,7 +55,7 @@
         return @[];
     }
     
-    NSArray *alreadyInstalledListMetaIdentifiers = [alreadyInstalledListMetas valueForKeyPath:@"identifier"];
+    NSArray *alreadyInstalledListMetaIdentifiers = [alreadyInstalledListMetas valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSMutableArray *listMetas = [@[] mutableCopy];
     for (NSDictionary *listMetaDict in dictArray) {

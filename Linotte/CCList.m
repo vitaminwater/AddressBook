@@ -15,7 +15,6 @@
     [super awakeFromInsert];
     self.localIdentifier = [[NSUUID UUID] UUIDString];
     self.lastUpdate = [NSDate date];
-    self.lastEventDate = [NSDate date];
 }
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location
@@ -112,10 +111,10 @@
     return insertedLists;
 }
 
-+ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray
++ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray shittyBlock:(void(^)(NSArray *lists))shittyBlock
 {
     NSError *error = nil;
-    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    NSArray *identifiers = [dictArray valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
 
@@ -129,7 +128,9 @@
         return @[];
     }
     
-    NSArray *listIdentifiers = [lists valueForKeyPath:@"identifier"];
+    shittyBlock(lists);
+    
+    NSArray *listIdentifiers = [lists valueForKeyPath:@"@unionOfObjects.identifier"];
     
     for (NSDictionary *listUserDataDict in dictArray) {
         NSUInteger listIndex = [listIdentifiers indexOfObject:listUserDataDict[@"identifier"]];

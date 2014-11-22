@@ -51,10 +51,11 @@
 
 - (void)setNotificationEnabled:(BOOL)enabled
 {
+    [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[_list] send:YES];
     _list.notify = @(enabled);
     
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:_list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[_list] send:YES];
     NSString *identifier = _list.identifier ?: @"NEW";
     [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _list.name, @"identifier": identifier, @"enabled": _list.notify}];
 }

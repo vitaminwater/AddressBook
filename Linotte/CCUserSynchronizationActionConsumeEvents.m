@@ -64,7 +64,6 @@
         }
         
         if ([eventsDicts count] == 0) {
-            [[CCCoreDataStack sharedInstance] saveContext];
             completionBlock(NO);
             return;
         }

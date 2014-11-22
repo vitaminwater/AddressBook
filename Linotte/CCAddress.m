@@ -38,10 +38,10 @@
     return address;
 }
 
-+ (NSArray *)insertOrUpdateInManageObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
++ (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
 {
     NSError *error = nil;
-    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    NSArray *identifiers = [dictArray valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     if (list != nil) {
@@ -58,7 +58,7 @@
         return @[];
     }
     
-    NSArray *alreadyInstalledAddressIdentifiers = [alreadyInstalledAddresses valueForKeyPath:@"identifier"]; // TODO: check is same order
+    NSArray *alreadyInstalledAddressIdentifiers = [alreadyInstalledAddresses valueForKeyPath:@"@unionOfObjects.identifier"]; // TODO: check is same order
     
     NSMutableArray *addresses = [@[] mutableCopy];
     for (NSDictionary *addressDict in dictArray) {
@@ -89,10 +89,10 @@
     return addresses;
 }
 
-+ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list
++ (NSArray *)updateUserDatasInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list shittyBlock:(void(^)(NSArray *addresses))shittyBlock
 {
     NSError *error = nil;
-    NSArray *identifiers = [dictArray valueForKeyPath:@"identifier"];
+    NSArray *identifiers = [dictArray valueForKeyPath:@"@unionOfObjects.identifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     if (list != nil) {
@@ -110,7 +110,9 @@
         return @[];
     }
     
-    NSArray *addressIdentifiers = [addresses valueForKeyPath:@"identifier"];
+    shittyBlock(addresses);
+    
+    NSArray *addressIdentifiers = [addresses valueForKeyPath:@"@unionOfObjects.identifier"];
     
     for (NSDictionary *addressDict in dictArray) {
         NSUInteger addressIndex = [addressIdentifiers indexOfObject:addressDict[@"identifier"]];
@@ -135,6 +137,7 @@
     address.providerId = dict[@"provider_id"];
     address.note = dict[@"note"];
     address.notify = dict[@"notification"];
+    address.isAuthor = dict[@"is_author"];
 }
 
 @end

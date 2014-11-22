@@ -97,7 +97,7 @@
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     
     NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
         return [obj1.name compare:obj2.name];
@@ -118,10 +118,10 @@
     
     CCList *list = _lists[index];
     NSString *identifier = list.identifier;
-    [[CCModelChangeMonitor sharedInstance] listWillRemove:list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsWillRemove:@[list] send:YES];
     [managedObjectContext deleteObject:list];
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsDidRemove:@[identifier] send:YES];
 
     [_lists removeObject:list];
 }

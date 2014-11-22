@@ -17,15 +17,17 @@
 
 @optional
 
-- (void)listDidAdd:(CCList *)list send:(BOOL)send;
+- (void)listsDidAdd:(NSArray *)lists send:(BOOL)send;
 
-- (void)listWillRemove:(CCList *)list send:(BOOL)send;
-- (void)listDidRemove:(NSString *)identifier send:(BOOL)send;
+- (void)listsWillRemove:(NSArray *)lists send:(BOOL)send;
+- (void)listsDidRemove:(NSArray *)identifiers send:(BOOL)send;
 
-- (void)listDidUpdate:(CCList *)list send:(BOOL)send;
-- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send;
+- (void)listsDidUpdate:(NSArray *)lists send:(BOOL)send;
+- (void)listsWillUpdateUserData:(NSArray *)lists send:(BOOL)send;
+- (void)listsDidUpdateUserData:(NSArray *)lists send:(BOOL)send;
 
 - (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send;
+- (void)addressesWillUpdateUserData:(NSArray *)addresses send:(BOOL)send;
 - (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send;
 
 - (void)addresses:(NSArray *)addresses willMoveToList:(CCList *)list send:(BOOL)send;

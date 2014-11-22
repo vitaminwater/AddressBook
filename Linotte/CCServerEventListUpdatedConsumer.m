@@ -58,7 +58,7 @@
         _events = nil;
 
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] listDidUpdate:list send:NO];
+        [[CCModelChangeMonitor sharedInstance] listsDidUpdate:@[list] send:NO];
         completionBlock(YES);
     }];
 }

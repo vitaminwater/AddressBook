@@ -8,6 +8,7 @@ const struct CCAddressAttributes CCAddressAttributes = {
 	.date = @"date",
 	.geohash = @"geohash",
 	.identifier = @"identifier",
+	.isAuthor = @"isAuthor",
 	.lastnotif = @"lastnotif",
 	.latitude = @"latitude",
 	.localIdentifier = @"localIdentifier",
@@ -51,6 +52,11 @@ const struct CCAddressRelationships CCAddressRelationships = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
+	if ([key isEqualToString:@"isAuthorValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"isAuthor"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"latitudeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"latitude"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -77,6 +83,26 @@ const struct CCAddressRelationships CCAddressRelationships = {
 @dynamic geohash;
 
 @dynamic identifier;
+
+@dynamic isAuthor;
+
+- (BOOL)isAuthorValue {
+	NSNumber *result = [self isAuthor];
+	return [result boolValue];
+}
+
+- (void)setIsAuthorValue:(BOOL)value_ {
+	[self setIsAuthor:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveIsAuthorValue {
+	NSNumber *result = [self primitiveIsAuthor];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveIsAuthorValue:(BOOL)value_ {
+	[self setPrimitiveIsAuthor:[NSNumber numberWithBool:value_]];
+}
 
 @dynamic lastnotif;
 

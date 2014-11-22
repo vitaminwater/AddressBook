@@ -31,7 +31,7 @@
 
 #define kCCEventChainLength 10
 
-#define kCCLocalEventListRemoveLocalIdentifierCacheKey @"kCCLocalEventListRemoveLocalIdentifierCacheKey"
+#define kCCLocalEventListRemoveDataCacheKey @"kCCLocalEventListRemoveDataCacheKey"
 
 
 @implementation CCNetworkHandler
@@ -179,76 +179,92 @@
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listDidAdd:(CCList *)list send:(BOOL)send
+- (void)listsDidAdd:(NSArray *)lists send:(BOOL)send
 {
     if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-    CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listAddEvent.date = [NSDate date];
-    listAddEvent.localListIdentifier = list.localIdentifier;
     
-    if (list.identifier == nil) {
-        listAddEvent.eventValue = CCLocalEventListCreated;
-        listAddEvent.parameters = @{@"name" : list.name};
-    } else {
-        listAddEvent.eventValue = CCLocalEventListAdded;
-        listAddEvent.parameters = @{@"list" : list.identifier};
+    for (CCList *list in lists) {
+        CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        listAddEvent.date = [NSDate date];
+        listAddEvent.localListIdentifier = list.localIdentifier;
+        
+        if (list.identifier == nil) {
+            listAddEvent.eventValue = CCLocalEventListCreated;
+            listAddEvent.parameters = @{@"name" : list.name};
+        } else {
+            listAddEvent.eventValue = CCLocalEventListAdded;
+            listAddEvent.parameters = @{@"list" : list.identifier};
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)listWillRemove:(CCList *)list send:(BOOL)send
+- (void)listsWillRemove:(NSArray *)lists send:(BOOL)send
 {
-    [_cache pushCacheEntry:kCCLocalEventListRemoveLocalIdentifierCacheKey value:list.localIdentifier];
+    NSMutableDictionary *removedListsData = [NSMutableDictionary new];
+    
+    for (CCList *list in lists) {
+        removedListsData[list.localIdentifier] = list.identifier ?: @"";
+    }
+    
+    [_cache pushCacheEntry:kCCLocalEventListRemoveDataCacheKey value:removedListsData];
 }
 
-- (void)listDidRemove:(NSString *)identifier send:(BOOL)send
+- (void)listsDidRemove:(NSArray *)identifiers send:(BOOL)send
 {
     if (send == NO)
         return;
     
-    NSString *localIdentifier = [_cache popCacheEntry:kCCLocalEventListRemoveLocalIdentifierCacheKey];
+    NSDictionary *removedListsData = [_cache popCacheEntry:kCCLocalEventListRemoveDataCacheKey];
     
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    CCLocalEvent *listRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listRemoveEvent.eventValue = CCLocalEventListRemoved;
-    listRemoveEvent.date = [NSDate date];
-    listRemoveEvent.localListIdentifier = localIdentifier;
-    if (identifier != nil)
-        listRemoveEvent.parameters = @{@"list": identifier};
+    for (NSString *localIdentifier in removedListsData.allKeys) {
+        NSString *identifier = removedListsData[localIdentifier];
+        CCLocalEvent *listRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        listRemoveEvent.eventValue = CCLocalEventListRemoved;
+        listRemoveEvent.date = [NSDate date];
+        listRemoveEvent.localListIdentifier = localIdentifier;
+        if (identifier != nil && [identifier length] > 0)
+            listRemoveEvent.parameters = @{@"list": identifier};
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)listDidUpdate:(CCList *)list send:(BOOL)send
+- (void)listsDidUpdate:(NSArray *)lists send:(BOOL)send
 {
     if (send == NO)
         return;
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listUpdateEvent.eventValue = CCLocalEventListUpdated;
-    listUpdateEvent.date = [NSDate date];
-    listUpdateEvent.localListIdentifier = list.localIdentifier;
-    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"name" : list.name};
+    for (CCList *list in lists) {
+        CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        listUpdateEvent.eventValue = CCLocalEventListUpdated;
+        listUpdateEvent.date = [NSDate date];
+        listUpdateEvent.localListIdentifier = list.localIdentifier;
+        listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"name" : list.name};
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 
-- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+- (void)listsDidUpdateUserData:(NSArray *)lists send:(BOOL)send
 {
     if (send == NO)
         return;
     
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-    listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
-    listUpdateEvent.date = [NSDate date];
-    listUpdateEvent.localListIdentifier = list.localIdentifier;
-    listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notification" : @(list.notifyValue)};
+    for (CCList *list in lists) {
+        CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+        listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
+        listUpdateEvent.date = [NSDate date];
+        listUpdateEvent.localListIdentifier = list.localIdentifier;
+        listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notification" : @(list.notifyValue)};
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
 

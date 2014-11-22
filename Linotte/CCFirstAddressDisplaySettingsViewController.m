@@ -48,6 +48,7 @@
 
 - (void)setNotificationEnabled:(BOOL)enabled
 {
+    [[CCModelChangeMonitor sharedInstance] addressesWillUpdateUserData:@[_address] send:YES];
     _address.notify = @(enabled);
     
     [[CCCoreDataStack sharedInstance] saveContext];

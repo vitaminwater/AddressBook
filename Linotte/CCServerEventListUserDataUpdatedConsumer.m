@@ -27,7 +27,7 @@
 
 - (CCServerEventEvent)event
 {
-    return CCServerEventAddressUserDataUpdated;
+    return CCServerEventListUserDataUpdated;
 }
 
 - (BOOL)hasEventsForList:(CCList *)list
@@ -40,7 +40,7 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressUserDataForEventIds:eventIds completionBlock:^(BOOL success, NSArray *userDatas) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListUserDataForEventIds:eventIds completionBlock:^(BOOL success, NSArray *userDatas) {
         
         _currentList = nil;
         _currentConnection = nil;
@@ -51,16 +51,16 @@
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         
-        NSArray *lists = [CCList updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas];
+        NSArray *lists = [CCList updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas shittyBlock:^(NSArray *lists) {
+            [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:lists send:NO];
+        }];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;
         
         [[CCCoreDataStack sharedInstance] saveContext];
         
-        for (CCList *list in lists) {
-            [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:list send:NO];
-        }
+        [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:lists send:NO];
         completionBlock(YES);
     }];
 }

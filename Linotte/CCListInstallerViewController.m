@@ -111,9 +111,10 @@
     NSManagedObjectContext *managedObjectContext = [[CCCoreDataStack sharedInstance] managedObjectContext];
     CCList *list = [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:_completeListInfoDict];
     list.identifier = _identifier;
+    list.ownedValue = [list.authorIdentifier isEqualToString:[CCLinotteAPI sharedInstance].identifier];
     [[CCCoreDataStack sharedInstance] saveContext];
     
-    [[CCModelChangeMonitor sharedInstance] listDidAdd:list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
     
     [_delegate closeListInstaller:self];

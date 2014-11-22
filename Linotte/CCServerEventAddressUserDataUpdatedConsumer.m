@@ -51,7 +51,9 @@
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         
-        NSArray *addresses = [CCAddress updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas list:list];
+        NSArray *addresses = [CCAddress updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas list:list shittyBlock:^(NSArray *addresses) {
+            [[CCModelChangeMonitor sharedInstance] addressesWillUpdateUserData:addresses send:NO];
+        }];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;

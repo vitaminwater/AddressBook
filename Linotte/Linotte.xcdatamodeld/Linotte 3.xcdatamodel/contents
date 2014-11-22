@@ -5,6 +5,7 @@
         <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="isAuthor" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastnotif" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="localIdentifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -90,7 +91,7 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="0" positionY="0" width="128" height="285"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="298"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
         <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
         <element name="CCList" positionX="0" positionY="0" width="128" height="388"/>

@@ -14,6 +14,7 @@
 
 #import "CCServerEvent.h"
 #import "CCAddress.h"
+#import "CCAddressMeta.h"
 #import "CCList.h"
 
 @implementation CCServerEventAddressAddedToListConsumer
@@ -66,7 +67,7 @@
     [addressesToAdd addObjectsFromArray:alreadyInstalledAddresses];
     
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addresses) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressesDicts) {
         
         _currentList = nil;
         _currentConnection = nil;
@@ -75,8 +76,23 @@
             return;
         }
         
-        NSArray *newAddresses = [CCAddress insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addresses];
+        NSArray *newAddresses = [CCAddress insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts];
         [addressesToAdd addObjectsFromArray:newAddresses];
+        
+        NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
+        for (CCAddress *address in newAddresses) {
+            NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
+            
+            if (addressDictIndex == NSNotFound)
+                continue;
+            
+            NSDictionary *addressDict = addressesDicts[addressDictIndex];
+            NSArray *metaDictArray = addressDict[@"metas"];
+            
+            NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
+            [list addAddressMetas:[NSSet setWithArray:addressMetas]];
+            [address addMetas:[NSSet setWithArray:addressMetas]];
+        }
         
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd willMoveToList:list send:NO];
         [list addAddresses:[NSSet setWithArray:addressesToAdd]];

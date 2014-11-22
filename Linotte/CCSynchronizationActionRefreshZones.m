@@ -15,6 +15,8 @@
 #import "CCList.h"
 #import "CCListZone.h"
 
+#define kCCDateIntervalDifference -(3 * 24 * 60 * 60)
+
 @implementation CCSynchronizationActionRefreshZones
 {
     CCList *_currentList;
@@ -23,17 +25,17 @@
 
 - (BOOL)listNeedProcess:(CCList *)list
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:-(3 * 24 * 60 * 60)];
+    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     return list.lastZonesRefresh == nil || [list.lastZonesRefresh compare:minDate] == NSOrderedAscending;
 }
 
 - (CCList *)findNextListToProcess
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:-(3 * 24 * 60 * 60)];
+    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastZonesRefresh < %@", minDate];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastZonesRefresh = nil or lastZonesRefresh < %@", minDate];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastZonesRefresh" ascending:YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
@@ -89,6 +91,8 @@
         NSMutableArray *currentListZones = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
         
         if (error != nil) {
+            list.lastZonesRefresh = [NSDate date];
+            [[CCCoreDataStack sharedInstance] saveContext];
             CCLog(@"%@", error);
             return;
         }
@@ -142,6 +146,7 @@
             
         }
         
+        list.lastZonesRefresh = [NSDate date];
         if ([newListZones count] != 0 || [listZonesToDelete count] != 0) {
             for (NSDictionary *listZoneDict in newListZones) {
                 CCListZone *listZone = [CCListZone insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listZoneDict];
@@ -161,15 +166,14 @@
                 [managedObjectContext deleteObject:listZoneToDelete];
             }
             
-            list.lastZonesRefresh = [NSDate date];
             list.lastZoneRefreshLatitudeValue = coordinates.latitude;
             list.lastZoneRefreshLongitudeValue = coordinates.longitude;
             list.lastZoneCleaningLatitudeValue = coordinates.latitude;
             list.lastZoneCleaningLongitudeValue = coordinates.longitude;
-            [[CCCoreDataStack sharedInstance] saveContext];
-
             done = YES;
         }
+        [[CCCoreDataStack sharedInstance] saveContext];
+        
         completionBlock(done);
     }];
 }

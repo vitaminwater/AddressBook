@@ -198,9 +198,10 @@
 
 - (void)notificationEnabled:(BOOL)enabled
 {
+    [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[_list] send:YES];
     _list.notify = @(enabled);
     [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:_list send:YES];
+    [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[_list] send:YES];
 }
 
 #pragma mark - CCListOutputListEmptyViewDelegate methods

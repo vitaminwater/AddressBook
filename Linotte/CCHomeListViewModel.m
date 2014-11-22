@@ -8,6 +8,8 @@
 
 #import "CCHomeListViewModel.h"
 
+#import "NSArray+CCArray.h"
+
 #import "CCCoreDataStack.h"
 #import "CCDictStackCache.h"
 
@@ -16,8 +18,8 @@
 #import "CCAddress.h"
 #import "CCList.h"
 
-#define kCCHomeListViewModelUnownedListsKey @"kCCHomeListViewModelUnownedListsKey"
-#define kCCHomeListViewModelUnownedAddressesKey @"kCCHomeListViewModelUnownedAddressesKey"
+#define kCCHomeListViewModelUnnotifiedAddressesKey @"kCCHomeListViewModelUnnotifiedAddressesKey"
+#define kCCHomeListViewModelNotifiedAddressesKey @"kCCHomeListViewModelNotifiedAddressesKey"
 #define kCCHomeListViewModelAddressMovedFromListsKey @"kCCHomeListViewModelAddressMovedFromListsKey"
 
 @implementation CCHomeListViewModel
@@ -35,7 +37,7 @@
         NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists.owned = %@", @YES];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists.notify = %@", @YES, @YES];
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -51,17 +53,12 @@
         NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @NO];
-        [fetchRequest setPredicate:predicate];
-        
         NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
         
         if (error != nil)
             CCLog(@"%@", error);
         else {
-            for (CCList *list in lists) {
-                [self.provider addList:list];
-            }
+            [self.provider addLists:lists];
         }
     }
 }
@@ -70,82 +67,142 @@
 
 - (void)addressesDidUpdate:(NSArray *)addresses send:(BOOL)send
 {
-    [self.provider refreshListItemContentsForObjects:[self ownedAddresses:addresses]];
+    [self.provider refreshListItemContentsForObjects:[self notifiedAddresses:addresses]];
+}
+
+- (void)addressesWillUpdateUserData:(NSArray *)addresses send:(BOOL)send
+{
+    [self.cache pushCacheEntry:kCCHomeListViewModelNotifiedAddressesKey value:[self notifiedAddresses:addresses]];
 }
 
 - (void)addressesDidUpdateUserData:(NSArray *)addresses send:(BOOL)send
 {
-    [self.provider refreshListItemContentsForObjects:[self ownedAddresses:addresses]];
+    NSArray *preNotifiedAddresses = [self.cache popCacheEntry:kCCHomeListViewModelNotifiedAddressesKey];
+    NSArray *notifiedAddresses = [self notifiedAddresses:addresses];
+    
+    NSArray *addressesToAdd = [notifiedAddresses arrayByRemovingObjectsFromArray:preNotifiedAddresses];
+    NSArray *addressesToRemove = [preNotifiedAddresses arrayByRemovingObjectsFromArray:notifiedAddresses];
+    NSArray *addressesToRefresh = [[addresses arrayByRemovingObjectsFromArray:addressesToAdd] arrayByRemovingObjectsFromArray:addressesToRemove];
+    
+    [self.provider removeAddresses:addressesToRemove];
+    [self.provider addAddresses:addressesToAdd];
+    [self.provider refreshListItemContentsForObjects:addressesToRefresh];
 }
 
-- (void)listDidAdd:(CCList *)list send:(BOOL)send
+- (void)listsDidAdd:(NSArray *)lists send:(BOOL)send
 {
-    if (list.ownedValue == NO) {
-        [self.provider addList:list];
-    }
+    [self.provider addLists:lists];
 }
 
-- (void)listWillRemove:(CCList *)list send:(BOOL)send
+- (void)listsWillRemove:(NSArray *)lists send:(BOOL)send
 {
-    if (list.ownedValue == NO) {
-        [self.provider removeList:list];
-    }
+    [self.cache pushCacheEntry:kCCHomeListViewModelNotifiedAddressesKey value:[self notifiedAddressesForLists:lists]];
+    [self.provider removeLists:lists];
 }
 
-- (void)listDidUpdate:(CCList *)list send:(BOOL)send
+- (void)listsDidRemove:(NSArray *)identifiers send:(BOOL)send
 {
-    if (list.ownedValue == NO)
-        [self.provider refreshListItemContentForObject:list];
+    NSArray *preNotifiedAddresses = [self.cache popCacheEntry:kCCHomeListViewModelNotifiedAddressesKey];
+    NSArray *notifiedAddresses = [self notifiedAddresses:preNotifiedAddresses];
+    
+    NSArray *addressesToRemove = [preNotifiedAddresses arrayByRemovingObjectsFromArray:notifiedAddresses];
+    [self.provider removeAddresses:addressesToRemove];
 }
 
-- (void)addresses:(NSArray *)addresses willMoveToList:(CCList *)list send:(BOOL)send
+- (void)listsDidUpdate:(NSArray *)lists send:(BOOL)send
 {
-    if (list.ownedValue == YES) {
-        NSArray *unownedAddresses = [self unownedAddresses:addresses];
-        [self.provider addAddresses:unownedAddresses];
-    } else {
-        [self.provider addAddresses:addresses toList:list];
+    [self.provider refreshListItemContentsForObjects:lists];
+}
+
+- (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
+{
+    NSArray *notifiedAddresses = [self notifiedAddresses:addresses];
+    [self.provider addAddresses:notifiedAddresses];
+    [self.provider addAddresses:addresses toList:list];
+}
+
+- (void)addresses:(NSArray *)addresses willMoveFromList:(CCList *)list send:(BOOL)send;
+{
+    if (list.notifyValue == YES) {
+        [self.cache pushCacheEntry:kCCHomeListViewModelNotifiedAddressesKey value:[self notifiedAddresses:addresses]];
     }
 }
 
 - (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send
 {
-    if (list.ownedValue == YES) {
-        NSArray *unownedAddresses = [self unownedAddresses:addresses];
-        [self.provider removeAddresses:unownedAddresses];
-    } else {
-        [self.provider removeAddresses:addresses fromList:list];
+    if (list.notifyValue == YES) {
+        NSArray *preNotifiedAddresses = [self.cache popCacheEntry:kCCHomeListViewModelNotifiedAddressesKey];
+        NSArray *notifiedAddresses = [self notifiedAddresses:addresses];
+        
+        NSArray *addressesToAdd = [notifiedAddresses arrayByRemovingObjectsFromArray:preNotifiedAddresses];
+        NSArray *addressesToRemove = [preNotifiedAddresses arrayByRemovingObjectsFromArray:notifiedAddresses];
+        NSArray *addressesToRefresh = [[addresses arrayByRemovingObjectsFromArray:addressesToAdd] arrayByRemovingObjectsFromArray:addressesToRemove];
+
+        [self.provider removeAddresses:addressesToRemove];
+        [self.provider addAddresses:addressesToAdd];
+        [self.provider refreshListItemContentsForObjects:addressesToRefresh];
     }
+    [self.provider removeAddresses:addresses fromList:list];
 }
 
-- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+- (void)listsWillUpdateUserData:(NSArray *)lists send:(BOOL)send
 {
-    if (list.ownedValue == NO)
-        [self.provider refreshListItemContentForObject:list];
+    NSArray *notifiedAddresses = [self notifiedAddressesForLists:lists];
+    [self.cache pushCacheEntry:kCCHomeListViewModelNotifiedAddressesKey value:notifiedAddresses];
+}
+
+- (void)listsDidUpdateUserData:(NSArray *)lists send:(BOOL)send
+{
+    NSArray *preNotifiedAddresses = [self.cache popCacheEntry:kCCHomeListViewModelNotifiedAddressesKey];
+    NSArray *notifiedAddresses = [self notifiedAddressesForLists:lists];
+    
+    NSArray *addressesToAdd = [notifiedAddresses arrayByRemovingObjectsFromArray:preNotifiedAddresses];
+    NSArray *addressesToRemove = [preNotifiedAddresses arrayByRemovingObjectsFromArray:notifiedAddresses];
+    
+    [self.provider refreshListItemContentsForObjects:lists];
+
+    if ([addressesToAdd count] == 0 && [addressesToRemove count] == 0) {
+        return;
+    }
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.provider removeAddresses:addressesToRemove];
+        [self.provider addAddresses:addressesToAdd];
+    });
 }
 
 #pragma mark - utility methods
 
-- (NSArray *)ownedAddresses:(NSArray *)addresses
+- (NSArray *)notifiedAddressesForLists:(NSArray *)lists
 {
-    NSPredicate *ownedAddressesPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(lists, $list, $list.owned = %@).@count != 0", @YES];
-    NSArray *ownedAddresses = [addresses filteredArrayUsingPredicate:ownedAddressesPredicate];
-    return ownedAddresses;
+    NSError *error = nil;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists IN %@ AND SUBQUERY(lists, $list, $list.notify = %@).@count != 0", @YES, lists, @YES];
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *notifiedAddresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return @[];
+    }
+    
+    return notifiedAddresses;
 }
 
-- (NSArray *)unownedAddresses:(NSArray *)addresses
+- (NSArray *)notifiedAddresses:(NSArray *)addresses
 {
-    NSPredicate *unownedAddressesPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(lists, $list, $list.owned = %@).@count = 0", @YES];
-    NSArray *unownedAddresses = [addresses filteredArrayUsingPredicate:unownedAddressesPredicate];
-    return unownedAddresses;
+    NSPredicate *notifiedAddressesPredicate = [NSPredicate predicateWithFormat:@"notify = %@ AND SUBQUERY(lists, $list, $list.notify = %@).@count != 0", @YES, @YES];
+    NSArray *notifiedAddresses = [addresses filteredArrayUsingPredicate:notifiedAddressesPredicate];
+    return notifiedAddresses;
 }
 
-- (NSArray *)unownedLists:(NSArray *)addresses
+- (NSArray *)unnotifiedAddresses:(NSArray *)addresses
 {
-    NSPredicate *unownedListsPredicate = [NSPredicate predicateWithFormat:@"SELF.owned = %@", @NO];
-    NSArray *lists = [addresses valueForKeyPath:@"@distinctUnionOfArrays.lists"];
-    NSArray *unownedLists = [lists filteredArrayUsingPredicate:unownedListsPredicate];
-    return unownedLists;
+    NSPredicate *unnotifiedAddressesPredicate = [NSPredicate predicateWithFormat:@"notify = %@ AND SUBQUERY(lists, $list, $list.notify = %@).@count = 0", @NO, @YES];
+    NSArray *unnotifiedAddresses = [addresses filteredArrayUsingPredicate:unnotifiedAddressesPredicate];
+    return unnotifiedAddresses;
 }
 
 @end

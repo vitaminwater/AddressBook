@@ -13,6 +13,7 @@
 #import "CCLinotteAPI.h"
 
 #import "CCServerEventListUpdatedConsumer.h"
+#import "CCServerEventListUserDataUpdatedConsumer.h"
 #import "CCServerEventListMetaAddedConsumer.h"
 #import "CCServerEventListMetaUpdatedConsumer.h"
 #import "CCServerEventListMetaDeletedConsumer.h"
@@ -21,10 +22,13 @@
 #import "CCListZone.h"
 #import "CCServerEvent.h"
 
+#define kCCDateIntervalDifference -10//-(12 * 60 * 60)
+
 @implementation CCListSynchronizationActionConsumeEvents
 {
     CCList *_currentList;
     NSURLSessionTask *_currentConnection;
+    BOOL _multipleWaitingLists;
     
     NSArray *_consumers;
     NSArray *_events;
@@ -36,6 +40,7 @@
     if (self) {
         _consumers = @[
                        [CCServerEventListUpdatedConsumer new],
+                       [CCServerEventListUserDataUpdatedConsumer new],
                        [CCServerEventListMetaAddedConsumer new],
                        [CCServerEventListMetaUpdatedConsumer new],
                        [CCServerEventListMetaDeletedConsumer new],
@@ -52,12 +57,12 @@
 
 - (CCList *)findNextListToProcess
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:-(12 * 60 * 60)];
     
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastUpdate < %@ or serverEvents.@count > 0", minDate];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and SUBQUERY(serverEvents, $serverEvent, $serverEvent.event in %@).@count > 0", [self eventsList]];
     [fetchRequest setPredicate:predicate];
     
     NSMutableArray *lists = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
@@ -67,18 +72,29 @@
         return nil;
     }
     
+    if ([lists count] == 0) {
+        NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and lastUpdate < %@", minDate];
+        [fetchRequest setPredicate:predicate];
+        
+        lists = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+            return nil;
+        }
+    }
+    
+    _multipleWaitingLists = [lists count] > 1;
+    
     if ([lists count] == 0)
         return nil;
     
-    NSSortDescriptor *eventNumberSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"serverEvents.@count" ascending:NO];
     NSSortDescriptor *lastUpdateSortDesciptor = [NSSortDescriptor sortDescriptorWithKey:@"lastUpdate" ascending:YES];
-    [lists sortedArrayUsingDescriptors:@[eventNumberSortDescriptor, lastUpdateSortDesciptor]];
+    [lists sortUsingDescriptors:@[lastUpdateSortDesciptor]];
     
     CCList *list = [lists firstObject];
-    
-    if (list == nil)
-        return nil;
-    
+
     return list;
 }
 
@@ -90,7 +106,8 @@
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
 {
     _currentList = list;
-    
+    BOOL multipleWaitingLists = _multipleWaitingLists;
+    _multipleWaitingLists = NO;
     if (list.lastEventDate == nil) {
         _currentConnection = [[CCLinotteAPI sharedInstance] fetchListLastEventDate:list.identifier completionBlock:^(BOOL success, NSDate *lastEventDate) {
         
@@ -121,7 +138,7 @@
         
         if ([eventsDicts count] == 0) {
             [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(NO);
+            completionBlock(multipleWaitingLists);
             return;
         }
         

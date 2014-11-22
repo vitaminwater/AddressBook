@@ -12,6 +12,6 @@
 
 #import "CCModelChangeMonitorDelegate.h"
 
-@interface CCSynchronizationActionInitialFetch : NSObject<CCModelChangeMonitorDelegate, CCSynchronizationActionProtocol>
+@interface CCListSynchronizationActionInitialAddressFetch : NSObject<CCModelChangeMonitorDelegate, CCSynchronizationActionProtocol>
 
 @end

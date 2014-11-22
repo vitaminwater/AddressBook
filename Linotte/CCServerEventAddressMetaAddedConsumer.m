@@ -53,16 +53,12 @@
         
         NSError *error = nil;
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSSortDescriptor *objectIdentifier2SortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"objectIdentifier2" ascending:YES];
-        NSArray *sortedAddressMetasDict = [addressMetaDicts sortedArrayUsingDescriptors:@[objectIdentifier2SortDescriptor]];
-        NSArray *addressIdentifiers = [sortedAddressMetasDict valueForKeyPath:@"objectIdentifier2"];
-        NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:sortedAddressMetasDict];
+        NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts];
         
-        NSSortDescriptor *identifierSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"identifier" ascending:YES];
+        NSArray *addressesIdentifiersToLoad = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier2"];
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressIdentifiers];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressesIdentifiersToLoad];
         [fetchRequest setPredicate:predicate];
-        [fetchRequest setSortDescriptors:@[identifierSortDescriptor]];
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
         
         if (error != nil) {
@@ -71,15 +67,23 @@
             return;
         }
         
-        NSUInteger index = 0;
-        for (CCAddress *address in addresses) {
-            for (; index < [addressMetas count]; ++index) {
-                if ([addressIdentifiers[index] isEqualToString:address.identifier] == NO)
-                    break;
-                CCAddressMeta *addressMeta = addressMetas[index];
-                [list addAddressMetasObject:addressMeta];
-                [address addMetasObject:addressMeta];
-            }
+        NSArray *metasIdentifiersFromEvents = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
+        NSArray *addressesIdentifiersLoaded = [addresses valueForKeyPath:@"@unionOfObjects.identifier"];
+        
+        for (CCAddressMeta *addressMeta in addressMetas) {
+            NSUInteger metaIndexFromEvent = [metasIdentifiersFromEvents indexOfObject:addressMeta.identifier];
+            
+            if (metaIndexFromEvent == NSNotFound)
+                continue;
+            
+            NSString *addressIdentifier = ((CCServerEvent *)_events[metaIndexFromEvent]).objectIdentifier2;
+            NSUInteger addressIndex = [addressesIdentifiersLoaded indexOfObject:addressIdentifier];
+            
+            if (addressIndex == NSNotFound)
+                continue;
+
+            CCAddress *address = addresses[addressIndex];
+            [address addMetasObject:addressMeta];
         }
         
         [CCServerEvent deleteEvents:_events];

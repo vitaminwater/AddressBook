@@ -22,7 +22,7 @@
 #define kCCNetworkLogsDirectory @"linotte_logs"
 #define kCCNetworkLogsFileName @"network_logs.log"
 #define kCCNetworkLogsFileNameToSend @"network_logs_to_send_%@.log"
-#define kCCMaxLogsFileSize 1024 * 20
+#define kCCMaxLogsFileSize 1024 * 100
 #define kCCMaxLogsFileToSend 10
 
 #define kCCLogFilePurgeInterval 10

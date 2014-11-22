@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCSynchronizationActionInitialFetch.h"
+#import "CCListSynchronizationActionInitialAddressFetch.h"
 
 #import "CCCoreDataStack.h"
 
@@ -17,8 +17,9 @@
 #import "CCList.h"
 #import "CCListZone.h"
 #import "CCAddress.h"
+#import "CCAddressMeta.h"
 
-@implementation CCSynchronizationActionInitialFetch
+@implementation CCListSynchronizationActionInitialAddressFetch
 {
     CCList *_currentList;
     NSURLSessionTask *_currentConnection;
@@ -36,7 +37,7 @@
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"addresses.@count < zones.@sum.nAddresses and addresses.@count < %@", @(kCCMaxAddressesForList)];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and addresses.@count < zones.@sum.nAddresses and addresses.@count < %@ and SUBQUERY(zones, $zone, $zone.firstFetch = %@).@count != 0", @(kCCMaxAddressesForList), @YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setFetchLimit:1];
     NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -45,6 +46,9 @@
         CCLog(@"%@", error);
         return nil;
     }
+    
+    if ([lists count] == 0)
+        return nil;
     
     return [lists firstObject];
 }
@@ -91,12 +95,22 @@
                 CCLog(@"Zone %@ completed", zone.geohash);
             }
             
-            NSDate *lastAddressFirstFetchDate = nil;
-            NSMutableArray *addresses = [@[] mutableCopy];
-            for (NSDictionary *addressDict in addressesDicts) {
-                CCAddress *address = [CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:addressDict];
-                [addresses addObject:address];
-                lastAddressFirstFetchDate = [[CCLinotteAPI sharedInstance] dateFromString:addressDict[@"date_created"]];
+            NSMutableArray *addresses = [[CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts list:nil] mutableCopy];
+            NSDate *lastAddressFirstFetchDate = [[CCLinotteAPI sharedInstance] dateFromString:[addressesDicts lastObject][@"date_created"]];
+            
+            NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
+            for (CCAddress *address in addresses) {
+                NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
+                
+                if (addressDictIndex == NSNotFound)
+                    continue;
+                
+                NSDictionary *addressDict = addressesDicts[addressDictIndex];
+                NSArray *metaDictArray = addressDict[@"metas"];
+                
+                NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
+                [list addAddressMetas:[NSSet setWithArray:addressMetas]];
+                [address addMetas:[NSSet setWithArray:addressMetas]];
             }
             
             [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:NO];
@@ -105,9 +119,6 @@
             [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:list send:NO];
             
             zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
-            if (zone.firstFetchValue == NO) {
-                zone.lastUpdate = [NSDate date];
-            }
             
             [[CCCoreDataStack sharedInstance] saveContext];
             
@@ -123,6 +134,7 @@
                     
                     zone.firstFetchValue = NO;
                     zone.lastEventDate = lastEventDate;
+                    zone.lastUpdate = [NSDate date];
                     [[CCCoreDataStack sharedInstance] saveContext];
                     
                     completionBlock(YES);

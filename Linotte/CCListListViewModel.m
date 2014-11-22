@@ -39,30 +39,26 @@
         return;
     }
     
-    for (CCList *list in lists) {
-        [self.provider addList:list];
-    }
+    [self.provider addLists:lists];
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
 
-- (void)listDidAdd:(CCList *)list send:(BOOL)send
+- (void)listsDidAdd:(NSArray *)lists send:(BOOL)send
 {
-    [self.provider addList:list];
+    [self.provider addLists:lists];
 }
 
-- (void)listWillRemove:(CCList *)list send:(BOOL)send
+- (void)listsWillRemove:(NSArray *)lists send:(BOOL)send
 {
-    NSUInteger index = [self.provider indexOfListItemContent:list];
-    [self.cache pushCacheEntry:kCCListListViewModelDeletedListIndexKey value:@(index)];
+    NSIndexSet *indexes = [self.provider indexesOfListItemContents:lists handler:^(CCListItem *listItem) {}];
+    [self.cache pushCacheEntry:kCCListListViewModelDeletedListIndexKey value:indexes];
 }
 
-- (void)listDidRemove:(NSString *)identifier send:(BOOL)send
+- (void)listsDidRemove:(NSArray *)identifiers send:(BOOL)send
 {
-    NSUInteger index = [[self.cache popCacheEntry:kCCListListViewModelDeletedListIndexKey] unsignedIntegerValue];
-    if (index == NSNotFound)
-        return;
-    [self.provider deleteItemAtIndex:index];
+    NSIndexSet *indexes = [self.cache popCacheEntry:kCCListListViewModelDeletedListIndexKey];
+    [self.provider deleteItemsAtIndexes:indexes];
 }
 
 - (void)listDidUpdate:(CCList *)list send:(BOOL)send
@@ -80,9 +76,9 @@
     [self.provider removeAddresses:addresses fromList:list];
 }
 
-- (void)listDidUpdateUserData:(CCList *)list send:(BOOL)send
+- (void)listsDidUpdateUserData:(NSArray *)lists send:(BOOL)send
 {
-    [self.provider refreshListItemContentForObject:list];
+    [self.provider refreshListItemContentsForObjects:lists];
 }
 
 @end

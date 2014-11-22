@@ -37,7 +37,7 @@
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
+    NSArray *identifiers = [_events valueForKeyPath:@"@distinctUnionOfObjects.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];

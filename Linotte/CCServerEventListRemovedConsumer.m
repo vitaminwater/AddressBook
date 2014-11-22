@@ -12,6 +12,7 @@
 #import "CCModelChangeMonitor.h"
 
 #import "CCList.h"
+#import "CCAddress.h"
 
 @implementation CCServerEventListRemovedConsumer
 {
@@ -36,7 +37,7 @@
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    NSArray *identifiers = [_events valueForKeyPath:@"@distrinctUnionOfObejcts.objectIdentifier"];
+    NSArray *identifiers = [_events valueForKeyPath:@"@distinctUnionOfObjects.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
     [fetchRequest setPredicate:predicate];
@@ -50,16 +51,36 @@
         return;
     }
     
+    error = nil;
+    NSFetchRequest *addressFetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *addressPredicate = [NSPredicate predicateWithFormat:@"any lists in %@ and lists.@count = 1", lists];
+    [addressFetchRequest setPredicate:addressPredicate];
+    NSArray *addressesToDelete = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO);
+        });
+        return;
+    }
+    
+    NSArray *deletedListsIdentifiers = [lists valueForKeyPath:@"@unionOfObjects.identifier"];
+    [[CCModelChangeMonitor sharedInstance] listsWillRemove:lists send:NO];
     for (CCList *list in lists) {
-        NSString *identifier = [list.identifier copy];
-        [[CCModelChangeMonitor sharedInstance] listWillRemove:list send:NO];
         [managedObjectContext deleteObject:list];
-        [[CCModelChangeMonitor sharedInstance] listDidRemove:identifier send:NO];
     }
     
     [CCServerEvent deleteEvents:_events];
     _events = nil;
     
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] listsDidRemove:deletedListsIdentifiers send:NO];
+    
+    
+    for (CCAddress *address in addressesToDelete) {
+        [managedObjectContext deleteObject:address];
+    }
     [[CCCoreDataStack sharedInstance] saveContext];
     
     dispatch_async(dispatch_get_main_queue(), ^{

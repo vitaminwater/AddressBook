@@ -32,6 +32,7 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 - (instancetype)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
 
 - (void)deleteItemAtIndex:(NSUInteger)index;
+- (void)deleteItemsAtIndexes:(NSIndexSet *)indexes;
 
 - (void)emptyListItems;
 - (void)resortListItems;
@@ -42,8 +43,8 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 - (void)addAddresses:(NSArray *)addresses toList:(CCList *)list;
 - (void)removeAddresses:(NSArray *)addresses;
 - (void)removeAddresses:(NSArray *)addresses fromList:(CCList *)list;
-- (void)addList:(CCList *)list;
-- (void)removeList:(CCList *)list;
+- (void)addLists:(NSArray *)lists;
+- (void)removeLists:(NSArray *)lists;
 
 - (void)refreshListItemContentsForObjects:(NSArray *)objects;
 - (void)refreshListItemContentForObject:(id)object;

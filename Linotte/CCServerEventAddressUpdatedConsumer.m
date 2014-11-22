@@ -50,7 +50,7 @@
         }
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSArray *addresses = [CCAddress insertOrUpdateInManageObjectContext:managedObjectContext fromLinotteAPIDictArray:addressDicts list:list];
+        NSArray *addresses = [CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressDicts list:list];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;

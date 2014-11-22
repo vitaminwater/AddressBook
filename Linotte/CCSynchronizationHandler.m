@@ -11,11 +11,12 @@
 #import <Reachability/Reachability.h>
 
 #import "CCSynchronizationActionProtocol.h"
+#import "CCSynchronizationActionInitialListFetch.h"
 #import "CCSynchronizationActionSendLocalEvents.h"
 #import "CCUserSynchronizationActionConsumeEvents.h"
 #import "CCSynchronizationActionRefreshZones.h"
 #import "CCSynchronizationActionCleanUselessZones.h"
-#import "CCSynchronizationActionInitialFetch.h"
+#import "CCListSynchronizationActionInitialAddressFetch.h"
 #import "CCListSynchronizationActionConsumeEvents.h"
 #import "CCListZoneSynchronizationActionConsumeEvents.h"
 
@@ -79,10 +80,11 @@
 - (void)setupSynchronizationActions
 {
     _synchronizationActions = @[[CCSynchronizationActionSendLocalEvents new],
+                                [CCSynchronizationActionInitialListFetch new],
                                 [CCUserSynchronizationActionConsumeEvents new],
                                 [CCSynchronizationActionRefreshZones new],
                                 [CCSynchronizationActionCleanUselessZones new],
-                                [CCSynchronizationActionInitialFetch new],
+                                [CCListSynchronizationActionInitialAddressFetch new],
                                 [CCListSynchronizationActionConsumeEvents new],
                                 [CCListZoneSynchronizationActionConsumeEvents new]];
 }
@@ -100,6 +102,9 @@
 - (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)(BOOL didSync))completionBlock
 {
     if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
+        return;
+    
+    if (list != nil && list.identifier == nil)
         return;
     
     if (list != _syncedList) {

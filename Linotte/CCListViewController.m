@@ -151,14 +151,16 @@
     CCListItemType type = [_provider listItemTypeAtIndex:index];
     if (type == CCListItemTypeAddress) {
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
+        [[CCModelChangeMonitor sharedInstance] addressesWillUpdateUserData:@[address] send:YES];
         address.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[address] send:YES];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
+        [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[list] send:YES];
         list.notify = @(enabled);
         [[CCCoreDataStack sharedInstance] saveContext];
-        [[CCModelChangeMonitor sharedInstance] listDidUpdateUserData:list send:YES];
+        [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[list] send:YES];
     }
 }
 
