@@ -14,15 +14,21 @@
 #import "CCModelChangeMonitor.h"
 #import "CCModelHelper.h"
 
+#import "CCViewControllerSwiperViewController.h"
+
 #import "CCAlertView.h"
 #import "CCActionResultHUD.h"
+
+#import "CCAnimationDelegator.h"
 
 #import "CCSplashViewController.h"
 
 #import "CCListListViewController.h"
 #import "CCListStoreViewController.h"
 
-#import "CCHomeListViewModel.h"
+#import "CCBookAndNotifiedListViewModel.h"
+#import "CCListListViewModel.h"
+
 #import "CCListViewContentProvider.h"
 
 #import "CCListViewController.h"
@@ -43,8 +49,9 @@
 {
     CCSplashViewController *_splashViewController;
     
-    CCListViewController *_listViewController;
     CCAddAddressViewController *_addViewController;
+    
+    CCAnimationDelegator *_animationDelegator;
 }
 
 // TODO check location enabled
@@ -60,19 +67,32 @@
     [view setupAddView:_addViewController.view];
     [_addViewController didMoveToParentViewController:self];
     
-    CCHomeListViewModel *listModel = [CCHomeListViewModel new];
-    CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
-    _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
-    _listViewController.delegate = self;
-    [self addChildViewController:_listViewController];
-    [view setupListView:(CCListView *)_listViewController.view];
-    [_listViewController didMoveToParentViewController:self];
+    _animationDelegator = [CCAnimationDelegator new];
+    
+    CCBookAndNotifiedListViewModel *bookAndNotifiedModel = [CCBookAndNotifiedListViewModel new];
+    CCListListViewModel *listListModel = [CCListListViewModel new];
+    NSArray *viewControllers = @[[self createListViewControllerWithModel:bookAndNotifiedModel], [self createListViewControllerWithModel:listListModel]];
+    CCViewControllerSwiperViewController *swiperViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:viewControllers];
+    
+    [self addChildViewController:swiperViewController];
+    [view setupListView:swiperViewController.view animationDelegator:_animationDelegator];
+    [swiperViewController didMoveToParentViewController:self];
     
     [view setupLayout];
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.extendedLayoutIncludesOpaqueBars = YES;
+}
+
+- (CCListViewController *)createListViewControllerWithModel:(id<CCListViewModelProtocol>)listViewModel
+{
+    CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listViewModel];
+    CCListViewController *listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
+    listViewController.animatorDelegator = _animationDelegator;
+    listViewController.delegate = self;
+    
+    return listViewController;
 }
 
 - (void)viewDidLoad
@@ -108,13 +128,6 @@
     CCListStoreViewController *listStoreViewController = [CCListStoreViewController new];
     listStoreViewController.delegate = self;
     [self.navigationController pushViewController:listStoreViewController animated:YES];
-}
-
-- (void)showListList
-{
-    CCListListViewController *listListViewController = [CCListListViewController new];
-    listListViewController.delegate = self;
-    [self.navigationController pushViewController:listListViewController animated:YES];
 }
 
 #pragma mark - CCAddAddressViewControllerDelegate methods

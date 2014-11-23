@@ -44,12 +44,14 @@
 		C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B921A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m */; };
 		C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */; };
 		C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B50E719F9845200F39E7F /* CCDictStackCache.m */; };
+		C73183991A22423000A99762 /* CCViewControllerSwiperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183981A22423000A99762 /* CCViewControllerSwiperViewController.m */; };
+		C731839F1A22425400A99762 /* CCViewControllerSwiperView.m in Sources */ = {isa = PBXBuildFile; fileRef = C731839E1A22425400A99762 /* CCViewControllerSwiperView.m */; };
 		C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */; };
 		C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0A19F9551B00ADC1A2 /* CCModelHelper.m */; };
 		C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */; };
 		C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */ = {isa = PBXBuildFile; fileRef = C75EF4F719D8AFBC009BAB3A /* CCAnimationDelegator.m */; };
 		C7619FAD19C4415700C09F0D /* CCListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FAC19C4415600C09F0D /* CCListViewModel.m */; };
-		C7619FB319C4419000C09F0D /* CCHomeListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FB219C4419000C09F0D /* CCHomeListViewModel.m */; };
+		C7619FB319C4419000C09F0D /* CCBookAndNotifiedListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FB219C4419000C09F0D /* CCBookAndNotifiedListViewModel.m */; };
 		C7619FB619C441A400C09F0D /* CCListOutputListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FB519C441A400C09F0D /* CCListOutputListViewModel.m */; };
 		C7619FB919C441BC00C09F0D /* CCListListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FB819C441BC00C09F0D /* CCListListViewModel.m */; };
 		C7619FC119C48C8B00C09F0D /* CCListListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7619FC019C48C8B00C09F0D /* CCListListViewController.m */; };
@@ -219,6 +221,12 @@
 		C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworkLogs.m; sourceTree = "<group>"; };
 		C72B50E619F9845200F39E7F /* CCDictStackCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDictStackCache.h; sourceTree = "<group>"; };
 		C72B50E719F9845200F39E7F /* CCDictStackCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDictStackCache.m; sourceTree = "<group>"; };
+		C73183971A22423000A99762 /* CCViewControllerSwiperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperViewController.h; sourceTree = "<group>"; };
+		C73183981A22423000A99762 /* CCViewControllerSwiperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCViewControllerSwiperViewController.m; sourceTree = "<group>"; };
+		C731839D1A22425400A99762 /* CCViewControllerSwiperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperView.h; sourceTree = "<group>"; };
+		C731839E1A22425400A99762 /* CCViewControllerSwiperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCViewControllerSwiperView.m; sourceTree = "<group>"; };
+		C73183A01A22426200A99762 /* CCViewControllerSwiperViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperViewDelegate.h; sourceTree = "<group>"; };
+		C73183A21A22427E00A99762 /* CCViewControllerSwiperViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperViewControllerDelegate.h; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
 		C73E7D0319F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressNameAutoCompleter.h; sourceTree = "<group>"; };
 		C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressNameAutoCompleter.m; sourceTree = "<group>"; };
@@ -231,8 +239,8 @@
 		C75EF4F719D8AFBC009BAB3A /* CCAnimationDelegator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAnimationDelegator.m; sourceTree = "<group>"; };
 		C7619FAB19C4415600C09F0D /* CCListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListViewModel.h; sourceTree = "<group>"; };
 		C7619FAC19C4415600C09F0D /* CCListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListViewModel.m; sourceTree = "<group>"; };
-		C7619FB119C4419000C09F0D /* CCHomeListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCHomeListViewModel.h; sourceTree = "<group>"; };
-		C7619FB219C4419000C09F0D /* CCHomeListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCHomeListViewModel.m; sourceTree = "<group>"; };
+		C7619FB119C4419000C09F0D /* CCBookAndNotifiedListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBookAndNotifiedListViewModel.h; sourceTree = "<group>"; };
+		C7619FB219C4419000C09F0D /* CCBookAndNotifiedListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBookAndNotifiedListViewModel.m; sourceTree = "<group>"; };
 		C7619FB419C441A400C09F0D /* CCListOutputListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputListViewModel.h; sourceTree = "<group>"; };
 		C7619FB519C441A400C09F0D /* CCListOutputListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputListViewModel.m; sourceTree = "<group>"; };
 		C7619FB719C441BC00C09F0D /* CCListListViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListListViewModel.h; sourceTree = "<group>"; };
@@ -754,6 +762,51 @@
 			name = "dict cache";
 			sourceTree = "<group>";
 		};
+		C73183961A22420000A99762 /* view controller swiper */ = {
+			isa = PBXGroup;
+			children = (
+				C73183A11A22426700A99762 /* protococol */,
+				C731839A1A22423400A99762 /* ui */,
+				C73183971A22423000A99762 /* CCViewControllerSwiperViewController.h */,
+				C73183981A22423000A99762 /* CCViewControllerSwiperViewController.m */,
+			);
+			name = "view controller swiper";
+			sourceTree = "<group>";
+		};
+		C731839A1A22423400A99762 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C731839B1A22423D00A99762 /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C731839B1A22423D00A99762 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C731839C1A22424000A99762 /* protocol */,
+				C731839D1A22425400A99762 /* CCViewControllerSwiperView.h */,
+				C731839E1A22425400A99762 /* CCViewControllerSwiperView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C731839C1A22424000A99762 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C73183A01A22426200A99762 /* CCViewControllerSwiperViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C73183A11A22426700A99762 /* protococol */ = {
+			isa = PBXGroup;
+			children = (
+				C73183A21A22427E00A99762 /* CCViewControllerSwiperViewControllerDelegate.h */,
+			);
+			name = protococol;
+			sourceTree = "<group>";
+		};
 		C73E7D0119F7D91200ADC1A2 /* autocomplete */ = {
 			isa = PBXGroup;
 			children = (
@@ -811,40 +864,10 @@
 			isa = PBXGroup;
 			children = (
 				C7A161F019D99B7A003EFE5B /* protocol */,
-				C7619FB019C4416E00C09F0D /* lists */,
-				C7619FAF19C4416600C09F0D /* list output */,
-				C7619FAE19C4415F00C09F0D /* home */,
 				C7619FAB19C4415600C09F0D /* CCListViewModel.h */,
 				C7619FAC19C4415600C09F0D /* CCListViewModel.m */,
 			);
 			name = model;
-			sourceTree = "<group>";
-		};
-		C7619FAE19C4415F00C09F0D /* home */ = {
-			isa = PBXGroup;
-			children = (
-				C7619FB119C4419000C09F0D /* CCHomeListViewModel.h */,
-				C7619FB219C4419000C09F0D /* CCHomeListViewModel.m */,
-			);
-			name = home;
-			sourceTree = "<group>";
-		};
-		C7619FAF19C4416600C09F0D /* list output */ = {
-			isa = PBXGroup;
-			children = (
-				C7619FB419C441A400C09F0D /* CCListOutputListViewModel.h */,
-				C7619FB519C441A400C09F0D /* CCListOutputListViewModel.m */,
-			);
-			name = "list output";
-			sourceTree = "<group>";
-		};
-		C7619FB019C4416E00C09F0D /* lists */ = {
-			isa = PBXGroup;
-			children = (
-				C7619FB719C441BC00C09F0D /* CCListListViewModel.h */,
-				C7619FB819C441BC00C09F0D /* CCListListViewModel.m */,
-			);
-			name = lists;
 			sourceTree = "<group>";
 		};
 		C7619FBB19C480F400C09F0D /* protocol */ = {
@@ -858,6 +881,7 @@
 		C7619FBE19C48C7800C09F0D /* list list */ = {
 			isa = PBXGroup;
 			children = (
+				C76C3C0A1A20E11E000B0DD8 /* list view model */,
 				C7619FC319C48C9300C09F0D /* protocol */,
 				C7619FC219C48C8E00C09F0D /* ui */,
 				C7619FBF19C48C8B00C09F0D /* CCListListViewController.h */,
@@ -1281,6 +1305,7 @@
 		C76A1CE619C0CA0600EE75E4 /* list output */ = {
 			isa = PBXGroup;
 			children = (
+				C76C3C0B1A20E138000B0DD8 /* list view model */,
 				C7C2925619D4BA3000EBF5C3 /* address list */,
 				C7C2924619D4B09C00EBF5C3 /* settings */,
 				C76A1CEA19C0CA3400EE75E4 /* protocol */,
@@ -1499,6 +1524,70 @@
 				C76C3BF21A1E411F000B0DD8 /* CCUserDefaults.m */,
 			);
 			name = "user defaults";
+			sourceTree = "<group>";
+		};
+		C76C3C071A20CFEF000B0DD8 /* sub view controller */ = {
+			isa = PBXGroup;
+			children = (
+				C73183961A22420000A99762 /* view controller swiper */,
+				C7CE2CA51918F0C600D37A64 /* add address */,
+				C7619FDA19C97D0F00C09F0D /* add list */,
+				C7619FE719CC226900C09F0D /* settings */,
+				C7CE2CA61918F0E500D37A64 /* list */,
+				C7C946FB19FD568B00CBD29C /* list installer */,
+			);
+			name = "sub view controller";
+			sourceTree = "<group>";
+		};
+		C76C3C081A20E0D3000B0DD8 /* list view model */ = {
+			isa = PBXGroup;
+			children = (
+				C76C3C0D1A20E193000B0DD8 /* last notifications */,
+				C76C3C0C1A20E165000B0DD8 /* lists only */,
+				C76C3C091A20E0DF000B0DD8 /* lists and notifs */,
+			);
+			name = "list view model";
+			sourceTree = "<group>";
+		};
+		C76C3C091A20E0DF000B0DD8 /* lists and notifs */ = {
+			isa = PBXGroup;
+			children = (
+				C7619FB119C4419000C09F0D /* CCBookAndNotifiedListViewModel.h */,
+				C7619FB219C4419000C09F0D /* CCBookAndNotifiedListViewModel.m */,
+			);
+			name = "lists and notifs";
+			sourceTree = "<group>";
+		};
+		C76C3C0A1A20E11E000B0DD8 /* list view model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "list view model";
+			sourceTree = "<group>";
+		};
+		C76C3C0B1A20E138000B0DD8 /* list view model */ = {
+			isa = PBXGroup;
+			children = (
+				C7619FB419C441A400C09F0D /* CCListOutputListViewModel.h */,
+				C7619FB519C441A400C09F0D /* CCListOutputListViewModel.m */,
+			);
+			name = "list view model";
+			sourceTree = "<group>";
+		};
+		C76C3C0C1A20E165000B0DD8 /* lists only */ = {
+			isa = PBXGroup;
+			children = (
+				C7619FB719C441BC00C09F0D /* CCListListViewModel.h */,
+				C7619FB819C441BC00C09F0D /* CCListListViewModel.m */,
+			);
+			name = "lists only";
+			sourceTree = "<group>";
+		};
+		C76C3C0D1A20E193000B0DD8 /* last notifications */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "last notifications";
 			sourceTree = "<group>";
 		};
 		C77F8DD51A00F6A300AE2655 /* close button */ = {
@@ -1957,7 +2046,9 @@
 			children = (
 				C76A3C4E1999113F00998F9F /* resources */,
 				C7E1E4EF191A468800602A4D /* utils */,
+				C77F8E041A023CBE00AE2655 /* synchronization */,
 				C7CE2CA31918F0AF00D37A64 /* view controllers */,
+				C76C3C071A20CFEF000B0DD8 /* sub view controller */,
 				C7CE2C991918F06500D37A64 /* model */,
 				C7CE2C751918E48800D37A64 /* CCAppDelegate.h */,
 				C7CE2C761918E48800D37A64 /* CCAppDelegate.m */,
@@ -2024,16 +2115,11 @@
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C7CE2CA51918F0C600D37A64 /* add address */,
-				C7619FDA19C97D0F00C09F0D /* add list */,
-				C7CE2CA61918F0E500D37A64 /* list */,
-				C7C946FB19FD568B00CBD29C /* list installer */,
 				C7619FBE19C48C7800C09F0D /* list list */,
 				C76A1CE619C0CA0600EE75E4 /* list output */,
 				C76A1CD519BF70C300EE75E4 /* list store */,
 				C7E1E530191A614B00602A4D /* main */,
 				C799AB5019216BDB0096B5A8 /* output */,
-				C7619FE719CC226900C09F0D /* settings */,
 				C7FE2C70199793F300D7D0DC /* splash */,
 			);
 			name = "view controllers";
@@ -2141,7 +2227,6 @@
 			isa = PBXGroup;
 			children = (
 				C7216BA61A1B62BD00498CFE /* network logs */,
-				C77F8E041A023CBE00AE2655 /* synchronization */,
 				C72B50E519F9844100F39E7F /* dict cache */,
 				C73E7D0819F9550B00ADC1A2 /* model helper */,
 				C73E7D0119F7D91200ADC1A2 /* autocomplete */,
@@ -2181,6 +2266,7 @@
 		C7E1E530191A614B00602A4D /* main */ = {
 			isa = PBXGroup;
 			children = (
+				C76C3C081A20E0D3000B0DD8 /* list view model */,
 				C7E1E538191A62C200602A4D /* ui */,
 				C7E1E533191A618900602A4D /* CCMainViewController.h */,
 				C7E1E534191A618900602A4D /* CCMainViewController.m */,
@@ -2561,7 +2647,8 @@
 				C7C2924C19D4B11300EBF5C3 /* CCMainListEmptyView.m in Sources */,
 				C76A1CF219C0CA7F00EE75E4 /* CCListOutputView.m in Sources */,
 				C7619FD119C6D7C300C09F0D /* CCListOptionContainer.m in Sources */,
-				C7619FB319C4419000C09F0D /* CCHomeListViewModel.m in Sources */,
+				C731839F1A22425400A99762 /* CCViewControllerSwiperView.m in Sources */,
+				C7619FB319C4419000C09F0D /* CCBookAndNotifiedListViewModel.m in Sources */,
 				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
 				C76C3BF31A1E411F000B0DD8 /* CCUserDefaults.m in Sources */,
 				C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */,
@@ -2587,6 +2674,7 @@
 				C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */,
 				C76A1CFE19C0DEC600EE75E4 /* CCListItems.m in Sources */,
 				C76C3BD61A1CE907000B0DD8 /* CCFirstListDisplaySettingsViewController.m in Sources */,
+				C73183991A22423000A99762 /* CCViewControllerSwiperViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

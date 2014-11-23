@@ -25,6 +25,7 @@
 #import "CCListOutputViewController.h"
 
 #import "CCListView.h"
+#import "CCAnimationDelegator.h"
 
 #import "CCAddress.h"
 #import "CCList.h"
@@ -57,7 +58,7 @@
 
 - (void)loadView
 {
-    CCListView *listView = [CCListView new];
+    CCListView *listView = [[CCListView alloc] initWithAnimationDelegator:_animatorDelegator];
     listView.delegate = self;
     self.view = listView;
     

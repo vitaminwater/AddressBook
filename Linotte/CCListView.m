@@ -28,12 +28,12 @@
     UITableView *_tableView;
 }
 
-- (instancetype)init
+- (instancetype)initWithAnimationDelegator:(CCAnimationDelegator *)animationDelegator
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        _animatorDelegator = [CCAnimationDelegator new];
+        _animatorDelegator = animationDelegator;
         
         [self setupTableView];
         [self setupLayout];
@@ -268,6 +268,13 @@
 {
     [_animatorDelegator fingerLifted];
 }
+
+/*- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    if (point.x < 15 || point.x > self.frame.size.width - 15)
+        return nil;
+    return _tableView;
+}*/
 
 #pragma mark - setter methods
 

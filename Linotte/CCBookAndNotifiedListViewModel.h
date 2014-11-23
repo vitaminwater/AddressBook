@@ -11,6 +11,6 @@
 
 #import "CCModelChangeMonitorDelegate.h"
 
-@interface CCHomeListViewModel : CCListViewModel<CCListViewModelProtocol, CCModelChangeMonitorDelegate>
+@interface CCBookAndNotifiedListViewModel : CCListViewModel<CCListViewModelProtocol, CCModelChangeMonitorDelegate>
 
 @end

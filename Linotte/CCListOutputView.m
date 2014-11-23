@@ -176,8 +176,9 @@
                 topConstraint.constant = -weakListHeaderView.bounds.size.height;
             else
                 topConstraint.constant = 0;
-            [UIView animateWithDuration:0.1 animations:^{
+            [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.4 initialSpringVelocity:1 options:0 animations:^{
                 [weakSelf layoutIfNeeded];
+            } completion:^(BOOL finished){
             }];
         }];
     }

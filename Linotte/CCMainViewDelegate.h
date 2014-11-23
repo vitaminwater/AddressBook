@@ -11,6 +11,5 @@
 @protocol CCMainViewDelegate <NSObject>
 
 - (void)showListStore;
-- (void)showListList;
 
 @end

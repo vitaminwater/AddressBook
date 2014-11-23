@@ -25,6 +25,8 @@
 
 #import "CCListOutputView.h"
 
+#import "CCAnimationDelegator.h"
+
 #import "CCListViewController.h"
 #import "CCAddAddressViewController.h"
 #import "CCFirstListDisplaySettingsViewController.h"
@@ -87,9 +89,11 @@
         [_addViewController didMoveToParentViewController:self];
     }
     
+    CCAnimationDelegator *animationDelegator = [CCAnimationDelegator new];
     CCListOutputListViewModel *listModel = [[CCListOutputListViewModel alloc] initWithList:_list];
     CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listModel];
     _listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
+    _listViewController.animatorDelegator = animationDelegator;
     _listViewController.delegate = self;
     _listViewController.deletableItems = _list.ownedValue;
     [self addChildViewController:_listViewController];

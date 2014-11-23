@@ -20,12 +20,14 @@
 
 @class CCAddress;
 @class CCListViewContentProvider;
+@class CCAnimationDelegator;
 
 @interface CCListViewController : UIViewController<CCListViewDelegate, CCListViewContentProviderDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;
 @property(nonatomic, assign)BOOL deletableItems;
+@property(nonatomic, strong)CCAnimationDelegator *animatorDelegator;
 
 - (instancetype)initWithProvider:(CCListViewContentProvider *)provider;
 

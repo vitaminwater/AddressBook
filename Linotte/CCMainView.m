@@ -12,8 +12,6 @@
 
 #import "CCAnimationDelegator.h"
 
-#import "CCListView.h"
-
 #import "CCListOptionContainer.h"
 
 #import "CCFlatColorButton.h"
@@ -24,7 +22,9 @@
 {
     UIView *_statusBar;
     UIView *_addView;
-    CCListView *_listView;
+    UIView *_listView;
+    
+    CCAnimationDelegator *_animationDelegator;
 
     CCListOptionContainer *_buttonContainer;
     CGFloat _panVelocity;
@@ -60,7 +60,7 @@
     [self insertSubview:_buttonContainer belowSubview:_statusBar];
     
     [_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"discover"] title:NSLocalizedString(@"DISCOVER_LIST", @"") titleColor:[UIColor colorWithHexString:@"#ffae64"] target:self action:@selector(discoverPressed:)];
-    [_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"book_pink"] title:NSLocalizedString(@"MY_LISTS", @"") titleColor:[UIColor colorWithHexString:@"f4607c"] target:self action:@selector(myListsPressed:)];
+    //[_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"book_pink"] title:NSLocalizedString(@"MY_LISTS", @"") titleColor:[UIColor colorWithHexString:@"f4607c"] target:self action:@selector(myListsPressed:)];
 }
 
 - (void)setupAddView:(UIView *)addView
@@ -70,8 +70,9 @@
     [self addSubview:_addView];
 }
 
-- (void)setupListView:(CCListView *)listView
+- (void)setupListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animationDelegator
 {
+    _animationDelegator = animationDelegator;
     _listView = listView;
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
     [self insertSubview:_listView belowSubview:_statusBar];
@@ -129,7 +130,7 @@
         
         __weak typeof(self) weakSelf = self;
         __weak typeof(_buttonContainer) weakButtonContainer = _buttonContainer;
-        [_listView.animatorDelegator setTimeLineAnimationItemForKey:kCCMainViewTopListConstraintAnimator animationBlock:^BOOL(CGFloat value) {
+        [_animationDelegator setTimeLineAnimationItemForKey:kCCMainViewTopListConstraintAnimator animationBlock:^BOOL(CGFloat value) {
             if (value > 0) {
                 if (topConstraint.constant >= weakButtonContainer.bounds.size.height)
                     return NO;
@@ -149,8 +150,9 @@
                 topConstraint.constant = weakButtonContainer.bounds.size.height;
             else
                 topConstraint.constant = 5;
-            [UIView animateWithDuration:0.1 animations:^{
+            [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.4 initialSpringVelocity:1 options:0 animations:^{
                 [weakSelf layoutIfNeeded];
+            } completion:^(BOOL finished){
             }];
         }];
     }
@@ -164,11 +166,6 @@
 }
 
 #pragma mark - UIbutton target methods
-
-- (void)myListsPressed:(UIButton *)sender
-{
-    [_delegate showListList];
-}
 
 - (void)discoverPressed:(UIButton *)sender
 {

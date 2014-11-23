@@ -10,7 +10,7 @@
 
 #import "CCMainViewDelegate.h"
 
-@class CCListView;
+@class CCAnimationDelegator;
 
 @interface CCMainView : UIView
 
@@ -18,7 +18,7 @@
 @property(nonatomic, assign)id<CCMainViewDelegate> delegate;
 
 - (void)setupAddView:(UIView *)addView;
-- (void)setupListView:(CCListView *)listView;
+- (void)setupListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animationDelegator;
 
 - (void)setupLayout;
 

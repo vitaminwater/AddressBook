@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCHomeListViewModel.h"
+#import "CCBookAndNotifiedListViewModel.h"
 
 #import "NSArray+CCArray.h"
 
@@ -22,7 +22,7 @@
 #define kCCHomeListViewModelNotifiedAddressesKey @"kCCHomeListViewModelNotifiedAddressesKey"
 #define kCCHomeListViewModelAddressMovedFromListsKey @"kCCHomeListViewModelAddressMovedFromListsKey"
 
-@implementation CCHomeListViewModel
+@implementation CCBookAndNotifiedListViewModel
 
 @synthesize provider;
 
