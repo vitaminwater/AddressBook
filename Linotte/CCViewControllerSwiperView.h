@@ -14,6 +14,6 @@
 
 @property(nonatomic, weak)id<CCViewControllerSwiperViewDelegate> delegate;
 
-- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews;
+- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly;
 
 @end

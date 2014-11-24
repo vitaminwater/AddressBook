@@ -13,20 +13,29 @@
     NSArray *_viewControllerViews;
     NSUInteger _currentViewIndex;
     
-    UIScreenEdgePanGestureRecognizer *_prevGestureRecognizer;
-    UIScreenEdgePanGestureRecognizer *_nextGestureRecognizer;
+    UIView *_titleView;
+    UILabel *_titleLabel;
+    UIPageControl *_pageControl;
     
+    UIGestureRecognizer *_prevGestureRecognizer;
+    UIGestureRecognizer *_nextGestureRecognizer;
+    
+    BOOL _edgeOnly;
+
     NSLayoutConstraint *_centerXConstraint;
+    
+    BOOL _cancelledHideTitle;
 }
 
-- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews
+- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        
+        _edgeOnly = edgeOnly;
         [self setupGestureRecognizers];
         [self setupViewControllerViews:viewControllerViews];
+        [self setupTitleLabel];
         [self setupLayout];
     }
     return self;
@@ -34,17 +43,26 @@
 
 - (void)setupGestureRecognizers
 {
-    _prevGestureRecognizer = [UIScreenEdgePanGestureRecognizer new];
-    _prevGestureRecognizer.edges = UIRectEdgeLeft;
+    if (_edgeOnly) {
+        UIScreenEdgePanGestureRecognizer *prevGestureRecognizer = [UIScreenEdgePanGestureRecognizer new];
+        prevGestureRecognizer.edges = UIRectEdgeLeft;
+        [self addGestureRecognizer:prevGestureRecognizer];
+        
+        UIScreenEdgePanGestureRecognizer *nextGestureRecognizer = [UIScreenEdgePanGestureRecognizer new];
+        nextGestureRecognizer.edges = UIRectEdgeRight;
+        [self addGestureRecognizer:nextGestureRecognizer];
+        _prevGestureRecognizer = prevGestureRecognizer;
+        _nextGestureRecognizer = nextGestureRecognizer;
+    } else {
+        UIPanGestureRecognizer *prevGestureRecognizer = [UIPanGestureRecognizer new];
+        [self addGestureRecognizer:prevGestureRecognizer];
+        _prevGestureRecognizer = prevGestureRecognizer;
+        _nextGestureRecognizer = nil;
+    }
     [_prevGestureRecognizer addTarget:self action:@selector(screenEdgeGestureRecognizer:)];
     _prevGestureRecognizer.delegate = self;
-    [self addGestureRecognizer:_prevGestureRecognizer];
-    
-    _nextGestureRecognizer = [UIScreenEdgePanGestureRecognizer new];
-    _nextGestureRecognizer.edges = UIRectEdgeRight;
     [_nextGestureRecognizer addTarget:self action:@selector(screenEdgeGestureRecognizer:)];
     _nextGestureRecognizer.delegate = self;
-    [self addGestureRecognizer:_nextGestureRecognizer];
 }
 
 - (void)setupViewControllerViews:(NSArray *)viewControllerViews
@@ -57,8 +75,50 @@
     }
 }
 
+- (void)setupTitleLabel
+{
+    _titleView = [UIView new];
+    _titleView.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    [self addSubview:_titleView];
+    
+    _titleLabel = [UILabel new];
+    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
+    _titleLabel.textColor = [UIColor colorWithWhite:1 alpha:1];
+    _titleLabel.textAlignment = NSTextAlignmentCenter;
+    _titleLabel.numberOfLines = 0;
+    [_titleView addSubview:_titleLabel];
+    
+    _pageControl = [UIPageControl new];
+    _pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+    _pageControl.numberOfPages = [_viewControllerViews count];
+    [_titleView addSubview:_pageControl];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _pageControl);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_titleLabel][_pageControl]|" options:0 metrics:nil views:views];
+    [_titleView addConstraints:verticalConstraints];
+    
+    for (UIView *view in views.allValues) {
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        [self addConstraints:horizontalConstraints];
+    }
+    
+    _titleView.alpha = 0;
+    _titleView.hidden = YES;
+}
+
 - (void)setupLayout
 {
+    {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_titleView);
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_titleView]|" options:0 metrics:nil views:views];
+        [self addConstraints:horizontalConstraints];
+        
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleView]" options:0 metrics:nil views:views];
+        [self addConstraints:verticalConstraints];
+    }
+    
     for (int i = 1; i < [_viewControllerViews count]; ++i) {
         UIView *previous = _viewControllerViews[i - 1];
         UIView *current = _viewControllerViews[i];
@@ -96,39 +156,100 @@
 - (void)screenEdgeGestureRecognizer:(UIScreenEdgePanGestureRecognizer *)edgeSwipeGestureRecognizer
 {
     CGPoint translation = [edgeSwipeGestureRecognizer translationInView:self];
+    BOOL goingNext = [self goingNext:edgeSwipeGestureRecognizer translation:translation];
+    BOOL limit = (goingNext && _currentViewIndex >= [_viewControllerViews count] - 1)
+                  || (goingNext == NO && _currentViewIndex == 0);
     
     if (edgeSwipeGestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        
+        if (limit == NO) {
+            _titleLabel.text = [_delegate nameForViewControllerAtIndex:_currentViewIndex];
+            [self showTitleLabel];
+        }
     } else if (edgeSwipeGestureRecognizer.state == UIGestureRecognizerStateChanged) {
         CGFloat divider = 1.0f;
         
-        if ((edgeSwipeGestureRecognizer == _nextGestureRecognizer && _centerXConstraint.constant < 0)
-            || (edgeSwipeGestureRecognizer == _prevGestureRecognizer && _centerXConstraint.constant > 0))
+        if (limit == YES)
             divider = 2.5f;
+        else {
+            if (fabs(translation.x) > 100) {
+                NSString *nextTitle = [_delegate nameForViewControllerAtIndex:_currentViewIndex + (goingNext ? 1 : -1)];
+                [self setTitle:[NSString stringWithFormat:goingNext ? @"%@ >" : @"< %@", nextTitle]];
+            } else {
+                [self setTitle:[_delegate nameForViewControllerAtIndex:_currentViewIndex]];
+            }
+        }
         
         _centerXConstraint.constant = translation.x / divider;
+
     } else if (edgeSwipeGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         CGRect bounds = self.bounds;
         CGPoint velocity = [edgeSwipeGestureRecognizer velocityInView:self];
-        BOOL goingNext = edgeSwipeGestureRecognizer == _nextGestureRecognizer;
-        BOOL cancelled = (goingNext == YES ? _currentViewIndex >= [_viewControllerViews count] - 1 : _currentViewIndex == 0)
+        BOOL cancelled = limit
                         || (
                                 (velocity.x * (goingNext == YES ? -1 : 1) < 800)
                                 && (fabs(translation.x) < bounds.size.width / 2)
                     );
         
-        if (cancelled)
+        if (cancelled) {
             _centerXConstraint.constant = 0;
-        else {
+            [self setTitle:@"X"];
+            [self hideTitleLabelAfterDelay:0];
+        } else {
             _currentViewIndex += (goingNext ? 1 : -1);
             [self setCenterConstraint:_currentViewIndex];
+            
+            [self setTitle:[_delegate nameForViewControllerAtIndex:_currentViewIndex]];
+            if (cancelled == NO && fabs(velocity.x) < 800)
+                [self hideTitleLabelAfterDelay:0.3];
         }
-        [UIView animateWithDuration:0.5     delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.5 options:0 animations:^{
+        
+        _pageControl.currentPage = _currentViewIndex;
+        
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.5 options:0 animations:^{
             [self layoutIfNeeded];
         } completion:^(BOOL finished) {
-            
+            if (cancelled == NO && fabs(velocity.x) > 800)
+                [self hideTitleLabelAfterDelay:0.7];
         }];
     }
+}
+
+- (BOOL)goingNext:(UIGestureRecognizer *)gestureRecognizer translation:(CGPoint)translation
+{
+    if (_edgeOnly)
+        return gestureRecognizer == _nextGestureRecognizer;
+    return translation.x < 0;
+}
+
+- (void)setTitle:(NSString *)title
+{
+    _cancelledHideTitle = YES;
+    _titleLabel.text = title;
+}
+
+- (void)showTitleLabel
+{
+    _cancelledHideTitle = YES;
+    _titleView.hidden = NO;
+    [UIView animateWithDuration:0.2 animations:^{
+        _titleView.alpha = 1;
+    }];
+}
+
+- (void)hideTitleLabelAfterDelay:(NSTimeInterval)seconds
+{
+    _cancelledHideTitle = NO;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (_cancelledHideTitle)
+            return;
+        [UIView animateWithDuration:0.2 animations:^{
+            _titleView.alpha = 0;
+        } completion:^(BOOL finished) {
+            if (_cancelledHideTitle)
+                return;
+            _titleView.hidden = YES;
+        }];
+    });
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods

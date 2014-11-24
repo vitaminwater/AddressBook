@@ -51,6 +51,9 @@
     
     CCAddAddressViewController *_addViewController;
     
+    CCViewControllerSwiperViewController *_swipeAddAddressesController;
+    CCViewControllerSwiperViewController *_swipeListViewController;
+    
     CCAnimationDelegator *_animationDelegator;
 }
 
@@ -63,20 +66,25 @@
     
     _addViewController = [CCAddAddressViewController new];
     _addViewController.delegate = self;
-    [self addChildViewController:_addViewController];
-    [view setupAddView:_addViewController.view];
-    [_addViewController didMoveToParentViewController:self];
-    
+
+    _swipeAddAddressesController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:@[_addViewController] edgeOnly:NO];
+    [self addChildViewController:_swipeAddAddressesController];
+    [view setupAddView:_swipeAddAddressesController.view];
+    [_swipeAddAddressesController didMoveToParentViewController:self];
+
     _animationDelegator = [CCAnimationDelegator new];
     
     CCBookAndNotifiedListViewModel *bookAndNotifiedModel = [CCBookAndNotifiedListViewModel new];
     CCListListViewModel *listListModel = [CCListListViewModel new];
-    NSArray *viewControllers = @[[self createListViewControllerWithModel:bookAndNotifiedModel], [self createListViewControllerWithModel:listListModel]];
-    CCViewControllerSwiperViewController *swiperViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:viewControllers];
+    NSArray *viewControllers = @[
+                                 [self createListViewControllerWithModel:bookAndNotifiedModel title:@"Books&Notified"],
+                                 [self createListViewControllerWithModel:listListModel title:@"Books"],
+                                 ];
+    _swipeListViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:viewControllers edgeOnly:YES];
     
-    [self addChildViewController:swiperViewController];
-    [view setupListView:swiperViewController.view animationDelegator:_animationDelegator];
-    [swiperViewController didMoveToParentViewController:self];
+    [self addChildViewController:_swipeListViewController];
+    [view setupListView:_swipeListViewController.view animationDelegator:_animationDelegator];
+    [_swipeListViewController didMoveToParentViewController:self];
     
     [view setupLayout];
     
@@ -85,12 +93,14 @@
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
-- (CCListViewController *)createListViewControllerWithModel:(id<CCListViewModelProtocol>)listViewModel
+- (CCListViewController *)createListViewControllerWithModel:(id<CCListViewModelProtocol>)listViewModel title:(NSString *)title
 {
     CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listViewModel];
     CCListViewController *listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     listViewController.animatorDelegator = _animationDelegator;
     listViewController.delegate = self;
+    
+    listViewController.title = title;
     
     return listViewController;
 }
