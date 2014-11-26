@@ -57,6 +57,8 @@
 	<string>20140128</string>
 	<key>google_map_api_key</key>
 	<string>AIzaSyAqAwsG6ZVOnclKRAv8O1zfU_GU2u_4E7A</string>
+	<key>google_map_browser_api_key</key>
+	<string>AIzaSyBFCqgS-ysJqSj-FpSr4JDciySxr_5DtaQ</string>
 	<key>linotte_api_client</key>
 	<string>eda95b19f510ac1f217a</string>
 	<key>linotte_api_client_debug</key>

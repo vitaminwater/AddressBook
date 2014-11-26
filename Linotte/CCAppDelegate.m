@@ -23,7 +23,7 @@
 #import "CCGeohashMonitor.h"
 #import "CCNotificationGenerator.h"
 
-#import "CCMainViewController.h"
+#import "CCHomeViewController.h"
 #import "CCOutputViewController.h"
 
 #import "CCAddress.h"
@@ -40,7 +40,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    CCMainViewController *rootViewController = [CCMainViewController new];
+    CCHomeViewController *rootViewController = [CCHomeViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
     self.window.rootViewController = navigationController;
     
@@ -174,7 +174,12 @@
         CCOutputViewController *outPutViewController = [[CCOutputViewController alloc] initWithAddress:address];
         [((UINavigationController *)self.window.rootViewController) pushViewController:outPutViewController animated:YES];
         NSString *identifier = address.identifier ?: @"NEW";
-        [[Mixpanel sharedInstance] track:@"Local notification handled" properties:@{@"name": address.name, @"address": address.address, @"identifier": identifier}];
+        @try {
+            [[Mixpanel sharedInstance] track:@"Local notification handled" properties:@{@"name": address.name, @"address": address.address, @"identifier": identifier}];
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
 }
 

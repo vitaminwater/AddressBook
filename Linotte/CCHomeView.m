@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCMainView.h"
+#import "CCHomeView.h"
 
 #import <HexColors/HexColor.h>
 
@@ -18,7 +18,7 @@
 
 #define kCCMainViewTopListConstraintAnimator @"kCCMainViewTopListConstraintAnimator"
 
-@implementation CCMainView
+@implementation CCHomeView
 {
     UIView *_statusBar;
     UIView *_addView;

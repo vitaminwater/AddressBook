@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCMainViewDelegate.h"
+#import "CCHomeViewDelegate.h"
 
 @class CCAnimationDelegator;
 
-@interface CCMainView : UIView
+@interface CCHomeView : UIView
 
 @property(nonatomic, assign)BOOL addViewExpanded;
-@property(nonatomic, assign)id<CCMainViewDelegate> delegate;
+@property(nonatomic, assign)id<CCHomeViewDelegate> delegate;
 
 - (void)setupAddView:(UIView *)addView;
 - (void)setupListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animationDelegator;

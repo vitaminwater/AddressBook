@@ -10,4 +10,6 @@
 
 @protocol CCViewControllerSwiperViewControllerDelegate <NSObject>
 
+- (void)viewControllerShown:(UIViewController *)viewController;
+
 @end

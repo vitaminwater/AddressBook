@@ -12,8 +12,6 @@
 
 @implementation CCViewControllerSwiperViewController
 {
-    NSArray *_viewControllers;
-    
     BOOL _edgeOnly;
 }
 
@@ -45,10 +43,27 @@
 
 #pragma mark - CCViewControllerSwiperViewDelegate
 
+- (void)currentViewControllerChangedToIndex:(NSUInteger)index
+{
+    UIViewController *viewController = _viewControllers[index];
+    [_delegate viewControllerShown:viewController];
+}
+
 - (NSString *)nameForViewControllerAtIndex:(NSUInteger)index
 {
     UIViewController *viewController = _viewControllers[index];
     return viewController.title;
+}
+
+#pragma mark - getter methods
+
+- (UIViewController *)currentViewController
+{
+    CCViewControllerSwiperView *view = (CCViewControllerSwiperView *)self.view;
+    NSUInteger currentIndex = view.currentViewIndex;
+    UIViewController *viewController = _viewControllers[currentIndex];
+    
+    return viewController;
 }
 
 @end

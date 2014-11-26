@@ -28,7 +28,7 @@
 #import "CCAnimationDelegator.h"
 
 #import "CCListViewController.h"
-#import "CCAddAddressViewController.h"
+#import "CCAddAddressByNameViewController.h"
 #import "CCFirstListDisplaySettingsViewController.h"
 
 #import "CCListOutputListViewModel.h"
@@ -50,7 +50,7 @@
     UIButton *_settingsButton;
     
     CCListViewController *_listViewController;
-    CCAddAddressViewController *_addViewController;
+    CCAddAddressByNameViewController *_addViewController;
     
     CCListOutputAddressListViewController *_listOutputAddressListViewController;
 }
@@ -82,7 +82,7 @@
     [view setNotificationEnabled:_list.notifyValue];
     
     if (_list.ownedValue) {
-        _addViewController = [CCAddAddressViewController new];
+        _addViewController = [CCAddAddressByNameViewController new];
         _addViewController.delegate = self;
         [self addChildViewController:_addViewController];
         [view setupAddView:_addViewController.view];
@@ -248,7 +248,7 @@
 
 #pragma mark - CCAddAddressViewControllerDelegate
 
-- (void)preSaveAddress:(CCAddress *)address
+- (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address
 {
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
     [_list addAddressesObject:address];
@@ -256,19 +256,19 @@
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
 }
 
-- (void)postSaveAddress:(CCAddress *)address
+- (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address
 {
     CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
-- (void)expandAddView
+- (void)addAddressViewControllerExpandAddView:(id)sender
 {
     CCListOutputView *view = (CCListOutputView *)self.view;
     view.addViewExpanded = YES;
 }
 
-- (void)reduceAddView
+- (void)addAddressViewControllerReduceAddView:(id)sender
 {
     CCListOutputView *view = (CCListOutputView *)self.view;
     view.addViewExpanded = NO;

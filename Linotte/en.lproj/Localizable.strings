@@ -7,6 +7,12 @@
 */
 
 "PLACE_NAME" = "ADD A VENUE";
+"ENTER_NAME" = "VENUE NAME";
+"ENTER_ADDRESS" = "ADDRESS";
+"BY_NAME" = "By name";
+"BY_ADDRESS" = "By address";
+"AT_LOCATION" = "At position";
+
 "WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
 
 "NOTIFICATION_MULTI" = "You are close to [N] addresses: ";
@@ -109,3 +115,7 @@
 "LIST_INSTALL_LABEL" = "Add this book to my Linotte";
 
 "MISSING_LOCATION" = "Missing connection";
+
+"SHORT_DATE_FORMAT" = "yyyy/MM/dd";
+
+"LAST_SEEN" = "Last seen";

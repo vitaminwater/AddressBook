@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCAddressNameAutocompleterDelegate <NSObject>
+@protocol CCAutocompleterDelegate <NSObject>
 
 - (void)autocompeteWaitingLocation:(id)sender;
 - (void)autocompleteStarted:(id)sender;

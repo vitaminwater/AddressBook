@@ -7,6 +7,13 @@
 */
 
 "PLACE_NAME" = "AJOUTER UN LIEU";
+"ENTER_NAME" = "NOM DU LIEU";
+"ENTER_ADDRESS" = "ADRESSE";
+"BY_NAME" = "Nom";
+"BY_ADDRESS" = "Adresse";
+"AT_LOCATION" = "Position";
+
+
 "WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
 
 "NOTIFICATION_MULTI" = "Vous vous trouvez à proximité de [N] adresses: ";
@@ -106,3 +113,7 @@
 "LIST_INSTALL_LABEL" = "Ajouter le carnet à ma Linotte";
 
 "MISSING_LOCATION" = "Missing connection";
+
+"SHORT_DATE_FORMAT" = "dd/MM/yy";
+
+"LAST_SEEN" = "Dernière";

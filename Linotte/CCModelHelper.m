@@ -26,9 +26,14 @@
 {
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
-                                                                     @"address": address.address ?: @"",
-                                                                     @"identifier": address.identifier ?: @"NEW"}];
+    @try {
+        [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
+                                                                         @"address": address.address ?: @"",
+                                                                         @"identifier": address.identifier ?: @"NEW"}];
+    }
+    @catch(NSException *e) {
+        CCLog(@"%@", e);
+    }
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @YES];
     NSSet *lists = [address.lists filteredSetUsingPredicate:predicate];
@@ -51,8 +56,13 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSString *identifier = list.identifier;
 
-    [[Mixpanel sharedInstance] track:@"List deleted" properties:@{@"name": list.name,
+    @try {
+        [[Mixpanel sharedInstance] track:@"List deleted" properties:@{@"name": list.name,
                                                                      @"identifier": list.identifier ?: @"NEW"}];
+    }
+    @catch(NSException *e) {
+        CCLog(@"%@", e);
+    }
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ AND lists.@count = 1", list];

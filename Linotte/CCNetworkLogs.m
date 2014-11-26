@@ -14,7 +14,7 @@
 #import "CCAppDelegate.h"
 
 #if defined(DEBUG)
-#define kCCNetworkLogsUploadServerUrl @"http://192.168.1.23:4242"
+#define kCCNetworkLogsUploadServerUrl @"http://192.168.1.34:4242"
 #else
 #define kCCNetworkLogsUploadServerUrl @"https://logs.getlinotte.com"
 #endif

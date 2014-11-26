@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCMainViewDelegate <NSObject>
+@protocol CCHomeViewDelegate <NSObject>
 
 - (void)showListStore;
 

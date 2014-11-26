@@ -12,10 +12,10 @@
 
 @protocol CCAddAddressViewControllerDelegate <NSObject>
 
-- (void)preSaveAddress:(CCAddress *)address;
-- (void)postSaveAddress:(CCAddress *)address;
+- (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address;
+- (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address;
 
-- (void)expandAddView;
-- (void)reduceAddView;
+- (void)addAddressViewControllerExpandAddView:(id)sender;
+- (void)addAddressViewControllerReduceAddView:(id)sender;
 
 @end

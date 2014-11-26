@@ -335,7 +335,14 @@
 
 - (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", parameters[@"list"]];
+    NSString *list_identifier = parameters[@"list"];
+    if ([list_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list_identifier];
     [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -347,7 +354,14 @@
 
 - (void)removeList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", parameters[@"list"]];
+    NSString *list_identifier = parameters[@"list"];
+    if ([list_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list_identifier];
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -359,7 +373,14 @@
 
 - (void)removeAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *url = [NSString stringWithFormat:@"/user/address/%@/", parameters[@"address"]];
+    NSString *address_identifier = parameters[@"address"];
+    if ([address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    NSString *url = [NSString stringWithFormat:@"/user/address/%@/", address_identifier];
     [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -371,7 +392,17 @@
 
 - (void)addAddressToList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", parameters[@"list"], parameters[@"address"]];
+    NSString *list_identifier = parameters[@"list"];
+    NSString *address_identifier = parameters[@"address"];
+    
+    if ([list_identifier length] == 0 || [address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
     
     [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES, 200);
@@ -384,7 +415,17 @@
 
 - (void)removeAddressFromList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", parameters[@"list"], parameters[@"address"]];
+    NSString *list_identifier = parameters[@"list"];
+    NSString *address_identifier = parameters[@"address"];
+    
+    if ([list_identifier length] == 0 || [address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
     
     [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completionBlock(YES, 200);
@@ -397,8 +438,16 @@
 
 - (void)updateAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *address = [self popValueFromDict:@"address" dict:&parameters];
-    NSString *path = [NSString stringWithFormat:@"/address/%@/", address];
+    NSString *address_identifier = [self popValueFromDict:@"address" dict:&parameters];
+    
+    if ([address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/address/%@/", address_identifier];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -410,8 +459,16 @@
 
 - (void)updateList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *list = [self popValueFromDict:@"list" dict:&parameters];
-    NSString *path = [NSString stringWithFormat:@"/list/%@/", list];
+    NSString *list_identifier = [self popValueFromDict:@"list" dict:&parameters];
+    
+    if ([list_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/list/%@/", list_identifier];
     [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -423,8 +480,16 @@
 
 - (void)updateAddressUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *address = [self popValueFromDict:@"address" dict:&parameters];
-    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address];
+    NSString *address_identifier = [self popValueFromDict:@"address" dict:&parameters];
+    
+    if ([address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address_identifier];
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -436,8 +501,16 @@
 
 - (void)updateListUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
 {
-    NSString *list = [self popValueFromDict:@"list" dict:&parameters];
-    NSString *path = [NSString stringWithFormat:@"/list/%@/data/", list];
+    NSString *list_identifier = [self popValueFromDict:@"list" dict:&parameters];
+    
+    if ([list_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/list/%@/data/", list_identifier];
     [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         completionBlock(YES, 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {

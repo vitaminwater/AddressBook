@@ -11,7 +11,6 @@
 @implementation CCViewControllerSwiperView
 {
     NSArray *_viewControllerViews;
-    NSUInteger _currentViewIndex;
     
     UIView *_titleView;
     UILabel *_titleLabel;
@@ -84,7 +83,7 @@
     
     _titleLabel = [UILabel new];
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
+    _titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:23];
     _titleLabel.textColor = [UIColor colorWithWhite:1 alpha:1];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.numberOfLines = 0;
@@ -96,7 +95,7 @@
     [_titleView addSubview:_pageControl];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _pageControl);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_titleLabel][_pageControl]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_titleLabel][_pageControl(==10)]-(==5)-|" options:0 metrics:nil views:views];
     [_titleView addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -155,6 +154,7 @@
 
 - (void)screenEdgeGestureRecognizer:(UIScreenEdgePanGestureRecognizer *)edgeSwipeGestureRecognizer
 {
+    CGRect bounds = self.bounds;
     CGPoint translation = [edgeSwipeGestureRecognizer translationInView:self];
     BOOL goingNext = [self goingNext:edgeSwipeGestureRecognizer translation:translation];
     BOOL limit = (goingNext && _currentViewIndex >= [_viewControllerViews count] - 1)
@@ -171,18 +171,19 @@
         if (limit == YES)
             divider = 2.5f;
         else {
-            if (fabs(translation.x) > 100) {
+            if (fabs(translation.x) > bounds.size.width / 2) {
                 NSString *nextTitle = [_delegate nameForViewControllerAtIndex:_currentViewIndex + (goingNext ? 1 : -1)];
-                [self setTitle:[NSString stringWithFormat:goingNext ? @"%@ >" : @"< %@", nextTitle]];
+                [self setTitle:nextTitle];
+                _pageControl.currentPage = _currentViewIndex + (goingNext ? 1 : -1);
             } else {
                 [self setTitle:[_delegate nameForViewControllerAtIndex:_currentViewIndex]];
+                _pageControl.currentPage = _currentViewIndex;
             }
         }
         
         _centerXConstraint.constant = translation.x / divider;
 
     } else if (edgeSwipeGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        CGRect bounds = self.bounds;
         CGPoint velocity = [edgeSwipeGestureRecognizer velocityInView:self];
         BOOL cancelled = limit
                         || (
@@ -197,20 +198,30 @@
         } else {
             _currentViewIndex += (goingNext ? 1 : -1);
             [self setCenterConstraint:_currentViewIndex];
+            [_delegate currentViewControllerChangedToIndex:_currentViewIndex];
             
             [self setTitle:[_delegate nameForViewControllerAtIndex:_currentViewIndex]];
-            if (cancelled == NO && fabs(velocity.x) < 800)
+            if (cancelled == NO && fabs(velocity.x) < 700)
                 [self hideTitleLabelAfterDelay:0.3];
         }
         
         _pageControl.currentPage = _currentViewIndex;
         
-        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.5 options:0 animations:^{
+        [self animateLayoutChange:limit animations:^{
             [self layoutIfNeeded];
         } completion:^(BOOL finished) {
-            if (cancelled == NO && fabs(velocity.x) > 800)
+            if (cancelled == NO && fabs(velocity.x) > 700)
                 [self hideTitleLabelAfterDelay:0.7];
         }];
+    }
+}
+
+- (void)animateLayoutChange:(BOOL)springAnimation animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion
+{
+    if (springAnimation) {
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.6 initialSpringVelocity:0.5 options:0 animations:animations completion:completion];
+    } else {
+        [UIView animateWithDuration:0.2 animations:animations completion:completion];
     }
 }
 

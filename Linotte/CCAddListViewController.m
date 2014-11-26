@@ -38,7 +38,12 @@
     [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     
-    [[Mixpanel sharedInstance] track:@"List created" properties:@{@"name": list.name}];
+    @try {
+        [[Mixpanel sharedInstance] track:@"List created" properties:@{@"name": list.name}];
+    }
+    @catch(NSException *e) {
+        CCLog(@"%@", e);
+    }
 }
 
 @end

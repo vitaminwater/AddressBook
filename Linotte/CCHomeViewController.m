@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCMainViewController.h"
+#import "CCHomeViewController.h"
 
 #import <Mixpanel/Mixpanel.h>
 
@@ -27,29 +27,30 @@
 #import "CCListStoreViewController.h"
 
 #import "CCBookAndNotifiedListViewModel.h"
+#import "CCAddressListViewModel.h"
 #import "CCListListViewModel.h"
+#import "CCLastNotificationModel.h"
 
 #import "CCListViewContentProvider.h"
+#import "CCLastNotifListViewContentProvider.h"
 
 #import "CCListViewController.h"
-#import "CCAddAddressViewController.h"
+
+#import "CCAllAddAddressViewController.h"
 
 #import "CCOutputViewController.h"
 #import "CCListOutputViewController.h"
 
 #import "CCMainListEmptyView.h"
 
-#import "CCMainView.h"
+#import "CCHomeView.h"
 
 #import "CCAddress.h"
 #import "CCList.h"
 
-
-@implementation CCMainViewController
+@implementation CCHomeViewController
 {
     CCSplashViewController *_splashViewController;
-    
-    CCAddAddressViewController *_addViewController;
     
     CCViewControllerSwiperViewController *_swipeAddAddressesController;
     CCViewControllerSwiperViewController *_swipeListViewController;
@@ -60,25 +61,25 @@
 // TODO check location enabled
 - (void)loadView
 {
-    CCMainView *view = [CCMainView new];
+    CCHomeView *view = [CCHomeView new];
     view.delegate = self;
     self.view = view;
-    
-    _addViewController = [CCAddAddressViewController new];
-    _addViewController.delegate = self;
 
-    _swipeAddAddressesController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:@[_addViewController] edgeOnly:NO];
+    _swipeAddAddressesController = [CCAllAddAddressViewController new];
+    _swipeAddAddressesController.delegate = self;
     [self addChildViewController:_swipeAddAddressesController];
     [view setupAddView:_swipeAddAddressesController.view];
     [_swipeAddAddressesController didMoveToParentViewController:self];
 
     _animationDelegator = [CCAnimationDelegator new];
     
-    CCBookAndNotifiedListViewModel *bookAndNotifiedModel = [CCBookAndNotifiedListViewModel new];
+    CCAddressListViewModel *addressListModel = [CCAddressListViewModel new];
     CCListListViewModel *listListModel = [CCListListViewModel new];
+    CCLastNotificationModel *lastNotificationModel = [CCLastNotificationModel new];
     NSArray *viewControllers = @[
-                                 [self createListViewControllerWithModel:bookAndNotifiedModel title:@"Books&Notified"],
-                                 [self createListViewControllerWithModel:listListModel title:@"Books"],
+                                 [self createListViewControllerWithModel:addressListModel title:@"My Addresses" orderByLastNotif:NO],
+                                 [self createListViewControllerWithModel:listListModel title:@"My Books" orderByLastNotif:NO],
+                                 [self createListViewControllerWithModel:lastNotificationModel title:@"Last notifications" orderByLastNotif:YES],
                                  ];
     _swipeListViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:viewControllers edgeOnly:YES];
     
@@ -93,9 +94,15 @@
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
-- (CCListViewController *)createListViewControllerWithModel:(id<CCListViewModelProtocol>)listViewModel title:(NSString *)title
+- (CCListViewController *)createListViewControllerWithModel:(id<CCListViewModelProtocol>)listViewModel title:(NSString *)title orderByLastNotif:(BOOL)orderByLastNotif
 {
-    CCListViewContentProvider *listProvider = [[CCListViewContentProvider alloc] initWithModel:listViewModel];
+    CCListViewContentProvider *listProvider;
+    
+    if (orderByLastNotif)
+        listProvider = [[CCLastNotifListViewContentProvider alloc] initWithModel:listViewModel];
+    else
+        listProvider = [[CCListViewContentProvider alloc] initWithModel:listViewModel];
+    
     CCListViewController *listViewController = [[CCListViewController alloc] initWithProvider:listProvider];
     listViewController.animatorDelegator = _animationDelegator;
     listViewController.delegate = self;
@@ -131,7 +138,14 @@
     return UIStatusBarStyleLightContent;
 }
 
-#pragma mark - CCMainViewDelegate methods
+#pragma mark - CCViewControllerSwiperViewControllerDelegate methods
+
+- (void)viewControllerShown:(UIViewController *)viewController
+{
+    
+}
+
+#pragma mark - CCHomeViewDelegate methods
 
 - (void)showListStore
 {
@@ -142,7 +156,7 @@
 
 #pragma mark - CCAddAddressViewControllerDelegate methods
 
-- (void)preSaveAddress:(CCAddress *)address
+- (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address
 {
     CCList *list = [CCModelHelper defaultList];
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:list send:YES];
@@ -151,20 +165,20 @@
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:list send:YES];
 }
 
-- (void)postSaveAddress:(CCAddress *)address
+- (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address
 {
     CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
     [self.navigationController pushViewController:outputViewController animated:YES];
 }
 
-- (void)expandAddView
+- (void)addAddressViewControllerExpandAddView:(id)sender
 {
-    ((CCMainView *)self.view).addViewExpanded = YES;
+    ((CCHomeView *)self.view).addViewExpanded = YES;
 }
 
-- (void)reduceAddView
+- (void)addAddressViewControllerReduceAddView:(id)sender
 {
-    ((CCMainView *)self.view).addViewExpanded = NO;
+    ((CCHomeView *)self.view).addViewExpanded = NO;
 }
 
 #pragma mark - CCListViewControllerDelegate methods

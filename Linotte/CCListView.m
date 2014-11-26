@@ -269,12 +269,12 @@
     [_animatorDelegator fingerLifted];
 }
 
-/*- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    if (point.x < 15 || point.x > self.frame.size.width - 15)
+    if (point.x < 20 || point.x > self.frame.size.width - 20)
         return nil;
-    return _tableView;
-}*/
+    return [super hitTest:point withEvent:event];
+}
 
 #pragma mark - setter methods
 

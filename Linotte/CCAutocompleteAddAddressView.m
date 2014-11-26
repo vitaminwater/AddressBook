@@ -1,28 +1,25 @@
 //
-//  CCAddView.m
+//  CCAddAddressView.m
 //  Linotte
 //
-//  Created by stant on 06/05/14.
+//  Created by stant on 24/11/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCAddAddressView.h"
+#import "CCAutocompleteAddAddressView.h"
 
 #import "CCAddAddressViewTableViewCell.h"
 
 #define kCCAddViewTableViewCell @"kCCAddViewTableViewCell"
 #define kCCLoadingViewHeight 25
 
-
-@implementation CCAddAddressView
+@implementation CCAutocompleteAddAddressView
 {
-    NSString *_textFieldValueSave;
-
-    UITextField *_textField;
     UIView *_loadingView;
     UILabel *_loadingLabel;
-    UITableView *_tableView;
-
+    
+    NSString *_autocompleteFieldValueSave;
+    
     NSLayoutConstraint *_loadingViewTopConstraint;
 }
 
@@ -32,41 +29,31 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         
-        [self setupTextField];
-        [self setupLoadingView];
-        [self setupTableView];
+        [self setupViews];
         [self setupLayout];
     }
     return self;
 }
 
-- (void)setupTextField
+- (void)setupViews
 {
-    _textField = [UITextField new];
-    _textField.translatesAutoresizingMaskIntoConstraints = NO;
-    _textField.delegate = self;
-    _textField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
-    _textField.textColor = [UIColor darkGrayColor];
-    _textField.backgroundColor = [UIColor whiteColor];
-    _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
-    
-    UIImageView *leftView = [UIImageView new];
-    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
-    leftView.contentMode = UIViewContentModeCenter;
-    leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    leftView.image = [UIImage imageNamed:@"add_field_icon"];
-    _textField.leftView = leftView;
-    _textField.leftViewMode = UITextFieldViewModeAlways;
+    [self setupTableView];
+    [self setupLoadingView];
+    [self setupTextField];
+}
 
-    UIView *rightView = [UIView new];
-    rightView.frame = CGRectMake(0, 0, 15, [kCCAddViewTextFieldHeight floatValue]);
-    rightView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    _textField.rightView = rightView;
-    _textField.rightViewMode = UITextFieldViewModeAlways;
+- (void)setupTableView
+{
+    _tableView = [UITableView new];
+    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    _tableView.backgroundColor = [UIColor clearColor];
     
-    [_textField addTarget:self action:@selector(textFieldEventEditingChanged:) forControlEvents:UIControlEventEditingChanged];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
     
-    [self addSubview:_textField];
+    [_tableView registerClass:[CCAddAddressViewTableViewCell class] forCellReuseIdentifier:kCCAddViewTableViewCell];
+    
+    [self addSubview:_tableView];
 }
 
 - (void)setupLoadingView
@@ -75,7 +62,7 @@
     _loadingView.translatesAutoresizingMaskIntoConstraints = NO;
     _loadingView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     _loadingView.alpha = 0;
-    [self insertSubview:_loadingView belowSubview:_textField];
+    [self addSubview:_loadingView];
     
     {
         _loadingLabel = [UILabel new];
@@ -101,68 +88,48 @@
     }
 }
 
-- (void)setupTableView
+- (void)setupTextField
 {
-    NSAssert(_textField != nil, kCCWrongSetupMethodsOrderError);
+    _autocompletedField = [UITextField new];
+    _autocompletedField.translatesAutoresizingMaskIntoConstraints = NO;
+    _autocompletedField.delegate = self;
+    _autocompletedField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
+    _autocompletedField.textColor = [UIColor darkGrayColor];
+    _autocompletedField.backgroundColor = [UIColor whiteColor];
+    _autocompletedField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     
-    _tableView = [UITableView new];
-    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    _tableView.backgroundColor = [UIColor clearColor];
-
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
+    UIImageView *leftView = [UIImageView new];
+    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
+    leftView.contentMode = UIViewContentModeCenter;
+    leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    leftView.image = [UIImage imageNamed:@"add_field_icon"];
+    _autocompletedField.leftView = leftView;
+    _autocompletedField.leftViewMode = UITextFieldViewModeAlways;
     
-    [_tableView registerClass:[CCAddAddressViewTableViewCell class] forCellReuseIdentifier:kCCAddViewTableViewCell];
+    UIView *rightView = [UIView new];
+    rightView.frame = CGRectMake(0, 0, 15, [kCCAddViewTextFieldHeight floatValue]);
+    rightView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    _autocompletedField.rightView = rightView;
+    _autocompletedField.rightViewMode = UITextFieldViewModeAlways;
     
-    [self insertSubview:_tableView belowSubview:_loadingView];
+    [_autocompletedField addTarget:self action:@selector(textFieldEventEditingChanged:) forControlEvents:UIControlEventEditingChanged];
+    
+    [self addSubview:_autocompletedField];
 }
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_textField, _loadingView, _tableView);
-    
     //loading view constraints
     {
-        _loadingViewTopConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_textField attribute:NSLayoutAttributeBottom multiplier:1 constant:-kCCLoadingViewHeight];
+        _loadingViewTopConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_tableView attribute:NSLayoutAttributeTop multiplier:1 constant:-kCCLoadingViewHeight];
         [self addConstraint:_loadingViewTopConstraint];
+        
+        NSArray *horizontaConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_loadingView]|" options:0 metrics:nil views:@{@"_loadingView" : _loadingView}];
+        [self addConstraints:horizontaConstraints];
         
         NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:kCCLoadingViewHeight];
         [self addConstraint:heightConstraint];
     }
-
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textField(kCCAddViewTextFieldHeight)][_tableView]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
-    [self addConstraints:verticalConstraints];
-    
-    for (UIView *view in views.allValues) {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-        [self addConstraints:horizontalConstraints];
-    }
-}
-
-- (void)enableField
-{
-    if (_textField.enabled == YES)
-        return;
-    _textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
-    _textField.enabled = YES;
-    _textField.text = _textFieldValueSave;
-}
-
-- (void)disableField
-{
-    if (_textField.enabled == NO)
-        return;
-    
-    if ([_textField isFirstResponder]) {
-        [_textField resignFirstResponder];
-        [_delegate reduceAddView];
-    }
-
-    _textFieldValueSave = _textField.text;
-    _textField.backgroundColor = [UIColor clearColor];
-    _textField.text = @"";
-    _textField.placeholder = NSLocalizedString(@"MISSING_LOCATION", @"");
-    _textField.enabled = NO;
 }
 
 - (void)showLoading:(NSString *)message
@@ -191,9 +158,47 @@
     [_tableView reloadData];
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    [self setNeedsDisplay];
+}
+
+- (void)enableField
+{
+    if (_autocompletedField.enabled == YES)
+        return;
+    _autocompletedField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
+    _autocompletedField.enabled = YES;
+    _autocompletedField.text = _autocompleteFieldValueSave;
+}
+
+- (void)disableField
+{
+    if (_autocompletedField.enabled == NO)
+        return;
+    
+    if ([_autocompletedField isFirstResponder]) {
+        [_autocompletedField resignFirstResponder];
+        [self.delegate reduceAddView];
+    }
+    
+    _autocompleteFieldValueSave = _autocompletedField.text;
+    _autocompletedField.backgroundColor = [UIColor clearColor];
+    _autocompletedField.text = @"";
+    _autocompletedField.placeholder = NSLocalizedString(@"MISSING_LOCATION", @"");
+    _autocompletedField.enabled = NO;
+}
+
+- (void)cleanBeforeClose
+{
+    [_autocompletedField resignFirstResponder];
+    _autocompletedField.text = @"";
+}
+
 - (void)drawRect:(CGRect)rect
 {
-    CGRect frame = _textField.bounds;
+    CGRect frame = _autocompletedField.bounds;
     
     CGFloat lineHeight = 0.5 * [[UIScreen mainScreen] scale];
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -205,31 +210,34 @@
     CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + lineHeight / 2);
     CGContextStrokePath(context);
     
-    /*CGContextBeginPath(context);
-    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + frame.size.height - lineHeight / 2);
-    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + frame.size.height - lineHeight / 2);
-    CGContextStrokePath(context);*/
-    
     [super drawRect:rect];
 }
 
-- (void)layoutSubviews
+- (void)setFirstInputAsFirstResponder
 {
-    [super layoutSubviews];
-    [self setNeedsDisplay];
+    [_autocompletedField becomeFirstResponder];
 }
 
 #pragma mark - UITextFieldDelegate methods
 
-- (void)textFieldEventEditingChanged:(id)sender
+- (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    [_delegate autocompleteName:_textField.text];
+    if (textField == _autocompletedField)
+        [self.delegate autocompleteName:_autocompletedField.text];
+}
+
+- (void)textFieldEventEditingChanged:(UITextField *)textField
+{
+    if (textField == _autocompletedField)
+        [self.delegate autocompleteName:_autocompletedField.text];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [_textField resignFirstResponder];
-    [_delegate reduceAddView];
+    if (textField == _autocompletedField) {
+        [_autocompletedField resignFirstResponder];
+        [self.delegate reduceAddView];
+    }
     return NO;
 }
 
@@ -258,8 +266,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [_textField resignFirstResponder];
-    _textField.text = @"";
+    [self cleanBeforeClose];
     [_delegate autocompletionResultSelectedAtIndex:indexPath.row];
 }
 

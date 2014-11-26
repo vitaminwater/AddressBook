@@ -13,6 +13,7 @@
 @interface CCViewControllerSwiperView : UIView<UIGestureRecognizerDelegate>
 
 @property(nonatomic, weak)id<CCViewControllerSwiperViewDelegate> delegate;
+@property(nonatomic, assign)NSUInteger currentViewIndex;
 
 - (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly;
 

@@ -186,20 +186,25 @@
 
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
-    for (CCList *list in lists) {
-        CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        listAddEvent.date = [NSDate date];
-        listAddEvent.localListIdentifier = list.localIdentifier;
-        
-        if (list.identifier == nil) {
-            listAddEvent.eventValue = CCLocalEventListCreated;
-            listAddEvent.parameters = @{@"name" : list.name};
-        } else {
-            listAddEvent.eventValue = CCLocalEventListAdded;
-            listAddEvent.parameters = @{@"list" : list.identifier};
+    @try {
+        for (CCList *list in lists) {
+            CCLocalEvent *listAddEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            listAddEvent.date = [NSDate date];
+            listAddEvent.localListIdentifier = list.localIdentifier;
+            
+            if (list.identifier == nil) {
+                listAddEvent.eventValue = CCLocalEventListCreated;
+                listAddEvent.parameters = @{@"name" : list.name};
+            } else {
+                listAddEvent.eventValue = CCLocalEventListAdded;
+                listAddEvent.parameters = @{@"list" : list.identifier};
+            }
         }
+        [[CCCoreDataStack sharedInstance] saveContext];
     }
-    [[CCCoreDataStack sharedInstance] saveContext];
+    @catch(NSException *e) {
+        CCLog(@"%@", e);
+    }
 }
 
 - (void)listsWillRemove:(NSArray *)lists send:(BOOL)send
@@ -207,7 +212,12 @@
     NSMutableDictionary *removedListsData = [NSMutableDictionary new];
     
     for (CCList *list in lists) {
+        @try {
         removedListsData[list.localIdentifier] = list.identifier ?: @"";
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     
     [_cache pushCacheEntry:kCCLocalEventListRemoveDataCacheKey value:removedListsData];
@@ -220,16 +230,24 @@
     
     NSDictionary *removedListsData = [_cache popCacheEntry:kCCLocalEventListRemoveDataCacheKey];
     
+    if (removedListsData == nil)
+        return;
+    
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     for (NSString *localIdentifier in removedListsData.allKeys) {
-        NSString *identifier = removedListsData[localIdentifier];
-        CCLocalEvent *listRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        listRemoveEvent.eventValue = CCLocalEventListRemoved;
-        listRemoveEvent.date = [NSDate date];
-        listRemoveEvent.localListIdentifier = localIdentifier;
-        if (identifier != nil && [identifier length] > 0)
-            listRemoveEvent.parameters = @{@"list": identifier};
+        @try {
+            NSString *identifier = removedListsData[localIdentifier];
+            CCLocalEvent *listRemoveEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            listRemoveEvent.eventValue = CCLocalEventListRemoved;
+            listRemoveEvent.date = [NSDate date];
+            listRemoveEvent.localListIdentifier = localIdentifier;
+            if (identifier != nil && [identifier length] > 0)
+                listRemoveEvent.parameters = @{@"list": identifier};
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
@@ -242,11 +260,17 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     for (CCList *list in lists) {
-        CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        listUpdateEvent.eventValue = CCLocalEventListUpdated;
-        listUpdateEvent.date = [NSDate date];
-        listUpdateEvent.localListIdentifier = list.localIdentifier;
-        listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"name" : list.name};
+        @try {
+            NSDictionary *parameters = @{@"list" : list.identifier ?: @"", @"name" : list.name};
+            CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            listUpdateEvent.eventValue = CCLocalEventListUpdated;
+            listUpdateEvent.date = [NSDate date];
+            listUpdateEvent.localListIdentifier = list.localIdentifier;
+            listUpdateEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
@@ -259,11 +283,17 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     for (CCList *list in lists) {
-        CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
-        listUpdateEvent.date = [NSDate date];
-        listUpdateEvent.localListIdentifier = list.localIdentifier;
-        listUpdateEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"notification" : @(list.notifyValue)};
+        @try {
+            NSDictionary *parameters = @{@"list" : list.identifier ?: @"", @"notification" : @(list.notifyValue)};
+            CCLocalEvent *listUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            listUpdateEvent.eventValue = CCLocalEventListUserDataUpdated;
+            listUpdateEvent.date = [NSDate date];
+            listUpdateEvent.localListIdentifier = list.localIdentifier;
+            listUpdateEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
@@ -276,11 +306,17 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     for (CCAddress *address in addresses) {
-        CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        addressUpdateEvent.eventValue = CCLocalEventAddressUpdated;
-        addressUpdateEvent.date = [NSDate date];
-        addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
-        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
+        @try {
+            NSDictionary *parameters = @{@"address" : address.identifier ?: @"", @"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude};
+            CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            addressUpdateEvent.eventValue = CCLocalEventAddressUpdated;
+            addressUpdateEvent.date = [NSDate date];
+            addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
+            addressUpdateEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
@@ -293,11 +329,17 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
     for (CCAddress *address in addresses) {
-        CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        addressUpdateEvent.eventValue = CCLocalEventAddressUserDataUpdated;
-        addressUpdateEvent.date = [NSDate date];
-        addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
-        addressUpdateEvent.parameters = @{@"address" : address.identifier == nil ? @"" : address.identifier, @"note" : address.note, @"notification" : @(address.notifyValue)};
+        @try {
+            NSDictionary *parameters = @{@"address" : address.identifier ?: @"", @"note" : address.note, @"notification" : @(address.notifyValue)};
+            CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            addressUpdateEvent.eventValue = CCLocalEventAddressUserDataUpdated;
+            addressUpdateEvent.date = [NSDate date];
+            addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
+            addressUpdateEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     
     [[CCCoreDataStack sharedInstance] saveContext];
@@ -312,19 +354,31 @@
     
     for (CCAddress *address in addresses) {
         if (address.identifier == nil && [address.lists count] == 1) {
-            CCLocalEvent *addressCreatedEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-            addressCreatedEvent.eventValue = CCLocalEventAddressCreated;
-            addressCreatedEvent.date = [NSDate date];
-            addressCreatedEvent.localAddressIdentifier = address.localIdentifier;
-            addressCreatedEvent.parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId};
+            @try {
+                NSDictionary *parameters = @{@"name" : address.name, @"address" : address.address, @"latitude" : address.latitude, @"longitude" : address.longitude, @"provider" : address.provider, @"provider_id" : address.providerId};
+                CCLocalEvent *addressCreatedEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+                addressCreatedEvent.eventValue = CCLocalEventAddressCreated;
+                addressCreatedEvent.date = [NSDate date];
+                addressCreatedEvent.localAddressIdentifier = address.localIdentifier;
+                addressCreatedEvent.parameters = parameters;
+            }
+            @catch(NSException *e) {
+                CCLog(@"%@", e);
+            }
         }
         
-        CCLocalEvent *addressMovedToListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        addressMovedToListEvent.eventValue = CCLocalEventAddressMovedToList;
-        addressMovedToListEvent.date = [NSDate date];
-        addressMovedToListEvent.localAddressIdentifier = address.localIdentifier;
-        addressMovedToListEvent.localListIdentifier = list.localIdentifier;
-        addressMovedToListEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"address" : address.identifier == nil ? @"" : address.identifier};
+        @try {
+            NSDictionary *parameters = @{@"list" : list.identifier ?: @"", @"address" : address.identifier ?: @""};
+            CCLocalEvent *addressMovedToListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            addressMovedToListEvent.eventValue = CCLocalEventAddressMovedToList;
+            addressMovedToListEvent.date = [NSDate date];
+            addressMovedToListEvent.localAddressIdentifier = address.localIdentifier;
+            addressMovedToListEvent.localListIdentifier = list.localIdentifier;
+            addressMovedToListEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }
@@ -337,12 +391,18 @@
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
 
     for (CCAddress *address in addresses) {
-        CCLocalEvent *addressMovedFromListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-        addressMovedFromListEvent.eventValue = CCLocalEventAddressMovedFromList;
-        addressMovedFromListEvent.date = [NSDate date];
-        addressMovedFromListEvent.localListIdentifier = list.localIdentifier;
-        addressMovedFromListEvent.localAddressIdentifier = address.localIdentifier;
-        addressMovedFromListEvent.parameters = @{@"list" : list.identifier == nil ? @"" : list.identifier, @"address" : address.identifier == nil ? @"" : address.identifier};
+        @try {
+            NSDictionary *parameters = @{@"list" : list.identifier ?: @"", @"address" : address.identifier ?: @""};
+            CCLocalEvent *addressMovedFromListEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+            addressMovedFromListEvent.eventValue = CCLocalEventAddressMovedFromList;
+            addressMovedFromListEvent.date = [NSDate date];
+            addressMovedFromListEvent.localListIdentifier = list.localIdentifier;
+            addressMovedFromListEvent.localAddressIdentifier = address.localIdentifier;
+            addressMovedFromListEvent.parameters = parameters;
+        }
+        @catch(NSException *e) {
+            CCLog(@"%@", e);
+        }
     }
     [[CCCoreDataStack sharedInstance] saveContext];
 }

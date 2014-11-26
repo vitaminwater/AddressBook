@@ -54,7 +54,12 @@
     [[CCCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[_address] send:YES];
     NSString *identifier = _address.identifier ?: @"NEW";
-    [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": identifier, @"enabled": _address.notify}];
+    @try {
+        [[Mixpanel sharedInstance] track:@"Notification enable" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": identifier, @"enabled": _address.notify}];
+    }
+    @catch(NSException *e) {
+        CCLog(@"%@", e);
+    }
 }
 
 - (void)showListSetting

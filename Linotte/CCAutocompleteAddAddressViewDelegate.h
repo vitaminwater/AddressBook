@@ -1,17 +1,16 @@
 //
-//  CCAddViewDelegate.h
+//  CCAddAddressViewDelegate.h
 //  Linotte
 //
-//  Created by stant on 06/05/14.
+//  Created by stant on 24/11/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@class CCAddAddressView;
+@protocol CCAutocompleteAddAddressViewDelegate <NSObject>
 
-@protocol CCAddAddressViewDelegate <NSObject>
-
+- (void)expandAddView;
 - (void)reduceAddView;
 
 #pragma mark - auto completion methods

@@ -9,6 +9,7 @@
 #import "CCNotificationGenerator.h"
 
 #import "CCCoreDataStack.h"
+#import "CCModelChangeMonitor.h"
 
 #import <SSKeyChain/SSKeychain.h>
 
@@ -62,6 +63,8 @@
 
     [[CCCoreDataStack sharedInstance] saveContext];
     
+    [[CCModelChangeMonitor sharedInstance] addressesDidNotify:results];
+
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     [[Mixpanel sharedInstance] track:@"Local notification sent" properties:localNotification.userInfo];
 }

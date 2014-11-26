@@ -43,4 +43,6 @@
 - (void)addressMetasUpdate:(NSArray *)addressMetas;
 - (void)addressMetasRemove:(NSArray *)addressMetas;
 
+- (void)addressesDidNotify:(NSArray *)addresses;
+
 @end
