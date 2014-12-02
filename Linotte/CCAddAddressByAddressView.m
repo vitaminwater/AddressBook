@@ -8,12 +8,17 @@
 
 #import "CCAddAddressByAddressView.h"
 
+#import "CCAlertView.h"
+#import "CCLinotteField.h"
+
+#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight}
+
 @implementation CCAddAddressByAddressView
 {
     UITextField *_nameField;
 }
 
-@dynamic addressName;
+@dynamic nameFieldValue;
 
 - (void)setupViews
 {
@@ -24,36 +29,19 @@
 
 - (void)setupNameField
 {
-    _nameField = [UITextField new];
+    _nameField = [[CCLinotteField alloc] initWithImage:[UIImage imageNamed:@"add_field_icon"]];
     _nameField.translatesAutoresizingMaskIntoConstraints = NO;
-    _nameField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
-    _nameField.textColor = [UIColor darkGrayColor];
-    _nameField.backgroundColor = [UIColor whiteColor];
     _nameField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     _nameField.delegate = self;
-    
-    UIImageView *leftView = [UIImageView new];
-    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
-    leftView.contentMode = UIViewContentModeCenter;
-    leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    leftView.image = [UIImage imageNamed:@"add_field_icon"];
-    _nameField.leftView = leftView;
-    _nameField.leftViewMode = UITextFieldViewModeAlways;
-    
-    UIView *rightView = [UIView new];
-    rightView.frame = CGRectMake(0, 0, 15, [kCCAddViewTextFieldHeight floatValue]);
-    rightView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    _nameField.rightView = rightView;
-    _nameField.rightViewMode = UITextFieldViewModeAlways;
-    
-    [_nameField addTarget:self action:@selector(nameFieldEventEditingChanged:) forControlEvents:UIControlEventEditingChanged];
-    
     [self addSubview:_nameField];
 }
 
 - (void)setupAddressField
 {
     self.autocompletedField.placeholder = NSLocalizedString(@"ENTER_ADDRESS", @"");
+    
+    UIImageView *leftView = (UIImageView *)self.autocompletedField.leftView;
+    leftView.image = [UIImage imageNamed:@"small_gmap_pin_neutral"];
 }
 
 - (void)setupLayout
@@ -64,7 +52,7 @@
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_nameField, autocompletedField, tableView);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(==kCCAddViewTextFieldHeight)]-(<=0)-[autocompletedField(==kCCAddViewTextFieldHeight)][tableView]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(==kCCAddTextFieldHeight)][autocompletedField(==kCCAddTextFieldHeight)][tableView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -78,29 +66,14 @@
     [_nameField becomeFirstResponder];
 }
 
-#pragma mark UITextField target methods
-
-- (void)nameFieldEventEditingChanged:(UITextField *)textField
+- (void)cleanBeforeClose
 {
-    self.autocompletedField.enabled = ![textField.text isEqualToString:@""];
+    _nameField.text = @"";
+    [_nameField resignFirstResponder];
+    [super cleanBeforeClose];
 }
 
 #pragma mark - UITextFieldDelegate methods
-
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-    if (textField == _nameField)
-        textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
-}
-
-- (void)textFieldDidBeginEditing:(UITextField *)textField
-{
-    if (textField == _nameField) {
-        [self.delegate expandAddView];
-        textField.placeholder = NSLocalizedString(@"ENTER_NAME", @"");
-    } else
-        [super textFieldDidBeginEditing:textField];
-}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -112,9 +85,40 @@
     return NO;
 }
 
+#pragma mark - UITableViewDelegate methods
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([_nameField.text length] == 0) {
+        [CCAlertView showAlertViewWithText:NSLocalizedString(@"ADDRESS_NAME_MISSING", @"") target:self leftAction:@selector(missingNameAlertViewLeftAction:) rightAction:@selector(missingNameAlertViewRightAction:)];
+        return;
+    }
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
+#pragma mark - CCAlertView target methods
+
+- (void)missingNameAlertViewLeftAction:(id)sender
+{
+    [CCAlertView closeAlertView:sender];
+    [_nameField becomeFirstResponder];
+}
+
+- (void)missingNameAlertViewRightAction:(id)sender
+{
+    [CCAlertView closeAlertView:sender];
+    [_nameField resignFirstResponder];
+    [self.autocompletedField resignFirstResponder];
+}
+
 #pragma mark - getter methods
 
-- (NSString *)addressName
+- (void)setNameFieldValue:(NSString *)nameFieldValue
+{
+    _nameField.text = nameFieldValue;
+}
+
+- (NSString *)nameFieldValue
 {
     return _nameField.text;
 }

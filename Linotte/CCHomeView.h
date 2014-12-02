@@ -12,14 +12,13 @@
 
 @class CCAnimationDelegator;
 
-@interface CCHomeView : UIView
+@interface CCHomeView : UIView<UITextFieldDelegate>
 
-@property(nonatomic, assign)BOOL addViewExpanded;
 @property(nonatomic, assign)id<CCHomeViewDelegate> delegate;
 
-- (void)setupAddView:(UIView *)addView;
-- (void)setupListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animationDelegator;
+- (instancetype)initWithListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animatorDelegator;
 
-- (void)setupLayout;
+- (void)searchFieldResignFirstResponder;
+- (void)setSelectedButtonAtIndex:(NSUInteger)index;
 
 @end

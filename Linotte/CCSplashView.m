@@ -175,7 +175,7 @@
         [super layoutSubviews];
         
         _logo.frame = imageViewInitialFrame;
-        [UIView animateWithDuration:0.5 animations:^{
+        [UIView animateWithDuration:1 delay:0 usingSpringWithDamping:0.55 initialSpringVelocity:0.4 options:0 animations:^{
             [self setNeedsLayout];
             [super layoutSubviews];
         } completion:^(BOOL finished) {

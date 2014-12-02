@@ -19,6 +19,7 @@
 
 @property(nonatomic, weak)id<CCListViewDelegate> delegate;
 @property(nonatomic, strong)CCAnimationDelegator *animatorDelegator;
+@property(nonatomic, assign)BOOL noAnimation;
 
 - (instancetype)initWithAnimationDelegator:(CCAnimationDelegator *)animationDelegator;
 

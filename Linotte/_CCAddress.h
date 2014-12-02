@@ -5,7 +5,6 @@
 
 extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *address;
-	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *geohash;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *isAuthor;
@@ -42,10 +41,6 @@ extern const struct CCAddressRelationships {
 @property (nonatomic, strong) NSString* address;
 
 //- (BOOL)validateAddress:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSDate* date;
-
-//- (BOOL)validateDate:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* geohash;
 
@@ -153,9 +148,6 @@ extern const struct CCAddressRelationships {
 
 - (NSString*)primitiveAddress;
 - (void)setPrimitiveAddress:(NSString*)value;
-
-- (NSDate*)primitiveDate;
-- (void)setPrimitiveDate:(NSDate*)value;
 
 - (NSString*)primitiveGeohash;
 - (void)setPrimitiveGeohash:(NSString*)value;

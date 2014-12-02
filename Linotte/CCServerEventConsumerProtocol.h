@@ -17,6 +17,6 @@
 @property(nonatomic, readonly)CCServerEventEvent event;
 
 - (BOOL)hasEventsForList:(CCList *)list;
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock;
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock;
 
 @end

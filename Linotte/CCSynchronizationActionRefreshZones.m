@@ -53,11 +53,11 @@
     return [lists firstObject];
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     if (list != nil && [self listNeedProcess:list] == NO) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -65,7 +65,7 @@
     list = list ?: [self findNextListToProcess];
     if (list == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -77,7 +77,7 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -174,7 +174,7 @@
         }
         [[CCCoreDataStack sharedInstance] saveContext];
         
-        completionBlock(done);
+        completionBlock(done, NO);
     }];
 }
 

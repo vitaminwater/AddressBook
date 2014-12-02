@@ -22,7 +22,7 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems
+- (void)loadListItems:(NSString *)filterText
 {
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     
@@ -31,7 +31,12 @@
         NSError *error = nil;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@", @YES];
+        NSPredicate *predicate;
+        if (filterText != nil) {
+            predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@ AND name CONTAINS[c] %@", @YES, filterText];
+        } else {
+            predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@", @YES];
+        }
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -41,6 +46,11 @@
         else
             [self.provider addAddresses:addresses];
     }
+}
+
+- (void)filterItems:(NSString *)filterText
+{
+    
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods

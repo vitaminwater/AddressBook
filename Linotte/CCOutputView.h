@@ -10,13 +10,15 @@
 
 #import "CCOutputViewDelegate.h"
 
+#import "CCMetaProtocol.h"
+
 @interface CCOutputView : UIView<UITabBarDelegate>
 
 @property(nonatomic, readonly)NSString *currentColor;
 
 @property(nonatomic, weak)id <CCOutputViewDelegate>delegate;
 
-- (instancetype)initWithDelegate:(id<CCOutputViewDelegate>)delegate;
-- (void)updateValues;
+- (void)addMeta:(id<CCMetaProtocol>)meta;
+- (void)updateMeta:(id<CCMetaProtocol>)meta;
 
 @end

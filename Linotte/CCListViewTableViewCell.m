@@ -17,16 +17,12 @@
 
 @implementation CCListViewTableViewCell
 {
-    UIButton *_deleteButton;
-    
     UILabel *_realTextLabel;
     CCListViewTableViewCellDetailLabel *_realDetailTextLabel;
     
     UIButton *_bellButton;
     
     UIImageView *_compasView;
-    
-    NSLayoutConstraint *_rightEjectButtonConstraint;
     
     NSMutableArray *_constraints;
 }
@@ -38,30 +34,15 @@
         self.backgroundColor = [UIColor clearColor];
         self.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
         
-        [self setupButton];
         [self setupLabels];
         [self setupBellButton];
         [self setupCompas];
         [self setupLayout];
         
-        UISwipeGestureRecognizer *swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-        swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-        [self addGestureRecognizer:swipGestureRecognizer];
-        swipGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipGestureRecognizer:)];
-        swipGestureRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-        [self addGestureRecognizer:swipGestureRecognizer];
+        UILongPressGestureRecognizer *longPressedGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(removePressed:)];
+        [self addGestureRecognizer:longPressedGestureRecognizer];
     }
     return self;
-}
-
-- (void)setupButton
-{
-    _deleteButton = [UIButton new];
-    _deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    _deleteButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [_deleteButton setImage:[UIImage imageNamed:@"delete_note"] forState:UIControlStateNormal];
-    [_deleteButton addTarget:self action:@selector(removePressed:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:_deleteButton];
 }
 
 - (void)setupLabels
@@ -69,7 +50,7 @@
     _realTextLabel = [UILabel new];
     _realTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _realTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    _realTextLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:25];
+    _realTextLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:20];
     _realTextLabel.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
     [self.contentView addSubview:_realTextLabel];
     
@@ -99,7 +80,7 @@
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_deleteButton, _realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
+    //NSDictionary *views = NSDictionaryOfVariableBindings(_realTextLabel, _realDetailTextLabel, _bellButton, _compasView);
     
     if (_constraints)
         [self.contentView removeConstraints:_constraints];
@@ -107,28 +88,16 @@
     
     // realTextLabel and reatDetailTextLabel
     {
-        NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:15];
+        NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
         [_constraints addObject:topTextLabelConstraint];
         
-        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-20];
+        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
         [_constraints addObject:bottomDetailLabelConstraint];
         
         for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {
-            NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_deleteButton attribute:NSLayoutAttributeRight multiplier:1 constant:view == _realTextLabel ? 16 : 8];
+            NSLayoutConstraint *leftConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:view == _realTextLabel ? 16 : 8];
             [_constraints addObject:leftConstraint];
         }
-    }
-    
-    // deleteButton
-    {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_deleteButton(==90)]" options:0 metrics:nil views:views];
-        [_constraints addObjectsFromArray:horizontalConstraints];
-        
-        _rightEjectButtonConstraint = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-        [_constraints addObject:_rightEjectButtonConstraint];
-        
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_deleteButton]|" options:0 metrics:nil views:views];
-        [_constraints addObjectsFromArray:verticalConstraints];
     }
     
     // compasView
@@ -155,22 +124,6 @@
     }
     
     [self.contentView addConstraints:_constraints];
-}
-
-- (void)showDeleteButton
-{
-    _rightEjectButtonConstraint.constant = 95;
-    [UIView animateWithDuration:0.2 animations:^{
-        [self.contentView layoutIfNeeded];
-    }];
-}
-
-- (void)hideDeleteButton
-{
-    _rightEjectButtonConstraint.constant = 0;
-    [UIView animateWithDuration:0.2 animations:^{
-        [self.contentView layoutIfNeeded];
-    }];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -211,34 +164,19 @@
 
 - (void)prepareForReuse
 {
-    _rightEjectButtonConstraint.constant = 0;
 }
 
 #pragma mark - UIButton target methods
 
-- (void)removePressed:(id)sender
+- (void)removePressed:(UILongPressGestureRecognizer *)gestureRecognizer
 {
-    [_delegate deleteAddress:self];
+    if (gestureRecognizer.state == UIGestureRecognizerStateRecognized)
+        [_delegate deleteAddress:self];
 }
 
 - (void)bellPressed:(id)sender
 {
     [_delegate setNotificationEnabled:!_bellButton.selected forCell:self];
-}
-
-#pragma mark - UIGestureRecognizer target methods
-
-- (void)swipGestureRecognizer:(UISwipeGestureRecognizer *)swipGestureRecognizer
-{
-    if (_deletable == NO)
-        return;
-    if (swipGestureRecognizer.state == UIGestureRecognizerStateEnded) {
-        if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionRight) {
-            [self showDeleteButton];
-        } else if (swipGestureRecognizer.direction == UISwipeGestureRecognizerDirectionLeft) {
-            [self hideDeleteButton];
-        }
-    }
 }
 
 #pragma mark - setter methods

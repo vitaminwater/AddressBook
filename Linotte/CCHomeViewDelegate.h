@@ -8,8 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSUInteger {
+    CCHomeViewPanelMyAddresses = 0,
+    CCHomeViewPanelMyBooks = 1,
+    CCHomeViewPanelLastNotification = 2,
+} CCHomeViewPanel;
+
 @protocol CCHomeViewDelegate <NSObject>
 
-- (void)showListStore;
+- (void)homePanelSelected:(CCHomeViewPanel)viewPanel;
+- (void)filterList:(NSString *)filterText;
 
 @end

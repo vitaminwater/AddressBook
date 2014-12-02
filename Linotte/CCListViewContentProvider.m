@@ -33,9 +33,17 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
         _model = model;
         _model.provider = self;
         _listItems = [@[] mutableCopy];
-        [model loadListItems];
+        [model loadListItems:nil];
     }
     return self;
+}
+
+- (void)filterList:(NSString *)filterText
+{
+    NSRange range = (NSRange){0, [_listItems count]};
+    [self emptyListItems];
+    [_delegate removeCellsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
+    [_model loadListItems:filterText];
 }
 
 #pragma mark - data management methods
@@ -120,6 +128,7 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
         [listItem refreshData];
     }];
     [_delegate refreshCellsAtIndexes:indexes];
+    [self resortListItems]; // check so that we don't have to resort all items
 }
 
 - (void)refreshListItemContentForObject:(id)object

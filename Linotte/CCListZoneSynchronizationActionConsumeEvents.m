@@ -106,7 +106,7 @@
     return _events;
 }
 
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     
@@ -122,7 +122,7 @@
     NSArray *listZones = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     if (error != nil) {
         dispatch_async(dispatch_get_main_queue(), ^() {
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         CCLog(@"%@", error);
         return;
@@ -130,7 +130,7 @@
     
     if ([listZones count] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^() {
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -145,14 +145,14 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
         listZone.lastUpdate = [NSDate date];
         if ([eventsDicts count] == 0) {
             [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(multipleWaiting);
+            completionBlock(multipleWaiting, NO);
             return;
         }
         
@@ -166,7 +166,7 @@
         }
         listZone.lastEventDate = lastEventDate;
         [[CCCoreDataStack sharedInstance] saveContext];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

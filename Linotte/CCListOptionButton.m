@@ -19,6 +19,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         [self setupTopColorView];
     }

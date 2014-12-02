@@ -10,6 +10,8 @@
 
 @interface CCListOptionContainer : UIView<UIScrollViewDelegate>
 
+@property(nonatomic, readonly)NSArray *buttons;
+
 - (void)addButtonWithIcon:(UIImage *)icon title:(NSString *)title titleColor:(UIColor *)titleColor target:(id)target action:(SEL)action;
 
 @end

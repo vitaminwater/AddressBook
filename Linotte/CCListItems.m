@@ -190,7 +190,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     NSString *info = [self distanceInfo];
     
     if ([_address.lists count]) {
-        NSMutableString *listInfo = [NSLocalizedString(@"ADDRESS_LIST_IN", @"") mutableCopy];
+        NSMutableString *listInfo = [@"" mutableCopy];
         for (CCList *list in _address.lists) {
             [listInfo appendFormat:@"%@, ", list.name];
         }

@@ -16,8 +16,10 @@
 
 @property(nonatomic, strong)UITableView *tableView;
 @property(nonatomic, strong)UITextField *autocompletedField;
+@property(nonatomic, strong)NSString *nameFieldValue;
 
 - (void)setFirstInputAsFirstResponder;
+- (void)cleanBeforeClose;
 
 - (void)setupViews;
 - (void)setupLayout;

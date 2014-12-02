@@ -4,10 +4,10 @@
 #import "_CCListMeta.h"
 
 const struct CCListMetaAttributes CCListMetaAttributes = {
+	.action = @"action",
+	.content = @"content",
 	.identifier = @"identifier",
-	.internalName = @"internalName",
-	.name = @"name",
-	.value = @"value",
+	.uid = @"uid",
 };
 
 const struct CCListMetaRelationships CCListMetaRelationships = {
@@ -43,13 +43,13 @@ const struct CCListMetaRelationships CCListMetaRelationships = {
 	return keyPaths;
 }
 
+@dynamic action;
+
+@dynamic content;
+
 @dynamic identifier;
 
-@dynamic internalName;
-
-@dynamic name;
-
-@dynamic value;
+@dynamic uid;
 
 @dynamic list;
 

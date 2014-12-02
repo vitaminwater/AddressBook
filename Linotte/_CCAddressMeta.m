@@ -4,10 +4,10 @@
 #import "_CCAddressMeta.h"
 
 const struct CCAddressMetaAttributes CCAddressMetaAttributes = {
+	.action = @"action",
+	.content = @"content",
 	.identifier = @"identifier",
-	.internalName = @"internalName",
-	.name = @"name",
-	.value = @"value",
+	.uid = @"uid",
 };
 
 const struct CCAddressMetaRelationships CCAddressMetaRelationships = {
@@ -44,13 +44,13 @@ const struct CCAddressMetaRelationships CCAddressMetaRelationships = {
 	return keyPaths;
 }
 
+@dynamic action;
+
+@dynamic content;
+
 @dynamic identifier;
 
-@dynamic internalName;
-
-@dynamic name;
-
-@dynamic value;
+@dynamic uid;
 
 @dynamic address;
 

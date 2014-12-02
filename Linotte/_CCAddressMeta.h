@@ -4,10 +4,10 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCAddressMetaAttributes {
+	__unsafe_unretained NSString *action;
+	__unsafe_unretained NSString *content;
 	__unsafe_unretained NSString *identifier;
-	__unsafe_unretained NSString *internalName;
-	__unsafe_unretained NSString *name;
-	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *uid;
 } CCAddressMetaAttributes;
 
 extern const struct CCAddressMetaRelationships {
@@ -18,6 +18,8 @@ extern const struct CCAddressMetaRelationships {
 @class CCAddress;
 @class CCList;
 
+@class NSObject;
+
 @interface CCAddressMetaID : NSManagedObjectID {}
 @end
 
@@ -27,21 +29,21 @@ extern const struct CCAddressMetaRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCAddressMetaID* objectID;
 
+@property (nonatomic, strong) NSString* action;
+
+//- (BOOL)validateAction:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) id content;
+
+//- (BOOL)validateContent:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSString* identifier;
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* internalName;
+@property (nonatomic, strong) NSString* uid;
 
-//- (BOOL)validateInternalName:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* name;
-
-//- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* value;
-
-//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateUid:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) CCAddress *address;
 
@@ -55,17 +57,17 @@ extern const struct CCAddressMetaRelationships {
 
 @interface _CCAddressMeta (CoreDataGeneratedPrimitiveAccessors)
 
+- (NSString*)primitiveAction;
+- (void)setPrimitiveAction:(NSString*)value;
+
+- (id)primitiveContent;
+- (void)setPrimitiveContent:(id)value;
+
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-- (NSString*)primitiveInternalName;
-- (void)setPrimitiveInternalName:(NSString*)value;
-
-- (NSString*)primitiveName;
-- (void)setPrimitiveName:(NSString*)value;
-
-- (NSString*)primitiveValue;
-- (void)setPrimitiveValue:(NSString*)value;
+- (NSString*)primitiveUid;
+- (void)setPrimitiveUid:(NSString*)value;
 
 - (CCAddress*)primitiveAddress;
 - (void)setPrimitiveAddress:(CCAddress*)value;

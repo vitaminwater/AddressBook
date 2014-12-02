@@ -28,7 +28,8 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor greenColor];
+        self.opaque = YES;
         
         [self setupList];
         [self setupLayout];

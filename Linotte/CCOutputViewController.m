@@ -21,7 +21,11 @@
 
 #import "CCOutputView.h"
 
+#import "CCMetaProtocol.h"
+#import "CCMeta.h"
+
 #import "CCAddress.h"
+#import "CCAddressMeta.h"
 #import "CCList.h"
 
 #define kCCGoogleMapScheme @"comgooglemaps-x-callback://"
@@ -37,6 +41,10 @@
     BOOL _addressIsNew;
     CCAddress *_address;
     CLLocationDistance _distance;
+    
+    id<CCMetaProtocol> _nameMeta;
+    id<CCMetaProtocol> _distanceMeta;
+    id<CCMetaProtocol> _providerMeta;
 }
 
 - (instancetype)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
@@ -64,7 +72,12 @@
 
 - (void)loadView
 {
-    CCOutputView *view = [[CCOutputView alloc] initWithDelegate:self];
+    CCOutputView *view = [CCOutputView new];
+    [view addMeta:_nameMeta = [CCMeta metaWithAction:@"display" uid:@"name" content:@{@"name" : _address.name, @"address" : _address.address}]];
+    [view addMeta:_distanceMeta = [CCMeta metaWithAction:@"display" uid:@"distance" content:@{@"distance" : @0}]];
+    if ([_address.provider length] != 0)
+        [view addMeta:_providerMeta = [CCMeta metaWithAction:@"display" uid:@"provider" content:@{@"provider" : _address.provider}]];
+    view.delegate = self;
     self.view = view;
     
     if (_addressIsNew) {
@@ -216,7 +229,7 @@
     
     CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
     _distance = [_currentLocation distanceFromLocation:coordinate];
-    [((CCOutputView *)self.view) updateValues];
+    [((CCOutputView *)self.view) updateMeta:_distanceMeta];
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
 }

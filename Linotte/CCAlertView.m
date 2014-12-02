@@ -87,7 +87,7 @@
     CCFlatColorButton *button = [CCFlatColorButton new];
     button.translatesAutoresizingMaskIntoConstraints = NO;
     [button setTitle:title forState:UIControlStateNormal];
-    button.layer.cornerRadius = 10;
+    button.layer.cornerRadius = 4;
     button.clipsToBounds = YES;
     
     button.backgroundColor = normalColor;

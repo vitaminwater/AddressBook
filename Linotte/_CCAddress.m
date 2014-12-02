@@ -5,7 +5,6 @@
 
 const struct CCAddressAttributes CCAddressAttributes = {
 	.address = @"address",
-	.date = @"date",
 	.geohash = @"geohash",
 	.identifier = @"identifier",
 	.isAuthor = @"isAuthor",
@@ -77,8 +76,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 }
 
 @dynamic address;
-
-@dynamic date;
 
 @dynamic geohash;
 

@@ -30,5 +30,6 @@
 @property(nonatomic, strong)CCAnimationDelegator *animatorDelegator;
 
 - (instancetype)initWithProvider:(CCListViewContentProvider *)provider;
+- (void)filterList:(NSString *)filterText;
 
 @end

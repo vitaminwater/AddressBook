@@ -15,6 +15,6 @@
 @property(nonatomic, weak)id<CCViewControllerSwiperViewDelegate> delegate;
 @property(nonatomic, assign)NSUInteger currentViewIndex;
 
-- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly;
+- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly startViewControllerViewIndex:(NSUInteger)startViewControllerViewIndex;
 
 @end

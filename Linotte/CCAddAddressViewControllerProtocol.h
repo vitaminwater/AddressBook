@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CCAddAddressViewControllerDelegate.h"
+#import "CCBaseAddAddressViewControllerDelegate.h"
 
 @protocol CCAddAddressViewControllerProtocol <NSObject>
 
-@property(nonatomic, weak)id<CCAddAddressViewControllerDelegate> delegate;
+@property(nonatomic, weak)id<CCBaseAddAddressViewControllerDelegate> delegate;
+@property(nonatomic, strong)NSString *nameFieldValue;
 
 - (void)setFirstInputAsFirstResponder;
+- (void)firstInputResignFirstResponder;
 
 @end

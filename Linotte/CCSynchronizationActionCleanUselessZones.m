@@ -72,12 +72,12 @@
     return [farLists firstObject];
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     list = list ?: [self findNextListToProcess:coordinates];
     if (list == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -98,7 +98,7 @@
             NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
             if (error != nil) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    completionBlock(NO);
+                    completionBlock(NO, NO);
                 });
                 CCLog(@"%@", error);
                 continue;
@@ -123,7 +123,7 @@
     if (cleaned == NO) {
         [[CCCoreDataStack sharedInstance] saveContext];
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -140,7 +140,7 @@
     [[CCCoreDataStack sharedInstance] saveContext];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        completionBlock(YES);
+        completionBlock(YES, NO);
     });
 }
 

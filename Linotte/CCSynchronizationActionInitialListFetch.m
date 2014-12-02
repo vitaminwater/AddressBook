@@ -17,11 +17,11 @@
 
 @implementation CCSynchronizationActionInitialListFetch
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     if (list != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -30,7 +30,7 @@
     
     if (lastUserEventDate != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -38,7 +38,7 @@
     [[CCLinotteAPI sharedInstance] fetchInstalledListsWithCompletionBlock:^(BOOL success, NSArray *listsDictArray) {
         
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -55,11 +55,11 @@
         
         [[CCLinotteAPI sharedInstance] fetchUserLastEventDateWithCompletionBlock:^(BOOL success, NSDate *lastEventDate) {
             if (success == NO) {
-                completionBlock(NO);
+                completionBlock(NO, YES);
                 return;
             }
             CCUD.lastUserEventDate = lastEventDate;
-            completionBlock(YES);
+            completionBlock(YES, NO);
         }];
     }];
 }

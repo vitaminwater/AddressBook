@@ -14,7 +14,9 @@
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     if (self) {
-        // Initialization code
+        self.textLabel.font = [UIFont fontWithName:@"Futura-Book" size:19];
+        self.textLabel.textColor = [UIColor darkGrayColor];
+        self.detailTextLabel.textColor = [UIColor lightGrayColor];
     }
     return self;
 }

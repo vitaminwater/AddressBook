@@ -26,7 +26,7 @@
         if (![[self class] conformsToProtocol:@protocol(CCListViewModelProtocol)]) {
             @throw [NSException exceptionWithName:@"implementation error" reason:@"CCListViewModelProtocol not implemented" userInfo:nil];
         }
-        
+
         if ([[self class] conformsToProtocol:@protocol(CCModelChangeMonitorDelegate)]) {
             [[CCModelChangeMonitor sharedInstance] addDelegate:(id<CCModelChangeMonitorDelegate>)self];
         }

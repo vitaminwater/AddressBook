@@ -31,6 +31,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         _dateFormatter = [NSDateFormatter new];
         [_dateFormatter setDateFormat:@"dd/MM/yy"];

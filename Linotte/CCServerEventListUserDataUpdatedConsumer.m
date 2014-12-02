@@ -36,7 +36,7 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
@@ -45,7 +45,7 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -61,7 +61,7 @@
         [[CCCoreDataStack sharedInstance] saveContext];
         
         [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:lists send:NO];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

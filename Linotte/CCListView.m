@@ -26,6 +26,8 @@
 {
     UIView *_emptyView;
     UITableView *_tableView;
+    
+    BOOL _hasLoaded;
 }
 
 - (instancetype)initWithAnimationDelegator:(CCAnimationDelegator *)animationDelegator
@@ -33,6 +35,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         _animatorDelegator = animationDelegator;
         
         [self setupTableView];
@@ -54,8 +57,8 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
-    _tableView.rowHeight = 110;
-        
+    _tableView.rowHeight = 95;
+
     [_tableView registerClass:[CCListViewTableViewCell class] forCellReuseIdentifier:kCCListViewTableViewCellIdentifier];
     
     [self addSubview:_tableView];
@@ -114,28 +117,6 @@
     }];
 }
 
-- (void)drawRect:(CGRect)rect
-{
-    CGRect frame = self.bounds;
-    
-    CGFloat lineHeight = 0.5 * [[UIScreen mainScreen] scale];
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, lineHeight);
-    CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
-    
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + lineHeight / 2);
-    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + lineHeight / 2);
-    CGContextStrokePath(context);
-    
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, frame.origin.x, frame.origin.y + frame.size.height - lineHeight / 2);
-    CGContextAddLineToPoint(context, frame.origin.x + frame.size.width, frame.origin.y + frame.size.height - lineHeight / 2);
-    CGContextStrokePath(context);
-    
-    [super drawRect:rect];
-}
-
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -149,6 +130,8 @@
 
 - (void)reloadVisibleCells
 {
+    if (_hasLoaded == NO)
+        return;
     NSArray *cells = _tableView.visibleCells;
     for (CCListViewTableViewCell *cell in cells) {
         NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
@@ -158,6 +141,8 @@
 
 - (void)reloadCellsAtIndexes:(NSIndexSet *)indexSet
 {
+    if (_hasLoaded == NO)
+        return;
     NSMutableArray *indexPaths = [@[] mutableCopy];
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
@@ -169,22 +154,26 @@
 
 - (void)insertCellsAtIndexes:(NSIndexSet *)indexSet
 {
+    if (_hasLoaded == NO)
+        return;
     NSMutableArray *indexPaths = [@[] mutableCopy];
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
         [indexPaths addObject:indexPath];
     }];
-    [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    [_tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:_noAnimation ? UITableViewRowAnimationNone : UITableViewRowAnimationAutomatic];
 }
 
 - (void)deleteCellsAtIndexes:(NSIndexSet *)indexSet
 {
+    if (_hasLoaded == NO)
+        return;
     NSMutableArray *indexPaths = [@[] mutableCopy];
     [indexSet enumerateIndexesUsingBlock:^(NSUInteger index, BOOL *stop) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:index inSection:0];
         [indexPaths addObject:indexPath];
     }];
-    [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationLeft];
+    [_tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:_noAnimation ? UITableViewRowAnimationNone : UITableViewRowAnimationLeft];
 }
 
 - (void)unselect
@@ -197,7 +186,11 @@
 - (void)deleteAddress:(CCListViewTableViewCell *)sender
 {
     NSIndexPath *indexPath = [_tableView indexPathForCell:sender];
-    [_delegate deleteListItemAtIndex:indexPath.row];
+    
+    if (sender.deletable)
+        [_delegate deleteListItemAtIndex:indexPath.row];
+    else
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] text:NSLocalizedString(@"CANNOT_DELETE_ADDRESS", @"") delay:3];
 }
 
 - (void)setNotificationEnabled:(BOOL)enabled forCell:(id)sender
@@ -218,7 +211,7 @@
 
 - (void)updateCell:(CCListViewTableViewCell *)cell atIndex:(NSUInteger)index
 {
-    cell.textLabel.text = [[_delegate nameForListItemAtIndex:index] uppercaseString];
+    cell.textLabel.text = [[_delegate nameForListItemAtIndex:index] capitalizedString];
     cell.detailTextLabel.text = [_delegate infoForListItemAtIndex:index];
     [cell setNotificationEnabled:[_delegate notificationEnabledForListItemAtIndex:index]];
     if ([_delegate orientationAvailableAtIndex:index]) {
@@ -233,6 +226,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    _hasLoaded = YES;
     return [_delegate numberOfListItems];
 }
 

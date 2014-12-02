@@ -10,8 +10,17 @@
 
 #import "CCAddAddressViewTableViewCell.h"
 
+#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight}
 
 @implementation CCAddAddressByNameView
+
+@dynamic nameFieldValue;
+
+- (void)setupViews
+{
+    [super setupViews];
+    self.autocompletedField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
+}
 
 - (void)setupLayout
 {
@@ -21,7 +30,7 @@
     
     NSDictionary *views = NSDictionaryOfVariableBindings(autocompletedField, tableView);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[autocompletedField(kCCAddViewTextFieldHeight)][tableView]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[autocompletedField(kCCAddTextFieldHeight)][tableView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -30,15 +39,16 @@
     }
 }
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField
+#pragma mark - getter methods
+
+- (void)setNameFieldValue:(NSString *)nameFieldValue
 {
-    [super textFieldDidBeginEditing:textField];
-    textField.placeholder = NSLocalizedString(@"ENTER_NAME", @"");
+    self.autocompletedField.text = nameFieldValue;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+- (NSString *)nameFieldValue
 {
-    textField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
+    return self.autocompletedField.text;
 }
 
 @end

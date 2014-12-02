@@ -25,7 +25,6 @@
     UIView *_listNotificationView;
     UIButton *_listNotificationButton;
     
-    UIView *_addView;
     CCListView *_listView;
     
     NSMutableArray *_constraints;
@@ -36,6 +35,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         [self setupListHeader];
         [self setupListNotificationView];
@@ -105,6 +105,11 @@
     [_listNotificationButton addTarget:self action:@selector(notificationPressed:) forControlEvents:UIControlEventTouchUpInside];
     [_listNotificationView addSubview:_listNotificationButton];
     
+    UIView *separatorView = [UIView new];
+    separatorView.translatesAutoresizingMaskIntoConstraints = NO;
+    separatorView.backgroundColor = [UIColor grayColor];
+    [_listNotificationView addSubview:separatorView];
+    
     {
         NSDictionary *views = NSDictionaryOfVariableBindings(listNotificationLabel, _listNotificationButton);
         
@@ -116,14 +121,17 @@
             [_listNotificationView addConstraints:verticalConstraints];
         }
     }
-}
-
-- (void)setupAddView:(UIView *)addView
-{
-    _addView = addView;
     
-    _addView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_addView];
+    // separator view
+    {
+        NSDictionary *views = NSDictionaryOfVariableBindings(separatorView);
+        
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[separatorView]|" options:0 metrics:nil views:views];
+        [_listNotificationView addConstraints:horizontalConstraints];
+        
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[separatorView(==1)]|" options:0 metrics:nil views:views];
+        [_listNotificationView addConstraints:verticalConstraints];
+    }
 }
 
 - (void)setupListView:(CCListView *)listView
@@ -131,10 +139,7 @@
     _listView = listView;
     
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
-    if (_addView != nil)
-        [self insertSubview:_listView belowSubview:_addView];
-    else
-        [self addSubview:_listView];
+    [self addSubview:_listView];
 }
 
 - (void)setupLayout
@@ -183,65 +188,22 @@
         }];
     }
     
-    if (_addView != nil) {
-        // add view
-        {
-            if (_addViewExpanded) {
-                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-                [_constraints addObject:topConstraint];
-                
-                NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
-                [_constraints addObject:bottomConstraint];
-            } else {
-                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-                [_constraints addObject:topConstraint];
-                
-                NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-                [_constraints addObject:heightConstraint];
-            }
-        }
+    // list view
+    {
+        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [_constraints addObject:topConstraint];
         
-        // list view
-        {
-            if (_addViewExpanded) {
-                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-                [_constraints addObject:topConstraint];
-            } else {
-                NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-                [_constraints addObject:topConstraint];
-            }
-            
-            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [_constraints addObject:bottomConstraint];
-        }
+        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [_constraints addObject:bottomConstraint];
+    }
+    
+    // horizontal constraints
+    {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _listView);
         
-        // horizontal constraints
-        {
-            NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _addView, _listView);
-            
-            for (UIView *view in views.allValues) {
-                NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-                [_constraints addObjectsFromArray:horizontalConstraints];
-            }
-        }
-    } else {
-        // list view
-        {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [_constraints addObject:topConstraint];
-            
-            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [_constraints addObject:bottomConstraint];
-        }
-        
-        // horizontal constraints
-        {
-            NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _listView);
-            
-            for (UIView *view in views.allValues) {
-                NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-                [_constraints addObjectsFromArray:horizontalConstraints];
-            }
+        for (UIView *view in views.allValues) {
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            [_constraints addObjectsFromArray:horizontalConstraints];
         }
     }
     
@@ -261,24 +223,6 @@
 - (void)setNotificationEnabled:(BOOL)notificationEnabled
 {
     _listNotificationButton.selected = notificationEnabled;
-}
-
-#pragma mark - setter methods
-
-- (void)setAddViewExpanded:(BOOL)addViewExpanded
-{
-    if (_addViewExpanded == addViewExpanded)
-        return;
-    
-    [self willChangeValueForKey:@"addViewExpanded"];
-    _addViewExpanded = addViewExpanded;
-    [self setupLayout];
-    
-    [UIView animateWithDuration:0.4 animations:^{
-        [self layoutIfNeeded];
-    }];
-    
-    [self didChangeValueForKey:@"addViewExpanded"];
 }
 
 #pragma mark - UIButton target methods

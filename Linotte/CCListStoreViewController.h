@@ -17,8 +17,9 @@
 #import "CCListInstallerViewControllerDelegate.h"
 
 #import "CCListOutputViewControllerDelegate.h"
+#import "CCChildRootViewControllerProtocol.h"
 
-@interface CCListStoreViewController : UIViewController<CCListStoreViewDelegate, CCListInstallerViewControllerDelegate, CCListOutputViewControllerDelegate, CLLocationManagerDelegate>
+@interface CCListStoreViewController : UIViewController<CCChildRootViewControllerProtocol, CCListStoreViewDelegate, CCListInstallerViewControllerDelegate, CCListOutputViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, assign)id<CCListStoreViewControllerDelegate> delegate;
 

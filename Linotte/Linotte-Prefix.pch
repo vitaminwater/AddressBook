@@ -28,35 +28,14 @@
 
 #define kCCLinotteColors @[@"#5acfc4", @"#ffae64", @"#f4607c"]
 
-#define kCCAddViewTextFieldHeight @70
-#define kCCAddViewKeyboardHeight @210
+#define kCCLinotteTextFieldHeight @50
 #define kCCStatusBarHeight @20
 
 #define kCCMaxAddressesForList 600
 #define kCCAddressFetchLimit 50
 
-#define kCCAddViewTextFieldHeightMetric @{@"kCCStatusBarHeight" : kCCStatusBarHeight, @"kCCAddViewTextFieldHeight" : kCCAddViewTextFieldHeight, @"kCCAddViewKeyboardHeight" : kCCAddViewKeyboardHeight}
+#define kCCListDefaultProvider @"user"
 
-#define kCCListDefaultProvider @"USER"
 
-/*
-      ,
-     --
-    ( ˚ <
- ^_/   |
- \_    /
-    ||
-*/
-
-/*
-
-        "
-      /    \
-     |   °  <
-     )     /
-^___/      )
-\         /
-  \_____/
-     ll
-
-*/
+#define kCCBackToHomeNotification @"kCCBackToHomeNotification"
+#define kCCShowAddressesPanelNotification @"kCCShowAddressesPanelNotification"

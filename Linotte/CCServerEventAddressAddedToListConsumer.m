@@ -38,7 +38,7 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSArray *addressIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
     
@@ -52,7 +52,7 @@
     if (error != nil) {
         CCLog(@"%@", error);
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -72,7 +72,7 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -102,7 +102,7 @@
         
         [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd didMoveToList:list send:NO];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

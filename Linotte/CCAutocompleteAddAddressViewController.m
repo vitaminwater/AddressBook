@@ -44,27 +44,19 @@
     [((CCAutocompleteAddAddressView *)self.view) setFirstInputAsFirstResponder];
 }
 
+- (void)firstInputResignFirstResponder
+{
+    [((CCAutocompleteAddAddressView *)self.view) cleanBeforeClose];
+}
+
 #pragma mark - CCAddAddressViewDelegate methods
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index {}
 
-- (void)expandAddView
-{
-    [self.delegate addAddressViewControllerExpandAddView:self];
-}
-
-- (void)reduceAddView
-{
-    [self.delegate addAddressViewControllerReduceAddView:self];
-    [_autoComplete stopAutoComplete];
-    
-    [(CCAutocompleteAddAddressView *)self.view hideLoading];
-}
 
 - (void)autocompleteName:(NSString *)name
 {
     [_autoComplete autocompleteText:name];
-    [self.delegate addAddressViewControllerExpandAddView:self];
 }
 
 - (NSString *)nameForAutocompletionResultAtIndex:(NSUInteger)index
@@ -116,6 +108,20 @@
     } else {
         [((CCAutocompleteAddAddressView *)self.view) disableField];
     }
+}
+
+#pragma mark - getter/setter methods
+
+- (NSString *)nameFieldValue
+{
+    CCAutocompleteAddAddressView *view = (CCAutocompleteAddAddressView *)self.view;
+    return view.nameFieldValue;
+}
+
+- (void)setNameFieldValue:(NSString *)nameFieldValue
+{
+    CCAutocompleteAddAddressView *view = (CCAutocompleteAddAddressView *)self.view;
+    view.nameFieldValue = nameFieldValue;
 }
 
 @end

@@ -56,6 +56,8 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     
+    self.title = NSLocalizedString(@"LIST_STORE_SCREEN_NAME", @"");
+    
     CCListStoreView *view = [CCListStoreView new];
     view.delegate = self;
     self.view = view;
@@ -64,27 +66,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.title = NSLocalizedString(@"LIST_STORE_CONTROLLER_TITLE", @"");
-    
-    NSString *color = @"#6b6b6b";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
-    
-    { // left bar button items
-        CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);
-        UIButton *backButton = [UIButton new];
-        [backButton setImage:[UIImage imageNamed:@"back_icon.png"] forState:UIControlStateNormal];
-        backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        backButton.frame = backButtonFrame;
-        [backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-        
-        UIBarButtonItem *emptyBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-        emptyBarButtonItem.width = -10;
-        self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
-    }
-    self.navigationItem.hidesBackButton = YES;
     
     if ([[CCNetworkHandler sharedInstance] connectionAvailable]) {
         [((CCListStoreView *)self.view) reachable];
@@ -95,12 +76,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController setNavigationBarHidden:NO animated:animated];
-    
     [[CCLocationMonitor sharedInstance] addDelegate:self];
 }
 
@@ -114,6 +89,16 @@
     [super didReceiveMemoryWarning];
 }
 
+#pragma mark - CCChildRootViewControllerProtocol methods
+
+- (void)viewWillShow
+{
+}
+
+- (void)viewWillHide
+{
+}
+
 #pragma mark - Location methods
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
@@ -124,7 +109,9 @@
     if (launchFetch)
         [self loadLists:0];
     
-    [[CCLocationMonitor sharedInstance] removeDelegate:self];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[CCLocationMonitor sharedInstance] removeDelegate:self];
+    });
 }
 
 #pragma mark - Data methods

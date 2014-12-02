@@ -4,10 +4,10 @@
 #import <CoreData/CoreData.h>
 
 extern const struct CCListMetaAttributes {
+	__unsafe_unretained NSString *action;
+	__unsafe_unretained NSString *content;
 	__unsafe_unretained NSString *identifier;
-	__unsafe_unretained NSString *internalName;
-	__unsafe_unretained NSString *name;
-	__unsafe_unretained NSString *value;
+	__unsafe_unretained NSString *uid;
 } CCListMetaAttributes;
 
 extern const struct CCListMetaRelationships {
@@ -15,6 +15,8 @@ extern const struct CCListMetaRelationships {
 } CCListMetaRelationships;
 
 @class CCList;
+
+@class NSObject;
 
 @interface CCListMetaID : NSManagedObjectID {}
 @end
@@ -25,21 +27,21 @@ extern const struct CCListMetaRelationships {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 @property (nonatomic, readonly, strong) CCListMetaID* objectID;
 
+@property (nonatomic, strong) NSString* action;
+
+//- (BOOL)validateAction:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) id content;
+
+//- (BOOL)validateContent:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSString* identifier;
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSString* internalName;
+@property (nonatomic, strong) NSString* uid;
 
-//- (BOOL)validateInternalName:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* name;
-
-//- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
-
-@property (nonatomic, strong) NSString* value;
-
-//- (BOOL)validateValue:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateUid:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) CCList *list;
 
@@ -49,17 +51,17 @@ extern const struct CCListMetaRelationships {
 
 @interface _CCListMeta (CoreDataGeneratedPrimitiveAccessors)
 
+- (NSString*)primitiveAction;
+- (void)setPrimitiveAction:(NSString*)value;
+
+- (id)primitiveContent;
+- (void)setPrimitiveContent:(id)value;
+
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-- (NSString*)primitiveInternalName;
-- (void)setPrimitiveInternalName:(NSString*)value;
-
-- (NSString*)primitiveName;
-- (void)setPrimitiveName:(NSString*)value;
-
-- (NSString*)primitiveValue;
-- (void)setPrimitiveValue:(NSString*)value;
+- (NSString*)primitiveUid;
+- (void)setPrimitiveUid:(NSString*)value;
 
 - (CCList*)primitiveList;
 - (void)setPrimitiveList:(CCList*)value;

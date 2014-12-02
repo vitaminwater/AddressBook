@@ -28,7 +28,6 @@
 #import "CCAnimationDelegator.h"
 
 #import "CCListViewController.h"
-#import "CCAddAddressByNameViewController.h"
 #import "CCFirstListDisplaySettingsViewController.h"
 
 #import "CCListOutputListViewModel.h"
@@ -50,7 +49,6 @@
     UIButton *_settingsButton;
     
     CCListViewController *_listViewController;
-    CCAddAddressByNameViewController *_addViewController;
     
     CCListOutputAddressListViewController *_listOutputAddressListViewController;
 }
@@ -80,14 +78,6 @@
     self.view = view;
     
     [view setNotificationEnabled:_list.notifyValue];
-    
-    if (_list.ownedValue) {
-        _addViewController = [CCAddAddressByNameViewController new];
-        _addViewController.delegate = self;
-        [self addChildViewController:_addViewController];
-        [view setupAddView:_addViewController.view];
-        [_addViewController didMoveToParentViewController:self];
-    }
     
     CCAnimationDelegator *animationDelegator = [CCAnimationDelegator new];
     CCListOutputListViewModel *listModel = [[CCListOutputListViewModel alloc] initWithList:_list];
@@ -246,33 +236,21 @@
 
 - (void)deleteList:(CCList *)list {}
 
-#pragma mark - CCAddAddressViewControllerDelegate
-
-- (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address
-{
-    [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
-    [_list addAddressesObject:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
-    [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
-}
-
-- (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address
-{
-    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
-    [self.navigationController pushViewController:outputViewController animated:YES];
-}
-
-- (void)addAddressViewControllerExpandAddView:(id)sender
-{
-    CCListOutputView *view = (CCListOutputView *)self.view;
-    view.addViewExpanded = YES;
-}
-
-- (void)addAddressViewControllerReduceAddView:(id)sender
-{
-    CCListOutputView *view = (CCListOutputView *)self.view;
-    view.addViewExpanded = NO;
-}
+//#pragma mark - CCAddAddressViewControllerDelegate
+//
+//- (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address
+//{
+//    [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
+//    [_list addAddressesObject:address];
+//    [[CCCoreDataStack sharedInstance] saveContext];
+//    [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
+//}
+//
+//- (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address
+//{
+//    CCOutputViewController *outputViewController = [[CCOutputViewController alloc] initWithAddress:address addressIsNew:YES];
+//    [self.navigationController pushViewController:outputViewController animated:YES];
+//}
 
 #pragma mark - CCSettingsViewControllerDelegate methods
 

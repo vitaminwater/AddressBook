@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCFlatColorButton.h"
+#import "CCTabStyleButton.h"
 
-@interface CCListOptionButton : CCFlatColorButton
+@interface CCListOptionButton : CCTabStyleButton
 
 @end

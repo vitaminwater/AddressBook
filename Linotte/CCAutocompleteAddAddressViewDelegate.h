@@ -10,9 +10,6 @@
 
 @protocol CCAutocompleteAddAddressViewDelegate <NSObject>
 
-- (void)expandAddView;
-- (void)reduceAddView;
-
 #pragma mark - auto completion methods
 
 - (void)autocompleteName:(NSString *)name;

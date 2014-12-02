@@ -37,7 +37,7 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     _currentList = list;
     _currentConnection = [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:list.identifier completionBlock:^(BOOL success, NSDictionary *listInfo) {
@@ -45,7 +45,7 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -59,7 +59,7 @@
 
         [[CCCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] listsDidUpdate:@[list] send:NO];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

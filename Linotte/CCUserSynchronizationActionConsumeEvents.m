@@ -51,7 +51,7 @@
     return _events;
 }
 
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
     
@@ -59,12 +59,12 @@
         
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
         if ([eventsDicts count] == 0) {
-            completionBlock(NO);
+            completionBlock(NO, NO);
             return;
         }
         
@@ -78,7 +78,7 @@
         CCUD.lastUserEventDate = lastEventDate;
 
         [[CCCoreDataStack sharedInstance] saveContext];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 
@@ -89,11 +89,11 @@
 
 #pragma mark - overriden methods
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void (^)(BOOL))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void (^)(BOOL, BOOL))completionBlock
 {
     if (list != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -102,7 +102,7 @@
 
     if (lastUserEventDate == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }

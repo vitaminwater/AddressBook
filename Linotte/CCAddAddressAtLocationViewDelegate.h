@@ -10,4 +10,6 @@
 
 @protocol CCAddAddressAtLocationViewDelegate <NSObject>
 
+- (void)validateButtonPressed;
+
 @end

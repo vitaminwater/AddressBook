@@ -11,6 +11,8 @@
 
 @implementation CCListMeta
 
+@synthesize content;
+
 + (CCListMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
     NSError *error = nil;
@@ -88,10 +90,14 @@
 
 + (void)setValuesForlistMeta:(CCListMeta *)listMeta fromLinotteDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     listMeta.identifier = dict[@"identifier"];
-    listMeta.name = dict[@"name"];
-    listMeta.internalName = dict[@"internal_name"];
-    listMeta.value = dict[@"value"];
+    listMeta.action = dict[@"action"];
+    listMeta.uid = dict[@"uid"];
+    listMeta.content = [NSJSONSerialization JSONObjectWithData:[dict[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (error != nil) {
+        NSLog(@"%@", error);
+    }
 }
 
 @end

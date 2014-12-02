@@ -10,7 +10,8 @@
 
 @protocol CCViewControllerSwiperViewDelegate <NSObject>
 
-- (void)currentViewControllerChangedToIndex:(NSUInteger)index;
+- (void)currentViewControllerWillChangeToIndex:(NSUInteger)index fromIndex:(NSUInteger)fromIndex;
+- (void)currentViewControllerDidChangeToIndex:(NSUInteger)index fromIndex:(NSUInteger)fromIndex;
 - (NSString *)nameForViewControllerAtIndex:(NSUInteger)index;
 
 @end

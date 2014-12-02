@@ -11,6 +11,8 @@
 
 @implementation CCAddressMeta
 
+@synthesize content;
+
 + (CCAddressMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
     NSError *error = nil;
@@ -88,10 +90,14 @@
 
 + (void)setValuesForAddressMeta:(CCAddressMeta *)addressMeta fromLinotteDict:(NSDictionary *)dict
 {
+    NSError *error = nil;
     addressMeta.identifier = dict[@"identifier"];
-    addressMeta.name = dict[@"name"];
-    addressMeta.internalName = dict[@"internal_name"];
-    addressMeta.value = dict[@"value"];
+    addressMeta.action = dict[@"action"];
+    addressMeta.uid = dict[@"uid"];
+    addressMeta.content = [NSJSONSerialization JSONObjectWithData:[dict[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (error != nil) {
+        NSLog(@"%@", error);
+    }
 }
 
 @end

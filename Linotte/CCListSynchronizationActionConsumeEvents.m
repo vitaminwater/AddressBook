@@ -103,7 +103,7 @@
     return _events;
 }
 
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     _currentList = list;
     BOOL multipleWaitingLists = _multipleWaitingLists;
@@ -114,13 +114,13 @@
             _currentList = nil;
             _currentConnection = nil;
             if (success == NO) {
-                completionBlock(NO);
+                completionBlock(NO, YES);
                 return;
             }
 
             list.lastEventDate = lastEventDate;
             [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(YES);
+            completionBlock(YES, NO);
         }];
         return;
     }
@@ -130,7 +130,7 @@
         _currentList = nil;
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -138,7 +138,7 @@
         
         if ([eventsDicts count] == 0) {
             [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(multipleWaitingLists);
+            completionBlock(multipleWaitingLists, NO);
             return;
         }
         
@@ -152,7 +152,7 @@
         }
         list.lastEventDate = lastEventDate;
         [[CCCoreDataStack sharedInstance] saveContext];
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

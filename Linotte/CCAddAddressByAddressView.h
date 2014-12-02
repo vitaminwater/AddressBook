@@ -10,6 +10,6 @@
 
 @interface CCAddAddressByAddressView : CCAutocompleteAddAddressView
 
-@property(nonatomic, readonly)NSString *addressName;
+@property(nonatomic, strong)NSString *nameFieldValue;
 
 @end

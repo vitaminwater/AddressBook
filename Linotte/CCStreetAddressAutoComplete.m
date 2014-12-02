@@ -68,10 +68,10 @@
         
         infos.address = response[@"result"][@"formatted_address"];
         infos.provider = @"google";
-        infos.provider = result.providerId;
+        infos.providerId = response[@"result"][@"place_id"];
         
-        CGFloat latitude = [response[@"result"][@"geometry"][@"lat"] floatValue];
-        CGFloat longitude = [response[@"result"][@"geometry"][@"lng"] floatValue];
+        CGFloat latitude = [response[@"result"][@"geometry"][@"location"][@"lat"] floatValue];
+        CGFloat longitude = [response[@"result"][@"geometry"][@"location"][@"lng"] floatValue];
         infos.coordinates = CLLocationCoordinate2DMake(latitude, longitude);
         
         completionBlock(infos);

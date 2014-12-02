@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CCAddAddressViewControllerDelegate.h"
+#import "CCBaseAddAddressViewControllerDelegate.h"
 
-@protocol CCAddAddressAtLocationViewControllerDelegate <CCAddAddressViewControllerDelegate>
+@protocol CCAddAddressAtLocationViewControllerDelegate <CCBaseAddAddressViewControllerDelegate>
 
 @end

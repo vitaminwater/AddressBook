@@ -10,6 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCLinotteField.h"
+
 #import "CCAnimationDelegator.h"
 
 #import "CCListOptionContainer.h"
@@ -17,65 +19,68 @@
 #import "CCFlatColorButton.h"
 
 #define kCCMainViewTopListConstraintAnimator @"kCCMainViewTopListConstraintAnimator"
+#define kCCHomeViewMetrics @{@"kCCHomeButtonContainerHeight" : @50}
+#define kCCHomeSearchFieldHeight [kCCLinotteTextFieldHeight floatValue]
 
 @implementation CCHomeView
 {
-    UIView *_statusBar;
-    UIView *_addView;
+    UITextField *_searchField;
     UIView *_listView;
+    
+    NSString *_lastFilterText;
     
     CCAnimationDelegator *_animationDelegator;
 
     CCListOptionContainer *_buttonContainer;
-    CGFloat _panVelocity;
-    
+
     NSMutableArray *_constraints;
 }
 
-- (instancetype)init
+- (instancetype)initWithListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animatorDelegator
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        
-        [self setupStatusBar];
+        self.opaque = YES;
+
+        _listView = listView;
+        _animationDelegator = animatorDelegator;
+        [self setupSearchField];
         [self setupButtons];
+        [self setupListView];
+        [self setupLayout];
     }
     return self;
 }
 
-- (void)setupStatusBar
+- (void)setupSearchField
 {
-    _statusBar = [UIView new];
-    _statusBar.translatesAutoresizingMaskIntoConstraints = NO;
-    _statusBar.backgroundColor = [UIColor colorWithHexString:@"#6b6b6b"];
-    _statusBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self addSubview:_statusBar];
+    _searchField = [[CCLinotteField alloc] initWithImage:[UIImage imageNamed:@"search_icon"]];
+    _searchField.translatesAutoresizingMaskIntoConstraints = NO;
+    _searchField.placeholder = NSLocalizedString(@"SEARCH", @"");
+    [_searchField addTarget:self action:@selector(searchFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+    _searchField.delegate = self;
+    [self addSubview:_searchField];
 }
 
 - (void)setupButtons
 {
     _buttonContainer = [CCListOptionContainer new];
     _buttonContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [self insertSubview:_buttonContainer belowSubview:_statusBar];
+    [self addSubview:_buttonContainer];
     
-    [_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"discover"] title:NSLocalizedString(@"DISCOVER_LIST", @"") titleColor:[UIColor colorWithHexString:@"#ffae64"] target:self action:@selector(discoverPressed:)];
-    //[_buttonContainer addButtonWithIcon:[UIImage imageNamed:@"book_pink"] title:NSLocalizedString(@"MY_LISTS", @"") titleColor:[UIColor colorWithHexString:@"f4607c"] target:self action:@selector(myListsPressed:)];
+    [_buttonContainer addButtonWithIcon:nil title:NSLocalizedString(@"MY_ADDRESSES", @"") titleColor:[UIColor colorWithHexString:@"#ffae64"] target:self action:@selector(listOptionButtonPressed:)];
+    [_buttonContainer addButtonWithIcon:nil title:NSLocalizedString(@"MY_BOOKS", @"") titleColor:[UIColor colorWithHexString:@"#f4607c"] target:self action:@selector(listOptionButtonPressed:)];
+    [_buttonContainer addButtonWithIcon:nil title:NSLocalizedString(@"LAST_NOTIFICATIONS", @"") titleColor:[UIColor colorWithHexString:@"#5acfc4"] target:self action:@selector(listOptionButtonPressed:)];
+    
+    UIButton *firstButton = _buttonContainer.buttons[0];
+    firstButton.selected = YES;
 }
 
-- (void)setupAddView:(UIView *)addView
+- (void)setupListView
 {
-    _addView = addView;
-    _addView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_addView];
-}
-
-- (void)setupListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animationDelegator
-{
-    _animationDelegator = animationDelegator;
-    _listView = listView;
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self insertSubview:_listView belowSubview:_statusBar];
+    [self addSubview:_listView];
 }
 
 - (void)setupLayout
@@ -84,78 +89,45 @@
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_statusBar, _addView, _buttonContainer, _listView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_searchField, _buttonContainer, _listView);
+
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_searchField][_buttonContainer(kCCHomeButtonContainerHeight)][_listView]|" options:0 metrics:kCCHomeViewMetrics views:views];
+    [_constraints addObjectsFromArray:verticalConstraints];
     
-    // status bar
-    {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_statusBar]|" options:0 metrics:nil views:views];
-        [_constraints addObjectsFromArray:horizontalConstraints];
-        
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_statusBar(==kCCStatusBarHeight)]" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
-        [_constraints addObjectsFromArray:verticalConstraints];
-    }
+    NSLayoutConstraint *searchHeightConstraint = [NSLayoutConstraint constraintWithItem:_searchField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
+    [self addConstraint:searchHeightConstraint];
     
-    // Add view
-    {
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_statusBar attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [_constraints addObject:topConstraint];
-        
-        if (_addViewExpanded) {
-            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-[kCCAddViewKeyboardHeight doubleValue]];
-            [_constraints addObject:bottomConstraint];
+    __weak typeof(self) weakSelf = self;
+    __weak typeof(_searchField) weakSearchField = _searchField;
+    [_animationDelegator setTimeLineAnimationItemForKey:kCCMainViewTopListConstraintAnimator animationBlock:^BOOL(CGFloat value) {
+        if (value > 0) {
+            if (searchHeightConstraint.constant >= kCCHomeSearchFieldHeight)
+                return NO;
+            searchHeightConstraint.constant = MIN(kCCHomeSearchFieldHeight, searchHeightConstraint.constant + value);
+            [weakSelf layoutIfNeeded];
+            return YES;
         } else {
-            NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:_addView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue]];
-            [_constraints addObject:heightConstraint];
+            if (searchHeightConstraint.constant <= 0)
+                return NO;
+            [weakSearchField resignFirstResponder];
+            searchHeightConstraint.constant = MAX(0, searchHeightConstraint.constant + value);
+            [weakSelf layoutIfNeeded];
+            return YES;
         }
-    }
-    
-    // Button container
-    {
-        if (_addViewExpanded) {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:[kCCAddViewTextFieldHeight doubleValue] + [kCCStatusBarHeight doubleValue]];
-            [_constraints addObject:topConstraint];
+        return NO;
+    } fingerLiftBlock:^(){
+        if (searchHeightConstraint.constant >= kCCHomeSearchFieldHeight / 2) {
+            //[weakSearchField becomeFirstResponder];
+            searchHeightConstraint.constant = kCCHomeSearchFieldHeight;
         } else {
-            NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_buttonContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_addView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-            [_constraints addObject:topConstraint];
+            //[weakSearchField resignFirstResponder];
+            searchHeightConstraint.constant = 0;
         }
-    }
-    
-    // List view
-    {
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_buttonContainer attribute:NSLayoutAttributeTop multiplier:1 constant:5];
-        [_constraints addObject:topConstraint];
-        
-        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [_constraints addObject:bottomConstraint];
-        
-        __weak typeof(self) weakSelf = self;
-        __weak typeof(_buttonContainer) weakButtonContainer = _buttonContainer;
-        [_animationDelegator setTimeLineAnimationItemForKey:kCCMainViewTopListConstraintAnimator animationBlock:^BOOL(CGFloat value) {
-            if (value > 0) {
-                if (topConstraint.constant >= weakButtonContainer.bounds.size.height)
-                    return NO;
-                topConstraint.constant = MIN(weakButtonContainer.bounds.size.height, topConstraint.constant + value);
-                [weakSelf layoutIfNeeded];
-                return YES;
-            } else {
-                if (topConstraint.constant <= 5)
-                    return NO;
-                topConstraint.constant = MAX(5, topConstraint.constant + value);
-                [weakSelf layoutIfNeeded];
-                return YES;
-            }
-            return NO;
-        } fingerLiftBlock:^(){
-            if (topConstraint.constant >= weakButtonContainer.bounds.size.height / 2)
-                topConstraint.constant = weakButtonContainer.bounds.size.height;
-            else
-                topConstraint.constant = 5;
-            [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.4 initialSpringVelocity:1 options:0 animations:^{
-                [weakSelf layoutIfNeeded];
-            } completion:^(BOOL finished){
-            }];
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:0.4 initialSpringVelocity:1 options:0 animations:^{
+            [weakSelf layoutIfNeeded];
+        } completion:^(BOOL finished){
         }];
-    }
+    }];
     
     for (UIView *view in views.allValues) {
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
@@ -165,29 +137,51 @@
     [self addConstraints:_constraints];
 }
 
-#pragma mark - UIbutton target methods
-
-- (void)discoverPressed:(UIButton *)sender
+- (void)searchFieldResignFirstResponder
 {
-    [_delegate showListStore];
+    [_searchField resignFirstResponder];
 }
 
-#pragma mark - setter methods
-
-- (void)setAddViewExpanded:(BOOL)addViewExpanded
+- (void)setSelectedButtonAtIndex:(NSUInteger)index
 {
-    if (_addViewExpanded == addViewExpanded)
+    UIButton *listOptionButton = (UIButton *)_buttonContainer.buttons[index];
+    [self listOptionButtonPressed:listOptionButton];
+}
+
+#pragma mark - UIButton target methods
+
+- (void)listOptionButtonPressed:(UIButton *)pressedButton
+{
+    if (pressedButton.selected)
         return;
     
-    [self willChangeValueForKey:@"addViewExpanded"];
-    _addViewExpanded = addViewExpanded;
-    [self setupLayout];
+    NSUInteger index = [_buttonContainer.buttons indexOfObject:pressedButton];
+    [_delegate homePanelSelected:index];
+    for (UIButton *button in _buttonContainer.buttons) {
+        button.selected = button == pressedButton;
+    }
+}
+
+#pragma mark - UITextField target methods
+
+- (void)searchFieldChanged:(UITextField *)sender
+{
+    NSString *text = [sender.text length] ? sender.text : nil;
     
-    [UIView animateWithDuration:0.4 animations:^{
-        [self layoutIfNeeded];
-    }];
+    if ((_lastFilterText == text) || ([_lastFilterText isEqualToString:text]))
+        return;
     
-    [self didChangeValueForKey:@"addViewExpanded"];
+    [_delegate filterList:text];
+    
+    _lastFilterText = text;
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return NO;
 }
 
 @end

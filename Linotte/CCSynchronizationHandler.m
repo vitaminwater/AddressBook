@@ -140,7 +140,13 @@
     }
     
     id<CCSynchronizationActionProtocol> synchronizationAction = _synchronizationActions[_synchronizationActionIndex];
-    [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL goOnSyncing) {
+    [synchronizationAction triggerWithList:_syncedList coordinates:_lastCoordinate completionBlock:^(BOOL goOnSyncing, BOOL error) {
+        if (error) {
+            _syncedList = nil;
+            _syncing = NO;
+            completionBlock(didSync);
+            return;
+        }
         if (_syncedListChanged == NO) {
             if (goOnSyncing == YES)
                 _synchronizationActionIndex = 0;

@@ -15,5 +15,6 @@
 @interface CCAddAddressByNameView : CCAutocompleteAddAddressView
 
 @property(nonatomic, weak)id<CCAddAddressByNameViewDelegate> delegate;
+@property(nonatomic, strong)NSString *nameFieldValue;
 
 @end

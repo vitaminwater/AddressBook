@@ -19,6 +19,6 @@
 
 @property(nonatomic, assign)CCListViewContentProvider *provider;
 
-- (void)loadListItems;
+- (void)loadListItems:(NSString *)filterText;
 
 @end

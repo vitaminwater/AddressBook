@@ -2,7 +2,6 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CCAddress" representedClassName="CCAddress" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="isAuthor" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -20,10 +19,10 @@
         <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCAddressMeta" inverseName="address" inverseEntity="CCAddressMeta" syncable="YES"/>
     </entity>
     <entity name="CCAddressMeta" representedClassName="CCAddressMeta" syncable="YES">
+        <attribute name="action" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="content" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="internalName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="metas" inverseEntity="CCAddress" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="addressMetas" inverseEntity="CCList" syncable="YES"/>
     </entity>
@@ -58,10 +57,10 @@
         <relationship name="zones" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListZone" inverseName="list" inverseEntity="CCListZone" syncable="YES"/>
     </entity>
     <entity name="CCListMeta" representedClassName="CCListMeta" syncable="YES">
+        <attribute name="action" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="content" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="internalName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="metas" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <entity name="CCListZone" representedClassName="CCListZone" syncable="YES">
@@ -91,8 +90,8 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="0" positionY="0" width="128" height="298"/>
-        <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="283"/>
+        <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="133"/>
         <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
         <element name="CCList" positionX="0" positionY="0" width="128" height="388"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>

@@ -23,13 +23,15 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 
 @interface CCListViewContentProvider : NSObject
 
-@property(nonatomic, strong)id<CCListViewModelProtocol> model;
+@property(nonatomic, strong)CCListViewModel<CCListViewModelProtocol> *model;
 @property(nonatomic, strong)CLLocation *currentLocation;
 @property(nonatomic, strong)CLHeading *currentHeading;
 
 @property(nonatomic, assign)id<CCListViewContentProviderDelegate> delegate;
 
 - (instancetype)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
+
+- (void)filterList:(NSString *)filterText;
 
 - (void)deleteItemAtIndex:(NSUInteger)index;
 - (void)deleteItemsAtIndexes:(NSIndexSet *)indexes;

@@ -15,6 +15,7 @@
 #import "CCModelChangeMonitor.h"
 #import "CCLocationMonitor.h"
 
+#import "CCListViewModel.h"
 #import "CCListViewContentProvider.h"
 
 #import "CCGeohashHelper.h"
@@ -93,9 +94,23 @@
     [[CCLocationMonitor sharedInstance] removeDelegate:self];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
+}
+
+- (void)filterList:(NSString *)filterText
+{
+    CCListView *view = (CCListView *)self.view;
+    
+    view.noAnimation = YES;
+    [self.provider filterList:filterText];
+    view.noAnimation = NO;
 }
 
 #pragma mark - CLLocationManagerDelegate methods

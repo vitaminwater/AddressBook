@@ -35,14 +35,14 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentConnection = [[CCLinotteAPI sharedInstance] fetchListsForEventIds:eventIds completionBlock:^(BOOL success, NSArray *listsDicts) {
         
         _currentConnection = nil;
         if (success == NO) {
-            completionBlock(NO);
+            completionBlock(NO, YES);
             return;
         }
         
@@ -60,7 +60,7 @@
         
         [[CCModelChangeMonitor sharedInstance] listsDidAdd:lists send:NO];
         
-        completionBlock(YES);
+        completionBlock(YES, NO);
     }];
 }
 

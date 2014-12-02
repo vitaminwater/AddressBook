@@ -42,6 +42,7 @@
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index
 {
+    NSString *addressName = ((CCAddAddressByAddressView *)self.view).nameFieldValue;
     CCStreetAddressAutoComplete *autoComplete = (CCStreetAddressAutoComplete *)self.autoComplete;
     
     [autoComplete fetchCompleteInfosForResultAtIndex:index completionBlock:^(CCAddressAutocompletionResult *result) {
@@ -50,24 +51,21 @@
         
         NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
         CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
-        CCAddressAutocompletionResult *autocompletionResult = [self.autoComplete autocompletionResultAtIndex:index];
-        
-        address.name = ((CCAddAddressByAddressView *)self.view).addressName;
-        address.address = autocompletionResult.address;
-        address.provider = autocompletionResult.provider;
-        address.providerId = autocompletionResult.providerId;
-        address.date = [NSDate date];
-        address.latitude = @(autocompletionResult.coordinates.latitude);
-        address.longitude = @(autocompletionResult.coordinates.longitude);
+
+        address.name = addressName;
+        address.address = result.address;
+        address.provider = result.provider;
+        address.providerId = result.providerId;
+        address.latitude = @(result.coordinates.latitude);
+        address.longitude = @(result.coordinates.longitude);
         address.isAuthorValue = YES;
         
-        address.geohash = [CCGeohashHelper geohashFromCoordinates:autocompletionResult.coordinates];
+        address.geohash = [CCGeohashHelper geohashFromCoordinates:result.coordinates];
         
         [self.delegate addAddressViewController:self preSaveAddress:address];
         [[CCCoreDataStack sharedInstance] saveContext];
         [self.delegate addAddressViewController:self postSaveAddress:address];
-        
-        [self reduceAddView];
+
         @try {
             [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
         }

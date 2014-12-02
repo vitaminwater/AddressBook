@@ -8,6 +8,8 @@
 
 #import "CCAddListView.h"
 
+#define kCCAddListViewMetrics @{@"kCCStatusBarHeight" : kCCStatusBarHeight, @"kCCSearchTextFieldHeight" : kCCLinotteTextFieldHeight}
+
 @implementation CCAddListView
 {
     UITextField *_textField;
@@ -18,6 +20,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         [self setupTextField];
         [self setupLayout];
@@ -36,7 +39,7 @@
     _textField.delegate = self;
     
     UIImageView *leftView = [UIImageView new];
-    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
+    leftView.frame = CGRectMake(0, 0, 58, [kCCLinotteTextFieldHeight floatValue]);
     leftView.contentMode = UIViewContentModeCenter;
     leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     leftView.image = [UIImage imageNamed:@"add_book_icon"];
@@ -46,7 +49,7 @@
     UIButton *cancelButton = [UIButton new];
     [cancelButton setImage:[UIImage imageNamed:@"cancel_button"] forState:UIControlStateNormal];
     cancelButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    cancelButton.frame = CGRectMake(0, 0, 40, [kCCAddViewTextFieldHeight floatValue]);
+    cancelButton.frame = CGRectMake(0, 0, 40, [kCCLinotteTextFieldHeight floatValue]);
     cancelButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [cancelButton addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     _textField.rightView = cancelButton;
@@ -58,7 +61,7 @@
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_textField);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textField(kCCAddViewTextFieldHeight)]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textField(kCCAddViewTextFieldHeight)]|" options:0 metrics:kCCAddListViewMetrics views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

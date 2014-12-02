@@ -16,6 +16,7 @@
 
 #define kCCListOutputAddressListTableViewCell @"kCCListOutputAddressListTableViewCell"
 
+#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight}
 
 @implementation CCListOutputAddressListView
 {
@@ -29,6 +30,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         [self setupTopView];
         [self setupSearchField];
@@ -116,7 +118,7 @@
     UIButton *cancelButton = [UIButton new];
     [cancelButton setImage:[UIImage imageNamed:@"cancel_button"] forState:UIControlStateNormal];
     cancelButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    cancelButton.frame = CGRectMake(0, 0, 40, [kCCAddViewTextFieldHeight floatValue]);
+    cancelButton.frame = CGRectMake(0, 0, 40, [kCCLinotteTextFieldHeight floatValue]);
     cancelButton.autoresizingMask = UIViewAutoresizingFlexibleHeight;
     [cancelButton addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     _textField.rightView = cancelButton;
@@ -140,7 +142,7 @@
 - (void)setupLayout
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_topView, _textField, _list);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_topView][_textField(==kCCAddViewTextFieldHeight)][_list]|" options:0 metrics:kCCAddViewTextFieldHeightMetric views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_topView][_textField(==kCCAddTextFieldHeight)][_list]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

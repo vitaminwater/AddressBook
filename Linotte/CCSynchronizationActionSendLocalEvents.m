@@ -18,11 +18,11 @@
 
 @implementation CCSynchronizationActionSendLocalEvents
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     if (list != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -47,20 +47,22 @@
         [self sendEvent:[events firstObject] completionBlock:completionBlock];
     else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
     }
 }
 
-- (void)sendEvent:(CCLocalEvent *)event completionBlock:(void(^)(BOOL done))completionBlock
+- (void)sendEvent:(CCLocalEvent *)event completionBlock:(void(^)(BOOL done, BOOL error))completionBlock
 {
     void (^eventSendRequestEnd)(BOOL success, NSInteger statusCode) = ^(BOOL success, NSInteger statusCode) {
         if (success || statusCode == 401) {
             NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
             [managedObjectContext deleteObject:event];
             [[CCCoreDataStack sharedInstance] saveContext];
+            completionBlock(YES, NO);
+        } else {
+            completionBlock(NO, YES);
         }
-        completionBlock(YES);
     };
     
     switch (event.eventValue) {

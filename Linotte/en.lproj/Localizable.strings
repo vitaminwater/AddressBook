@@ -6,12 +6,13 @@
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
 
-"PLACE_NAME" = "ADD A VENUE";
-"ENTER_NAME" = "VENUE NAME";
+"PLACE_NAME" = "VENUE NAME";
 "ENTER_ADDRESS" = "ADDRESS";
 "BY_NAME" = "By name";
 "BY_ADDRESS" = "By address";
 "AT_LOCATION" = "At position";
+
+"ADDRESS_NAME_MISSING" = "Please set a name\nfor this address.";
 
 "WELCOME_TEXT" = "Linotte\nYour smart geolocated reminder";
 
@@ -91,7 +92,9 @@
 "LIST_CONFIG_HELP1" = "Use the field below to create a new book.";
 "LIST_CONFIG_HELP2" = "Books marked with a green check will have there addresses visible on your front page.";
 
-"LIST_STORE_CONTROLLER_TITLE" = "DISCOVER";
+"LIST_STORE_SCREEN_NAME" = "DISCOVER";
+"HOME_SCREEN_NAME" = "MY LINOTTE";
+"ADD_ADDRESS_SCREEN_NAME" = "CREATE AN ADDRESS";
 
 "MY_BOOKS" = "MY BOOKS";
 
@@ -119,3 +122,13 @@
 "SHORT_DATE_FORMAT" = "yyyy/MM/dd";
 
 "LAST_SEEN" = "Last seen";
+
+"MY_ADDRESSES" = "Addresses";
+"MY_BOOKS" = "Books";
+"LAST_NOTIFICATIONS" = "Notifications";
+
+"SEARCH" = "SEARCH";
+
+"HIDE_KEYBOARD" = "Hide keyboard";
+
+"CANNOT_DELETE_ADDRESS" = "Addresses in this book\ncannot be deleted";

@@ -32,12 +32,12 @@
     return self;
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     list = list ?: [_provider findNextListToProcess];
     if (list == nil && [_provider requiresList]) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         return;
     }
@@ -53,15 +53,15 @@
     NSUInteger eventCount = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
     if (error != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO);
+            completionBlock(NO, NO);
         });
         CCLog(@"%@", error);
         return;
     }
     
     if (eventCount == 0) {
-        [_provider fetchServerEventsWithList:list completionBlock:^(BOOL goOnSyncing){
-            completionBlock(goOnSyncing);
+        [_provider fetchServerEventsWithList:list completionBlock:^(BOOL goOnSyncing, BOOL error) {
+            completionBlock(goOnSyncing, error);
         }];
         return;
     }
@@ -69,13 +69,13 @@
     for (id<CCServerEventConsumerProtocol> consumer in [_provider consumers]) {
         if ([consumer hasEventsForList:list]) {
             CCLog(@"Triggering event consumer: %@", NSStringFromClass([consumer class]));
-            [consumer triggerWithList:list completionBlock:^(BOOL goOnSyncing){
-                completionBlock(goOnSyncing);
+            [consumer triggerWithList:list completionBlock:^(BOOL goOnSyncing, BOOL error){
+                completionBlock(goOnSyncing, error);
             }];
             return;
         }
     }
-    completionBlock(NO);
+    completionBlock(NO, NO);
 }
 
 @end

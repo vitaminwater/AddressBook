@@ -23,7 +23,7 @@
 #import "CCGeohashMonitor.h"
 #import "CCNotificationGenerator.h"
 
-#import "CCHomeViewController.h"
+#import "CCRootViewController.h"
 #import "CCOutputViewController.h"
 
 #import "CCAddress.h"
@@ -35,12 +35,12 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{    
+{
     [self initAll:application];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    CCHomeViewController *rootViewController = [CCHomeViewController new];
+    CCRootViewController *rootViewController = [CCRootViewController new];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
     self.window.rootViewController = navigationController;
     

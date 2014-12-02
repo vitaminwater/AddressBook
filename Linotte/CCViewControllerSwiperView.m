@@ -20,18 +20,22 @@
     UIGestureRecognizer *_nextGestureRecognizer;
     
     BOOL _edgeOnly;
+    NSUInteger _startViewControllerViewIndex;
 
     NSLayoutConstraint *_centerXConstraint;
     
     BOOL _cancelledHideTitle;
 }
 
-- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly
+- (instancetype)initWithViewControllerViews:(NSArray *)viewControllerViews edgeOnly:(BOOL)edgeOnly startViewControllerViewIndex:(NSUInteger)startViewControllerViewIndex
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         _edgeOnly = edgeOnly;
+        _startViewControllerViewIndex = startViewControllerViewIndex;
+        
         [self setupGestureRecognizers];
         [self setupViewControllerViews:viewControllerViews];
         [self setupTitleLabel];
@@ -114,7 +118,7 @@
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_titleView]|" options:0 metrics:nil views:views];
         [self addConstraints:horizontalConstraints];
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleView]" options:0 metrics:nil views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_titleView]|" options:0 metrics:nil views:views];
         [self addConstraints:verticalConstraints];
     }
     
@@ -136,18 +140,27 @@
         [self addConstraints:horizontalConstraints];
     }
     
-    [self setCenterConstraint:0];
+    [self setCenterConstraint:_startViewControllerViewIndex];
 }
 
 - (void)setCenterConstraint:(NSUInteger)viewControllerIndex
 {
-    if (_centerXConstraint != nil)
+    if (_currentViewIndex == viewControllerIndex)
+        return;
+    
+    if (_centerXConstraint != nil) {
         [self removeConstraint:_centerXConstraint];
+    }
     
     UIView *view = _viewControllerViews[viewControllerIndex];
     
+    [_delegate currentViewControllerWillChangeToIndex:viewControllerIndex fromIndex:_currentViewIndex];
     _centerXConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
     [self addConstraint:_centerXConstraint];
+    
+    NSUInteger fromViewIndex = _currentViewIndex;
+    _currentViewIndex = viewControllerIndex;
+    [_delegate currentViewControllerDidChangeToIndex:viewControllerIndex fromIndex:fromViewIndex];
 }
 
 #pragma mark - UIGestureRecognizer delegate methods
@@ -196,9 +209,7 @@
             [self setTitle:@"X"];
             [self hideTitleLabelAfterDelay:0];
         } else {
-            _currentViewIndex += (goingNext ? 1 : -1);
-            [self setCenterConstraint:_currentViewIndex];
-            [_delegate currentViewControllerChangedToIndex:_currentViewIndex];
+            [self setCenterConstraint:_currentViewIndex + (goingNext ? 1 : -1)];
             
             [self setTitle:[_delegate nameForViewControllerAtIndex:_currentViewIndex]];
             if (cancelled == NO && fabs(velocity.x) < 700)
@@ -268,6 +279,16 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return NO;
+}
+
+#pragma mark - setter methods
+
+- (void)setCurrentViewIndex:(NSUInteger)currentViewIndex
+{
+    [self setCenterConstraint:currentViewIndex];
+    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        [self layoutIfNeeded];
+    } completion:^(BOOL finished) {}];
 }
 
 @end

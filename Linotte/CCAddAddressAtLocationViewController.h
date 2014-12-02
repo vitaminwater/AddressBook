@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+#import <CoreLocation/CoreLocation.h>
+
 #import "CCAddAddressViewControllerProtocol.h"
 #import "CCAddAddressAtLocationViewControllerDelegate.h"
 
 #import "CCAddAddressAtLocationViewDelegate.h"
 
-@interface CCAddAddressAtLocationViewController : UIViewController<CCAddAddressViewControllerProtocol, CCAddAddressAtLocationViewDelegate>
+@interface CCAddAddressAtLocationViewController : UIViewController<CCAddAddressViewControllerProtocol, CCAddAddressAtLocationViewDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, weak)id<CCAddAddressAtLocationViewControllerDelegate> delegate;
 

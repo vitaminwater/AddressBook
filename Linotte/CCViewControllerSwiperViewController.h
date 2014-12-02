@@ -19,6 +19,7 @@
 @property(nonatomic, strong)NSArray *viewControllers;
 @property(nonatomic, readonly)UIViewController *currentViewController;
 
-- (instancetype)initWithViewControllers:(NSArray *)viewControllers edgeOnly:(BOOL)edgeOnly;
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers edgeOnly:(BOOL)edgeOnly startViewControllerIndex:(NSUInteger)startViewControllerIndex;
+- (void)setCurrentViewControllerIndex:(NSUInteger)currentViewController;
 
 @end

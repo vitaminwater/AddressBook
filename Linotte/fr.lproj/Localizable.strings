@@ -6,13 +6,13 @@
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
 
-"PLACE_NAME" = "AJOUTER UN LIEU";
-"ENTER_NAME" = "NOM DU LIEU";
+"PLACE_NAME" = "NOM DU LIEU";
 "ENTER_ADDRESS" = "ADRESSE";
 "BY_NAME" = "Nom";
 "BY_ADDRESS" = "Adresse";
 "AT_LOCATION" = "Position";
 
+"ADDRESS_NAME_MISSING" = "Veuillez renseigner un nom\npour cette adresse.";
 
 "WELCOME_TEXT" = "Linotte\nVotre pense-bête geolocalisé";
 
@@ -92,8 +92,9 @@
 "LIST_CONFIG_HELP1" = "Utilisez le champ ci-dessous pour créer un carnet.";
 "LIST_CONFIG_HELP2" = "Les carnets marqués d'une coche verte verront leur adresses affichées sur votre page d'accueil.";
 
-"LIST_STORE_CONTROLLER_TITLE" = "DÉCOUVRIR";
-"MY_BOOKS" = "MES CARNETS";
+"LIST_STORE_SCREEN_NAME" = "DÉCOUVRIR";
+"ADD_ADDRESS_SCREEN_NAME" = "AJOUTER UNE ADRESSE";
+"HOME_SCREEN_NAME" = "MA LINOTTE";
 
 "LIST_NAME" = "NOUVEAU CARNET";
 "SEARCH_LIST_NAME" = "RECHERCHER UN CARNET";
@@ -117,3 +118,13 @@
 "SHORT_DATE_FORMAT" = "dd/MM/yy";
 
 "LAST_SEEN" = "Dernière";
+
+"MY_ADDRESSES" = "Adresses";
+"MY_BOOKS" = "Carnets";
+"LAST_NOTIFICATIONS" = "Notifications";
+
+"SEARCH" = "CHERCHER";
+
+"HIDE_KEYBOARD" = "Cacher le clavier";
+
+"CANNOT_DELETE_ADDRESS" = "Les adresses de ce carnet\nne peuvent être supprimées";

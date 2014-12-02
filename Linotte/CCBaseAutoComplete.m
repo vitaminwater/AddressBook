@@ -121,8 +121,7 @@
 - (void)requestEnded
 {
     _isLoading = NO;
-    if ([_autocompletionResults count])
-        [_delegate autocompleteResultsRecieved:self];
+    [_delegate autocompleteResultsRecieved:self];
     if (_nextText != nil)
         [self loadSearchWebservice:_nextText];
     else

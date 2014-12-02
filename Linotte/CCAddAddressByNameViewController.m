@@ -69,7 +69,6 @@
     address.address = autocompletionResult.address;
     address.provider = autocompletionResult.provider;
     address.providerId = autocompletionResult.providerId;
-    address.date = [NSDate date];
     address.latitude = @(autocompletionResult.coordinates.latitude);
     address.longitude = @(autocompletionResult.coordinates.longitude);
     address.isAuthorValue = YES;
@@ -87,7 +86,6 @@
     [[CCCoreDataStack sharedInstance] saveContext];
     [self.delegate addAddressViewController:self postSaveAddress:address];
     
-    [self reduceAddView];
     @try {
         [[Mixpanel sharedInstance] track:@"Address added" properties:@{@"name": address.name, @"address": address.address, @"provider": address.provider, @"providerId": address.providerId}];
     }

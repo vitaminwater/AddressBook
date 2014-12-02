@@ -8,6 +8,10 @@
 
 #import "CCAutocompleteAddAddressView.h"
 
+#import <HexColors/HexColor.h>
+
+#import "CCLinotteField.h"
+
 #import "CCAddAddressViewTableViewCell.h"
 
 #define kCCAddViewTableViewCell @"kCCAddViewTableViewCell"
@@ -28,6 +32,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         
         [self setupViews];
         [self setupLayout];
@@ -47,6 +52,7 @@
     _tableView = [UITableView new];
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     _tableView.backgroundColor = [UIColor clearColor];
+    _tableView.rowHeight = 60;
     
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -90,30 +96,11 @@
 
 - (void)setupTextField
 {
-    _autocompletedField = [UITextField new];
+    _autocompletedField = [[CCLinotteField alloc] initWithImage:[UIImage imageNamed:@"add_field_icon"]];
     _autocompletedField.translatesAutoresizingMaskIntoConstraints = NO;
     _autocompletedField.delegate = self;
-    _autocompletedField.font = [UIFont fontWithName:@"Montserrat-Bold" size:28];
-    _autocompletedField.textColor = [UIColor darkGrayColor];
-    _autocompletedField.backgroundColor = [UIColor whiteColor];
     _autocompletedField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
-    
-    UIImageView *leftView = [UIImageView new];
-    leftView.frame = CGRectMake(0, 0, 58, [kCCAddViewTextFieldHeight floatValue]);
-    leftView.contentMode = UIViewContentModeCenter;
-    leftView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    leftView.image = [UIImage imageNamed:@"add_field_icon"];
-    _autocompletedField.leftView = leftView;
-    _autocompletedField.leftViewMode = UITextFieldViewModeAlways;
-    
-    UIView *rightView = [UIView new];
-    rightView.frame = CGRectMake(0, 0, 15, [kCCAddViewTextFieldHeight floatValue]);
-    rightView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    _autocompletedField.rightView = rightView;
-    _autocompletedField.rightViewMode = UITextFieldViewModeAlways;
-    
     [_autocompletedField addTarget:self action:@selector(textFieldEventEditingChanged:) forControlEvents:UIControlEventEditingChanged];
-    
     [self addSubview:_autocompletedField];
 }
 
@@ -180,7 +167,6 @@
     
     if ([_autocompletedField isFirstResponder]) {
         [_autocompletedField resignFirstResponder];
-        [self.delegate reduceAddView];
     }
     
     _autocompleteFieldValueSave = _autocompletedField.text;
@@ -236,7 +222,6 @@
 {
     if (textField == _autocompletedField) {
         [_autocompletedField resignFirstResponder];
-        [self.delegate reduceAddView];
     }
     return NO;
 }
@@ -266,8 +251,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self cleanBeforeClose];
     [_delegate autocompletionResultSelectedAtIndex:indexPath.row];
+    [self cleanBeforeClose];
 }
 
 @end

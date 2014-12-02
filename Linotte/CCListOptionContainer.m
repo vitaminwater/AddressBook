@@ -10,8 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
-#import "CCListOptionScrollView.h"
 #import "CCListOptionButton.h"
+#import "CCTabStyleButton.h"
 
 
 @implementation CCListOptionContainer
@@ -25,12 +25,16 @@
     NSMutableArray *_buttons;
 }
 
+@synthesize buttons = _buttons;
+
 - (instancetype)init
 {
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
         _buttons = [@[] mutableCopy];
+        
         [self setupScrollView];
         [self setupContentView];
         [self setupPageControl];
@@ -44,7 +48,7 @@
     _scrollView = [UIScrollView new];
     _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     _scrollView.showsHorizontalScrollIndicator = NO;
-    _scrollView.pagingEnabled = YES;
+    //_scrollView.pagingEnabled = YES;
     _scrollView.delegate = self;
     [self addSubview:_scrollView];
 }
@@ -93,16 +97,24 @@
 
 - (void)addButtonWithIcon:(UIImage *)icon title:(NSString *)title titleColor:(UIColor *)titleColor target:(id)target action:(SEL)action
 {
-    CCFlatColorButton *button = [CCListOptionButton new];
+    CCTabStyleButton *button;
+    
+    if (icon != nil)
+        button = [CCListOptionButton new];
+    else
+        button = [CCTabStyleButton new];
     button.translatesAutoresizingMaskIntoConstraints = NO;
     [button setTitleColor:titleColor forState:UIControlStateNormal];
-    [button setImage:icon forState:UIControlStateNormal];
+
+    if (icon != nil) {
+        [button setImage:icon forState:UIControlStateNormal];
+        button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    }
+    
     [button setTitle:title forState:UIControlStateNormal];
     button.titleLabel.textAlignment = NSTextAlignmentCenter;
-    button.titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:25];
-    button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    button.titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:20];
     [button setBackgroundColor:[UIColor whiteColor]];
-    [button setBackgroundColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     
     [_contentView addSubview:button];
@@ -136,7 +148,7 @@
     [_contentView addConstraints:horizontalConstraints];
 
     for (UIView *view in views.allValues) {
-        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_scrollView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
+        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_scrollView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:-10];
         [_scrollView addConstraint:widthConstraint];
         
         NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];

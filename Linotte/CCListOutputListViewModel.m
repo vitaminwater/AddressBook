@@ -31,9 +31,15 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems
+- (void)loadListItems:(NSString *)filterText
 {
-    [self.provider addAddresses:[_list.addresses allObjects]];
+    if (filterText != nil) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@", filterText];
+        NSArray *addresses = [[_list.addresses filteredSetUsingPredicate:predicate] allObjects];
+        [self.provider addAddresses:addresses];
+    } else {
+        [self.provider addAddresses:[_list.addresses allObjects]];
+    }
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
