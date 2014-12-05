@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import <CoreLocation/CoreLocation.h>
+
 #import "CCOutputViewDelegate.h"
 
 #import "CCMetaProtocol.h"
@@ -18,7 +20,9 @@
 
 @property(nonatomic, weak)id <CCOutputViewDelegate>delegate;
 
-- (void)addMeta:(id<CCMetaProtocol>)meta;
-- (void)updateMeta:(id<CCMetaProtocol>)meta;
+- (void)addMetas:(NSArray *)metas;
+- (void)updateMeta:(NSArray *)metas;
+- (void)setAddressInfos:(NSString *)name address:(NSString *)address provider:(NSString *)provider coordinates:(CLLocationCoordinate2D)coordinates;
+- (void)setDistance:(double)distance;
 
 @end

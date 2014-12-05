@@ -29,6 +29,7 @@
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     
+    CGRect screenBounds = [UIScreen mainScreen].bounds;
     UINavigationController *navigationController = toViewController.navigationController;
     CGRect navigationBarBounds = navigationController.navigationBar.bounds;
     CGRect statusBarBounds = [UIApplication sharedApplication].statusBarFrame;
@@ -36,7 +37,7 @@
     
     [[transitionContext containerView] addSubview:toViewController.view];
     
-    CGRect initialToViewControllerFrame = fromViewController.view.bounds;
+    CGRect initialToViewControllerFrame = screenBounds;
     initialToViewControllerFrame.origin.y += fromViewController.view.frame.size.height;
     initialToViewControllerFrame.size.height -= yOffset;
     

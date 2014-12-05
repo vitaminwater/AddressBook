@@ -8,18 +8,16 @@
 
 #import "CCMetaContainerView.h"
 
-#import "CCMetaWidget.h"
+#import "CCBaseMetaWidgetProtocol.h"
+#import "CCBaseMetaWidget.h"
 
 @implementation CCMetaContainerView
 {
     NSMutableArray *_widgets;
     NSMutableArray *_constraints;
-    NSLayoutConstraint *_bottomWidgetConstraint;
     
     BOOL _batchingAdd;
 }
-
-@dynamic scrollOffset;
 
 - (instancetype)init
 {
@@ -27,7 +25,6 @@
     if (self) {
         self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
         
-        _bottomWidgetIndex = 0;
         _widgets = [@[] mutableCopy];
         _batchingAdd = NO;
     }
@@ -41,7 +38,11 @@
 
 - (void)addMeta:(id<CCMetaProtocol>)meta
 {
-    CCMetaWidget *widget = [CCMetaWidget widgetForMeta:meta];
+    CCBaseMetaWidget *widget = [CCBaseMetaWidget widgetForMeta:meta];
+    
+    if (widget == nil)
+        return;
+    
     widget.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:widget];
     
@@ -68,7 +69,7 @@
 
 - (void)updateMeta:(id<CCMetaProtocol>)meta
 {
-    [_widgets enumerateObjectsUsingBlock:^(CCMetaWidget *widget, NSUInteger idx, BOOL *stop) {
+    [_widgets enumerateObjectsUsingBlock:^(CCBaseMetaWidget<CCBaseMetaWidgetProtocol> *widget, NSUInteger idx, BOOL *stop) {
         if (widget.meta == meta) {
             [widget updateContent];
             *stop = YES;
@@ -82,7 +83,7 @@
 - (void)updateMetas:(NSArray *)metas
 {
     NSMutableArray *mutableMeta = [metas mutableCopy];
-    [_widgets enumerateObjectsUsingBlock:^(CCMetaWidget *widget, NSUInteger idx, BOOL *stop) {
+    [_widgets enumerateObjectsUsingBlock:^(CCBaseMetaWidget<CCBaseMetaWidgetProtocol> *widget, NSUInteger idx, BOOL *stop) {
         if ([mutableMeta containsObject:widget.meta]) {
             [mutableMeta removeObject:widget.meta];
             [widget updateContent];
@@ -97,6 +98,9 @@
 
 - (void)setupLayout
 {
+    if ([_widgets count] == 0)
+        return;
+    
     if (_constraints != nil)
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
@@ -104,7 +108,7 @@
     UIView *previousWidget = nil;
     for (UIView *widget in _widgets) {
         if (previousWidget != nil) {
-            NSLayoutConstraint *linkConstraint = [NSLayoutConstraint constraintWithItem:previousWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:widget attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+            NSLayoutConstraint *linkConstraint = [NSLayoutConstraint constraintWithItem:previousWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:widget attribute:NSLayoutAttributeTop multiplier:1 constant:-7];
             [self addConstraint:linkConstraint];
             [_constraints addObject:linkConstraint];
         }
@@ -116,47 +120,14 @@
     }
     
     UIView *firstWidget = [_widgets firstObject];
-    
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:firstWidget attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:firstWidget attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:7];
     [_constraints addObject:topConstraint];
     
+    UIView *lastWidget = [_widgets lastObject];
+    NSLayoutConstraint *bottomWidgetConstraint = [NSLayoutConstraint constraintWithItem:lastWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-7];
+    [_constraints addObject:bottomWidgetConstraint];
+    
     [self addConstraints:_constraints];
-    
-    [self setupBottomWidgetContainer];
-}
-
-- (void)setupBottomWidgetContainer
-{
-    UIView *lastWidget = _widgets[_bottomWidgetIndex];
-    
-    _bottomWidgetConstraint = [NSLayoutConstraint constraintWithItem:lastWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    [self addConstraint:_bottomWidgetConstraint];
-}
-
-#pragma mark - setter methods
-
-- (void)setBottomWidgetIndex:(NSUInteger)bottomWidgetIndex
-{
-    if (_bottomWidgetIndex == bottomWidgetIndex)
-        return;
-    _bottomWidgetIndex = bottomWidgetIndex;
-    [self setupBottomWidgetContainer];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        [self layoutIfNeeded];
-    }];
-}
-
-- (void)setScrollOffset:(CGFloat)scrollOffset
-{
-    _bottomWidgetConstraint.constant = scrollOffset;
-}
-
-#pragma mark - getter methods
-
-- (CGFloat)scrollOffset
-{
-    return _bottomWidgetConstraint.constant;
 }
 
 @end

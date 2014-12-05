@@ -35,7 +35,7 @@
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"lastZonesRefresh = nil or lastZonesRefresh < %@", minDate];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and (lastZonesRefresh = nil or lastZonesRefresh < %@)", minDate];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastZonesRefresh" ascending:YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];

@@ -11,7 +11,7 @@
 #import <AFNetworking/AFNetworking.h>
 
 #import "CCAddressAutocompletionResult.h"
-#import "CCAddressAutocompletionResultCategorie.h"
+#import "CCMeta.h"
 
 #import "CCGeohashHelper.h"
 
@@ -67,17 +67,16 @@
             CCAddressAutocompletionResult *autocompletionResult = [CCAddressAutocompletionResult new];
             NSString *addressString = [venue[@"location"][@"formattedAddress"] componentsJoinedByString:@", "];
             
-            NSMutableArray *categories = [@[] mutableCopy];
-            for (NSDictionary *categorie in venue[@"categories"]) {
-                CCAddressAutocompletionResultCategorie *autocompletionCategorie = [CCAddressAutocompletionResultCategorie new];
-                autocompletionCategorie.identifier = categorie[@"id"];
-                autocompletionCategorie.name = categorie[@"name"];
-                [categories addObject:autocompletionCategorie];
-            }
+            NSMutableArray *metas = [@[] mutableCopy];
+            CCMeta *meta = [CCMeta new];
+            meta.uid = venue[@"categories"][0][@"id"];
+            meta.action = @"notification_info";
+            meta.content = @{@"name" : venue[@"categories"][0][@"name"]};
+            [metas addObject:meta];
             
             autocompletionResult.name = venue[@"name"];
             autocompletionResult.address = addressString;
-            autocompletionResult.categories = categories;
+            autocompletionResult.metas = metas;
             autocompletionResult.provider = @"foursquare";
             autocompletionResult.providerId = venue[@"id"];
             autocompletionResult.coordinates = CLLocationCoordinate2DMake([venue[@"location"][@"lat"] doubleValue], [venue[@"location"][@"lng"] doubleValue]);

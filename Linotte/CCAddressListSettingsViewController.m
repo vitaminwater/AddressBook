@@ -54,6 +54,9 @@
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"owned = %@", @YES];
+    [fetchRequest setPredicate:predicate];
+    
     NSSortDescriptor *nameSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
     [fetchRequest setSortDescriptors:@[nameSortDescriptor]];
     

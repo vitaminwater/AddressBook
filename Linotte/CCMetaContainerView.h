@@ -12,9 +12,6 @@
 
 @interface CCMetaContainerView : UIView
 
-@property(nonatomic, assign)NSUInteger bottomWidgetIndex;
-@property(nonatomic, assign)CGFloat scrollOffset;
-
 - (void)beginMetaAddBatch;
 - (void)addMeta:(id<CCMetaProtocol>)meta;
 - (void)addMetas:(NSArray *)metas;

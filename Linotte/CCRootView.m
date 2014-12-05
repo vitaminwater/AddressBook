@@ -39,7 +39,7 @@
         
         [self setupStatusBar];
         [self setupSwiperView];
-        [self setupKeyboardlButton];
+        [self setupKeyboardButton];
         [self setupTabBar];
         [self setupLayout];
     }
@@ -51,7 +51,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)setupKeyboardlButton
+- (void)setupKeyboardButton
 {
     _keyboardButton = [CCFlatColorButton new];
     _keyboardButton.translatesAutoresizingMaskIntoConstraints = NO;

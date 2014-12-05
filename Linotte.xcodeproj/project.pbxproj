@@ -51,7 +51,6 @@
 		C73183B01A237A7E00A99762 /* CCAutocompleteAddAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183AF1A237A7E00A99762 /* CCAutocompleteAddAddressViewController.m */; };
 		C73183B71A237A9F00A99762 /* CCAutocompleteAddAddressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183B61A237A9F00A99762 /* CCAutocompleteAddAddressView.m */; };
 		C73183BD1A237BBA00A99762 /* CCAddressAutocompletionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183BC1A237BBA00A99762 /* CCAddressAutocompletionResult.m */; };
-		C73183C21A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183C11A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.m */; };
 		C73183C71A237ECE00A99762 /* CCBaseAutoComplete.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183C61A237ECE00A99762 /* CCBaseAutoComplete.m */; };
 		C73183CC1A2397AF00A99762 /* CCStreetAddressAutoComplete.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183CB1A2397AF00A99762 /* CCStreetAddressAutoComplete.m */; };
 		C73183D51A249F7100A99762 /* CCAddAddressByAddressView.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183D41A249F7100A99762 /* CCAddAddressByAddressView.m */; };
@@ -60,10 +59,9 @@
 		C73183E41A25DC6A00A99762 /* CCAddAddressAtLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183E31A25DC6A00A99762 /* CCAddAddressAtLocationViewController.m */; };
 		C73183EA1A25DC9500A99762 /* CCAddAddressAtLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183E91A25DC9500A99762 /* CCAddAddressAtLocationView.m */; };
 		C73183F11A25E3B400A99762 /* CCAddAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F01A25E3B400A99762 /* CCAddAddressViewController.m */; };
-		C73183F81A2742AD00A99762 /* CCMetaWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F71A2742AD00A99762 /* CCMetaWidget.m */; };
+		C73183F81A2742AD00A99762 /* CCBaseMetaWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */; };
 		C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184051A27512D00A99762 /* CCDisplayMeta.m */; };
-		C73184091A27513900A99762 /* CCWebLinkMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184081A27513900A99762 /* CCWebLinkMeta.m */; };
-		C731840C1A27514400A99762 /* CCTelMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840B1A27514400A99762 /* CCTelMeta.m */; };
+		C731840C1A27514400A99762 /* CCContactMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840B1A27514400A99762 /* CCContactMeta.m */; };
 		C731840F1A27514E00A99762 /* CCPicsMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840E1A27514E00A99762 /* CCPicsMeta.m */; };
 		C73184121A27515E00A99762 /* CCOpenHoursMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184111A27515E00A99762 /* CCOpenHoursMeta.m */; };
 		C73184161A2752FB00A99762 /* CCMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184151A2752FB00A99762 /* CCMeta.m */; };
@@ -77,6 +75,7 @@
 		C73184441A2DAD0400A99762 /* CCTabStyleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184431A2DAD0400A99762 /* CCTabStyleButton.m */; };
 		C731844D1A2DDB2500A99762 /* Futura-Book-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C731844C1A2DDB2500A99762 /* Futura-Book-Italic.ttf */; };
 		C73184531A2E3E7A00A99762 /* CCOutputViewControllersTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184521A2E3E7A00A99762 /* CCOutputViewControllersTransition.m */; };
+		C731845A1A30733F00A99762 /* CCTelephoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184591A30733F00A99762 /* CCTelephoneButton.m */; };
 		C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */; };
 		C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0A19F9551B00ADC1A2 /* CCModelHelper.m */; };
 		C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */; };
@@ -265,8 +264,6 @@
 		C73183B81A237AAD00A99762 /* CCAutocompleteAddAddressViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAutocompleteAddAddressViewDelegate.h; sourceTree = "<group>"; };
 		C73183BB1A237BBA00A99762 /* CCAddressAutocompletionResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressAutocompletionResult.h; sourceTree = "<group>"; };
 		C73183BC1A237BBA00A99762 /* CCAddressAutocompletionResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressAutocompletionResult.m; sourceTree = "<group>"; };
-		C73183C01A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressAutocompletionResultCategorie.h; sourceTree = "<group>"; };
-		C73183C11A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressAutocompletionResultCategorie.m; sourceTree = "<group>"; };
 		C73183C51A237ECE00A99762 /* CCBaseAutoComplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseAutoComplete.h; sourceTree = "<group>"; };
 		C73183C61A237ECE00A99762 /* CCBaseAutoComplete.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseAutoComplete.m; sourceTree = "<group>"; };
 		C73183CA1A2397AF00A99762 /* CCStreetAddressAutoComplete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCStreetAddressAutoComplete.h; sourceTree = "<group>"; };
@@ -291,15 +288,13 @@
 		C73183F01A25E3B400A99762 /* CCAddAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddAddressViewController.m; sourceTree = "<group>"; };
 		C73183F21A25E52700A99762 /* CCAddAddressViewControllerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressViewControllerProtocol.h; sourceTree = "<group>"; };
 		C73183F41A25E5DD00A99762 /* CCAddAddressViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressViewControllerDelegate.h; sourceTree = "<group>"; };
-		C73183F61A2742AD00A99762 /* CCMetaWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMetaWidget.h; sourceTree = "<group>"; };
-		C73183F71A2742AD00A99762 /* CCMetaWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMetaWidget.m; sourceTree = "<group>"; };
+		C73183F61A2742AD00A99762 /* CCBaseMetaWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseMetaWidget.h; sourceTree = "<group>"; };
+		C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseMetaWidget.m; sourceTree = "<group>"; };
 		C73183FE1A27439E00A99762 /* CCMetaProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMetaProtocol.h; sourceTree = "<group>"; };
 		C73184041A27512D00A99762 /* CCDisplayMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDisplayMeta.h; sourceTree = "<group>"; };
 		C73184051A27512D00A99762 /* CCDisplayMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayMeta.m; sourceTree = "<group>"; };
-		C73184071A27513900A99762 /* CCWebLinkMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCWebLinkMeta.h; sourceTree = "<group>"; };
-		C73184081A27513900A99762 /* CCWebLinkMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCWebLinkMeta.m; sourceTree = "<group>"; };
-		C731840A1A27514400A99762 /* CCTelMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTelMeta.h; sourceTree = "<group>"; };
-		C731840B1A27514400A99762 /* CCTelMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTelMeta.m; sourceTree = "<group>"; };
+		C731840A1A27514400A99762 /* CCContactMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCContactMeta.h; sourceTree = "<group>"; };
+		C731840B1A27514400A99762 /* CCContactMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCContactMeta.m; sourceTree = "<group>"; };
 		C731840D1A27514E00A99762 /* CCPicsMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPicsMeta.h; sourceTree = "<group>"; };
 		C731840E1A27514E00A99762 /* CCPicsMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPicsMeta.m; sourceTree = "<group>"; };
 		C73184101A27515E00A99762 /* CCOpenHoursMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOpenHoursMeta.h; sourceTree = "<group>"; };
@@ -330,6 +325,10 @@
 		C731844F1A2E014C00A99762 /* CCRootViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCRootViewDelegate.h; sourceTree = "<group>"; };
 		C73184511A2E3E7A00A99762 /* CCOutputViewControllersTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputViewControllersTransition.h; sourceTree = "<group>"; };
 		C73184521A2E3E7A00A99762 /* CCOutputViewControllersTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOutputViewControllersTransition.m; sourceTree = "<group>"; };
+		C73184561A30629000A99762 /* CCBaseMetaWidgetProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseMetaWidgetProtocol.h; sourceTree = "<group>"; };
+		C73184581A30733F00A99762 /* CCTelephoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTelephoneButton.h; sourceTree = "<group>"; };
+		C73184591A30733F00A99762 /* CCTelephoneButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTelephoneButton.m; sourceTree = "<group>"; };
+		C731845C1A30CF7300A99762 /* CCContactButtonProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCContactButtonProtocol.h; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
 		C73E7D0319F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressNameAutoCompleter.h; sourceTree = "<group>"; };
 		C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressNameAutoCompleter.m; sourceTree = "<group>"; };
@@ -970,18 +969,8 @@
 			isa = PBXGroup;
 			children = (
 				C73183BF1A237BE800A99762 /* address */,
-				C73183BE1A237BE400A99762 /* categorie */,
 			);
 			name = model;
-			sourceTree = "<group>";
-		};
-		C73183BE1A237BE400A99762 /* categorie */ = {
-			isa = PBXGroup;
-			children = (
-				C73183C01A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.h */,
-				C73183C11A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.m */,
-			);
-			name = categorie;
 			sourceTree = "<group>";
 		};
 		C73183BF1A237BE800A99762 /* address */ = {
@@ -1161,13 +1150,11 @@
 		C73183F51A27428100A99762 /* metas */ = {
 			isa = PBXGroup;
 			children = (
+				C73184541A30626900A99762 /* base */,
 				C73184031A2745A200A99762 /* open hours */,
 				C73184021A27454E00A99762 /* pics */,
-				C73184011A27453F00A99762 /* tel */,
-				C73184001A27453A00A99762 /* web link */,
+				C73184011A27453F00A99762 /* contact */,
 				C73183FF1A2744DC00A99762 /* display */,
-				C73183F61A2742AD00A99762 /* CCMetaWidget.h */,
-				C73183F71A2742AD00A99762 /* CCMetaWidget.m */,
 			);
 			name = metas;
 			sourceTree = "<group>";
@@ -1189,22 +1176,14 @@
 			name = display;
 			sourceTree = "<group>";
 		};
-		C73184001A27453A00A99762 /* web link */ = {
+		C73184011A27453F00A99762 /* contact */ = {
 			isa = PBXGroup;
 			children = (
-				C73184071A27513900A99762 /* CCWebLinkMeta.h */,
-				C73184081A27513900A99762 /* CCWebLinkMeta.m */,
+				C73184571A3072FD00A99762 /* contact buttons */,
+				C731840A1A27514400A99762 /* CCContactMeta.h */,
+				C731840B1A27514400A99762 /* CCContactMeta.m */,
 			);
-			name = "web link";
-			sourceTree = "<group>";
-		};
-		C73184011A27453F00A99762 /* tel */ = {
-			isa = PBXGroup;
-			children = (
-				C731840A1A27514400A99762 /* CCTelMeta.h */,
-				C731840B1A27514400A99762 /* CCTelMeta.m */,
-			);
-			name = tel;
+			name = contact;
 			sourceTree = "<group>";
 		};
 		C73184021A27454E00A99762 /* pics */ = {
@@ -1386,6 +1365,42 @@
 				C73184521A2E3E7A00A99762 /* CCOutputViewControllersTransition.m */,
 			);
 			name = transition;
+			sourceTree = "<group>";
+		};
+		C73184541A30626900A99762 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				C73184551A30627E00A99762 /* protocol */,
+				C73183F61A2742AD00A99762 /* CCBaseMetaWidget.h */,
+				C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */,
+			);
+			name = base;
+			sourceTree = "<group>";
+		};
+		C73184551A30627E00A99762 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C73184561A30629000A99762 /* CCBaseMetaWidgetProtocol.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C73184571A3072FD00A99762 /* contact buttons */ = {
+			isa = PBXGroup;
+			children = (
+				C731845C1A30CF7300A99762 /* CCContactButtonProtocol.h */,
+				C731845B1A30734400A99762 /* tel */,
+			);
+			name = "contact buttons";
+			sourceTree = "<group>";
+		};
+		C731845B1A30734400A99762 /* tel */ = {
+			isa = PBXGroup;
+			children = (
+				C73184581A30733F00A99762 /* CCTelephoneButton.h */,
+				C73184591A30733F00A99762 /* CCTelephoneButton.m */,
+			);
+			name = tel;
 			sourceTree = "<group>";
 		};
 		C73E7D0119F7D91200ADC1A2 /* autocomplete */ = {
@@ -3088,7 +3103,6 @@
 				C799AB4D1920CD150096B5A8 /* CCAddAddressViewTableViewCell.m in Sources */,
 				C7216B2F1A13C80300498CFE /* CCServerEventListMetaAddedConsumer.m in Sources */,
 				C76A1CE919C0CA2000EE75E4 /* CCListOutputViewController.m in Sources */,
-				C73183C21A237BFD00A99762 /* CCAddressAutocompletionResultCategorie.m in Sources */,
 				C761A01919CC63D500C09F0D /* CCAddressListSettingsViewController.m in Sources */,
 				C799AB80192752DE0096B5A8 /* UIImage+CCInvert.m in Sources */,
 				C73184361A2C6BE000A99762 /* CCAddAddressView.m in Sources */,
@@ -3128,7 +3142,7 @@
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m in Sources */,
-				C731840C1A27514400A99762 /* CCTelMeta.m in Sources */,
+				C731840C1A27514400A99762 /* CCContactMeta.m in Sources */,
 				C7619FFE19CC310A00C09F0D /* UIView+CCShowSettingsView.m in Sources */,
 				C799AB7619252E750096B5A8 /* CCNetworkHandler.m in Sources */,
 				C73183BD1A237BBA00A99762 /* CCAddressAutocompletionResult.m in Sources */,
@@ -3144,7 +3158,6 @@
 				C731841B1A275D1000A99762 /* CCMetaContainerView.m in Sources */,
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
 				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
-				C73184091A27513900A99762 /* CCWebLinkMeta.m in Sources */,
 				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
 				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */,
@@ -3162,6 +3175,7 @@
 				C731840F1A27514E00A99762 /* CCPicsMeta.m in Sources */,
 				C7F4452019FCE708009AE1C9 /* CCServerEvent.m in Sources */,
 				C796D7CE19BB8C1300B97879 /* CCAddressMeta.m in Sources */,
+				C731845A1A30733F00A99762 /* CCTelephoneButton.m in Sources */,
 				C7216B351A13C83F00498CFE /* CCServerEventListMetaDeletedConsumer.m in Sources */,
 				C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */,
 				C731841F1A2882C600A99762 /* CCRootViewController.m in Sources */,
@@ -3170,7 +3184,7 @@
 				C7619FF819CC308C00C09F0D /* CCAddressSettingsViewController.m in Sources */,
 				C7CE2C731918E48800D37A64 /* main.m in Sources */,
 				C7216B321A13C81300498CFE /* CCServerEventListMetaUpdatedConsumer.m in Sources */,
-				C73183F81A2742AD00A99762 /* CCMetaWidget.m in Sources */,
+				C73183F81A2742AD00A99762 /* CCBaseMetaWidget.m in Sources */,
 				C7619FEB19CC228500C09F0D /* CCSettingsViewController.m in Sources */,
 				C7216B471A13C8A900498CFE /* CCServerEventAddressMetaUpdatedConsumer.m in Sources */,
 				C7E1E535191A618900602A4D /* CCHomeViewController.m in Sources */,

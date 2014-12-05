@@ -11,7 +11,6 @@
 #import <AFNetworking/AFNetworking.h>
 
 #import "CCAddressAutocompletionResult.h"
-#import "CCAddressAutocompletionResultCategorie.h"
 
 #import "CCGeohashHelper.h"
 

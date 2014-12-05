@@ -96,7 +96,7 @@
             }
             
             NSMutableArray *addresses = [[CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts list:nil] mutableCopy];
-            NSDate *lastAddressFirstFetchDate = [[CCLinotteAPI sharedInstance] dateFromString:[addressesDicts lastObject][@"date_created"]];
+            NSDate *lastAddressFirstFetchDate = [self getLastAddressDate:addressesDicts];
             
             NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
             for (CCAddress *address in addresses) {
@@ -150,6 +150,19 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         completionBlock(NO, NO);
     });
+}
+
+- (NSDate *)getLastAddressDate:(NSArray *)addressDicts
+{
+    NSDate *lastAddressDate = nil;
+    
+    for (NSDictionary *addressDict in addressDicts) {
+        NSDate *dateCreated = [[CCLinotteAPI sharedInstance] dateFromString:addressDict[@"date_created"]];
+        if (lastAddressDate == nil || [lastAddressDate compare:dateCreated] == NSOrderedAscending) {
+            lastAddressDate = dateCreated;
+        }
+    }
+    return lastAddressDate;
 }
 
 #pragma mark - CCModelChangeMonitorDelegate

@@ -20,7 +20,8 @@
 
 #import "CCAddressNameAutoCompleter.h"
 #import "CCAddressAutocompletionResult.h"
-#import "CCAddressAutocompletionResultCategorie.h"
+
+#import "CCMeta.h"
 
 #import "CCCoreDataStack.h"
 
@@ -32,7 +33,7 @@
 #import "CCAddAddressByNameView.h"
 
 #import "CCAddress.h"
-#import "CCCategory.h"
+#import "CCAddressMeta.h"
 #import "CCList.h"
 
 /**
@@ -75,11 +76,12 @@
     
     address.geohash = [CCGeohashHelper geohashFromCoordinates:autocompletionResult.coordinates];
     
-    for (CCAddressAutocompletionResultCategorie *categorie in autocompletionResult.categories) {
-        CCCategory *categorieModel = [CCCategory insertInManagedObjectContext:managedObjectContext];
-        categorieModel.identifier = categorie.identifier;
-        categorieModel.name = categorie.name;
-        [address addCategoriesObject:categorieModel];
+    for (CCMeta *meta in autocompletionResult.metas) {
+        CCAddressMeta *addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
+        addressMeta.uid = meta.uid;
+        addressMeta.action = meta.action;
+        addressMeta.content = meta.content;
+        [address addMetasObject:addressMeta];
     }
     
     [self.delegate addAddressViewController:self preSaveAddress:address];

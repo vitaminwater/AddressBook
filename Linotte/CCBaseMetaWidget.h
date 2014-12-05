@@ -10,13 +10,11 @@
 
 #import "CCMetaProtocol.h"
 
-@interface CCMetaWidget : UIView
+@interface CCBaseMetaWidget : UIView
 
 @property(nonatomic, readonly)id<CCMetaProtocol> meta;
 
-+ (CCMetaWidget *)widgetForMeta:(id<CCMetaProtocol>)meta;
-
-- (void)updateContent;
-+ (NSString *)action;
+- (instancetype)initWithMeta:(id<CCMetaProtocol>)meta;
++ (CCBaseMetaWidget *)widgetForMeta:(id<CCMetaProtocol>)meta;
 
 @end

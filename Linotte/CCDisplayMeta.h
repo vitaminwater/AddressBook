@@ -6,8 +6,10 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCMetaWidget.h"
+#import "CCBaseMetaWidget.h"
 
-@interface CCDisplayMeta : CCMetaWidget
+#import "CCBaseMetaWidgetProtocol.h"
+
+@interface CCDisplayMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
 
 @end

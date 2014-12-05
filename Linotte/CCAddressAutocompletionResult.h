@@ -16,7 +16,7 @@
 @property(nonatomic, strong)NSString *provider;
 @property(nonatomic, strong)NSString *providerId;
 
-@property(nonatomic, strong)NSArray *categories;
+@property(nonatomic, strong)NSArray *metas;
 
 @property(nonatomic, assign)CLLocationCoordinate2D coordinates;
 

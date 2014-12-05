@@ -322,6 +322,28 @@
     }];
 }
 
+- (void)createAddressMeta:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+{
+    NSString *address_identifier = parameters[@"address"];
+    
+    if ([address_identifier length] == 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(YES, 200);
+        });
+        return;
+    }
+    
+    NSString *path = [NSString stringWithFormat:@"/address/%@/meta/", address_identifier];
+    
+    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        completionBlock(YES, 200);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
+        completionBlock(NO, response.statusCode);
+    }];
+}
+
 - (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock
 {
     [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
@@ -671,9 +693,9 @@
     }];
 }
 
-- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
 {
-    NSDictionary *parameters = @{@"e" : eventIds};
+    NSDictionary *parameters = @{@"e" : eventIds, @"list" : identifier};
     return [_apiManager GET:@"/event/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         completionBlock(YES, responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {

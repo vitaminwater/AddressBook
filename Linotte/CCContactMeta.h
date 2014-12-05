@@ -1,5 +1,5 @@
 //
-//  CCPicsMeta.h
+//  CCTelMeta.h
 //  Linotte
 //
 //  Created by stant on 27/11/14.
@@ -10,6 +10,6 @@
 
 #import "CCBaseMetaWidgetProtocol.h"
 
-@interface CCPicsMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
+@interface CCContactMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
 
 @end

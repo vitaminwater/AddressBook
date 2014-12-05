@@ -16,6 +16,8 @@ typedef enum : int16_t {
     CCLocalEventListUserDataUpdated,
     
     CCLocalEventListAdded,
+    
+    CCLocalEventAddressMetaAdded,
 } CCLocalEventEvent;
 
 @interface CCLocalEvent : _CCLocalEvent {}

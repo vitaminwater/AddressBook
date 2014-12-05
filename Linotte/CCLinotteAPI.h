@@ -42,6 +42,7 @@ typedef enum : NSUInteger {
 #pragma mark - Data management methods
 
 - (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock;
+- (void)createAddressMeta:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
 - (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock;
 
 - (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
@@ -70,7 +71,7 @@ typedef enum : NSUInteger {
 - (NSURLSessionTask *)fetchListLastEventDate:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock;
 - (NSURLSessionTask *)fetchUserLastEventDateWithCompletionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock;
 - (NSURLSessionTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
-- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock;
+- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock;
 - (NSURLSessionTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addressMetas))completionBlock;
 - (NSURLSessionTask *)fetchListMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *listMetas))completionBlock;
 - (NSURLSessionTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock;

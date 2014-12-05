@@ -14,6 +14,7 @@
 
 #import "CCServerEvent.h"
 #import "CCAddress.h"
+#import "CCList.h"
 
 @implementation CCServerEventAddressUpdatedConsumer
 {
@@ -40,7 +41,7 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressDicts) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds list:list.identifier completionBlock:^(BOOL success, NSArray *addressDicts) {
         
         _currentList = nil;
         _currentConnection = nil;

@@ -94,7 +94,8 @@
     addressMeta.identifier = dict[@"identifier"];
     addressMeta.action = dict[@"action"];
     addressMeta.uid = dict[@"uid"];
-    addressMeta.content = [NSJSONSerialization JSONObjectWithData:[dict[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    NSDictionary *content = [NSJSONSerialization JSONObjectWithData:[dict[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    addressMeta.content = content;
     if (error != nil) {
         NSLog(@"%@", error);
     }

@@ -21,6 +21,8 @@
 
 #import "CCOutputView.h"
 
+#import "CCBaseMetaWidget.h"
+
 #import "CCMetaProtocol.h"
 #import "CCMeta.h"
 
@@ -41,10 +43,6 @@
     BOOL _addressIsNew;
     CCAddress *_address;
     CLLocationDistance _distance;
-    
-    id<CCMetaProtocol> _nameMeta;
-    id<CCMetaProtocol> _distanceMeta;
-    id<CCMetaProtocol> _providerMeta;
 }
 
 - (instancetype)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
@@ -73,10 +71,11 @@
 - (void)loadView
 {
     CCOutputView *view = [CCOutputView new];
-    [view addMeta:_nameMeta = [CCMeta metaWithAction:@"display" uid:@"name" content:@{@"name" : _address.name, @"address" : _address.address}]];
-    [view addMeta:_distanceMeta = [CCMeta metaWithAction:@"display" uid:@"distance" content:@{@"distance" : @0}]];
-    if ([_address.provider length] != 0)
-        [view addMeta:_providerMeta = [CCMeta metaWithAction:@"display" uid:@"provider" content:@{@"provider" : _address.provider}]];
+    
+    [view addMetas:[_address.metas allObjects]];
+    
+    CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(_address.latitudeValue, _address.longitudeValue);
+    [view setAddressInfos:[_address.name capitalizedString] address:[_address.address capitalizedString] provider:_address.provider coordinates:coordinates];
     view.delegate = self;
     self.view = view;
     
@@ -101,7 +100,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = _address.name;
+    self.title = [_address.name capitalizedString];
     
     NSString *color = @"#6b6b6b";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
@@ -224,12 +223,13 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    CCOutputView *view = (CCOutputView *)self.view;
     CLLocation *location = [locations lastObject];
     _currentLocation = location;
     
     CLLocation *coordinate = [[CLLocation alloc] initWithLatitude:_address.latitudeValue longitude:_address.longitudeValue];
     _distance = [_currentLocation distanceFromLocation:coordinate];
-    [((CCOutputView *)self.view) updateMeta:_distanceMeta];
+    [view setDistance:_distance];
     
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
 }
@@ -244,42 +244,6 @@
         [self googleRoute:type];
     else
         [self appleMapRoute:type];
-}
-
-#pragma mark address display
-
-- (double)addressDistance
-{
-    return _distance;
-}
-
-- (NSString *)addressName
-{
-    return _address.name;
-}
-
-- (NSString *)addressString
-{
-    return _address.address;
-}
-
-- (NSString *)addressProvider
-{
-    return _address.provider;
-}
-
-- (double)addressLatitude {
-    return _address.latitudeValue;
-}
-
-- (double)addressLongitude
-{
-    return _address.longitudeValue;
-}
-
-- (BOOL)notificationEnabled
-{
-    return [_address.notify boolValue];
 }
 
 #pragma mark - CCSettingsViewControllerDelegate methods

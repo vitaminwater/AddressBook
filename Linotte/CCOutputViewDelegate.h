@@ -20,12 +20,4 @@ typedef enum : NSUInteger {
 // route
 - (void)launchRoute:(CCRouteType)type;
 
-// address display
-- (double)addressDistance;
-- (NSString *)addressName;
-- (NSString *)addressString;
-- (NSString *)addressProvider;
-- (double)addressLatitude;
-- (double)addressLongitude;
-
 @end

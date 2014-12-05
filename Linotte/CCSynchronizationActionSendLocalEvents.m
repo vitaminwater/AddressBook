@@ -164,6 +164,11 @@
             [[CCLinotteAPI sharedInstance] addList:event.parameters completionBlock:eventSendRequestEnd];
         }
             break;
+        case CCLocalEventAddressMetaAdded:
+        {
+            [[CCLinotteAPI sharedInstance] createAddressMeta:event.parameters completionBlock:eventSendRequestEnd];
+        }
+            break;
         default:
             break;
     }

@@ -182,7 +182,7 @@
     _autocompletedField.text = @"";
 }
 
-- (void)drawRect:(CGRect)rect
+/*- (void)drawRect:(CGRect)rect
 {
     CGRect frame = _autocompletedField.bounds;
     
@@ -197,7 +197,7 @@
     CGContextStrokePath(context);
     
     [super drawRect:rect];
-}
+}*/
 
 - (void)setFirstInputAsFirstResponder
 {

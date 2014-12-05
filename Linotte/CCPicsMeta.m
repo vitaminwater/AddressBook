@@ -10,6 +10,22 @@
 
 @implementation CCPicsMeta
 
+- (instancetype)initWithMeta:(id<CCMetaProtocol>)meta
+{
+    self = [super initWithMeta:meta];
+    if (self) {
+        
+    }
+    return self;
+}
+
+#pragma mark - CCBaseMetaWidgetProtocol methods
+
+- (void)updateContent
+{
+    
+}
+
 + (NSString *)action
 {
     return @"pics";

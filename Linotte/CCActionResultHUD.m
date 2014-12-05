@@ -15,6 +15,8 @@
     UILabel *_label;
 }
 
+static CCActionResultHUD *_currentHUD = nil;
+
 - (instancetype)initWithImage:(UIImage *)image text:(NSString *)text
 {
     self = [super init];
@@ -22,6 +24,9 @@
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
         self.layer.cornerRadius = 10;
         self.clipsToBounds = YES;
+        
+        UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
+        [self addGestureRecognizer:tapGestureRecognizer];
         
         [self setupImageView:image];
         [self setupLabel:text];
@@ -64,10 +69,23 @@
     }
 }
 
+#pragma mark - UIGestureRecognizer target methods
+
+- (void)tapGestureRecognizer:(UITapGestureRecognizer *)gestureRecognizer
+{
+    if (gestureRecognizer.state == UIGestureRecognizerStateRecognized)
+        [CCActionResultHUD removeActionResult:self];
+}
+
 #pragma mark - class methods
 
 + (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image text:(NSString *)text delay:(NSTimeInterval)delay
 {
+    if (_currentHUD != nil) {
+        [self removeActionResult:_currentHUD];
+        _currentHUD = nil;
+    }
+    
     CCActionResultHUD *actionResultHUD = [[CCActionResultHUD alloc] initWithImage:image text:text];
     actionResultHUD.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -85,6 +103,7 @@
         actionResultHUD.alpha = 1;
     }];
     
+    _currentHUD = actionResultHUD;
     if (delay > 0) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self removeActionResult:actionResultHUD];
@@ -95,6 +114,8 @@
 
 + (void)removeActionResult:(CCActionResultHUD *)actionResultHUD
 {
+    if (actionResultHUD != _currentHUD)
+        return;
     [UIView animateWithDuration:0.2 animations:^{
         actionResultHUD.alpha = 0;
     } completion:^(BOOL finished) {

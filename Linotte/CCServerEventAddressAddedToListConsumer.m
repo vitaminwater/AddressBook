@@ -67,7 +67,7 @@
     [addressesToAdd addObjectsFromArray:alreadyInstalledAddresses];
     
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressesDicts) {
+    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds list:list.identifier completionBlock:^(BOOL success, NSArray *addressesDicts) {
         
         _currentList = nil;
         _currentConnection = nil;

@@ -35,6 +35,7 @@
 - (BOOL)hasEventsForList:(CCList *)list
 {
     _events = [CCServerEvent eventsWithEventType:[self event] list:list];
+    [self cleanAlreadyInstalledMetas];
     return [_events count] != 0;
 }
 
@@ -93,6 +94,34 @@
         [[CCModelChangeMonitor sharedInstance] addressMetasAdd:addressMetas];
         completionBlock(YES, NO);
     }];
+}
+
+- (void)cleanAlreadyInstalledMetas
+{
+    NSError *error = nil;
+    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSArray *metaIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", metaIdentifiers];
+    [fetchRequest setPredicate:predicate];
+    NSArray *alreadyInstalledMetas = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
+    NSArray *toRemoveIdentifiers = [alreadyInstalledMetas valueForKeyPath:@"@unionOfObjects.identifier"];
+    NSPredicate *keepPredicate = [NSPredicate predicateWithFormat:@"objectIdentifier not in %@", toRemoveIdentifiers];
+    NSPredicate *removePredicate = [NSPredicate predicateWithFormat:@"objectIdentifier in %@", toRemoveIdentifiers];
+    NSArray *toRemoveEvents = [_events filteredArrayUsingPredicate:removePredicate];
+    _events = [_events filteredArrayUsingPredicate:keepPredicate];
+    
+    for (CCServerEvent *event in toRemoveEvents) {
+        [managedObjectContext deleteObject:event];
+    }
+    [[CCCoreDataStack sharedInstance] saveContext];
 }
 
 #pragma mark - CCModelChangeMonitorDelegate

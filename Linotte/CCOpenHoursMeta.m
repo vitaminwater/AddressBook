@@ -8,7 +8,31 @@
 
 #import "CCOpenHoursMeta.h"
 
+#import "CCLinotteAPI.h"
+
 @implementation CCOpenHoursMeta
+{
+
+}
+
+- (instancetype)initWithMeta:(id<CCMetaProtocol>)meta
+{
+    self = [super initWithMeta:meta];
+    if (self) {
+        [self setupDates];
+    }
+    return self;
+}
+
+- (void)setupDates
+{
+}
+
+#pragma mark - CCBaseMetaWidgetProtocol methods
+
+- (void)updateContent
+{
+}
 
 + (NSString *)action
 {
