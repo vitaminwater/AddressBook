@@ -10,6 +10,7 @@
 
 #import <GoogleMaps/GoogleMaps.h>
 #import <Mixpanel/Mixpanel.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 #import "CCCoreDataStack.h"
 
@@ -24,6 +25,7 @@
 #import "CCNotificationGenerator.h"
 
 #import "CCRootViewController.h"
+#import "CCSignUpViewController.h"
 #import "CCOutputViewController.h"
 
 #import "CCAddress.h"
@@ -32,6 +34,8 @@
 @implementation CCAppDelegate
 {
     NSDate *_dateActive;
+
+    UINavigationController *_navigationController;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -40,9 +44,15 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    CCRootViewController *rootViewController = [CCRootViewController new];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
-    self.window.rootViewController = navigationController;
+    UIViewController *rootViewController = nil;
+    if ([CCLinotteAPI sharedInstance].loggedState == kCCFirstStart) {
+        rootViewController = [CCSignUpViewController new];
+        ((CCSignUpViewController *)rootViewController).delegate = self;
+    } else {
+        rootViewController = [CCRootViewController new];
+    }
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
+    self.window.rootViewController = _navigationController;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -79,6 +89,7 @@
     _dateActive = [NSDate date];
     [[Mixpanel sharedInstance] track:@"Application active" properties:@{@"date": [NSDate date]}];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [FBAppCall handleDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -97,10 +108,26 @@
     }];
 }
 
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation {
+    
+    // Call FBAppCall's handleOpenURL:sourceApplication to handle Facebook app responses
+    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    
+    // You can add your app-specific url handling code here if needed
+    
+    return wasHandled;
+}
+
 #pragma mark - RestKit initialization
 
 - (void)initAll:(UIApplication *)application
 {
+    // Facebook SDK
+    [FBAppEvents activateApp];
+    
     // Google map service initialization
     [GMSServices provideAPIKey:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"google_map_api_key"]];
     
@@ -181,6 +208,13 @@
             CCLog(@"%@", e);
         }
     }
+}
+
+#pragma mark - CCSignUpViewControllerDelegate
+
+- (void)signupCompleted
+{
+    [_navigationController setViewControllers:@[[CCRootViewController new]] animated:YES];
 }
 
 #pragma mark - Application's Documents directory

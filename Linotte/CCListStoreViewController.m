@@ -178,6 +178,9 @@
     CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list listIsNew:YES];
     listOutputViewController.delegate = self;
     [self.navigationController pushViewController:listOutputViewController animated:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCBackToHomeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowBookPanelNotification object:nil];
 }
 
 #pragma mark - NSNotificationCenter methods

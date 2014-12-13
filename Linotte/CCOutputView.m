@@ -10,7 +10,8 @@
 
 #import <HexColors/HexColor.h>
 #import <GoogleMaps/GoogleMaps.h>
-#import <MBProgressHUD/MBProgressHUD.h>
+
+#import "CCFlatColorButton.h"
 
 #import "CCMetaContainerView.h"
 
@@ -42,6 +43,12 @@
     
     NSLayoutConstraint *_topInfosViewConstraint;
     NSLayoutConstraint *_bottomInfosViewContraint;
+    
+    CCFlatColorButton *_noteButton;
+    UIView *_noteView;
+    UITextView *_noteField;
+    NSLayoutConstraint *_noteViewYConstraint;
+    NSLayoutConstraint *_noteViewHeightConstraint;
 }
 
 - (instancetype)init
@@ -55,26 +62,35 @@
         {
             UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognizer:)];
             swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
+            swipeGestureRecognizer.delegate = self;
             [self addGestureRecognizer:swipeGestureRecognizer];
         }
         
         {
             UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognizer:)];
             swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
+            swipeGestureRecognizer.delegate = self;
             [self addGestureRecognizer:swipeGestureRecognizer];
         }
         
         {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
+            tapGestureRecognizer.delegate = self;
             [self addGestureRecognizer:tapGestureRecognizer];
         }
 
         [self setupMap];
+        [self setupNoteButton];
         [self setupInfoView];
         [self setupButtons];
         [self setupLayout];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupMap
@@ -88,6 +104,25 @@
     _marker = [[GMSMarker alloc] init];
     _marker.icon = [UIImage imageNamed:@"gmap_pin_neutral"];;
     _marker.map = _mapView;
+}
+
+- (void)setupNoteButton
+{
+    _noteButton = [CCFlatColorButton new];
+    _noteButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _noteButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    [_noteButton setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.7] forState:UIControlStateHighlighted];
+    [_noteButton setImage:[UIImage imageNamed:@"note_icon"] forState:UIControlStateNormal];
+    [_noteButton addTarget:self action:@selector(noteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _noteButton.layer.cornerRadius = 4;
+    [self addSubview:_noteButton];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_noteButton);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_noteButton]-(==5)-|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
+
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==5)-[_noteButton]" options:0 metrics:nil views:views];
+    [self addConstraints:verticalConstraints];
 }
 
 - (void)setupInfoView
@@ -193,6 +228,96 @@
     }
 }
 
+- (void)showNoteView
+{
+    if (_noteView != nil)
+        return;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
+
+    _noteView = [UIView new];
+    _noteView.translatesAutoresizingMaskIntoConstraints = NO;
+    _noteView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    [self addSubview:_noteView];
+    
+    _noteField = [UITextView new];
+    _noteField.translatesAutoresizingMaskIntoConstraints = NO;
+    _noteField.backgroundColor = [UIColor clearColor];
+    _noteField.textColor = [UIColor whiteColor];
+    _noteField.font = [UIFont fontWithName:@"Futura-Book" size:21];
+    _noteField.text = [_delegate addressNote];
+    [_noteField setTintColor:[UIColor whiteColor]];
+    _noteField.delegate = self;
+    [_noteView addSubview:_noteField];
+    
+    CCFlatColorButton *closeButton = [CCFlatColorButton new];
+    closeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:23];
+    [closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    closeButton.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
+    [closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3] forState:UIControlStateHighlighted];
+    [closeButton addTarget:self action:@selector(closeNoteViewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
+    [_noteView addSubview:closeButton];
+    
+    {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_noteField, closeButton);
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_noteField][closeButton(==40)]|" options:0 metrics:nil views:views];
+        [_noteView addConstraints:verticalConstraints];
+        
+        for (UIView *view in views.allValues) {
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:view == _noteField ? @"H:|-[view]-|" : @"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            [_noteView addConstraints:horizontalConstraints];
+        }
+    }
+    
+    {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_noteView);
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_noteView]|" options:0 metrics:nil views:views];
+        [self addConstraints:horizontalConstraints];
+        
+        _noteViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+        [self addConstraint:_noteViewHeightConstraint];
+        
+        NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        [self addConstraint:yConstraint];
+        
+        [self layoutIfNeeded];
+        
+        [UIView animateWithDuration:0.2 animations:^{
+            [self removeConstraint:yConstraint];
+            
+            _noteButton.alpha = 0;
+            
+            _noteViewYConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+            [self addConstraint:_noteViewYConstraint];
+            [self layoutIfNeeded];
+        }];
+    }
+    
+    if ([_noteField.text isEqualToString:@""])
+        [_noteField becomeFirstResponder];
+}
+
+- (void)removeNoteView
+{
+    [self removeConstraint:_noteViewYConstraint];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+        [self addConstraint:yConstraint];
+        
+        _noteButton.alpha = 1;
+        
+        [self layoutIfNeeded];
+    } completion:^(BOOL finished) {
+        [_noteView removeFromSuperview];
+        _noteView = nil;
+    }];
+}
+
 - (void)infosViewConstraints
 {
     if (_bottomInfosViewContraint != nil)
@@ -221,6 +346,18 @@
 - (void)updateMeta:(NSArray *)metas
 {
     [_metaContainerView updateMetas:metas];
+}
+
+#pragma mark - UIButton target methods
+
+- (void)noteButtonPressed:(UIButton *)sender
+{
+    [self showNoteView];
+}
+
+- (void)closeNoteViewButtonPressed:(UIButton *)sender
+{
+    [self removeNoteView];
 }
 
 #pragma mark - UIGestureRecognizer methods
@@ -265,6 +402,38 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     [_delegate launchRoute:[tabBar.items indexOfObject:item]];
+}
+
+#pragma mark - UITextView delegate methods
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    [_delegate setAddressNote:textView.text];
+}
+
+#pragma mark - NSNotificationCenter target methods
+
+- (void)keyboardWillShowNotification:(NSNotification *)notification
+{
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardFrameEndRect = [keyboardFrameEnd CGRectValue];
+    
+    _noteViewHeightConstraint.constant = -keyboardFrameEndRect.size.height;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
+}
+
+#pragma mark - UIGestureRecognizerDelegate methods
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    CGPoint pos = [gestureRecognizer locationInView:_tabBar];
+    if (CGRectContainsPoint(_tabBar.bounds, pos))
+        return NO;
+    return YES;
 }
 
 #pragma mark - setter methods

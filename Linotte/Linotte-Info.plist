@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.CCMAF.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.CCMAF.$(PRODUCT_NAME:rfc1034identifier)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -25,12 +25,17 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>fb699900116774019</string>
 				<string>comlinotte</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1.2</string>
+	<key>FacebookAppID</key>
+	<string>699900116774019</string>
+	<key>FacebookDisplayName</key>
+	<string>Linotte</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -39,6 +44,11 @@
 		<string>Futura-Book.ttf</string>
 		<string>Montserrat-Regular.ttf</string>
 		<string>Montserrat-Bold.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -70,11 +80,6 @@
 	<string>client_secret_12345</string>
 	<key>mixpanel_api_token</key>
 	<string>1dc69197f2069b1758b9f0b9b17b8f88</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
 	<key>mixpanel_api_token_debug</key>
 	<string>a1b283da0d87c55e595424a57cd16f77</string>
 </dict>

@@ -132,3 +132,9 @@
 "HIDE_KEYBOARD" = "Hide keyboard";
 
 "CANNOT_DELETE_ADDRESS" = "Addresses in this book\ncannot be deleted";
+
+"ENTER_VALID_EMAIL" = "Please enter a valid email address.";
+"ENTER_VALID_PASSWORDS" = "Please enter a password.";
+
+"EMAIL_PLACEHOLDER" = "Enter your email address here";
+"PASSWORD_PLACEHOLDER" = "And your password here";

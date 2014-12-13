@@ -25,6 +25,8 @@
     [super setupViews];
     [self setupNameField];
     [self setupAddressField];
+    
+    self.tableView.rowHeight = 40;
 }
 
 - (void)setupNameField

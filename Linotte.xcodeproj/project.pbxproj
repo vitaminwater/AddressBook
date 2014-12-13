@@ -76,6 +76,7 @@
 		C731844D1A2DDB2500A99762 /* Futura-Book-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C731844C1A2DDB2500A99762 /* Futura-Book-Italic.ttf */; };
 		C73184531A2E3E7A00A99762 /* CCOutputViewControllersTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184521A2E3E7A00A99762 /* CCOutputViewControllersTransition.m */; };
 		C731845A1A30733F00A99762 /* CCTelephoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184591A30733F00A99762 /* CCTelephoneButton.m */; };
+		C737D6E81A3AEFDD00646F18 /* CCEmailLoginField.m in Sources */ = {isa = PBXBuildFile; fileRef = C737D6E71A3AEFDD00646F18 /* CCEmailLoginField.m */; };
 		C73E7D0519F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */; };
 		C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C73E7D0A19F9551B00ADC1A2 /* CCModelHelper.m */; };
 		C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = C759A9CE19F6968A008549B3 /* CCCoreDataStack.m */; };
@@ -117,6 +118,8 @@
 		C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */; };
 		C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */; };
 		C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */; };
+		C785F4CC1A3C302D0011A681 /* _CCSocialAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C785F4C91A3C302D0011A681 /* _CCSocialAccount.m */; };
+		C785F4CD1A3C302D0011A681 /* CCSocialAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C785F4CB1A3C302D0011A681 /* CCSocialAccount.m */; };
 		C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B119D873F6008B520E /* CCListOutputSettingsView.m */; };
 		C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B619D87417008B520E /* CCListOutputSettingsViewController.m */; };
 		C796D7C119BB8C0000B97879 /* _CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7BE19BB8C0000B97879 /* _CCList.m */; };
@@ -140,6 +143,8 @@
 		C7A2EB3019BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A2EB2F19BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m */; };
 		C7BA707D193E107D000780D9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BA707F193E107D000780D9 /* Localizable.strings */; };
 		C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */; };
+		C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */; };
+		C7BE91AC1A35F6410033B359 /* CCSignUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BE91AB1A35F6410033B359 /* CCSignUpView.m */; };
 		C7C2924119D47F1600EBF5C3 /* CCActionResultHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2924019D47F1600EBF5C3 /* CCActionResultHUD.m */; };
 		C7C2924419D482B300EBF5C3 /* CCAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2924319D482B300EBF5C3 /* CCAlertView.m */; };
 		C7C2924C19D4B11300EBF5C3 /* CCHomeListEmptyView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2924B19D4B11300EBF5C3 /* CCHomeListEmptyView.m */; };
@@ -172,6 +177,7 @@
 		C7D484C31995196E00E81E81 /* Futura-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C21995196E00E81E81 /* Futura-Book.ttf */; };
 		C7D484C61995197900E81E81 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */; };
 		C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */; };
+		C7DCAA761A35FBC1009140B5 /* CCEmailLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7DCAA751A35FBC1009140B5 /* CCEmailLoginView.m */; };
 		C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EA191A240700602A4D /* _CCAddress.m */; };
 		C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EC191A240700602A4D /* CCAddress.m */; };
 		C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4F6191A46E700602A4D /* CCGeohashMonitor.m */; };
@@ -330,6 +336,8 @@
 		C73184591A30733F00A99762 /* CCTelephoneButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTelephoneButton.m; sourceTree = "<group>"; };
 		C731845C1A30CF7300A99762 /* CCContactButtonProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCContactButtonProtocol.h; sourceTree = "<group>"; };
 		C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 2.xcdatamodel"; sourceTree = "<group>"; };
+		C737D6E61A3AEFDD00646F18 /* CCEmailLoginField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEmailLoginField.h; sourceTree = "<group>"; };
+		C737D6E71A3AEFDD00646F18 /* CCEmailLoginField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEmailLoginField.m; sourceTree = "<group>"; };
 		C73E7D0319F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressNameAutoCompleter.h; sourceTree = "<group>"; };
 		C73E7D0419F7D92D00ADC1A2 /* CCAddressNameAutoCompleter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressNameAutoCompleter.m; sourceTree = "<group>"; };
 		C73E7D0719F7F16300ADC1A2 /* CCAutocompleterDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAutocompleterDelegate.h; sourceTree = "<group>"; };
@@ -432,6 +440,10 @@
 		C7804C7119D1AA3D00D546BD /* CCModelChangeMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitor.h; sourceTree = "<group>"; };
 		C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCModelChangeMonitor.m; sourceTree = "<group>"; };
 		C7804C7519D1AED700D546BD /* CCModelChangeMonitorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCModelChangeMonitorDelegate.h; sourceTree = "<group>"; };
+		C785F4C81A3C302D0011A681 /* _CCSocialAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCSocialAccount.h; sourceTree = "<group>"; };
+		C785F4C91A3C302D0011A681 /* _CCSocialAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCSocialAccount.m; sourceTree = "<group>"; };
+		C785F4CA1A3C302D0011A681 /* CCSocialAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSocialAccount.h; sourceTree = "<group>"; };
+		C785F4CB1A3C302D0011A681 /* CCSocialAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSocialAccount.m; sourceTree = "<group>"; };
 		C79578B019D873E9008B520E /* CCListOutputSettingsViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputSettingsViewDelegate.h; sourceTree = "<group>"; };
 		C79578B119D873F6008B520E /* CCListOutputSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputSettingsView.m; sourceTree = "<group>"; };
 		C79578B219D873F6008B520E /* CCListOutputSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputSettingsView.h; sourceTree = "<group>"; };
@@ -487,6 +499,10 @@
 		C7BA7080193E10A4000780D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C7BA7081193E1697000780D9 /* NSString+CCLocalizedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CCLocalizedString.h"; sourceTree = "<group>"; };
 		C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CCLocalizedString.m"; sourceTree = "<group>"; };
+		C7BE91A51A35F61C0033B359 /* CCSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpViewController.h; sourceTree = "<group>"; };
+		C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSignUpViewController.m; sourceTree = "<group>"; };
+		C7BE91AA1A35F6410033B359 /* CCSignUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpView.h; sourceTree = "<group>"; };
+		C7BE91AB1A35F6410033B359 /* CCSignUpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSignUpView.m; sourceTree = "<group>"; };
 		C7C2923F19D47F1600EBF5C3 /* CCActionResultHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionResultHUD.h; sourceTree = "<group>"; };
 		C7C2924019D47F1600EBF5C3 /* CCActionResultHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCActionResultHUD.m; sourceTree = "<group>"; };
 		C7C2924219D482B300EBF5C3 /* CCAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertView.h; sourceTree = "<group>"; };
@@ -543,6 +559,10 @@
 		C7D484C21995196E00E81E81 /* Futura-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Futura-Book.ttf"; sourceTree = "<group>"; };
 		C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		C7DCAA741A35FBC1009140B5 /* CCEmailLoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEmailLoginView.h; sourceTree = "<group>"; };
+		C7DCAA751A35FBC1009140B5 /* CCEmailLoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEmailLoginView.m; sourceTree = "<group>"; };
+		C7DCAA781A360194009140B5 /* CCSignUpViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpViewDelegate.h; sourceTree = "<group>"; };
+		C7DCAA7A1A361126009140B5 /* CCSignUpViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7E1E4E9191A240700602A4D /* _CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCAddress.h; sourceTree = "<group>"; };
 		C7E1E4EA191A240700602A4D /* _CCAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCAddress.m; sourceTree = "<group>"; };
 		C7E1E4EB191A240700602A4D /* CCAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddress.h; sourceTree = "<group>"; };
@@ -1403,6 +1423,15 @@
 			name = tel;
 			sourceTree = "<group>";
 		};
+		C737D6E51A3AEFB900646F18 /* fields */ = {
+			isa = PBXGroup;
+			children = (
+				C737D6E61A3AEFDD00646F18 /* CCEmailLoginField.h */,
+				C737D6E71A3AEFDD00646F18 /* CCEmailLoginField.m */,
+			);
+			name = fields;
+			sourceTree = "<group>";
+		};
 		C73E7D0119F7D91200ADC1A2 /* autocomplete */ = {
 			isa = PBXGroup;
 			children = (
@@ -2156,6 +2185,17 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
+		C785F4C11A3C2F7D0011A681 /* social */ = {
+			isa = PBXGroup;
+			children = (
+				C785F4C81A3C302D0011A681 /* _CCSocialAccount.h */,
+				C785F4C91A3C302D0011A681 /* _CCSocialAccount.m */,
+				C785F4CA1A3C302D0011A681 /* CCSocialAccount.h */,
+				C785F4CB1A3C302D0011A681 /* CCSocialAccount.m */,
+			);
+			name = social;
+			sourceTree = "<group>";
+		};
 		C79578AD19D872A8008B520E /* ui */ = {
 			isa = PBXGroup;
 			children = (
@@ -2371,6 +2411,36 @@
 				C7A96F4A19CDCD4A00F88250 /* CCListViewContentProviderDelegate.h */,
 			);
 			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7BE91A41A35F6020033B359 /* sign up */ = {
+			isa = PBXGroup;
+			children = (
+				C7DCAA791A361115009140B5 /* protocol */,
+				C7BE91A81A35F6270033B359 /* ui */,
+				C7BE91A51A35F61C0033B359 /* CCSignUpViewController.h */,
+				C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */,
+			);
+			name = "sign up";
+			sourceTree = "<group>";
+		};
+		C7BE91A81A35F6270033B359 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7BE91A91A35F62C0033B359 /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7BE91A91A35F62C0033B359 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7DCAA771A36017F009140B5 /* protocol */,
+				C7DCAA731A35FBB0009140B5 /* email login view */,
+				C7BE91AA1A35F6410033B359 /* CCSignUpView.h */,
+				C7BE91AB1A35F6410033B359 /* CCSignUpView.m */,
+			);
+			name = view;
 			sourceTree = "<group>";
 		};
 		C7C2923D19D47E5900EBF5C3 /* alert view */ = {
@@ -2623,6 +2693,7 @@
 		C7CE2C9A1918F07100D37A64 /* core data */ = {
 			isa = PBXGroup;
 			children = (
+				C785F4C11A3C2F7D0011A681 /* social */,
 				C7F4452219FCE718009AE1C9 /* server event */,
 				C7F4452119FCE70E009AE1C9 /* list zone */,
 				C7A1621819DEA396003EFE5B /* local event */,
@@ -2637,6 +2708,7 @@
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C7BE91A41A35F6020033B359 /* sign up */,
 				C73183EE1A25E34D00A99762 /* add address */,
 				C731841C1A2882AE00A99762 /* root */,
 				C76A1CE619C0CA0600EE75E4 /* list output */,
@@ -2742,6 +2814,32 @@
 				C7D484C21995196E00E81E81 /* Futura-Book.ttf */,
 			);
 			name = fonts;
+			sourceTree = "<group>";
+		};
+		C7DCAA731A35FBB0009140B5 /* email login view */ = {
+			isa = PBXGroup;
+			children = (
+				C737D6E51A3AEFB900646F18 /* fields */,
+				C7DCAA741A35FBC1009140B5 /* CCEmailLoginView.h */,
+				C7DCAA751A35FBC1009140B5 /* CCEmailLoginView.m */,
+			);
+			name = "email login view";
+			sourceTree = "<group>";
+		};
+		C7DCAA771A36017F009140B5 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7DCAA781A360194009140B5 /* CCSignUpViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7DCAA791A361115009140B5 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7DCAA7A1A361126009140B5 /* CCSignUpViewControllerDelegate.h */,
+			);
+			name = protocol;
 			sourceTree = "<group>";
 		};
 		C7E1E4EF191A468800602A4D /* utils */ = {
@@ -3112,6 +3210,7 @@
 				C7CE2CC7191A21C500D37A64 /* CCListViewTableViewCell.m in Sources */,
 				C76C3BF91A1F3FDD000B0DD8 /* NSArray+CCArray.m in Sources */,
 				C7CE2CBB1918F18600D37A64 /* CCAddAddressByNameView.m in Sources */,
+				C7BE91AC1A35F6410033B359 /* CCSignUpView.m in Sources */,
 				C73183C71A237ECE00A99762 /* CCBaseAutoComplete.m in Sources */,
 				C76C3BE51A1E0285000B0DD8 /* CCServerEventListAddedConsumer.m in Sources */,
 				C76C3BEF1A1E3606000B0DD8 /* CCSynchronizationActionInitialListFetch.m in Sources */,
@@ -3119,6 +3218,7 @@
 				C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */,
 				C73183F11A25E3B400A99762 /* CCAddAddressViewController.m in Sources */,
 				C73183B71A237A9F00A99762 /* CCAutocompleteAddAddressView.m in Sources */,
+				C737D6E81A3AEFDD00646F18 /* CCEmailLoginField.m in Sources */,
 				C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */,
 				C73183A81A23661700A99762 /* CCAddressListViewModel.m in Sources */,
 				C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */,
@@ -3141,6 +3241,7 @@
 				C7216B171A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m in Sources */,
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
+				C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m in Sources */,
 				C731840C1A27514400A99762 /* CCContactMeta.m in Sources */,
 				C7619FFE19CC310A00C09F0D /* UIView+CCShowSettingsView.m in Sources */,
@@ -3165,6 +3266,7 @@
 				C73183EA1A25DC9500A99762 /* CCAddAddressAtLocationView.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
 				C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */,
+				C785F4CC1A3C302D0011A681 /* _CCSocialAccount.m in Sources */,
 				C7216B411A13C88900498CFE /* CCServerEventAddressUserDataUpdatedConsumer.m in Sources */,
 				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,
 				C73184531A2E3E7A00A99762 /* CCOutputViewControllersTransition.m in Sources */,
@@ -3203,6 +3305,7 @@
 				C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */,
 				C7A1621E19DEA5FE003EFE5B /* CCLocalEvent.m in Sources */,
 				C7C2924119D47F1600EBF5C3 /* CCActionResultHUD.m in Sources */,
+				C7DCAA761A35FBC1009140B5 /* CCEmailLoginView.m in Sources */,
 				C759A9CF19F6968A008549B3 /* CCCoreDataStack.m in Sources */,
 				C731842A1A2BCE3D00A99762 /* CCSwapperView.m in Sources */,
 				C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */,
@@ -3222,6 +3325,7 @@
 				C7E1E4FB191A46FD00602A4D /* CCLinotteAPI.m in Sources */,
 				C7216B381A13C85200498CFE /* CCServerEventAddressAddedToListConsumer.m in Sources */,
 				C73183E41A25DC6A00A99762 /* CCAddAddressAtLocationViewController.m in Sources */,
+				C785F4CD1A3C302D0011A681 /* CCSocialAccount.m in Sources */,
 				C7A1621B19DEA48E003EFE5B /* _CCLocalEvent.m in Sources */,
 				C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */,
 				C76A1CFE19C0DEC600EE75E4 /* CCListItems.m in Sources */,
@@ -3371,7 +3475,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4bc5af30-d7e9-4142-85ec-f03db782e14c";
+				PROVISIONING_PROFILE = "2ef67605-9c35-4837-be46-c7995091d6f1";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;

@@ -69,14 +69,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    _splashViewController = [CCSplashViewController new];
+    /*_splashViewController = [CCSplashViewController new];
     _splashViewController.delegate = self;
     
     [self addChildViewController:_splashViewController];
     _splashViewController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _splashViewController.view.frame = self.view.bounds;
     [self.view addSubview:_splashViewController.view];
-    [_splashViewController didMoveToParentViewController:self];
+    [_splashViewController didMoveToParentViewController:self];*/
     
     self.navigationController.delegate = self;
 }

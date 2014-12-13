@@ -68,11 +68,13 @@
             NSString *addressString = [venue[@"location"][@"formattedAddress"] componentsJoinedByString:@", "];
             
             NSMutableArray *metas = [@[] mutableCopy];
-            CCMeta *meta = [CCMeta new];
-            meta.uid = venue[@"categories"][0][@"id"];
-            meta.action = @"notification_info";
-            meta.content = @{@"name" : venue[@"categories"][0][@"name"]};
-            [metas addObject:meta];
+            if ([venue[@"categories"] count] > 0) {
+                CCMeta *meta = [CCMeta new];
+                meta.uid = venue[@"categories"][0][@"id"];
+                meta.action = @"notification_info";
+                meta.content = @{@"name" : venue[@"categories"][0][@"name"]};
+                [metas addObject:meta];
+            }
             
             autocompletionResult.name = venue[@"name"];
             autocompletionResult.address = addressString;

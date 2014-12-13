@@ -37,7 +37,9 @@ typedef enum : NSUInteger {
 - (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock;
 - (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock;
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success))completionBlock;
+- (void)createAndAuthenticateUser:(NSString *)email password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock;
+- (void)createAndAuthenticateUserWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate userName:(NSString *)userName firstName:(NSString *)firstName lastName:(NSString *)lastName email:(NSString *)email completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
+- (void)associateWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
 
 #pragma mark - Data management methods
 

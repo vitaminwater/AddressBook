@@ -31,17 +31,13 @@
         CLLocationDistance distance1 = [location1 distanceFromLocation:lastLocation];
         CLLocationDistance distance2 = [location2 distanceFromLocation:lastLocation];
         
+        // TODO check number of common digits with variable geohash
         if (distance1 > distance2 || [geohash rangeOfString:listZone2.geohash].location == 0)
             return NSOrderedDescending;
         else if (distance1 < distance2 || [geohash rangeOfString:listZone1.geohash].location == 0)
             return NSOrderedAscending;
         return NSOrderedSame;
     }];
-    
-    /*for (CCListZone *listZone in sortedListZones) {
-        CLLocation *location = [[CLLocation alloc] initWithLatitude:listZone.latitudeValue longitude:listZone.longitudeValue];
-        NSLog(@"%f %f %@ %f", listZone.latitudeValue, listZone.longitudeValue, listZone.geohash, [location distanceFromLocation:lastLocation]);
-    }*/
     
     return sortedListZones;
 }

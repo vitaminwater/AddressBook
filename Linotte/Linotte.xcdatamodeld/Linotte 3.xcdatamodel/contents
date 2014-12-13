@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CCAddress" representedClassName="CCAddress" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -89,6 +89,14 @@
         <attribute name="objectIdentifier2" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
+    <entity name="CCSocialAccount" representedClassName="CCSocialAccount" syncable="YES">
+        <attribute name="authTokenKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="expirationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mediaIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="refreshTokenKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="socialIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="CCAddress" positionX="0" positionY="0" width="128" height="283"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
@@ -98,5 +106,6 @@
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="178"/>
         <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="118"/>
         <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="133"/>
+        <element name="CCSocialAccount" positionX="9" positionY="153" width="128" height="133"/>
     </elements>
 </model>

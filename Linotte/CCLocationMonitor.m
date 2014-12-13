@@ -31,22 +31,31 @@
         _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
         _locationManager.delegate = self;
         
-        CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
-        if (authorizationStatus == kCLAuthorizationStatusNotDetermined) {
-            [_locationManager requestAlwaysAuthorization];
-        } else if (authorizationStatus == kCLAuthorizationStatusAuthorizedAlways) {
-            if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
-                [_locationManager startUpdatingLocation];
-                [_locationManager startUpdatingHeading];
+        if ([_locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+            CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
+            if (authorizationStatus == kCLAuthorizationStatusNotDetermined) {
+                [_locationManager requestAlwaysAuthorization];
+            } else if (authorizationStatus == kCLAuthorizationStatusAuthorizedAlways) {
+                [self startLocalization];
+            } else {
+                // Print message. cf. didChangeAuthorizationStatus
             }
         } else {
-            // Print message. cf. didChangeAuthorizationStatus
+            [self startLocalization];
         }
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     }
     return self;
+}
+
+- (void)startLocalization
+{
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+        [_locationManager startUpdatingLocation];
+        [_locationManager startUpdatingHeading];
+    }
 }
 
 - (void)dealloc

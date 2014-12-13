@@ -13,6 +13,8 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCLocationMonitor.h"
+#import "CCModelChangeMonitor.h"
+#import "CCCoreDataStack.h"
 
 #import "UIView+CCShowSettingsView.h"
 #import "CCFirstAddressDisplaySettingsViewController.h"
@@ -45,6 +47,8 @@
     CLLocationDistance _distance;
 }
 
+@dynamic addressNote;
+
 - (instancetype)initWithAddress:(CCAddress *)address addressIsNew:(BOOL)addressIsNew
 {
     self = [self initWithAddress:address];
@@ -70,6 +74,9 @@
 
 - (void)loadView
 {
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+ 
     CCOutputView *view = [CCOutputView new];
     
     [view addMetas:[_address.metas allObjects]];
@@ -244,6 +251,23 @@
         [self googleRoute:type];
     else
         [self appleMapRoute:type];
+}
+
+- (void)setAddressNote:(NSString *)addressNote
+{
+    NSString *newNote = [addressNote stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if ([newNote isEqualToString:_address.note])
+        return;
+    
+    _address.note = newNote;
+    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[_address] send:YES];
+}
+
+- (NSString *)addressNote
+{
+    return _address.note;
 }
 
 #pragma mark - CCSettingsViewControllerDelegate methods

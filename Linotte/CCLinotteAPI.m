@@ -20,7 +20,7 @@
 
 // SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug52"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug55"
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
 #define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
@@ -132,17 +132,7 @@
 
 - (void)APIIinitialization:(void(^)(CCLoggedState fromState))stateStepBlock completionBock:(void(^)(BOOL success))completionBlock
 {
-    if (_loggedState == kCCFirstStart) {
-        [self createAndAuthenticateAnonymousUserWithCompletionBlock:^(BOOL success) {
-            if (success) {
-                [self refreshLoggedState];
-                stateStepBlock(kCCFirstStart);
-                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
-                return;
-            }
-            completionBlock(NO);
-        }];
-    } else if (_loggedState == kCCRequestRefreshToken) {
+    if (_loggedState == kCCRequestRefreshToken) {
         [self refreshTokenWithCompletionBlock:^(BOOL success) {
             if (success) {
                 [self refreshLoggedState];
@@ -179,6 +169,11 @@
 {
     NSString *oauth2Header = [NSString stringWithFormat:@"Bearer %@", _credentials.accessToken];
     [_apiManager.requestSerializer setValue:oauth2Header forHTTPHeaderField:@"Authorization"];
+}
+
+- (void)unsetOAuth2HttpHeader
+{
+    [_apiManager.requestSerializer setValue:nil forHTTPHeaderField:@"Authorization"];
 }
 
 #pragma mark - Authentication methods
@@ -235,6 +230,28 @@
     [self setOAuth2HTTPHeader];
 }
 
+- (void)forgetTokens
+{
+    NSError *error;
+    
+    _credentials.accessToken = nil;
+    _credentials.refreshToken = nil;
+    _credentials.expireTimeStamp = nil;
+    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName] == NO) {
+        CCLog(@"%@", error);
+    }
+    
+    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName] == NO) {
+        CCLog(@"%@", error);
+    }
+    
+    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName] == NO) {
+        CCLog(@"%@", error);
+    }
+    
+    [self unsetOAuth2HttpHeader];
+}
+
 - (NSDictionary *)oauth2Parameters:(NSDictionary *)parameters
 {
     NSMutableDictionary *mutableDictionnary = [parameters mutableCopy];
@@ -246,22 +263,13 @@
 
 #pragma mark - User methods
 
-- (void)createAndAuthenticateAnonymousUserWithCompletionBlock:(void(^)(BOOL success))completionBlock
+- (void)createAndAuthenticateUser:(NSString *)email password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    
-    NSString *(^UUID)(NSUInteger len) = ^NSString *(NSUInteger len){
-        if (len)
-            return [[[NSUUID UUID] UUIDString] substringToIndex:30];
-        return [[NSUUID UUID] UUIDString];
-        
-    };
-    NSString *email = [NSString stringWithFormat:@"%@@getcairnsapp.com", UUID(0)];
-    NSString *username = UUID(30);
-    NSString *password = UUID(0);
-    NSDictionary *parameters = @{@"username" : username, @"password" : password, @"first_name" : UUID(30), @"last_name" : UUID(30), @"email" : email};
+
+    NSDictionary *parameters = @{@"username" : [self UUID:30], @"password" : password, @"first_name" : [self UUID:30], @"last_name" : [self UUID:30], @"email" : email};
     [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        [self authenticate:username password:password completionBlock:^(BOOL success) {
+        [self authenticate:email password:password completionBlock:^(BOOL success) {
             NSString *identifier = response[@"identifier"];
             if (success)
                 [self saveUserIdentifier:identifier];
@@ -273,12 +281,61 @@
     }];
 }
 
+- (void)createAndAuthenticateUserWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate userName:(NSString *)userName firstName:(NSString *)firstName lastName:(NSString *)lastName email:(NSString *)email completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
+{
+    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+    
+    NSString *password = [self UUID:30];
+    NSDictionary *parameters = @{@"username" : userName ?: [self UUID:30], @"password" : password, @"first_name" : firstName, @"last_name" : lastName, @"email" : email};
+    [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        [self authenticate:email password:password completionBlock:^(BOOL success) {
+            if (success) {
+                NSString *userIdentifier = response[@"identifier"];
+                [self associateWithSocialAccount:socialMediaIdentifier socialIdentifier:socialIdentifier oauthToken:oauthToken refreshToken:refreshToken expirationDate:expirationDate completionBlock:^(BOOL success, NSString *identifier) {
+
+                    if (success)
+                        [self saveUserIdentifier:userIdentifier];
+                    else
+                        [self forgetTokens];
+                    completionBlock(success, identifier);
+                }];
+            } else {
+                completionBlock(success, nil);
+            }
+        }];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
+- (void)associateWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
+{
+    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+    
+    NSDictionary *parameters = @{@"social_media_identifier" : socialMediaIdentifier, @"social_identifier" : socialIdentifier, @"oauth_token" : oauthToken, @"refresh_token" : refreshToken ?: nil, @"expiration_date" : [self stringFromDate:expirationDate]};
+    [_apiManager POST:@"/user/social/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        NSString *identifier = response[@"identifier"];
+        completionBlock(YES, identifier);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        completionBlock(NO, nil);
+    }];
+}
+
 - (void)saveUserIdentifier:(NSString *)identifier {
     NSError *error;
     if ([SSKeychain setPassword:identifier forService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName error:&error] == NO) {
         CCLog(@"%@", error);
     }
     _identifier = identifier;
+}
+
+- (NSString *)UUID:(NSUInteger)len
+{
+    if (len)
+        return [[[NSUUID UUID] UUIDString] substringToIndex:30];
+    return [[NSUUID UUID] UUIDString];
 }
 
 #pragma mark - Device methods

@@ -128,3 +128,9 @@
 "HIDE_KEYBOARD" = "Cacher le clavier";
 
 "CANNOT_DELETE_ADDRESS" = "Les adresses de ce carnet\nne peuvent être supprimées";
+
+"ENTER_VALID_EMAIL" = "Entrez une adresse mail valide.";
+"ENTER_VALID_PASSWORDS" = "Veuillez entrer un mot de passe.";
+
+"EMAIL_PLACEHOLDER" = "Entrez votre address email ici";
+"PASSWORD_PLACEHOLDER" = "Et votre mot de passe ici";

@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCAppDelegate : UIResponder <UIApplicationDelegate>
+#import "CCSignUpViewControllerDelegate.h"
+
+@interface CCAppDelegate : UIResponder <UIApplicationDelegate, CCSignUpViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

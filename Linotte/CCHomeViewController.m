@@ -59,6 +59,7 @@
     self = [super init];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAddressesPanel:) name:kCCShowAddressesPanelNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showBooksPanel:) name:kCCShowBookPanelNotification object:nil];
     }
     return self;
 }
@@ -219,6 +220,13 @@
     CCHomeView *view = (CCHomeView *)self.view;
     [_swapViewController swapToViewController:_listViewControllers[0]];
     [view setSelectedButtonAtIndex:0];
+}
+
+- (void)showBooksPanel:(NSNotification *)notification
+{
+    CCHomeView *view = (CCHomeView *)self.view;
+    [_swapViewController swapToViewController:_listViewControllers[1]];
+    [view setSelectedButtonAtIndex:1];
 }
 
 @end

@@ -14,7 +14,7 @@
 
 #import "CCMetaProtocol.h"
 
-@interface CCOutputView : UIView<UITabBarDelegate>
+@interface CCOutputView : UIView<UITabBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 @property(nonatomic, readonly)NSString *currentColor;
 

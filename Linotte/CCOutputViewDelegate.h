@@ -17,6 +17,8 @@ typedef enum : NSUInteger {
 
 @protocol CCOutputViewDelegate <NSObject>
 
+@property(nonatomic, strong)NSString *addressNote;
+
 // route
 - (void)launchRoute:(CCRouteType)type;
 
