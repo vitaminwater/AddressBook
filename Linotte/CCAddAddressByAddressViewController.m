@@ -11,7 +11,7 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCGeohashHelper.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCAddAddressByAddressView.h"
 
@@ -49,7 +49,7 @@
         if (result == nil)
             return;
         
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
 
         address.name = addressName;
@@ -63,7 +63,7 @@
         address.geohash = [CCGeohashHelper geohashFromCoordinates:result.coordinates];
         
         [self.delegate addAddressViewController:self preSaveAddress:address];
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [self.delegate addAddressViewController:self postSaveAddress:address];
 
         @try {

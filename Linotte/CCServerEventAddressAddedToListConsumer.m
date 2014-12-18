@@ -9,7 +9,8 @@
 #import "CCServerEventAddressAddedToListConsumer.h"
 
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 
 #import "CCServerEvent.h"
@@ -43,7 +44,7 @@
     NSArray *addressIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@ and identifier in %@", list, addressIdentifiers];
     [fetchRequest setPredicate:predicate];
@@ -67,14 +68,9 @@
     [addressesToAdd addObjectsFromArray:alreadyInstalledAddresses];
     
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds list:list.identifier completionBlock:^(BOOL success, NSArray *addressesDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchAddressesForEventIds:eventIds list:list.identifier success:^(NSArray *addressesDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         NSArray *newAddresses = [CCAddress insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts];
         [addressesToAdd addObjectsFromArray:newAddresses];
@@ -96,13 +92,18 @@
         
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd willMoveToList:list send:NO];
         [list addAddresses:[NSSet setWithArray:addressesToAdd]];
-
+        
         [CCServerEvent deleteEvents:_events];
         _events = nil;
         
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd didMoveToList:list send:NO];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

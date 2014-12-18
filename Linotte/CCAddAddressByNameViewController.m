@@ -8,8 +8,6 @@
 
 #import "CCAddAddressByNameViewController.h"
 
-#import <Reachability/Reachability.h>
-
 #import <MBProgressHUD/MBProgressHUD.h>
 
 #import <Mixpanel/Mixpanel.h>
@@ -23,12 +21,12 @@
 
 #import "CCMeta.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCModelChangeMonitor.h"
 
 #import "CCGeohashHelper.h"
-#import "CCNetworkHandler.h"
+#import "CCModelChangeHandler.h"
 
 #import "CCAddAddressByNameView.h"
 
@@ -62,7 +60,7 @@
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
     CCAddressAutocompletionResult *autocompletionResult = [self.autoComplete autocompletionResultAtIndex:index];
     
@@ -85,7 +83,7 @@
     }
     
     [self.delegate addAddressViewController:self preSaveAddress:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [self.delegate addAddressViewController:self postSaveAddress:address];
     
     @try {

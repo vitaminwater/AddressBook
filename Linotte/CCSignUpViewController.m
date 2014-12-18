@@ -8,8 +8,10 @@
 
 #import "CCSignUpViewController.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteAuthenticationManager.h"
 #import <SSKeychain/SSKeychain.h>
 
 #import "CCSignUpView.h"
@@ -47,10 +49,13 @@
 
 - (void)loginSignupButtonPressed:(NSString *)email password:(NSString *)password
 {
-    [[CCLinotteAPI sharedInstance] createAndAuthenticateUser:email password:password completionBlock:^(BOOL success) {
-        if (success == YES) {
+    [CCLEC.authenticationManager setCredentials:email password:password];
+    [CCLEC.authenticationManager syncWithSuccess:^{
+        [_delegate signupCompleted];
+    } failure:^(NSError *error) {
+        if (CCLEC.authenticationManager.needsCredentials == NO)
             [_delegate signupCompleted];
-        }
+        // TODO check if network failure
     }];
 }
 
@@ -58,23 +63,17 @@
 
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
-    [[CCLinotteAPI sharedInstance] createAndAuthenticateUserWithSocialAccount:@"facebook" socialIdentifier:user.objectID oauthToken:accessTokenData.accessToken refreshToken:@"" expirationDate:accessTokenData.expirationDate userName:user.username firstName:user.first_name lastName:user.last_name email:user[@"email"] completionBlock:^(BOOL success, NSString *identifier) {
-        if (success) {
-            NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            CCSocialAccount *socialAccount = [CCSocialAccount insertInManagedObjectContext:managedObjectContext];
-            socialAccount.socialIdentifier = user.objectID;
-            socialAccount.mediaIdentifier = @"facebook";
-            socialAccount.authToken = accessTokenData.accessToken;
-            socialAccount.expirationDate = accessTokenData.expirationDate;
-            socialAccount.identifier = identifier;
-            [[CCCoreDataStack sharedInstance] saveContext];
-            
+    [CCLEC.authenticationManager setCredentials:user[@"email"] password:[CCLEC.linotteAPI UUID:0]];
+    [CCLEC.authenticationManager associateFacebookAccount:user];
+    [CCLEC.authenticationManager syncWithSuccess:^{
+        [_delegate signupCompleted];
+    } failure:^(NSError *error) {
+        if (CCLEC.authenticationManager.needsCredentials == NO)
             [_delegate signupCompleted];
-        } else {
-            [[FBSession activeSession] closeAndClearTokenInformation];
-        }
+        // TODO check if network failure
     }];
+    // FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
+    // NSDictionary *parameters = @{@"social_meda_identifier" : @"facebook", @"social_identifier" : user.objectID, @"oauth_token" : accessTokenData.accessToken, @"refresh_token" : @"", @"expiration_date" : accessTokenData.expirationDate};
 }
 
 - (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error

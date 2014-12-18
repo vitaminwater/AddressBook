@@ -11,7 +11,7 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -24,7 +24,7 @@
 
 + (void)deleteAddress:(CCAddress *)address
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     @try {
         [[Mixpanel sharedInstance] track:@"Address deleted" properties:@{@"name": address.name ?: @"",
@@ -40,20 +40,20 @@
     for (CCList *list in lists) {
         [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveFromList:list send:YES];
         [address removeListsObject:list];
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveFromList:list send:YES];
     }
     
     if ([address.lists count] == 0)
         [managedObjectContext deleteObject:address];
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 + (void)deleteList:(CCList *)list
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSString *identifier = list.identifier;
 
     @try {
@@ -77,19 +77,19 @@
     
     [[CCModelChangeMonitor sharedInstance] listsWillRemove:@[list] send:YES];
     [managedObjectContext deleteObject:list];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidRemove:@[identifier] send:YES];
     
     for (CCAddress *address in addressesToDelete) {
         [managedObjectContext deleteObject:address];
     }
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 + (CCList *)defaultList
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isdefault = %@", @YES];
@@ -106,7 +106,7 @@
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = NSLocalizedString(@"DEFAULT_LIST_NAME", @"");
     list.isdefault = @YES;
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     
     return list;

@@ -8,8 +8,9 @@
 
 #import "CCServerEventAddressUpdatedConsumer.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import "CCServerEvent.h"
@@ -41,24 +42,24 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesForEventIds:eventIds list:list.identifier completionBlock:^(BOOL success, NSArray *addressDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchAddressesForEventIds:eventIds list:list.identifier success:^(NSArray *addressDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSArray *addresses = [CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressDicts list:list];
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
-        [[CCCoreDataStack sharedInstance] saveContext];
+        
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressesDidUpdate:addresses send:NO];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

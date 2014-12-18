@@ -8,7 +8,7 @@
 
 #import "CCSynchronizationHandler.h"
 
-#import <Reachability/Reachability.h>
+#import <AFNetworking/AFNetworkReachabilityManager.h>
 
 #import "CCSynchronizationActionProtocol.h"
 #import "CCSynchronizationActionInitialListFetch.h"
@@ -21,14 +21,14 @@
 #import "CCListZoneSynchronizationActionConsumeEvents.h"
 
 #import "CCLinotteAPI.h"
-#import "CCNetworkHandler.h"
+#import "CCModelChangeHandler.h"
 #import "CCNetworkLogs.h"
 
 #import "CCModelChangeMonitor.h"
 #import "CCLocationMonitor.h"
 
 #import "CCGeohashHelper.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -57,10 +57,6 @@
     self = [super init];
     if (self) {
         [self setupSynchronizationActions];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reachabilityChanged:)
-                                                     name:kReachabilityChangedNotification
-                                                   object:nil];
         
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
@@ -70,11 +66,6 @@
         [[CCLocationMonitor sharedInstance] addDelegate:self];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupSynchronizationActions
@@ -89,19 +80,11 @@
                                 [CCListZoneSynchronizationActionConsumeEvents new]];
 }
 
-- (void)reachable
-{
-}
-
-- (void)unreachable
-{
-}
-
 #pragma mark - Zone synchronization methods
 
 - (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)(BOOL didSync))completionBlock
 {
-    if ([[CCNetworkHandler sharedInstance] connectionAvailable] == NO || [self lastCoordinateAvailable] == NO)
+    if ([AFNetworkReachabilityManager sharedManager].isReachable == NO || [self lastCoordinateAvailable] == NO)
         return;
     
     if (list != nil && list.identifier == nil)
@@ -190,32 +173,6 @@
 - (BOOL)lastCoordinateAvailable
 {
     return _lastCoordinate.latitude != 0 && _lastCoordinate.longitude != 0;
-}
-
-#pragma mark - NSNotificationCenter methods
-
-- (void)reachabilityChanged:(NSNotification *)notification
-{
-    Reachability *reachability = notification.object;
-    if (reachability.isReachable) {
-        [self reachable];
-    } else {
-        [self unreachable];
-    }
-}
-
-#pragma mark - Singleton method
-
-+ (instancetype)sharedInstance
-{
-    static id instance = nil;
-    static dispatch_once_t token;
-    
-    dispatch_once(&token, ^{
-        instance = [self new];
-    });
-    
-    return instance;
 }
 
 @end

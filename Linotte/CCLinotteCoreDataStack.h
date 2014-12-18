@@ -1,5 +1,5 @@
 //
-//  CCCoreDataStack.h
+//  CCLinotteCoreDataStack.h
 //  Linotte
 //
 //  Created by stant on 21/10/14.
@@ -10,7 +10,7 @@
 
 @class NSManagedObjectContext;
 
-@interface CCCoreDataStack : NSObject
+@interface CCLinotteCoreDataStack : NSObject
 
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSManagedObjectContext *)childManagedObjectContext;

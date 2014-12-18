@@ -14,7 +14,7 @@
 
 #import "CCLocationMonitor.h"
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "UIView+CCShowSettingsView.h"
 #import "CCFirstAddressDisplaySettingsViewController.h"
@@ -261,7 +261,7 @@
         return;
     
     _address.note = newNote;
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[_address] send:YES];
 }
 

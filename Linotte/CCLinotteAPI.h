@@ -14,12 +14,8 @@
 @class RKPaginator;
 
 typedef enum : NSUInteger {
-    kCCFirstStart, // When nothing has happened yet
-    kCCLoggedIn, // When everything is fine
-    kCCRequestRefreshToken, // When access token is outdated
-    kCCCreateDeviceId, // When upgrading from 1.0 to 2.0, device is not created yet
-    kCCFailed, // unknown error
-} CCLoggedState;
+    CCMissingIdentifier = 424200,
+} CCLinotteAPIErrorCodes;
 
 /**
  * CCLinotteAPI interface
@@ -27,64 +23,61 @@ typedef enum : NSUInteger {
 
 @interface CCLinotteAPI : NSObject
 
-@property(nonatomic, strong)NSString *identifier;
-@property(nonatomic, readonly)CCLoggedState loggedState;
+- (instancetype)initWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 
-- (void)setClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
+- (void)setOAuth2HTTPHeader:(NSString *)accessToken;
+- (void)unsetOAuth2HttpHeader;
 
-- (void)APIIinitialization:(void(^)(CCLoggedState fromState))stateStepBlock completionBock:(void(^)(BOOL success))completionBlock;
+- (NSURLSessionDataTask *)authenticate:(NSString *)username password:(NSString *)password success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)refreshToken:(NSString *)refreshToken success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
-- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock;
-- (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock;
+- (NSURLSessionDataTask *)createUser:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)associateWithSocialAccount:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
-- (void)createAndAuthenticateUser:(NSString *)email password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock;
-- (void)createAndAuthenticateUserWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate userName:(NSString *)userName firstName:(NSString *)firstName lastName:(NSString *)lastName email:(NSString *)email completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
-- (void)associateWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock;
+- (NSURLSessionDataTask *)createDeviceWithSuccess:(void(^)(NSString *deviceId))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (void)setDeviceHTTPHeader:(NSString *)deviceId;
+- (void)unsetDeviceHTTPHeader;
+
+- (NSString *)UUID:(NSUInteger)len;
 
 #pragma mark - Data management methods
 
-- (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock;
-- (void)createAddressMeta:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock;
-
-- (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)removeList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)removeAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-
-- (void)addAddressToList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)removeAddressFromList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-
-- (void)updateAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)updateList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-
-- (void)updateAddressUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
-- (void)updateListUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock;
+- (NSURLSessionDataTask *)createAddress:(NSDictionary *)parameters success:(void(^)(NSString *identifier, NSInteger statusCode))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)createAddressMeta:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)createList:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)addList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)removeList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)removeAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)removeAddressFromList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)updateAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)updateList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)updateAddressUserData:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)updateListUserData:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 #pragma mark - Fetch methods
 
-- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock;
-- (NSURLSessionTask *)fetchInstalledListsWithCompletionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock;
-- (NSURLSessionTask *)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock;
-- (NSURLSessionTask *)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock;
-- (NSURLSessionTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock;
-- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
-- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
-- (NSURLSessionTask *)fetchListZoneLastEventDate:(NSString *)identifier geohash:(NSString *)geohash completionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock;
-- (NSURLSessionTask *)fetchListLastEventDate:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock;
-- (NSURLSessionTask *)fetchUserLastEventDateWithCompletionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock;
-- (NSURLSessionTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock;
-- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock;
-- (NSURLSessionTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addressMetas))completionBlock;
-- (NSURLSessionTask *)fetchListMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *listMetas))completionBlock;
-- (NSURLSessionTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock;
-- (NSURLSessionTask *)fetchListUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock;
-- (NSURLSessionTask *)fetchListsForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock;
+- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchInstalledListsWithSuccess:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchCompleteListInfos:(NSString *)identifier success:(void(^)(NSDictionary *listInfo))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListZones:(NSString *)identifier success:(void(^)(NSArray *listZones))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListZoneLastEventDate:(NSString *)identifier geohash:(NSString *)geohash success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListLastEventDate:(NSString *)identifier success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchUserLastEventDateWithSuccess:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *addressMetas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListMetasForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *listMetas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *userDatas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListUserDataForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *userDatas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchListsForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 #pragma mark - Date conversion methods
 
 - (NSString *)stringFromDate:(NSDate *)date;
 - (NSDate *)dateFromString:(NSString *)dateString;
-
-+ (instancetype)sharedInstance;
 
 @end

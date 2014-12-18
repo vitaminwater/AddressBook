@@ -10,11 +10,6 @@
 
 #import "CCModelChangeMonitorDelegate.h"
 
-@interface CCNetworkHandler : NSObject<CCModelChangeMonitorDelegate>
-
-- (BOOL)canSend;
-- (BOOL)connectionAvailable;
-
-+ (instancetype)sharedInstance;
+@interface CCModelChangeHandler : NSObject<CCModelChangeMonitorDelegate>
 
 @end

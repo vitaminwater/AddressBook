@@ -8,12 +8,13 @@
 
 #import "CCListStoreViewController.h"
 
-#import <Reachability/Reachability.h>
+#import <AFNetworking/AFNetworkReachabilityManager.h>
 
 #import <HexColors/HexColor.h>
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
-#import "CCNetworkHandler.h"
+#import "CCModelChangeHandler.h"
 
 #import "CCLocationMonitor.h"
 
@@ -40,7 +41,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
-                                                     name:kReachabilityChangedNotification
+                                                     name:AFNetworkingReachabilityDidChangeNotification
                                                    object:nil];
     }
     return self;
@@ -67,7 +68,7 @@
 {
     [super viewDidLoad];
     
-    if ([[CCNetworkHandler sharedInstance] connectionAvailable]) {
+    if ([AFNetworkReachabilityManager sharedManager].reachable) {
         [((CCListStoreView *)self.view) reachable];
     } else {
         [((CCListStoreView *)self.view) unreachable];
@@ -118,12 +119,10 @@
 
 - (void)loadLists:(NSUInteger)pageNumber
 {
-    [[CCLinotteAPI sharedInstance] fetchPublicLists:_location.coordinate completionBlock:^(BOOL success, NSArray *lists) {
-        if (success) {
-            [_lists addObjectsFromArray:lists];
-            [((CCListStoreView *)self.view) firstLoad];
-        }
-    }];
+    [CCLEC.linotteAPI fetchPublicLists:_location.coordinate success:^(NSArray *lists) {
+        [_lists addObjectsFromArray:lists];
+        [((CCListStoreView *)self.view) firstLoad];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
 }
 
 #pragma mark - UIBarButtons target methods
@@ -187,8 +186,7 @@
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-    Reachability *reachability = notification.object;
-    if (reachability.isReachable) {
+    if ([AFNetworkReachabilityManager sharedManager].reachable) {
         [((CCListStoreView *)self.view) reachable];
     } else {
         [((CCListStoreView *)self.view) unreachable];

@@ -14,7 +14,7 @@
 
 #import "CCGeohashHelper.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCAddAddressAtLocationView.h"
 
@@ -84,7 +84,7 @@
 - (void)validateButtonPressed
 {
     CCAddAddressAtLocationView *view = (CCAddAddressAtLocationView *)self.view;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
     
     CLLocationCoordinate2D addressCoordinates = view.addressCoordinates;
@@ -99,7 +99,7 @@
     address.geohash = [CCGeohashHelper geohashFromCoordinates:addressCoordinates];
     
     [self.delegate addAddressViewController:self preSaveAddress:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [self.delegate addAddressViewController:self postSaveAddress:address];
     
     @try {

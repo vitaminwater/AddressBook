@@ -30,7 +30,6 @@ PODS:
   - Mixpanel (2.6.2):
     - Mixpanel/MPCategoryHelpers
   - Mixpanel/MPCategoryHelpers (2.6.2)
-  - Reachability (3.2)
   - SSKeychain (1.2.2)
 
 DEPENDENCIES:
@@ -41,7 +40,6 @@ DEPENDENCIES:
   - HexColors
   - MBProgressHUD
   - Mixpanel
-  - Reachability
   - SSKeychain
 
 EXTERNAL SOURCES:
@@ -57,7 +55,6 @@ SPEC CHECKSUMS:
   HexColors: 01384d2bbe8dc4ffa43c3b4135db6e976952d153
   MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
   Mixpanel: c075cedebda3328ce1ee29a18429e265ce967cd8
-  Reachability: 1ef8adf5c4e3d362f96515d4278f68dad3c26930
   SSKeychain: cc48bd3ad24fcd9125adb9e0d23dd50b8bbd08b9
 
 COCOAPODS: 0.34.4

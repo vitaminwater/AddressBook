@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCUserDefaults.h"
+#import "CCCurrentUserData.h"
 
 #define kCCLastUserEventDate @"kCCLastUserEventDate"
 
-@implementation CCUserDefaults
+@implementation CCCurrentUserData
 {
     NSDateFormatter *_dateFormatter;
 }

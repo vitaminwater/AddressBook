@@ -10,7 +10,8 @@
 
 #import "CCLinotteAPI.h"
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
 
 #import "CCServerEvent.h"
 #import "CCList.h"
@@ -40,16 +41,11 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListUserDataForEventIds:eventIds completionBlock:^(BOOL success, NSArray *userDatas) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchListUserDataForEventIds:eventIds success:^(NSArray *userDatas) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         
         NSArray *lists = [CCList updateUserDatasInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:userDatas shittyBlock:^(NSArray *lists) {
             [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:lists send:NO];
@@ -58,10 +54,15 @@
         [CCServerEvent deleteEvents:_events];
         _events = nil;
         
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         
         [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:lists send:NO];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

@@ -8,9 +8,10 @@
 
 #import "CCSynchronizationActionRefreshZones.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCLinotteAPI.h"
+#import "CCLinotteEngineCoordinator.h"
 
 #import "CCList.h"
 #import "CCListZone.h"
@@ -33,7 +34,7 @@
 {
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and (lastZonesRefresh = nil or lastZonesRefresh < %@)", minDate];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastZonesRefresh" ascending:YES];
@@ -72,18 +73,13 @@
     
     CCLog(@"Stating CCListSynchronizationActionRefreshZone job");
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListZones:list.identifier completionBlock:^(BOOL success, NSArray *listZones) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchListZones:list.identifier success:^(NSArray *listZones) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         BOOL done = NO;
         NSError *error = nil;
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@", list];
         [fetchRequest setPredicate:predicate];
@@ -92,7 +88,7 @@
         
         if (error != nil) {
             list.lastZonesRefresh = [NSDate date];
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             CCLog(@"%@", error);
             return;
         }
@@ -172,9 +168,14 @@
             list.lastZoneCleaningLongitudeValue = coordinates.longitude;
             done = YES;
         }
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         
         completionBlock(done, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

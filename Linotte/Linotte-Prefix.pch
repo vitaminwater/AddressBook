@@ -19,7 +19,7 @@
 #endif
 
 #if defined(DEBUG)
-#define kCCLinotteAPIServer @"192.168.1.25"
+#define kCCLinotteAPIServer @"192.168.1.27"
 #else
 #define kCCLinotteAPIServer @"api.getlinotte.com"
 #endif

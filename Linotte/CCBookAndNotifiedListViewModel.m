@@ -10,7 +10,7 @@
 
 #import "NSArray+CCArray.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCDictStackCache.h"
 
 #import "CCListViewContentProvider.h"
@@ -30,7 +30,7 @@
 
 - (void)loadListItems:(NSString *)filterText
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     // Addresses
     {
@@ -181,7 +181,7 @@
 - (NSArray *)notifiedAddressesForLists:(NSArray *)lists
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists IN %@ AND SUBQUERY(lists, $list, $list.notify = %@).@count != 0", @YES, lists, @YES];
     [fetchRequest setPredicate:predicate];

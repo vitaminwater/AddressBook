@@ -8,7 +8,7 @@
 
 #import "CCAutocompleteAddAddressViewController.h"
 
-#import <Reachability/Reachability.h>
+#import <AFNetworking/AFNetworkReachabilityManager.h>
 
 #import "CCBaseAutoComplete.h"
 #import "CCAddressAutocompletionResult.h"
@@ -28,7 +28,7 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
-                                                     name:kReachabilityChangedNotification
+                                                     name:AFNetworkingReachabilityDidChangeNotification
                                                    object:nil];
     }
     return self;
@@ -102,8 +102,7 @@
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-    Reachability *reachability = notification.object;
-    if (reachability.isReachable) {
+    if ([AFNetworkReachabilityManager sharedManager].reachable) {
         [((CCAutocompleteAddAddressView *)self.view) enableField];
     } else {
         [((CCAutocompleteAddAddressView *)self.view) disableField];

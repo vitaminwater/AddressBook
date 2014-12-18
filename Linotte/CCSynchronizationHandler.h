@@ -18,6 +18,4 @@
 
 - (void)performSynchronizationsWithMaxDuration:(NSTimeInterval)maxDuration list:(CCList *)list completionBlock:(void(^)(BOOL didSync))completionBlock;
 
-+ (instancetype)sharedInstance;
-
 @end

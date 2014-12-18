@@ -8,7 +8,7 @@
 
 #import "CCServerEventAddressMovedFromListConsumer.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import "CCServerEvent.h"
@@ -37,7 +37,7 @@
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *identifiers = [_events valueForKeyPath:@"@distinctUnionOfObjects.objectIdentifier"];
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
@@ -70,7 +70,7 @@
     [CCServerEvent deleteEvents:_events];
     _events = nil;
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         completionBlock(YES, NO);

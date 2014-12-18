@@ -17,6 +17,4 @@
 
 + (void)scheduleTestLocalNotification:(NSUInteger)delay;
 
-+ (instancetype)sharedInstance;
-
 @end

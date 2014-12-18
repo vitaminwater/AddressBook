@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define CCUD [CCUserDefaults sharedInstance]
+#define CCUD [CCCurrentUserData sharedInstance]
 
-@interface CCUserDefaults : NSObject
+@interface CCCurrentUserData : NSObject
 
 @property(nonatomic, strong)NSDate *lastUserEventDate;
 

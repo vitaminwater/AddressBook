@@ -8,7 +8,7 @@
 
 #import "CCListListViewModel.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCDictStackCache.h"
 
 #import "CCListViewContentProvider.h"
@@ -28,7 +28,7 @@
 - (void)loadListItems:(NSString *)filterText
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     

@@ -8,7 +8,7 @@
 
 #import "CCLastNotificationModel.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCDictStackCache.h"
 
 #import "CCListViewContentProvider.h"
@@ -24,7 +24,7 @@
 
 - (void)loadListItems:(NSString *)filterText
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     // Addresses
     {

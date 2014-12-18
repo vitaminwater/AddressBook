@@ -8,7 +8,11 @@
 
 #import "CCListOutputViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
+#import "CCSynchronizationHandler.h"
+#import "CCModelChangeMonitor.h"
+#import "CCModelHelper.h"
 
 #import <HexColors/HexColor.h>
 
@@ -16,10 +20,6 @@
 #import "CCActionResultHUD.h"
 
 #import "UIView+CCShowSettingsView.h"
-
-#import "CCSynchronizationHandler.h"
-#import "CCModelChangeMonitor.h"
-#import "CCModelHelper.h"
 
 #import "CCListOutputListEmptyView.h"
 
@@ -160,7 +160,7 @@
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController setNavigationBarHidden:NO animated:animated];
     
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:_list completionBlock:^(BOOL didSync){}];
+    [CCLEC forceListSynchronization:_list];
 }
 
 - (void)didReceiveMemoryWarning
@@ -194,7 +194,7 @@
 {
     [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[_list] send:YES];
     _list.notify = @(enabled);
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[_list] send:YES];
 }
 
@@ -242,7 +242,7 @@
 //{
 //    [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
 //    [_list addAddressesObject:address];
-//    [[CCCoreDataStack sharedInstance] saveContext];
+//    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 //    [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
 //}
 //

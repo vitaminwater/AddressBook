@@ -9,7 +9,7 @@
 #import "CCAddAddressViewController.h"
 
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelHelper.h"
 
 #import "CCAddAddressView.h"
@@ -86,7 +86,7 @@
     CCList *list = [CCModelHelper defaultList];
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:list send:YES];
     [list addAddressesObject:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:list send:YES];
 }
 

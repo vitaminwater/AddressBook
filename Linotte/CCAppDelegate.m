@@ -12,17 +12,10 @@
 #import <Mixpanel/Mixpanel.h>
 #import <FacebookSDK/FacebookSDK.h>
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
-#import "CCNotificationGenerator.h"
-
-#import "CCLinotteAPI.h"
-
-#import "CCNetworkHandler.h"
-#import "CCSynchronizationHandler.h"
-
-#import "CCGeohashMonitor.h"
-#import "CCNotificationGenerator.h"
+#import "CCLinotteEngineCoordinator.h"
+#import "CCLinotteAuthenticationManager.h"
 
 #import "CCRootViewController.h"
 #import "CCSignUpViewController.h"
@@ -45,12 +38,13 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     UIViewController *rootViewController = nil;
-    if ([CCLinotteAPI sharedInstance].loggedState == kCCFirstStart) {
+    if ([CCLEC.authenticationManager needsCredentials]) {
         rootViewController = [CCSignUpViewController new];
         ((CCSignUpViewController *)rootViewController).delegate = self;
     } else {
         rootViewController = [CCRootViewController new];
     }
+    
     _navigationController = [[UINavigationController alloc] initWithRootViewController:rootViewController];
     self.window.rootViewController = _navigationController;
     
@@ -95,17 +89,12 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if ([[CCNetworkHandler sharedInstance] canSend] == NO)
-        return;
-    
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^(BOOL didSync){
-        completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
-    }];
+    [CCLEC application:application performFetchWithCompletionHandler:completionHandler];
 }
 
 - (BOOL)application:(UIApplication *)application
@@ -142,22 +131,16 @@
         [Mixpanel sharedInstanceWithToken:token];
     }
     
-    // Linotte API initialization
     {
-    #if defined(DEBUG)
+#if defined(DEBUG)
         NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client_debug"];
-        NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret_debug"];
-    #else
+        NSString *clientSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret_debug"];
+#else
         NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client"];
-        NSString *secret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
-    #endif
-        [[CCLinotteAPI sharedInstance] setClientId:clientId clientSecret:secret];
+        NSString *clientSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
+#endif
+        [CCLEC initializeLinotteEngineWithClientId:clientId clientSecret:clientSecret];
     }
-    
-    [CCGeohashMonitor sharedInstance].delegate = [CCNotificationGenerator sharedInstance];
-    
-    [CCNetworkHandler sharedInstance];
-    [CCSynchronizationHandler sharedInstance];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
@@ -186,7 +169,7 @@
     
     NSError *error = nil;
     NSString *objectID = notification.userInfo[@"addressLocalIdentifier"];
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", objectID];
     [fetchRequest setPredicate:predicate];

@@ -9,10 +9,12 @@
 #import "CCSynchronizationActionInitialListFetch.h"
 
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
+#import "CCLinotteEngineCoordinator.h"
+#import "CCLinotteAuthenticationManager.h"
 
-#import "CCUserDefaults.h"
+#import "CCCurrentUserData.h"
 #import "CCList.h"
 
 @implementation CCSynchronizationActionInitialListFetch
@@ -35,32 +37,22 @@
         return;
     }
     
-    [[CCLinotteAPI sharedInstance] fetchInstalledListsWithCompletionBlock:^(BOOL success, NSArray *listsDictArray) {
-        
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
-        
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    [CCLEC.linotteAPI fetchInstalledListsWithSuccess:^(NSArray *listsDictArray) {
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSArray *lists = [CCList insertOrIgnoreInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:listsDictArray];
         
-        for (CCList *list in lists) {
-            list.ownedValue = [list.authorIdentifier isEqualToString:[CCLinotteAPI sharedInstance].identifier];
-        }
-        
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         
         [[CCModelChangeMonitor sharedInstance] listsDidAdd:lists send:NO];
         
-        [[CCLinotteAPI sharedInstance] fetchUserLastEventDateWithCompletionBlock:^(BOOL success, NSDate *lastEventDate) {
-            if (success == NO) {
-                completionBlock(NO, YES);
-                return;
-            }
+        [CCLEC.linotteAPI fetchUserLastEventDateWithSuccess:^(NSDate *lastEventDate) {
             CCUD.lastUserEventDate = lastEventDate;
             completionBlock(YES, NO);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            completionBlock(NO, YES);
         }];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        completionBlock(NO, YES);
     }];
 }
 

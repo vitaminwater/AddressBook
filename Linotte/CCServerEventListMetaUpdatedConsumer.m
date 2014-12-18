@@ -8,9 +8,10 @@
 
 #import "CCServerEventListMetaUpdatedConsumer.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCServerEvent.h"
 #import "CCListMeta.h"
@@ -41,26 +42,26 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListMetasForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressMetaDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchListMetasForEventIds:eventIds success:^(NSArray *listMetaDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-        NSArray *listMetas = [CCListMeta insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts list:list];
-
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+        NSArray *listMetas = [CCListMeta insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:listMetaDicts list:list];
+        
         CCLog(@"Updating %lu metas for list %@", [listMetas count], list.identifier);
-
+        
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
-        [[CCCoreDataStack sharedInstance] saveContext];
+        
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressMetasUpdate:listMetas];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

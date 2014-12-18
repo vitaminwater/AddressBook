@@ -10,7 +10,8 @@
 
 #import "CCLinotteAPI.h"
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
 
 #import "CCServerEvent.h"
 
@@ -40,26 +41,26 @@
 - (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:list.identifier completionBlock:^(BOOL success, NSDictionary *listInfo) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchCompleteListInfos:list.identifier success:^(NSDictionary *listInfo) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listInfo];
         
         CCLog(@"Updating list %@", list.identifier);
-
+        
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
-        [[CCCoreDataStack sharedInstance] saveContext];
+        
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] listsDidUpdate:@[list] send:NO];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

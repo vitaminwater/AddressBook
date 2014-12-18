@@ -74,18 +74,4 @@
     [self updateMonitoredGeohashes:location.coordinate];
 }
 
-#pragma mark - Singleton method
-
-+ (instancetype)sharedInstance
-{
-    static id instance = nil;
-    static dispatch_once_t token;
-    
-    dispatch_once(&token, ^{
-        instance = [self new];
-    });
-    
-    return instance;
-}
-
 @end

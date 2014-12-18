@@ -8,8 +8,9 @@
 
 #import "CCListZoneSynchronizationActionConsumeEvents.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 
 #import "CCServerEventAddressAddedToListConsumer.h"
@@ -64,7 +65,7 @@
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and SUBQUERY(serverEvents, $serverEvent, $serverEvent.event in %@).@count > 0", [self eventsList]];
     [fetchRequest setPredicate:predicate];
@@ -110,7 +111,7 @@
 {
     NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
     
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and firstFetch = %@ and lastUpdate < %@", list, @(NO), minDate];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastUpdate" ascending:YES];
@@ -140,24 +141,19 @@
     BOOL multipleWaiting = [listZones count] > 1 || _multipleWaitingLists;
     _multipleWaitingLists = NO;
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListEvents:list.identifier geohash:listZone.geohash lastDate:listZone.lastEventDate completionBlock:^(BOOL success, NSArray *eventsDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchListEvents:list.identifier geohash:listZone.geohash lastDate:listZone.lastEventDate success:^(NSArray *eventsDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         listZone.lastUpdate = [NSDate date];
         if ([eventsDicts count] == 0) {
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             completionBlock(multipleWaiting, NO);
             return;
         }
         
         CCLog(@"%lu events received", [eventsDicts count]);
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSDate *lastEventDate = nil;
         for (NSDictionary *eventDict in eventsDicts) {
             CCServerEvent *serverEvent = [CCServerEvent insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:eventDict];
@@ -165,8 +161,13 @@
             lastEventDate = serverEvent.date;
         }
         listZone.lastEventDate = lastEventDate;
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

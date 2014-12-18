@@ -8,7 +8,7 @@
 
 #import "CCAddressListSettingsViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCAddressListSettingsView.h"
 
@@ -50,7 +50,7 @@
 - (void)loadLists
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
@@ -96,10 +96,10 @@
 
 - (NSUInteger)createListWithName:(NSString *)name
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     
     NSUInteger insertIndex = [_lists indexOfObject:list inSortedRange:(NSRange){0, [_lists count]} options:NSBinarySearchingInsertionIndex usingComparator:^NSComparisonResult(CCList *obj1, CCList *obj2) {
@@ -109,7 +109,7 @@
     
     [[CCModelChangeMonitor sharedInstance] addresses:@[_address] willMoveToList:list send:YES];
     [_address addListsObject:list];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[_address] didMoveToList:list send:YES];
     
     return insertIndex;
@@ -117,13 +117,13 @@
 
 - (void)removeListAtIndex:(NSUInteger)index
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     CCList *list = _lists[index];
     NSString *identifier = list.identifier;
     [[CCModelChangeMonitor sharedInstance] listsWillRemove:@[list] send:YES];
     [managedObjectContext deleteObject:list];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidRemove:@[identifier] send:YES];
 
     [_lists removeObject:list];
@@ -136,7 +136,7 @@
     
     [_address addListsObject:list];
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[_address] didMoveToList:list send:YES];
 }
 
@@ -147,7 +147,7 @@
     
     [_address removeListsObject:list];
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[_address] didMoveFromList:list send:YES];
 }
 

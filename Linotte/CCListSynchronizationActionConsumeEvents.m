@@ -8,8 +8,8 @@
 
 #import "CCListSynchronizationActionConsumeEvents.h"
 
-#import "CCCoreDataStack.h"
-
+#import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 
 #import "CCServerEventListUpdatedConsumer.h"
@@ -59,7 +59,7 @@
 {
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and SUBQUERY(serverEvents, $serverEvent, $serverEvent.event in %@).@count > 0", [self eventsList]];
@@ -109,41 +109,36 @@
     BOOL multipleWaitingLists = _multipleWaitingLists;
     _multipleWaitingLists = NO;
     if (list.lastEventDate == nil) {
-        _currentConnection = [[CCLinotteAPI sharedInstance] fetchListLastEventDate:list.identifier completionBlock:^(BOOL success, NSDate *lastEventDate) {
-        
+        _currentConnection = [CCLEC.linotteAPI fetchListLastEventDate:list.identifier success:^(NSDate *lastEventDate) {
             _currentList = nil;
             _currentConnection = nil;
-            if (success == NO) {
-                completionBlock(NO, YES);
-                return;
-            }
-
+            
             list.lastEventDate = lastEventDate;
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             completionBlock(YES, NO);
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            _currentList = nil;
+            _currentConnection = nil;
+            
+            completionBlock(NO, YES);
         }];
         return;
     }
     
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchListEvents:list.identifier lastDate:list.lastEventDate completionBlock:^(BOOL success, NSArray *eventsDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchListEvents:list.identifier lastDate:list.lastEventDate success:^(NSArray *eventsDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         list.lastUpdate = [NSDate date];
         
         if ([eventsDicts count] == 0) {
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             completionBlock(multipleWaitingLists, NO);
             return;
         }
         
         CCLog(@"%lu events received", [eventsDicts count]);
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSDate *lastEventDate = nil;
         for (NSDictionary *eventDict in eventsDicts) {
             CCServerEvent *serverEvent = [CCServerEvent insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:eventDict];
@@ -151,8 +146,13 @@
             lastEventDate = serverEvent.date;
         }
         list.lastEventDate = lastEventDate;
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 

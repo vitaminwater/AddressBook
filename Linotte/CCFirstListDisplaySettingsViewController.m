@@ -10,7 +10,7 @@
 
 #import <Mixpanel/Mixpanel.h>
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import "CCFirstListDisplaySettingsView.h"
@@ -54,7 +54,7 @@
     [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[_list] send:YES];
     _list.notify = @(enabled);
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[_list] send:YES];
     NSString *identifier = _list.identifier ?: @"NEW";
     @try {

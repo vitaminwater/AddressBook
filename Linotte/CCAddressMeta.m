@@ -1,6 +1,6 @@
 #import "CCAddressMeta.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 @interface CCAddressMeta ()
 

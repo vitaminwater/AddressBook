@@ -1,7 +1,8 @@
 #import "CCServerEvent.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 @interface CCServerEvent ()
 
@@ -12,7 +13,7 @@
 + (CCServerEvent *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
     CCServerEvent *serverEvent = [CCServerEvent insertInManagedObjectContext:managedObjectContext];
-    serverEvent.date = [[CCLinotteAPI sharedInstance] dateFromString:dict[@"date"]];
+    serverEvent.date = [CCLEC.linotteAPI dateFromString:dict[@"date"]];
     serverEvent.event = dict[@"event"];
     serverEvent.eventId = dict[@"id"];
     serverEvent.objectIdentifier = dict[@"object_identifier"];
@@ -23,7 +24,7 @@
 + (NSArray *)eventsWithEventType:(CCServerEventEvent)event list:(CCList *)list
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and event = %@", list, @(event)];
     [fetchRequest setPredicate:predicate];
@@ -40,11 +41,11 @@
 
 + (void)deleteEvents:(NSArray *)events
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     for (CCServerEvent *event in events) {
         [managedObjectContext deleteObject:event];
     }
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 @end

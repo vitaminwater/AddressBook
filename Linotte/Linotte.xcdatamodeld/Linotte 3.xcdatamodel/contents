@@ -95,6 +95,7 @@
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mediaIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="refreshTokenKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sent" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="socialIdentifier" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
@@ -106,6 +107,6 @@
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="178"/>
         <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="118"/>
         <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="133"/>
-        <element name="CCSocialAccount" positionX="9" positionY="153" width="128" height="133"/>
+        <element name="CCSocialAccount" positionX="9" positionY="153" width="128" height="148"/>
     </elements>
 </model>

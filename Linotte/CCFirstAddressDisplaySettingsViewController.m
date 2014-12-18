@@ -10,7 +10,7 @@
 
 #import <Mixpanel/Mixpanel.h>
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import "CCFirstAddressDisplaySettingsView.h"
@@ -51,7 +51,7 @@
     [[CCModelChangeMonitor sharedInstance] addressesWillUpdateUserData:@[_address] send:YES];
     _address.notify = @(enabled);
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[_address] send:YES];
     NSString *identifier = _address.identifier ?: @"NEW";
     @try {

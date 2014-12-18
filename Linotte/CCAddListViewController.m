@@ -8,7 +8,7 @@
 
 #import "CCAddListViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import <Mixpanel/Mixpanel.h>
 
@@ -31,11 +31,11 @@
 
 - (void)createListWithName:(NSString *)name
 {
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     CCList *list = [CCList insertInManagedObjectContext:managedObjectContext];
     list.name = name;
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     
     @try {

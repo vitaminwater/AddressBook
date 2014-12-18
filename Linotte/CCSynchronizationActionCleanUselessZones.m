@@ -8,7 +8,7 @@
 
 #import "CCSynchronizationActionCleanUselessZones.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import "CCList.h"
@@ -27,7 +27,7 @@
 - (CCList *)findNextListToProcess:(CLLocationCoordinate2D)coordinates
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and addresses.@count < zones.@sum.nAddresses and addresses.@count >= %@", @(kCCMaxAddressesForList)];
     [fetchRequest setPredicate:predicate];
@@ -83,7 +83,7 @@
     }
     
     CCLog(@"Starting CCListSynchronizationActionCleanUselessZones job");
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSArray *sortedZones = [list getListZonesSortedByDistanceFromLocation:coordinates];
     NSUInteger addressCounter = 0;
     BOOL cleaned = NO;
@@ -121,7 +121,7 @@
     list.lastZoneCleaningLongitudeValue = coordinates.longitude;
 
     if (cleaned == NO) {
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         dispatch_async(dispatch_get_main_queue(), ^{
             completionBlock(NO, NO);
         });
@@ -130,14 +130,14 @@
     
     [[CCModelChangeMonitor sharedInstance] addresses:removedAddresses willMoveFromList:list send:NO];
     [list removeAddresses:[NSSet setWithArray:removedAddresses]];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:removedAddresses didMoveFromList:list send:NO];
     
     for (CCAddress *address in removedAddresses) {
         if ([address.lists count] == 0)
             [managedObjectContext deleteObject:address];
     }
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         completionBlock(YES, NO);

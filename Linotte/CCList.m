@@ -146,7 +146,7 @@
     list.author = dict[@"author"];
     list.authorIdentifier = dict[@"author_id"];
     list.notify = dict[@"notification"] ?: @NO;
-    list.owned = @(NO);
+    list.owned = dict[@"owned"];
 }
 
 @end

@@ -8,7 +8,7 @@
 
 #import "CCListViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import <objc/runtime.h>
 
@@ -169,13 +169,13 @@
         CCAddress *address = ((CCAddress *)[_provider listItemContentAtIndex:index]);
         [[CCModelChangeMonitor sharedInstance] addressesWillUpdateUserData:@[address] send:YES];
         address.notify = @(enabled);
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressesDidUpdateUserData:@[address] send:YES];
     } else if (type == CCListItemTypeList) {
         CCList *list = (CCList *)[_provider listItemContentAtIndex:index];
         [[CCModelChangeMonitor sharedInstance] listsWillUpdateUserData:@[list] send:YES];
         list.notify = @(enabled);
-        [[CCCoreDataStack sharedInstance] saveContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[list] send:YES];
     }
 }

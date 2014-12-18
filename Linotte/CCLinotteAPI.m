@@ -8,69 +8,27 @@
 
 #import "CCLinotteAPI.h"
 
-#import <SSKeychain/SSKeychain.h>
 #import <AFNetworking/AFNetworking.h>
-
-#import "CCCoreDataStack.h"
 
 #import "CCGeohashHelper.h"
 
 #import "CCAddress.h"
 #import "CCList.h"
 
-// SSKeychain accounts
-#if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug55"
-#define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
-#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
-#define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountNameDebug"
-#define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
-#define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountNameDebug"
-#else
-// #define kCCKeyChainServiceName @"kCCKeyChainServiceName6" // test
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName1000" // Apstore
-#define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
-#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
-#define kCCExpireTimeStampAccountName @"kCCExpireTimeStampAccountName"
-#define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
-#define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountName"
-#endif
-
-
-
-
-/**
- * CCLinotteAPI interface
- */
-
-
-@interface CCLinotteAPICredentials : NSObject
-@property(nonatomic, strong)NSString *accessToken;
-@property(nonatomic, strong)NSString *refreshToken;
-@property(nonatomic, strong)NSString *expireTimeStamp;
-@property(nonatomic, strong)NSString *deviceId;
-@end
-
-@implementation CCLinotteAPICredentials
-@end
-
 
 
 @implementation CCLinotteAPI
 {
-    
     AFHTTPSessionManager *_apiManager;
     AFHTTPSessionManager *_oauth2Manager;
     
     NSString *_clientId;
     NSString *_clientSecret;
-    
-    CCLinotteAPICredentials *_credentials;
 
     NSDateFormatter *_dateFormatter;
 }
 
-- (instancetype)init
+- (instancetype)initWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret
 {
     self = [super init];
     if (self != nil) {
@@ -79,6 +37,9 @@
 #else
         NSURL *apiUrl = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@", kCCLinotteAPIServer]];
 #endif
+        _clientId = clientId;
+        _clientSecret = clientSecret;
+        
         _apiManager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
         _apiManager.requestSerializer = [AFJSONRequestSerializer serializer];
         _apiManager.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -86,88 +47,19 @@
         _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
         _oauth2Manager.responseSerializer = [AFJSONResponseSerializer serializer];
         
-        [SSKeychain setAccessibilityType:kSecAttrAccessibleAlways];
-        
-        _credentials = [CCLinotteAPICredentials new];
-        _credentials.accessToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName];
-        _credentials.refreshToken = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName];
-        _identifier = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName];
-        _credentials.expireTimeStamp = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName];
-        _credentials.deviceId = [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName];
-        
         _dateFormatter = [NSDateFormatter new];
         [_dateFormatter setLocale:[NSLocale currentLocale]];
         [_dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSS'Z'"];
         [_dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-
-        [self refreshLoggedState];
-        if (_loggedState != kCCFirstStart) {
-            [self setOAuth2HTTPHeader];
-            if (_loggedState == kCCLoggedIn) {
-                [self setDeviceHTTPHeader];
-            }
-        }
     }
     return self;
 }
 
-- (void)refreshLoggedState
-{
-    if ([self isFirstStart])
-        _loggedState = kCCFirstStart;
-    else if (_credentials.expireTimeStamp == nil || [_credentials.expireTimeStamp integerValue] - 60 * 60 * 24 * 30 < [[NSDate date] timeIntervalSince1970])
-        _loggedState = kCCRequestRefreshToken;
-    else if (_credentials.deviceId == nil)
-        _loggedState = kCCCreateDeviceId;
-    else
-        _loggedState = kCCLoggedIn;
-}
-
-- (BOOL)isFirstStart
-{
-    return ![[SSKeychain accountsForService:kCCKeyChainServiceName] count];
-}
-
-#pragma mark - API initialization method
-
-- (void)APIIinitialization:(void(^)(CCLoggedState fromState))stateStepBlock completionBock:(void(^)(BOOL success))completionBlock
-{
-    if (_loggedState == kCCRequestRefreshToken) {
-        [self refreshTokenWithCompletionBlock:^(BOOL success) {
-            if (success) {
-                [self refreshLoggedState];
-                stateStepBlock(kCCRequestRefreshToken);
-                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
-                return;
-            }
-            completionBlock(NO);
-        }];
-    } else if (_loggedState == kCCCreateDeviceId) {
-        [self createDevice:^(BOOL success) {
-            if (success) {
-                [self refreshLoggedState];
-                stateStepBlock(kCCCreateDeviceId);
-                [self APIIinitialization:stateStepBlock completionBock:completionBlock];
-                return;
-            }
-            completionBlock(NO);
-        }];
-    } else if (_loggedState == kCCLoggedIn) {
-        completionBlock(YES);
-    }
-}
-
 #pragma mark - OAuth2 credentials
 
-- (void)setClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret
+- (void)setOAuth2HTTPHeader:(NSString *)accessToken
 {
-    _clientId = clientId;
-    _clientSecret = clientSecret;
-}
-
-- (void)setOAuth2HTTPHeader
-{
-    NSString *oauth2Header = [NSString stringWithFormat:@"Bearer %@", _credentials.accessToken];
+    NSString *oauth2Header = [NSString stringWithFormat:@"Bearer %@", accessToken];
     [_apiManager.requestSerializer setValue:oauth2Header forHTTPHeaderField:@"Authorization"];
 }
 
@@ -178,78 +70,32 @@
 
 #pragma mark - Authentication methods
 
-- (void)authenticate:(NSString *)username password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock
+- (NSURLSessionDataTask *)authenticate:(NSString *)username password:(NSString *)password success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     
     NSDictionary *parameters = [self oauth2Parameters:@{@"grant_type" : @"password", @"username" : username, @"password" : password}];
-    [_oauth2Manager POST:@"/oauth2/access_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    return [_oauth2Manager POST:@"/oauth2/access_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         NSNumber *expiresIn = response[@"expires_in"];
-        NSString *expiresInString = [NSString stringWithFormat:@"%d", (int)([[NSDate date] timeIntervalSince1970] + [expiresIn integerValue])];
-        [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:expiresInString];
-        completionBlock(YES);
+        successBlock(response[@"access_token"], response[@"refresh_token"], [expiresIn unsignedIntegerValue]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO);
+        failureBlock(task, error);
     }];
 }
 
-- (void)refreshTokenWithCompletionBlock:(void(^)(BOOL success))completionBlock
+- (NSURLSessionDataTask *)refreshToken:(NSString *)refreshToken success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    NSAssert(_credentials.refreshToken != nil, @"Refresh token not set !");
 
-    NSDictionary *parameters = [self oauth2Parameters:@{@"grantType" : @"refresh_token", @"refresh_token" : _credentials.refreshToken}];
-    [_oauth2Manager POST:@"/oauth2/refresh_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        [self saveTokens:response[@"access_token"] refreshToken:response[@"refresh_token"] expireTimeStamp:response[@"expires_in"]];
-        completionBlock(YES);
+    NSDictionary *parameters = [self oauth2Parameters:@{@"grantType" : @"refresh_token", @"refresh_token" : refreshToken}];
+    return [_oauth2Manager POST:@"/oauth2/refresh_token/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        NSNumber *expiresIn = response[@"expires_in"];
+        successBlock(response[@"access_token"], response[@"refresh_token"], [expiresIn unsignedIntegerValue]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO);
+        failureBlock(task, error);
     }];
-}
-
-- (void)saveTokens:(NSString *)accessToken refreshToken:(NSString *)refreshToken expireTimeStamp:(NSString *)expireTimeStamp
-{
-    NSError *error;
-    
-    _credentials.accessToken = accessToken;
-    _credentials.refreshToken = refreshToken;
-    _credentials.expireTimeStamp = expireTimeStamp;
-    if ([SSKeychain setPassword:accessToken forService:kCCKeyChainServiceName account:kCCAccessTokenAccountName error:&error] == NO) {
-        CCLog(@"%@", error);
-    }
-    
-    if ([SSKeychain setPassword:refreshToken forService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName error:&error] == NO) {
-        CCLog(@"%@", error);
-    }
-    
-    if ([SSKeychain setPassword:expireTimeStamp forService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName error:&error] == NO) {
-        CCLog(@"%@", error);
-    }
-    [self setOAuth2HTTPHeader];
-}
-
-- (void)forgetTokens
-{
-    NSError *error;
-    
-    _credentials.accessToken = nil;
-    _credentials.refreshToken = nil;
-    _credentials.expireTimeStamp = nil;
-    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCAccessTokenAccountName] == NO) {
-        CCLog(@"%@", error);
-    }
-    
-    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCRefreshTokenAccountName] == NO) {
-        CCLog(@"%@", error);
-    }
-    
-    if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:kCCExpireTimeStampAccountName] == NO) {
-        CCLog(@"%@", error);
-    }
-    
-    [self unsetOAuth2HttpHeader];
 }
 
 - (NSDictionary *)oauth2Parameters:(NSDictionary *)parameters
@@ -263,339 +109,298 @@
 
 #pragma mark - User methods
 
-- (void)createAndAuthenticateUser:(NSString *)email password:(NSString *)password completionBlock:(void(^)(BOOL success))completionBlock
-{
-    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
 
-    NSDictionary *parameters = @{@"username" : [self UUID:30], @"password" : password, @"first_name" : [self UUID:30], @"last_name" : [self UUID:30], @"email" : email};
-    [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        [self authenticate:email password:password completionBlock:^(BOOL success) {
-            NSString *identifier = response[@"identifier"];
-            if (success)
-                [self saveUserIdentifier:identifier];
-            completionBlock(success);
-        }];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        CCLog(@"%@", error);
-        completionBlock(NO);
-    }];
-}
+// TODO NSDictionary *parameters
 
-- (void)createAndAuthenticateUserWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate userName:(NSString *)userName firstName:(NSString *)firstName lastName:(NSString *)lastName email:(NSString *)email completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
+/**
+ * Parameters: username, first_name, last_name, email, password
+ */
+- (NSURLSessionDataTask *)createUser:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     
-    NSString *password = [self UUID:30];
-    NSDictionary *parameters = @{@"username" : userName ?: [self UUID:30], @"password" : password, @"first_name" : firstName, @"last_name" : lastName, @"email" : email};
-    [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        [self authenticate:email password:password completionBlock:^(BOOL success) {
-            if (success) {
-                NSString *userIdentifier = response[@"identifier"];
-                [self associateWithSocialAccount:socialMediaIdentifier socialIdentifier:socialIdentifier oauthToken:oauthToken refreshToken:refreshToken expirationDate:expirationDate completionBlock:^(BOOL success, NSString *identifier) {
-
-                    if (success)
-                        [self saveUserIdentifier:userIdentifier];
-                    else
-                        [self forgetTokens];
-                    completionBlock(success, identifier);
-                }];
-            } else {
-                completionBlock(success, nil);
-            }
-        }];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {
-        CCLog(@"%@", error);
-        completionBlock(NO, nil);
-    }];
-}
-
-- (void)associateWithSocialAccount:(NSString *)socialMediaIdentifier socialIdentifier:(NSString *)socialIdentifier oauthToken:(NSString *)oauthToken refreshToken:(NSString *)refreshToken expirationDate:(NSDate *)expirationDate completionBlock:(void(^)(BOOL success, NSString *identifier))completionBlock
-{
-    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
-    
-    NSDictionary *parameters = @{@"social_media_identifier" : socialMediaIdentifier, @"social_identifier" : socialIdentifier, @"oauth_token" : oauthToken, @"refresh_token" : refreshToken ?: nil, @"expiration_date" : [self stringFromDate:expirationDate]};
-    [_apiManager POST:@"/user/social/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    return [_apiManager POST:@"/user/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         NSString *identifier = response[@"identifier"];
-        completionBlock(YES, identifier);
+        successBlock(identifier);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (void)saveUserIdentifier:(NSString *)identifier {
-    NSError *error;
-    if ([SSKeychain setPassword:identifier forService:kCCKeyChainServiceName account:kCCUserIdentifierAccountName error:&error] == NO) {
+/**
+ * Parameters: social_media_identifier, social_identifier, oauth_token, refresh_token, expiration_date
+ */
+- (NSURLSessionDataTask *)associateWithSocialAccount:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
+    
+    return [_apiManager POST:@"/user/social/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        NSString *identifier = response[@"identifier"];
+        successBlock(identifier);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-    }
-    _identifier = identifier;
+        failureBlock(task, error);
+    }];
 }
 
 - (NSString *)UUID:(NSUInteger)len
 {
     if (len)
-        return [[[NSUUID UUID] UUIDString] substringToIndex:30];
+        return [[[NSUUID UUID] UUIDString] substringToIndex:len];
     return [[NSUUID UUID] UUIDString];
 }
 
 #pragma mark - Device methods
 
-- (void)createDevice:(void(^)(BOOL success))completionBlock
+- (NSURLSessionDataTask *)createDeviceWithSuccess:(void(^)(NSString *deviceId))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    [_apiManager POST:@"/user/device/" parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        [self saveDeviceId:response[@"identifier"]];
-        [self setDeviceHTTPHeader];
-        completionBlock(YES);
+    return [_apiManager POST:@"/user/device/" parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock(response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO);
+        failureBlock(task, error);
     }];
 }
 
-- (void)saveDeviceId:(NSString *)deviceId
+- (void)setDeviceHTTPHeader:(NSString *)deviceId
 {
-    NSError *error = nil;
-    _credentials.deviceId = deviceId;
-    if ([SSKeychain setPassword:deviceId forService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName error:&error] == NO) {
-        CCLog(@"%@", error);
-    }
+    [_apiManager.requestSerializer setValue:deviceId forHTTPHeaderField:@"X-Linotte-Device-Id"];
 }
 
-- (void)setDeviceHTTPHeader
+- (void)unsetDeviceHTTPHeader
 {
-    [_apiManager.requestSerializer setValue:_credentials.deviceId forHTTPHeaderField:@"X-Linotte-Device-Id"];
+    [_apiManager.requestSerializer setValue:nil forHTTPHeaderField:@"X-Linotte-Device-Id"];
 }
 
 #pragma mark - Data management methods
 
-- (void)createAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)createAddress:(NSDictionary *)parameters success:(void(^)(NSString *identifier, NSInteger statusCode))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, response[@"identifier"], 200);
+    return [_apiManager POST:@"/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock(response[@"identifier"], 200);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, nil, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)createAddressMeta:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)createAddressMeta:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *address_identifier = parameters[@"address"];
     
     if ([address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/address/%@/meta/", address_identifier];
     
-    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)createList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSString *identifier, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)createList:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, response[@"identifier"], 200);
+    return [_apiManager POST:@"/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock(response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, nil, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)addList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)addList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = parameters[@"list"];
     if ([list_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list_identifier];
-    [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager POST:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)removeList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)removeList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = parameters[@"list"];
     if ([list_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list_identifier];
-    [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)removeAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)removeAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *address_identifier = parameters[@"address"];
     if ([address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     NSString *url = [NSString stringWithFormat:@"/user/address/%@/", address_identifier];
-    [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager DELETE:url parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)addAddressToList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = parameters[@"list"];
     NSString *address_identifier = parameters[@"address"];
     
     if ([list_identifier length] == 0 || [address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
     
-    [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager POST:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)removeAddressFromList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)removeAddressFromList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = parameters[@"list"];
     NSString *address_identifier = parameters[@"address"];
     
     if ([list_identifier length] == 0 || [address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
     
-    [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
-        completionBlock(YES, 200);
+    return [_apiManager DELETE:path parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)updateAddress:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)updateAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *address_identifier = [self popValueFromDict:@"address" dict:&parameters];
     
     if ([address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/address/%@/", address_identifier];
-    [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, 200);
+    return [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)updateList:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)updateList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = [self popValueFromDict:@"list" dict:&parameters];
     
     if ([list_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/list/%@/", list_identifier];
-    [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, 200);
+    return [_apiManager PUT:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)updateAddressUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)updateAddressUserData:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *address_identifier = [self popValueFromDict:@"address" dict:&parameters];
     
     if ([address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/address/%@/data/", address_identifier];
-    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, 200);
+    return [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
-- (void)updateListUserData:(NSDictionary *)parameters completionBlock:(void(^)(BOOL success, NSInteger statusCode))completionBlock
+- (NSURLSessionDataTask *)updateListUserData:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *list_identifier = [self popValueFromDict:@"list" dict:&parameters];
     
     if ([list_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(YES, 200);
+            NSError *error = [NSError errorWithDomain:@"Missing identifier" code:CCMissingIdentifier userInfo:nil];
+            failureBlock(nil, error);
         });
-        return;
+        return nil;
     }
     
     NSString *path = [NSString stringWithFormat:@"/list/%@/data/", list_identifier];
-    [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, 200);
+    return [_apiManager POST:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        NSHTTPURLResponse *response = (NSHTTPURLResponse *)task.response;
-        completionBlock(NO, response.statusCode);
+        failureBlock(task, error);
     }];
 }
 
@@ -610,51 +415,51 @@
 
 #pragma mark - Fetch methods
 
-- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
+- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
     NSDictionary *parameters = @{@"geohash" : geohash};
     return [_apiManager GET:@"/list/public/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchInstalledListsWithCompletionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
+- (NSURLSessionDataTask *)fetchInstalledListsWithSuccess:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     return [_apiManager GET:@"/list/" parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchCompleteListInfos:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDictionary *listInfo))completionBlock
+- (NSURLSessionDataTask *)fetchCompleteListInfos:(NSString *)identifier success:(void(^)(NSDictionary *listInfo))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/", identifier];
     return [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
-        completionBlock(YES, response);
+        successBlock(response);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListZones:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *listZones))completionBlock
+- (NSURLSessionDataTask *)fetchListZones:(NSString *)identifier success:(void(^)(NSArray *listZones))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/zones/", identifier];
     return [_apiManager GET:path parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/addresses/", identifier];
     NSDictionary *parameters;
@@ -665,154 +470,154 @@
         parameters = @{@"limit" : @(limit), @"geohash" : geohash};
     }
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+- (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSString *lastDateString = [self stringFromDate:lastDate];
     NSDictionary *parameters = @{@"geohash" : geohash, @"last_date" : lastDateString};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+- (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSString *lastDateString = [self stringFromDate:lastDate];
     NSDictionary *parameters = @{@"last_date" : lastDateString};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListZoneLastEventDate:(NSString *)identifier geohash:(NSString *)geohash completionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock
+- (NSURLSessionDataTask *)fetchListZoneLastEventDate:(NSString *)identifier geohash:(NSString *)geohash success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSDictionary *parameters = @{@"geohash" : geohash, @"last_date_only" : @YES};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
         NSDate *date = [self dateFromString:lastEventDateDict[@"last_date"]];
-        completionBlock(YES, date);
+        successBlock(date);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListLastEventDate:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock
+- (NSURLSessionDataTask *)fetchListLastEventDate:(NSString *)identifier success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/events/", identifier];
     NSDictionary *parameters = @{@"last_date_only" : @YES};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
         NSDate *date = [self dateFromString:lastEventDateDict[@"last_date"]];
-        completionBlock(YES, date);
+        successBlock(date);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchUserLastEventDateWithCompletionBlock:(void(^)(BOOL success, NSDate *lastEventDate))completionBlock
+- (NSURLSessionDataTask *)fetchUserLastEventDateWithSuccess:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = @"/events/";
     NSDictionary *parameters = @{@"last_date_only" : @YES};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
         NSDate *date = [self dateFromString:lastEventDateDict[@"last_date"]];
-        completionBlock(YES, date);
+        successBlock(date);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate completionBlock:(void(^)(BOOL success, NSArray *events))completionBlock
+- (NSURLSessionDataTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = @"/user/events/";
     NSString *lastDateString = [self stringFromDate:lastDate];
     NSDictionary *parameters = @{@"last_date" : lastDateString};
     return [_apiManager GET:path parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier completionBlock:(void(^)(BOOL success, NSArray *addresses))completionBlock
+- (NSURLSessionDataTask *)fetchAddressesForEventIds:(NSArray *)eventIds list:(NSString *)identifier success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds, @"list" : identifier};
     return [_apiManager GET:@"/event/address/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *addressMetas))completionBlock
+- (NSURLSessionDataTask *)fetchAddressMetasForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *addressMetas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds};
     return [_apiManager GET:@"/event/address_meta/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListMetasForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *listMetas))completionBlock
+- (NSURLSessionDataTask *)fetchListMetasForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *listMetas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds};
     return [_apiManager GET:@"/event/list_meta/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock
+- (NSURLSessionDataTask *)fetchAddressUserDataForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *userDatas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds};
     return [_apiManager GET:@"/event/address_user_data/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListUserDataForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *userDatas))completionBlock
+- (NSURLSessionDataTask *)fetchListUserDataForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *userDatas))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds};
     return [_apiManager GET:@"/event/list_user_data/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
-- (NSURLSessionTask *)fetchListsForEventIds:(NSArray *)eventIds completionBlock:(void(^)(BOOL success, NSArray *lists))completionBlock
+- (NSURLSessionDataTask *)fetchListsForEventIds:(NSArray *)eventIds success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"e" : eventIds};
     return [_apiManager GET:@"/event/list/" parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
-        completionBlock(YES, responses);
+        successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
-        completionBlock(NO, nil);
+        failureBlock(task, error);
     }];
 }
 
@@ -828,18 +633,8 @@
     return [_dateFormatter dateFromString:dateString];
 }
 
-#pragma mark - Singleton method
+#pragma mark - error handling helper methods
 
-+ (instancetype)sharedInstance
-{
-    static id instance = nil;
-    static dispatch_once_t token;
-    
-    dispatch_once(&token, ^{
-        instance = [self new];
-    });
-    
-    return instance;
-}
+
 
 @end

@@ -1,14 +1,14 @@
 //
-//  CCCoreDataStack.m
+//  CCLinotteCoreDataStack.m
 //  Linotte
 //
 //  Created by stant on 21/10/14.
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
-@implementation CCCoreDataStack
+@implementation CCLinotteCoreDataStack
 {
     NSManagedObjectContext *_managedObjectContext;
     NSManagedObjectModel *_managedObjectModel;

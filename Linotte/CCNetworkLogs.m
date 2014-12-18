@@ -8,7 +8,6 @@
 
 #import "CCNetworkLogs.h"
 
-#import <Reachability/Reachability.h>
 #import <AFNetworking/AFNetworking.h>
 
 #import "CCAppDelegate.h"
@@ -36,8 +35,7 @@
     NSDateFormatter *_fileNameDateFormatter;
     
     NSTimer *_timer;
-    
-    Reachability *_reachability;
+
     AFHTTPSessionManager *_manager;
     
     BOOL _isSending;
@@ -69,20 +67,10 @@
         [_fileNameDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'-'HH'-'mm'-'ss'-'SSS"];
         [_fileNameDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
 
-        __weak id weakself = self;
-        _reachability = [Reachability reachabilityWithHostname:@"google.com"];
-        _reachability.reachableBlock = ^(Reachability * reachability) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakself startTimer];
-            });
-        };
-        _reachability.unreachableBlock = ^(Reachability * reachability) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakself stopTimer];
-            });
-        };
-
-        [_reachability startNotifier];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:AFNetworkingReachabilityDidChangeNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -284,6 +272,17 @@
     [[self sharedInstance] log:logString];
     
     va_end(args);
+}
+
+#pragma mark - NSNotificationCenter methods
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    if ([AFNetworkReachabilityManager sharedManager].reachable) {
+        [self startTimer];
+    } else {
+        [self stopTimer];
+    }
 }
 
 #pragma mark - Singleton method

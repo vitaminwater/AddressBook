@@ -10,7 +10,7 @@
 
 #import <Mixpanel/Mixpanel.h>
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 #import "CCModelHelper.h"
 

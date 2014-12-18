@@ -8,7 +8,7 @@
 
 #import "CCBaseSynchronizationActionConsumeEvents.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCLinotteAPI.h"
 
@@ -44,7 +44,7 @@
     
     CCLog(@"Starting %@ job", NSStringFromClass([self class]));
     
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and event in %@", list, [_provider eventsList]];
     [fetchRequest setPredicate:predicate];

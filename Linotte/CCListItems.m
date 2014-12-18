@@ -10,7 +10,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "NSString+CCLocalizedString.h"
 
@@ -280,7 +280,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
         return;
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
     

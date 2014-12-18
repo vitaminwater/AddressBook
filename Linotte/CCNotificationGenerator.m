@@ -8,7 +8,7 @@
 
 #import "CCNotificationGenerator.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
 
 #import <SSKeyChain/SSKeychain.h>
@@ -29,7 +29,7 @@
     // [CCNotificationGenerator scheduleTestLocalNotification:0];
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 8];
@@ -61,7 +61,7 @@
     else
         [self configureLocalNotificationForAddresses:results localNotification:localNotification];
 
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     [[CCModelChangeMonitor sharedInstance] addressesDidNotify:results];
 
@@ -115,7 +115,7 @@
 + (void)printLastNotif
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -133,7 +133,7 @@
 + (void)resetLastNotif
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 24 * 2];
@@ -149,7 +149,7 @@
         address.lastnotif = date;
     }
     
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 #define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug32"
@@ -161,7 +161,7 @@
 + (void)scheduleTestLocalNotification:(NSUInteger)delay
 {
     NSError *error = NULL;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     NSUInteger nAddresses = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
@@ -187,20 +187,6 @@
     } else {
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     }
-}
-
-#pragma mark - Singleton method
-
-+ (instancetype)sharedInstance
-{
-    static id instance = nil;
-    static dispatch_once_t token;
-    
-    dispatch_once(&token, ^{
-        instance = [self new];
-    });
-    
-    return instance;
 }
 
 @end

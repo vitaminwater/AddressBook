@@ -9,8 +9,8 @@
 #import "CCSynchronizationActionSendLocalEvents.h"
 
 #import "CCLinotteAPI.h"
-
-#import "CCCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -28,7 +28,7 @@
     }
     
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
     fetchRequest.fetchLimit = 1;
@@ -54,12 +54,20 @@
 
 - (void)sendEvent:(CCLocalEvent *)event completionBlock:(void(^)(BOOL done, BOOL error))completionBlock
 {
-    void (^eventSendRequestEnd)(BOOL success, NSInteger statusCode) = ^(BOOL success, NSInteger statusCode) {
-        if (success || statusCode == 401) {
-            NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-            [managedObjectContext deleteObject:event];
-            [[CCCoreDataStack sharedInstance] saveContext];
-            completionBlock(YES, NO);
+    void (^deleteCurrentRequestBlock)() = ^() {
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+        [managedObjectContext deleteObject:event];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+        completionBlock(YES, NO);
+    };
+    
+    void (^eventSendRequestSuccessBlock)() = ^() {
+        deleteCurrentRequestBlock();
+    };
+    
+    void (^eventSendRequestFailureBlock)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
+        if (error.code == 401) {
+            deleteCurrentRequestBlock();
         } else {
             completionBlock(NO, YES);
         }
@@ -68,105 +76,103 @@
     switch (event.eventValue) {
         case CCLocalEventAddressCreated:
         {
-            [[CCLinotteAPI sharedInstance] createAddress:event.parameters completionBlock:^(BOOL success, NSString *identifier, NSInteger statusCode) {
-                if (success) {
-                    [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
-                    
-                    NSError *error = nil;
-                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localAddressIdentifier];
-                    [fetchRequest setPredicate:predicate];
-                    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-                    
-                    if (error != nil) {
-                        CCLog(@"%@", error);
-                        return;
-                    }
-                    
-                    if ([addresses count] != 0) {
-                        CCAddress *address = [addresses firstObject];
-                        address.identifier = identifier;
-                    }
-                    
-                    [[CCCoreDataStack sharedInstance] saveContext];
+            [CCLEC.linotteAPI createAddress:event.parameters success:^(NSString *identifier, NSInteger statusCode) {
+                [self setValue:identifier forKey:@"address" forEventsPredicate:[NSPredicate predicateWithFormat:@"localAddressIdentifier = %@", event.localAddressIdentifier]];
+                
+                NSError *error = nil;
+                NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localAddressIdentifier];
+                [fetchRequest setPredicate:predicate];
+                NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                
+                if (error != nil) {
+                    CCLog(@"%@", error);
+                    return;
                 }
-                eventSendRequestEnd(success, statusCode);
-            }];
+                
+                if ([addresses count] != 0) {
+                    CCAddress *address = [addresses firstObject];
+                    address.identifier = identifier;
+                }
+                
+                [[CCLinotteCoreDataStack sharedInstance] saveContext];
+                
+                deleteCurrentRequestBlock();
+            } failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventListCreated:
         {
-            [[CCLinotteAPI sharedInstance] createList:event.parameters completionBlock:^(BOOL success, NSString *identifier, NSInteger statusCode) {
-                if (success) {
-                    [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
-                    
-                    NSError *error = nil;
-                    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
-                    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localListIdentifier];
-                    [fetchRequest setPredicate:predicate];
-                    NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-                    
-                    if (error != nil) {
-                        CCLog(@"%@", error);
-                        return;
-                    }
-                    
-                    if ([lists count] != 0) {
-                        CCList *list = [lists firstObject];
-                        list.identifier = identifier;
-                    }
-                    
-                    [[CCCoreDataStack sharedInstance] saveContext];
+            [CCLEC.linotteAPI createList:event.parameters success:^(NSString *identifier) {
+                [self setValue:identifier forKey:@"list" forEventsPredicate:[NSPredicate predicateWithFormat:@"localListIdentifier = %@", event.localListIdentifier]];
+                
+                NSError *error = nil;
+                NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+                NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = %@", event.localListIdentifier];
+                [fetchRequest setPredicate:predicate];
+                NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                
+                if (error != nil) {
+                    CCLog(@"%@", error);
+                    return;
                 }
-                eventSendRequestEnd(success, statusCode);
-            }];
+                
+                if ([lists count] != 0) {
+                    CCList *list = [lists firstObject];
+                    list.identifier = identifier;
+                }
+                
+                [[CCLinotteCoreDataStack sharedInstance] saveContext];
+                
+                deleteCurrentRequestBlock();
+            } failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventListRemoved:
         {
-            [[CCLinotteAPI sharedInstance] removeList:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI removeList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressMovedToList:
         {
-            [[CCLinotteAPI sharedInstance] addAddressToList:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI addAddressToList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressMovedFromList:
         {
-            [[CCLinotteAPI sharedInstance] removeAddressFromList:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI removeAddressFromList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateAddress:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI updateAddress:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventListUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateList:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI updateList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressUserDataUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateAddressUserData:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI updateAddressUserData:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventListUserDataUpdated:
         {
-            [[CCLinotteAPI sharedInstance] updateListUserData:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI updateListUserData:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventListAdded:
         {
-            [[CCLinotteAPI sharedInstance] addList:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI addList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressMetaAdded:
         {
-            [[CCLinotteAPI sharedInstance] createAddressMeta:event.parameters completionBlock:eventSendRequestEnd];
+            [CCLEC.linotteAPI createAddressMeta:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
         }
             break;
         default:
@@ -177,7 +183,7 @@
 - (void)setValue:(NSString *)value forKey:(NSString *)key forEventsPredicate:(NSPredicate *)predicate
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
     [fetchRequest setPredicate:predicate];
     

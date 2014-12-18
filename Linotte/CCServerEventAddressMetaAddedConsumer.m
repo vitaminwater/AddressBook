@@ -8,9 +8,10 @@
 
 #import "CCServerEventAddressMetaAddedConsumer.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 #import "CCModelChangeMonitor.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCServerEvent.h"
 #import "CCAddressMeta.h"
@@ -43,17 +44,12 @@
 {
     NSArray *eventIds = [_events valueForKeyPath:@"@unionOfObjects.eventId"];
     _currentList = list;
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressMetasForEventIds:eventIds completionBlock:^(BOOL success, NSArray *addressMetaDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchAddressMetasForEventIds:eventIds success:^(NSArray *addressMetaDicts) {
         _currentList = nil;
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         NSError *error = nil;
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressMetaDicts];
         
         NSArray *addressesIdentifiersToLoad = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier2"];
@@ -82,24 +78,29 @@
             
             if (addressIndex == NSNotFound)
                 continue;
-
+            
             CCAddress *address = addresses[addressIndex];
             [address addMetasObject:addressMeta];
         }
         
         [CCServerEvent deleteEvents:_events];
         _events = nil;
-
-        [[CCCoreDataStack sharedInstance] saveContext];
+        
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addressMetasAdd:addressMetas];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentList = nil;
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 
 - (void)cleanAlreadyInstalledMetas
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSArray *metaIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
@@ -121,7 +122,7 @@
     for (CCServerEvent *event in toRemoveEvents) {
         [managedObjectContext deleteObject:event];
     }
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
 #pragma mark - CCModelChangeMonitorDelegate

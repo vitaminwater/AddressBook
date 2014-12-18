@@ -16,6 +16,4 @@
 
 @property(nonatomic, weak)id<CCGeohashMonitorDelegate> delegate;
 
-+ (instancetype)sharedInstance;
-
 @end

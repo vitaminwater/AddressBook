@@ -8,10 +8,11 @@
 
 #import "CCListInstallerViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteAPI.h"
+#import "CCLinotteEngineCoordinator.h"
+#import "CCLinotteAuthenticationManager.h"
+#import "CCLinotteCoreDataStack.h"
 #import "CCModelChangeMonitor.h"
-
-#import "CCSynchronizationHandler.h"
 
 #import "CCModelHelper.h"
 
@@ -19,8 +20,6 @@
 
 #import "CCAlertView.h"
 #import "CCActionResultHUD.h"
-
-#import "CCLinotteAPI.h"
 
 #import "CCList.h"
 #import "CCListZone.h"
@@ -73,23 +72,21 @@
 
 - (void)loadCompleteList:(NSString *)identifier
 {
-    [[CCLinotteAPI sharedInstance] fetchCompleteListInfos:identifier completionBlock:^(BOOL success, NSDictionary *completeListInfoDict) {
-        if (success) {
-            _completeListInfoDict = completeListInfoDict;
-            CCListInstallerView *view = (CCListInstallerView *)self.view;
-            
-            NSDate *lastUpdateDate = [[CCLinotteAPI sharedInstance] dateFromString:_completeListInfoDict[@"last_update"]];
-            [view setListName:_completeListInfoDict[@"name"]];
-            [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
-            [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:lastUpdateDate];
-        }
-    }];
+    [CCLEC.linotteAPI fetchCompleteListInfos:identifier success:^(NSDictionary *completeListInfoDict) {
+        _completeListInfoDict = completeListInfoDict;
+        CCListInstallerView *view = (CCListInstallerView *)self.view;
+        
+        NSDate *lastUpdateDate = [CCLEC.linotteAPI dateFromString:_completeListInfoDict[@"last_update"]];
+        [view setListName:_completeListInfoDict[@"name"]];
+        [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
+        [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:lastUpdateDate];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
 }
 
 - (BOOL)alreadyInstalled
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", _identifier];
     [fetchRequest setPredicate:predicate];
@@ -108,14 +105,13 @@
 
 - (void)addToLinotteButtonPressed
 {
-    NSManagedObjectContext *managedObjectContext = [[CCCoreDataStack sharedInstance] managedObjectContext];
+    NSManagedObjectContext *managedObjectContext = [[CCLinotteCoreDataStack sharedInstance] managedObjectContext];
     CCList *list = [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:_completeListInfoDict];
     list.identifier = _identifier;
-    list.ownedValue = [list.authorIdentifier isEqualToString:[CCLinotteAPI sharedInstance].identifier];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
-    [[CCSynchronizationHandler sharedInstance] performSynchronizationsWithMaxDuration:0 list:list completionBlock:^(BOOL didSync){}];
+    [CCLEC forceListSynchronization:list];
     
     [_delegate closeListInstaller:self];
     [_delegate listInstaller:self listInstalled:list];
@@ -125,7 +121,7 @@
 {
     NSString *alertTitle = NSLocalizedString(@"NOTIF_LIST_DELETE", @"");
     
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", _identifier];
     [fetchRequest setPredicate:predicate];

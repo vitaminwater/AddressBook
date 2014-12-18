@@ -8,7 +8,7 @@
 
 #import "CCListOutputAddressListViewController.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCListOutputAddressListView.h"
 
@@ -52,7 +52,7 @@
 - (void)loadAddresses:(NSString *)filterString
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
     
     if ([filterString length]) {
@@ -91,7 +91,7 @@
     
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveToList:_list send:YES];
     [_list addAddressesObject:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveToList:_list send:YES];
 }
 
@@ -101,7 +101,7 @@
     
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] willMoveFromList:_list send:YES];
     [_list removeAddressesObject:address];
-    [[CCCoreDataStack sharedInstance] saveContext];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] addresses:@[address] didMoveFromList:_list send:YES];
 }
 

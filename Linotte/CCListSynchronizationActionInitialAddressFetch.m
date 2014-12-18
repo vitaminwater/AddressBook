@@ -8,9 +8,10 @@
 
 #import "CCListSynchronizationActionInitialAddressFetch.h"
 
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCLinotteAPI.h"
+#import "CCLinotteEngineCoordinator.h"
 
 #import "CCModelChangeMonitor.h"
 
@@ -35,7 +36,7 @@
 - (CCList *)findNextListToProcess
 {
     NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and addresses.@count < zones.@sum.nAddresses and addresses.@count < %@ and SUBQUERY(zones, $zone, $zone.firstFetch = %@).@count != 0", @(kCCMaxAddressesForList), @YES];
     [fetchRequest setPredicate:predicate];
@@ -78,18 +79,10 @@
         if (zone.firstFetchValue == NO)
             continue;
         _currentList = list;
-        _currentConnection = [[CCLinotteAPI sharedInstance] fetchAddressesFromList:list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit completionBlock:^(BOOL success, NSArray *addressesDicts) {
-            
-            if (success == NO) {
-                _currentList = nil;
-                _currentConnection = nil;
-                completionBlock(NO, YES);
-                return;
-            }
-            
+        _currentConnection = [CCLEC.linotteAPI fetchAddressesFromList:list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit success:^(NSArray *addressesDicts) {
             BOOL finished = NO;
             CCLog(@"Fetching zone %@", zone.geohash);
-            NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+            NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
             if ([addressesDicts count] != kCCAddressFetchLimit) {
                 finished = YES;
                 CCLog(@"Zone %@ completed", zone.geohash);
@@ -115,35 +108,39 @@
             
             [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:NO];
             [list addAddresses:[NSSet setWithArray:addresses]];
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:list send:NO];
             
             zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
             
-            [[CCCoreDataStack sharedInstance] saveContext];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
             
             if (finished == YES) {
-                _currentConnection = [[CCLinotteAPI sharedInstance] fetchListZoneLastEventDate:list.identifier geohash:zone.geohash completionBlock:^(BOOL success, NSDate *lastEventDate) {
-                    
+                _currentConnection = [CCLEC.linotteAPI fetchListZoneLastEventDate:list.identifier geohash:zone.geohash success:^(NSDate *lastEventDate) {
                     _currentList = nil;
                     _currentConnection = nil;
-                    if (success == NO) {
-                        completionBlock(NO, NO);
-                        return;
-                    }
                     
                     zone.firstFetchValue = NO;
                     zone.lastEventDate = lastEventDate;
                     zone.lastUpdate = [NSDate date];
-                    [[CCCoreDataStack sharedInstance] saveContext];
+                    [[CCLinotteCoreDataStack sharedInstance] saveContext];
                     
                     completionBlock(YES, NO);
+                } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                    _currentList = nil;
+                    _currentConnection = nil;
+                    
+                    completionBlock(NO, NO);
                 }];
             } else {
                 _currentList = nil;
                 _currentConnection = nil;
                 completionBlock(YES, NO);
             }
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            _currentList = nil;
+            _currentConnection = nil;
+            completionBlock(NO, YES);
         }];
         return;
     }
@@ -157,7 +154,7 @@
     NSDate *lastAddressDate = nil;
     
     for (NSDictionary *addressDict in addressDicts) {
-        NSDate *dateCreated = [[CCLinotteAPI sharedInstance] dateFromString:addressDict[@"date_created"]];
+        NSDate *dateCreated = [CCLEC.linotteAPI dateFromString:addressDict[@"date_created"]];
         if (lastAddressDate == nil || [lastAddressDate compare:dateCreated] == NSOrderedAscending) {
             lastAddressDate = dateCreated;
         }

@@ -8,13 +8,14 @@
 
 #import "CCUserSynchronizationActionConsumeEvents.h"
 
+#import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
-#import "CCCoreDataStack.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCServerEventListAddedConsumer.h"
 #import "CCServerEventListRemovedConsumer.h"
 
-#import "CCUserDefaults.h"
+#import "CCCurrentUserData.h"
 #import "CCList.h"
 
 @implementation CCUserSynchronizationActionConsumeEvents
@@ -55,13 +56,8 @@
 {
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
     
-    _currentConnection = [[CCLinotteAPI sharedInstance] fetchUserEventsWithLastDate:lastUserEventDate completionBlock:^(BOOL success, NSArray *eventsDicts) {
-        
+    _currentConnection = [CCLEC.linotteAPI fetchUserEventsWithLastDate:lastUserEventDate success:^(NSArray *eventsDicts) {
         _currentConnection = nil;
-        if (success == NO) {
-            completionBlock(NO, YES);
-            return;
-        }
         
         if ([eventsDicts count] == 0) {
             completionBlock(NO, NO);
@@ -69,16 +65,20 @@
         }
         
         CCLog(@"%lu user events received", [eventsDicts count]);
-        NSManagedObjectContext *managedObjectContext = [CCCoreDataStack sharedInstance].managedObjectContext;
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSDate *lastEventDate = nil;
         for (NSDictionary *eventDict in eventsDicts) {
             CCServerEvent *serverEvent = [CCServerEvent insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:eventDict];
             lastEventDate = serverEvent.date;
         }
         CCUD.lastUserEventDate = lastEventDate;
-
-        [[CCCoreDataStack sharedInstance] saveContext];
+        
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         completionBlock(YES, NO);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        _currentConnection = nil;
+        
+        completionBlock(NO, YES);
     }];
 }
 
