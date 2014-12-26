@@ -8,15 +8,17 @@
 
 #import "CCSignUpViewController.h"
 
+#import <SSKeychain/SSKeychain.h>
+#import <AFNetworking/AFNetworkReachabilityManager.h>
+
 #import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
 #import "CCLinotteAuthenticationManager.h"
-#import <SSKeychain/SSKeychain.h>
 
 #import "CCSignUpView.h"
 
-#import "CCSocialAccount.h"
+#import "CCAuthMethod.h"
 
 @interface CCSignUpViewController ()
 
@@ -45,17 +47,28 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
+- (void)processAccountCreationWithFailure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    if ([AFNetworkReachabilityManager sharedManager].isReachable) {
+        [CCLEC.authenticationManager createAccountOrLoginWithSuccess:^{
+            [_delegate signupCompleted];
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            CCLog(@"%@", error);
+            NSDictionary *response = [CCLEC.linotteAPI errorDescription:task error:error];
+            NSLog(@"%@", response);
+            failureBlock(task, error);
+        }];
+    }
+}
+
 #pragma mark - CCSignupViewController
 
 - (void)loginSignupButtonPressed:(NSString *)email password:(NSString *)password
 {
-    [CCLEC.authenticationManager setCredentials:email password:password];
-    [CCLEC.authenticationManager syncWithSuccess:^{
-        [_delegate signupCompleted];
-    } failure:^(NSError *error) {
-        if (CCLEC.authenticationManager.needsCredentials == NO)
-            [_delegate signupCompleted];
-        // TODO check if network failure
+    [CCLEC.authenticationManager addAuthMethodWithEmail:email password:password];
+    
+    [self processAccountCreationWithFailure:^(NSURLSessionDataTask *task, NSError *error) {
+        // TODO already taken
     }];
 }
 
@@ -63,17 +76,11 @@
 
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    [CCLEC.authenticationManager setCredentials:user[@"email"] password:[CCLEC.linotteAPI UUID:0]];
-    [CCLEC.authenticationManager associateFacebookAccount:user];
-    [CCLEC.authenticationManager syncWithSuccess:^{
-        [_delegate signupCompleted];
-    } failure:^(NSError *error) {
-        if (CCLEC.authenticationManager.needsCredentials == NO)
-            [_delegate signupCompleted];
-        // TODO check if network failure
+    [CCLEC.authenticationManager addAuthMethodWithFacebookAccount:user];
+    
+    [self processAccountCreationWithFailure:^(NSURLSessionDataTask *task, NSError *error) {
+        
     }];
-    // FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
-    // NSDictionary *parameters = @{@"social_meda_identifier" : @"facebook", @"social_identifier" : user.objectID, @"oauth_token" : accessTokenData.accessToken, @"refresh_token" : @"", @"expiration_date" : accessTokenData.expirationDate};
 }
 
 - (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error

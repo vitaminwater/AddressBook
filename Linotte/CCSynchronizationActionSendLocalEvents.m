@@ -66,7 +66,7 @@
     };
     
     void (^eventSendRequestFailureBlock)(NSURLSessionDataTask *task, NSError *error) = ^(NSURLSessionDataTask *task, NSError *error) {
-        if (error.code == 401) {
+        if (error.code == 401 || error.code == CCMissingIdentifier) {
             deleteCurrentRequestBlock();
         } else {
             completionBlock(NO, YES);

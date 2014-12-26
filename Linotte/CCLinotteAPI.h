@@ -25,14 +25,13 @@ typedef enum : NSUInteger {
 
 - (instancetype)initWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 
-- (void)setOAuth2HTTPHeader:(NSString *)accessToken;
+- (void)setAuthHTTPHeader:(NSString *)accessToken;
 - (void)unsetOAuth2HttpHeader;
 
-- (NSURLSessionDataTask *)authenticate:(NSString *)username password:(NSString *)password success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
-- (NSURLSessionDataTask *)refreshToken:(NSString *)refreshToken success:(void(^)(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)authenticate:(NSDictionary *)parameters success:(void(^)(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
-- (NSURLSessionDataTask *)createUser:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
-- (NSURLSessionDataTask *)associateWithSocialAccount:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)createUser:(NSDictionary *)parameters success:(void(^)(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)addAuthenticationMethod:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 - (NSURLSessionDataTask *)createDeviceWithSuccess:(void(^)(NSString *deviceId))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (void)setDeviceHTTPHeader:(NSString *)deviceId;
@@ -79,5 +78,9 @@ typedef enum : NSUInteger {
 
 - (NSString *)stringFromDate:(NSDate *)date;
 - (NSDate *)dateFromString:(NSString *)dateString;
+
+#pragma mark - error handling helper methods
+
+- (id)errorDescription:(NSURLSessionDataTask *)task error:(NSError *)error;
 
 @end

@@ -11,34 +11,29 @@
 #import <FacebookSDK/FacebookSDK.h>
 
 typedef enum : NSUInteger {
-    kCCFirstStart, // When nothing has happened yet
+    kCCFirstStart = 0, // When nothing has happened yet
     kCCLoggedIn, // When everything is fine
-    kCCRequestRefreshToken, // When access token is outdated
     kCCCreateDeviceId, // When device is not created yet
-    kCCCreateAccount, // When credentials have been provided but accounts still not created
-    kCCAssociateSocialAccount, // When there are pending social account
-    kCCAuthenticate, // User has been created, but user not logged in
+    kCCSendAuthMethod, // When there are pending social account
 } CCCredentialStoreState;
 
-@class CCSocialAccount;
+@class CCAuthMethod;
+@class CCLinotteAPI;
 
 @interface CCLinotteCredentialStore : NSObject
 
 @property(nonatomic, strong)NSString *accessToken;
-@property(nonatomic, strong)NSString *refreshToken;
-@property(nonatomic, strong)NSDate *expirationDate;
-
+@property(nonatomic, strong)NSString *identifier;
 @property(nonatomic, strong)NSString *deviceId;
-
-@property(nonatomic, strong)NSString *identifer;
-@property(nonatomic, strong)NSString *email;
-@property(nonatomic, strong)NSString *password;
-
 @property(nonatomic, readonly)CCCredentialStoreState storeState;
 
-- (void)addFacebookAccount:(id<FBGraphUser>)user;
-- (BOOL)hasSocialAccountToSend;
-- (CCSocialAccount *)nextSocialAccountToSend;
+- (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI;
+
+- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
+- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
+- (BOOL)hasAuthMethodToSend;
+- (CCAuthMethod *)nextUnsentAuthMethod;
+- (CCAuthMethod *)firstAuthMethod;
 - (void)logout;
 
 @end

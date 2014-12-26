@@ -241,23 +241,21 @@
                 addressCreatedEvent.localAddressIdentifier = address.localIdentifier;
                 addressCreatedEvent.parameters = parameters;
                 
-                if (address.identifier == nil && [address.metas count] != 0) {
-                    NSError *error = nil;
-                    for (CCAddressMeta *addressMeta in address.metas) {
-                        NSString *contentString = [NSString stringWithUTF8String:[[NSJSONSerialization dataWithJSONObject:addressMeta.content options:0 error:&error] bytes]];
-                        
-                        if (error != nil) {
-                            CCLog(@"%@", error);
-                            continue;
-                        }
-                        
-                        NSDictionary *parameters = @{@"uid" : addressMeta.uid, @"action" : addressMeta.action, @"content" : contentString};
-                        CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
-                        addressUpdateEvent.eventValue = CCLocalEventAddressMetaAdded;
-                        addressUpdateEvent.date = [NSDate date];
-                        addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
-                        addressUpdateEvent.parameters = parameters;
+                NSError *error = nil;
+                for (CCAddressMeta *addressMeta in address.metas) {
+                    NSString *contentString = [NSString stringWithUTF8String:[[NSJSONSerialization dataWithJSONObject:addressMeta.content options:0 error:&error] bytes]];
+                    
+                    if (error != nil) {
+                        CCLog(@"%@", error);
+                        continue;
                     }
+                    
+                    NSDictionary *parameters = @{@"uid" : addressMeta.uid, @"action" : addressMeta.action, @"content" : contentString};
+                    CCLocalEvent *addressUpdateEvent = [CCLocalEvent insertInManagedObjectContext:managedObjectContext];
+                    addressUpdateEvent.eventValue = CCLocalEventAddressMetaAdded;
+                    addressUpdateEvent.date = [NSDate date];
+                    addressUpdateEvent.localAddressIdentifier = address.localIdentifier;
+                    addressUpdateEvent.parameters = parameters;
                 }
             }
             @catch(NSException *e) {

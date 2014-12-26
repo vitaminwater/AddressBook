@@ -14,10 +14,16 @@
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
 
-#import "CCSocialAccount.h"
+#import "CCAuthMethod.h"
 
 #import "CCLinotteCredentialStore.h"
 
+
+@interface CCLinotteAuthenticationManager()
+
+@property(nonatomic, assign)BOOL syncing;
+
+@end
 
 @implementation CCLinotteAuthenticationManager
 {
@@ -26,7 +32,8 @@
     CCLinotteCredentialStore *_credentialStore;
 }
 
-@dynamic needsCredentials, needsSync, readyToSend;
+@dynamic needsSync, readyToSend;
+@dynamic identifier;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI
 {
@@ -34,8 +41,10 @@
     if (self) {
         _linotteAPI = linotteAPI;
 
+        _credentialStore = [[CCLinotteCredentialStore alloc] initWithLinotteAPI:_linotteAPI];
+        
         if (_credentialStore.accessToken != nil) {
-            [_linotteAPI setOAuth2HTTPHeader:_credentialStore.accessToken];
+            [_linotteAPI setAuthHTTPHeader:_credentialStore.accessToken];
             if (_credentialStore.deviceId != nil) {
                 [_linotteAPI setDeviceHTTPHeader:_credentialStore.deviceId];
             }
@@ -46,7 +55,12 @@
 
 - (BOOL)needsCredentials
 {
-    return _credentialStore.email == nil;
+    NSError *error;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    
+    return count == 0;
 }
 
 - (BOOL)needsSync
@@ -57,118 +71,113 @@
 
 - (BOOL)readyToSend
 {
-    NSArray *readyToSend = @[@(kCCAssociateSocialAccount), @(kCCLoggedIn)];
+    NSArray *readyToSend = @[@(kCCSendAuthMethod), @(kCCLoggedIn)];
     return [readyToSend containsObject:@(_credentialStore.storeState)];
 }
 
 #pragma mark - API initialization method
 
-- (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSError *error))failureBlock
+- (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     CCCredentialStoreState storeState = _credentialStore.storeState;
+    __weak typeof(self) weakSelf = self;
     _syncing = YES;
     switch (storeState) {
         case kCCFirstStart: {
-            successBlock();
-            break;
-        }
-        case kCCCreateAccount: {
-            NSDictionary *parameters = @{@"email" : _credentialStore.email, @"password" : _credentialStore.password};
-            [_linotteAPI createUser:parameters success:^(NSString *identifier) {
-                _credentialStore.identifer = identifier;
-                [_delegate authenticationManager:self didCreateUserWithEmail:_credentialStore.email identifier:identifier];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerUserEmail : _credentialStore.email, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
-                [self syncWithSuccess:successBlock failure:failureBlock];
-            } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                failureBlock(error);
-            }];
-            break;
-        }
-        case kCCAuthenticate: {
-            [_linotteAPI authenticate:_credentialStore.email password:_credentialStore.password success:^(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn) {
-                [self saveTokens:accessToken refreshToken:refreshToken expiresInTimeStamp:expiresIn];
-                [_delegate authenticationManagerDidLogin:self];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidLogin object:@{kCCLinotteAuthenticationManagerUser : self}];
-                [self syncWithSuccess:successBlock failure:failureBlock];
-            } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                failureBlock(error);
-            }];
-            break;
-        }
-        case kCCRequestRefreshToken: {
-            [_linotteAPI refreshToken:_credentialStore.refreshToken success:^(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn) {
-                [self saveTokens:accessToken refreshToken:refreshToken expiresInTimeStamp:expiresIn];
-                [self syncWithSuccess:successBlock failure:failureBlock];
-            } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                failureBlock(error);
-            }];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                successBlock();
+                weakSelf.syncing = NO;
+            });
             break;
         }
         case kCCCreateDeviceId: {
             [_linotteAPI createDeviceWithSuccess:^(NSString *deviceId) {
-                [self saveDeviceId:deviceId];
-                [self syncWithSuccess:successBlock failure:failureBlock];
+                _credentialStore.deviceId = deviceId;
+                [weakSelf syncWithSuccess:successBlock failure:failureBlock];
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                failureBlock(error);
+                weakSelf.syncing = NO;
+                failureBlock(task, error);
             }];
             break;
         }
-        case kCCAssociateSocialAccount: {
-            CCSocialAccount *socialAccount = [_credentialStore nextSocialAccountToSend];
-            NSString *expirationDateString = [_linotteAPI stringFromDate:socialAccount.expirationDate];
-            NSDictionary *parameters = @{@"social_media_identifier" : socialAccount.mediaIdentifier, @"social_identifier" : socialAccount.socialIdentifier, @"oauth_token" : socialAccount.authToken, @"refresh_token" : socialAccount.refreshToken, @"expiration_date" : expirationDateString};
-            [_linotteAPI associateWithSocialAccount:parameters success:^(NSString *identifier) {
-                socialAccount.identifier = identifier;
+        case kCCSendAuthMethod: {
+            CCAuthMethod *authMethod = [_credentialStore nextUnsentAuthMethod];
+            
+            NSDictionary *parameters = [authMethod requestDict];
+            if (parameters == nil) {
+                [[CCLinotteCoreDataStack sharedInstance] delete:authMethod];
+                return;
+            }
+            
+            [_linotteAPI addAuthenticationMethod:parameters success:^(NSString *identifier) {
+                authMethod.identifier = identifier;
+                authMethod.sentValue = YES;
                 [[CCLinotteCoreDataStack sharedInstance] saveContext];
-                [self syncWithSuccess:successBlock failure:failureBlock];
+                [weakSelf syncWithSuccess:successBlock failure:failureBlock];
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                failureBlock(error);
+                weakSelf.syncing = NO;
+                failureBlock(task, error);
             }];
             break;
         }
         case kCCLoggedIn: {
             dispatch_async(dispatch_get_main_queue(), ^{
                 successBlock();
-                _syncing = NO;
+                weakSelf.syncing = NO;
             });
             break;
         }
     }
 }
 
-- (void)setCredentials:(NSString *)email password:(NSString *)password
+- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
 {
-    _credentialStore.email = email;
-    _credentialStore.password = password;
-    if ([AFNetworkReachabilityManager sharedManager].isReachable == NO)
-        return;
-    [_linotteAPI authenticate:email password:password success:^(NSString *accessToken, NSString *refreshToken, NSUInteger expiresIn) {
-        [self saveTokens:accessToken refreshToken:refreshToken expiresInTimeStamp:expiresIn];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
+    [_credentialStore addAuthMethodWithEmail:email password:password];
 }
 
-- (void)associateFacebookAccount:(id<FBGraphUser>)user
+- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
 {
-    [_credentialStore addFacebookAccount:user];
+    [_credentialStore addAuthMethodWithFacebookAccount:user];
+}
+
+- (void)createAccountOrLoginWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    CCAuthMethod *authMethod = [_credentialStore firstAuthMethod];
+    [self authenticateWithAuthMethod:authMethod success:successBlock failure:^(NSURLSessionDataTask *task, NSError *error) {
+        [self createUserWithAuthMethod:authMethod success:successBlock failure:failureBlock];
+    }];
+}
+
+- (void)authenticateWithAuthMethod:(CCAuthMethod *)authMethod success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSDictionary *parameters = [authMethod requestDict];
+    [_linotteAPI authenticate:parameters success:^(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier) {
+        _credentialStore.accessToken = accessToken;
+        _credentialStore.identifier = identifier;
+        authMethod.identifier = authMethodIdentifier;
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+        [_delegate authenticationManagerDidLogin:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidLogin object:@{kCCLinotteAuthenticationManagerUser : self}];
+        successBlock();
+    } failure:failureBlock];
+}
+
+- (void)createUserWithAuthMethod:(CCAuthMethod *)authMethod success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSDictionary *parameters = [authMethod requestDict];
+    [_linotteAPI createUser:parameters success:^(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier) {
+        _credentialStore.accessToken = accessToken;
+        _credentialStore.identifier = identifier;
+        authMethod.identifier = authMethodIdentifier;
+        authMethod.sentValue = YES;
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+        [_delegate authenticationManager:self didCreateUserWithAuthMethod:authMethod];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerAuthMethod : authMethod, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
+        successBlock();
+    } failure:failureBlock];
 }
 
 #pragma mark - tokens storage
-
-- (void)saveTokens:(NSString *)accessToken refreshToken:(NSString *)refreshToken expiresInTimeStamp:(NSUInteger)expiresInTimeStamp
-{
-    NSDate *expirationDate = [[NSDate date] dateByAddingTimeInterval:expiresInTimeStamp];
-    
-    _credentialStore.accessToken = accessToken;
-    _credentialStore.refreshToken = refreshToken;
-    _credentialStore.expirationDate = expirationDate;
-    [_linotteAPI setOAuth2HTTPHeader:_credentialStore.accessToken];
-}
-
-- (void)saveDeviceId:(NSString *)deviceId
-{
-    _credentialStore.deviceId = deviceId;
-    [_linotteAPI setDeviceHTTPHeader:deviceId];
-}
 
 - (void)logout
 {

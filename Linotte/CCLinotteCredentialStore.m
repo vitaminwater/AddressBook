@@ -13,35 +13,25 @@
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
 
-#import "CCSocialAccount.h"
+#import "CCAuthMethod.h"
 
-// SSKeychain accounts
 #if defined(DEBUG)
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug56"
+
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug79"
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
-#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountNameDebug"
-#define kCCExpirationDateAccountName @"kCCExpirationDateAccountName"
-
+#define kCCExpirationDateAccountName @"kCCExpirationDateAccountNameDebug"
 #define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountNameDebug"
-
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountNameDebug"
-#define kCCUserEmailAccountName @"kCCUserEmailAccountNameDebug"
-#define kCCUserPasswordAccountName @"kCCUserPasswordAccountNameDebug"
 
 #else
-// #define kCCKeyChainServiceName @"kCCKeyChainServiceName6" // test
+
 #define kCCKeyChainServiceName @"kCCKeyChainServiceName1000" // Apstore
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
-#define kCCRefreshTokenAccountName @"kCCRefreshTokenAccountName"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountName"
-
 #define kCCDeviceIdentifierAccountName @"kCCDeviceIdentifierAccountName"
-
 #define kCCUserIdentifierAccountName @"kCCUserIdentifierAccountName"
-#define kCCUserEmailAccountName @"kCCUserEmailAccountName"
-#define kCCUserPasswordAccountName @"kCCUserPasswordAccountName"
 
 #endif
 
@@ -50,9 +40,8 @@
     CCLinotteAPI *_linotteAPI;
 }
 
-@dynamic accessToken, refreshToken, expirationDate;
-@dynamic deviceId;
-@dynamic email, password;
+@dynamic accessToken;
+@dynamic identifier, deviceId;
 @dynamic storeState;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI
@@ -66,29 +55,61 @@
     return self;
 }
 
-- (void)addFacebookAccount:(id<FBGraphUser>)user
+- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
 {
-    FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
-
+    NSDictionary *infos = @{@"email" : email, @"password" : password};
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    CCSocialAccount *socialAccount = [CCSocialAccount insertInManagedObjectContext:managedObjectContext];
-    socialAccount.socialIdentifier = user.objectID;
-    socialAccount.mediaIdentifier = @"facebook";
-    socialAccount.authToken = accessTokenData.accessToken;
-    socialAccount.expirationDate = accessTokenData.expirationDate;
+    
+    CCAuthMethod *authMethod = nil;
+    
+    // check if already has an email type auth method
+    {
+        NSError *error;
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type = %@", @"email"];
+        [fetchRequest setPredicate:predicate];
+        
+        NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+            return;
+        }
+        
+        if ([authMethods count] != 0) {
+            authMethod = [authMethods firstObject];
+        }
+    }
+    
+    if (authMethod == nil)
+        authMethod = [CCAuthMethod insertInManagedObjectContext:managedObjectContext];
+    
+    authMethod.type = @"email";
+    authMethod.infos = infos;
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
-- (BOOL)hasSocialAccountToSend
+- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
+{
+    FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
+
+    NSString *expirationDateString = [_linotteAPI stringFromDate:accessTokenData.expirationDate];
+    NSDictionary *infos = @{@"access_token" : accessTokenData.accessToken, @"identifier" : user.objectID, @"expiration_date" : expirationDateString};
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    CCAuthMethod *unsentAuthMethod = [CCAuthMethod insertInManagedObjectContext:managedObjectContext];
+    unsentAuthMethod.type = @"facebook";
+    unsentAuthMethod.infos = infos;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
+- (BOOL)hasAuthMethodToSend
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCSocialAccount entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @NO];
-    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @(NO)];
     [fetchRequest setPredicate:predicate];
     
     NSError *error;
-    
     NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
     
     if (error != nil) {
@@ -99,52 +120,67 @@
     return count != 0;
 }
 
-- (CCSocialAccount *)nextSocialAccountToSend
+- (CCAuthMethod *)nextUnsentAuthMethod
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCSocialAccount entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @NO];
-    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @(NO)];
     [fetchRequest setPredicate:predicate];
     fetchRequest.fetchLimit = 1;
     
     NSError *error;
-    NSArray *socialAccount = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
     if (error != nil) {
         CCLog(@"%@", error);
         return nil;
     }
     
-    if ([socialAccount count] == 0)
+    if ([authMethods count] == 0)
         return nil;
     
-    return [socialAccount firstObject];
+    return [authMethods firstObject];
+}
+
+- (CCAuthMethod *)firstAuthMethod
+{
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    fetchRequest.fetchLimit = 1;
+    
+    NSError *error;
+    NSArray *authMethod = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
+    }
+    
+    if ([authMethod count] == 0)
+        return nil;
+    
+    return [authMethod firstObject];
 }
 
 - (void)logout
 {
     self.accessToken = nil;
-    self.refreshToken = nil;
-    self.expirationDate = nil;
     self.deviceId = nil;
-    self.identifer = nil;
-    self.email = nil;
-    self.password = nil;
+    self.identifier = nil;
     
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCSocialAccount entityName]];
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
     
     NSError *error;
-    NSArray *socialAccounts = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    NSArray *unsentAuthMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
     if (error != nil) {
         CCLog(@"%@", error);
         return;
     }
     
-    for (CCSocialAccount *socialAccount in socialAccounts) {
-        [managedObjectContext deleteObject:socialAccount];
+    for (CCAuthMethod *unsentAuthMethod in unsentAuthMethods) {
+        [managedObjectContext deleteObject:unsentAuthMethod];
     }
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
@@ -156,9 +192,7 @@
     NSError *error;
     
     if (value == nil) {
-        if ([SSKeychain deletePasswordForService:kCCKeyChainServiceName account:key] == NO) {
-            CCLog(@"%@", error);
-        }
+        [SSKeychain deletePasswordForService:kCCKeyChainServiceName account:key];
         return;
     }
     
@@ -169,7 +203,7 @@
 
 - (NSString *)getValueInKeychain:(NSString *)key
 {
-    return [SSKeychain passwordForService:kCCKeyChainServiceName account:kCCDeviceIdentifierAccountName];
+    return [SSKeychain passwordForService:kCCKeyChainServiceName account:key];
 }
 
 #pragma mark - setter methods
@@ -177,37 +211,18 @@
 - (void)setAccessToken:(NSString *)accessToken
 {
     [self setValueInKeychain:accessToken key:kCCAccessTokenAccountName];
-}
-
-- (void)setRefreshToken:(NSString *)refreshToken
-{
-    [self setValueInKeychain:refreshToken key:kCCRefreshTokenAccountName];
-}
-
-- (void)setExpirationDate:(NSDate *)expirationDate
-{
-    NSString *expirationDateString = [_linotteAPI stringFromDate:expirationDate];
-    [self setValueInKeychain:expirationDateString key:kCCExpirationDateAccountName];
+    [_linotteAPI setAuthHTTPHeader:accessToken];
 }
 
 - (void)setDeviceId:(NSString *)deviceId
 {
     [self setValueInKeychain:deviceId key:kCCDeviceIdentifierAccountName];
+    [_linotteAPI setDeviceHTTPHeader:deviceId];
 }
 
 - (void)setIdentifier:(NSString *)identifier
 {
     [self setValueInKeychain:identifier key:kCCUserIdentifierAccountName];
-}
-
-- (void)setEmail:(NSString *)email
-{
-    [self setValueInKeychain:email key:kCCUserEmailAccountName];
-}
-
-- (void)setPassword:(NSString *)password
-{
-    [self setValueInKeychain:password key:kCCUserPasswordAccountName];
 }
 
 #pragma mark - setter methods
@@ -216,16 +231,10 @@
 {
     if ([[SSKeychain accountsForService:kCCKeyChainServiceName] count] == 0)
         return kCCFirstStart;
-    else if (self.email != nil && self.identifer == nil)
-        return kCCCreateAccount;
-    else if (self.email != nil && self.identifer != nil && self.accessToken == nil)
-        return kCCAuthenticate;
-    else if ([[[NSDate date] dateByAddingTimeInterval: - 60 * 60 * 24 * 30] compare:self.expirationDate] == NSOrderedDescending)
-        return kCCRequestRefreshToken;
     else if (self.deviceId == nil)
         return kCCCreateDeviceId;
-    else if ([self hasSocialAccountToSend])
-        return kCCAssociateSocialAccount;
+    else if ([self hasAuthMethodToSend])
+        return kCCSendAuthMethod;
     else
         return kCCLoggedIn;
 }
@@ -233,18 +242,6 @@
 - (NSString *)accessToken
 {
     return [self getValueInKeychain:kCCAccessTokenAccountName];
-}
-
-- (NSString *)refreshToken
-{
-    return [self getValueInKeychain:kCCRefreshTokenAccountName];
-}
-
-- (NSDate *)expirationDate
-{
-    NSString *expirationDateString = [self getValueInKeychain:kCCExpirationDateAccountName];
-
-    return [_linotteAPI dateFromString:expirationDateString];
 }
 
 - (NSString *)deviceId
@@ -255,16 +252,6 @@
 - (NSString *)identifer
 {
     return [self getValueInKeychain:kCCUserIdentifierAccountName];
-}
-
-- (NSString *)email
-{
-    return [self getValueInKeychain:kCCUserEmailAccountName];
-}
-
-- (NSString *)password
-{
-    return [self getValueInKeychain:kCCUserPasswordAccountName];
 }
 
 @end

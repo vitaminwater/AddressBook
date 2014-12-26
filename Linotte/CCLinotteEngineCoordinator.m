@@ -29,6 +29,8 @@
     CCModelChangeHandler *_modelChangeHandler;
     CCSynchronizationHandler *_synchronizationHandler;
     
+    BOOL _monitoringAndSynchronizationStarted;
+    
     NSTimer *_timer;
 }
 
@@ -55,6 +57,16 @@
     _linotteAPI = [[CCLinotteAPI alloc] initWithClientId:clientId clientSecret:clientSecret];
     
     _authenticationManager = [[CCLinotteAuthenticationManager alloc] initWithLinotteAPI:_linotteAPI];
+    _authenticationManager.delegate = self;
+    
+    if (_authenticationManager.readyToSend)
+        [self startMonitoringAndSynchronization];
+}
+
+- (void)startMonitoringAndSynchronization
+{
+    if (_monitoringAndSynchronizationStarted)
+        return;
     
     _geohashMonitor = [CCGeohashMonitor new];
     _notificationGenerator = [CCNotificationGenerator new];
@@ -62,13 +74,22 @@
     
     _modelChangeHandler = [CCModelChangeHandler new];
     _synchronizationHandler = [CCSynchronizationHandler new];
+    
+    _monitoringAndSynchronizationStarted = YES;
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    if ([self canSend] == NO)
+    if (_authenticationManager.needsSync) {
+        [_authenticationManager syncWithSuccess:^{
+            [_synchronizationHandler performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^(BOOL didSync){
+                completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
+            }];
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            CCLog(@"%@", error);
+        }];
         return;
-    
+    }
     [_synchronizationHandler performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^(BOOL didSync){
         completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
     }];
@@ -87,18 +108,17 @@
 
 #pragma mark - CCLinotteAuthenticationManagerDelegate methods
 
-- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithEmail:(NSString *)email identifier:(NSString *)identifier
+- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithAuthMethod:(CCAuthMethod *)authMethod
 {
     Mixpanel *mixpanel = [Mixpanel sharedInstance];
     if (mixpanel.distinctId == nil) {
-        [mixpanel identify:identifier];
+        [mixpanel identify:_authenticationManager.identifier];
         [[mixpanel people] set:@"$created" to:[NSDate date]];
     }
 }
 
-- (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager
-{
-    
+- (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager {
+    [self startMonitoringAndSynchronization];
 }
 
 #pragma mark - NSNotificationCenter methods
@@ -132,12 +152,15 @@
 
 - (void)timerTick:(NSTimer *)timer
 {
-    if (_synchronizationHandler.syncing == YES || [AFNetworkReachabilityManager sharedManager].isReachable == NO)
+    if (_synchronizationHandler.syncing == YES || _authenticationManager.needsCredentials == YES || [AFNetworkReachabilityManager sharedManager].isReachable == NO)
         return;
     if ([_authenticationManager needsSync]) {
+        if (_authenticationManager.syncing == YES)
+            return;
+        
         [_authenticationManager syncWithSuccess:^{
             [_synchronizationHandler performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^(BOOL didSync){}];
-        } failure:^(NSError *error) {
+        } failure:^(NSURLSessionDataTask *task, NSError *error) {
             if (_authenticationManager.readyToSend)
                 [_synchronizationHandler performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^(BOOL didSync){}];
         }];

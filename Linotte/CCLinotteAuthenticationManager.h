@@ -13,7 +13,7 @@
 #import "CCLinotteAuthenticationManagerDelegate.h"
 
 #define kCCLinotteAuthenticationManagerDidCreateUser @"kCCLinotteAuthenticationManagerDidCreateUser"
-#define kCCLinotteAuthenticationManagerUserEmail @"kCCLinotteAuthenticationManagerUserEmail"
+#define kCCLinotteAuthenticationManagerAuthMethod @"kCCLinotteAuthenticationManagerAuthMethod"
 #define kCCLinotteAuthenticationManagerUserIdentifier @"kCCLinotteAuthenticationManagerUserIdentifier"
 
 #define kCCLinotteAuthenticationManagerDidLogin @"kCCLinotteAuthenticationManagerDidLogin"
@@ -31,16 +31,14 @@
 @property(nonatomic, readonly)BOOL needsSync;
 @property(nonatomic, readonly)BOOL syncing;
 @property(nonatomic, readonly)BOOL readyToSend;
+@property(nonatomic, readonly)NSString *identifier;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI;
 
-- (BOOL)needsCredentials;
-- (BOOL)needsSync;
-- (BOOL)readyToSend;
+- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
+- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
+- (void)createAccountOrLoginWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
-- (void)setCredentials:(NSString *)email password:(NSString *)password;
-- (void)associateFacebookAccount:(id<FBGraphUser>)user;
-
-- (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSError *error))failureBlock;
+- (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 @end

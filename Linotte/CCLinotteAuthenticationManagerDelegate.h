@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @class CCLinotteAuthenticationManager;
-@class CCLinotteCredentialStore;
+@class CCAuthMethod;
 
 @protocol CCLinotteAuthenticationManagerDelegate <NSObject>
 
-- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithEmail:(NSString *)email identifier:(NSString *)identifier;
+- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithAuthMethod:(CCAuthMethod *)authMethod;
 - (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager;
 
 @end

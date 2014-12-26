@@ -13,6 +13,7 @@
 #import <HexColors/HexColor.h>
 
 #import "CCLinotteEngineCoordinator.h"
+#import "CCLinotteAuthenticationManager.h"
 #import "CCLinotteAPI.h"
 #import "CCModelChangeHandler.h"
 
@@ -107,7 +108,7 @@
     BOOL launchFetch = _location == nil;
     _location = [locations lastObject];
     
-    if (launchFetch)
+    if (launchFetch == NO)
         [self loadLists:0];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -119,6 +120,8 @@
 
 - (void)loadLists:(NSUInteger)pageNumber
 {
+    if (CCLEC.authenticationManager.readyToSend == NO)
+        return;
     [CCLEC.linotteAPI fetchPublicLists:_location.coordinate success:^(NSArray *lists) {
         [_lists addObjectsFromArray:lists];
         [((CCListStoreView *)self.view) firstLoad];
