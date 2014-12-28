@@ -243,7 +243,8 @@
                 
                 NSError *error = nil;
                 for (CCAddressMeta *addressMeta in address.metas) {
-                    NSString *contentString = [NSString stringWithUTF8String:[[NSJSONSerialization dataWithJSONObject:addressMeta.content options:0 error:&error] bytes]];
+                    NSData *contentData = [NSJSONSerialization dataWithJSONObject:addressMeta.content options:0 error:&error];
+                    NSString *contentString = [[NSString alloc] initWithData:contentData encoding:NSUTF8StringEncoding];
                     
                     if (error != nil) {
                         CCLog(@"%@", error);

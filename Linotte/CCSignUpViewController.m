@@ -47,15 +47,20 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
-- (void)processAccountCreationWithFailure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+- (void)processAccountCreationWithAuthMethod:(CCAuthMethod *)authMethod failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     if ([AFNetworkReachabilityManager sharedManager].isReachable) {
-        [CCLEC.authenticationManager createAccountOrLoginWithSuccess:^{
+        [CCLEC.authenticationManager createAccountOrLoginWithAuthMethod:authMethod success:^{
             [_delegate signupCompleted];
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             CCLog(@"%@", error);
             NSDictionary *response = [CCLEC.linotteAPI errorDescription:task error:error];
             NSLog(@"%@", response);
+            
+            NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+            [managedObjectContext deleteObject:authMethod];
+            [[CCLinotteCoreDataStack sharedInstance] saveContext];
+            
             failureBlock(task, error);
         }];
     }
@@ -65,10 +70,9 @@
 
 - (void)loginSignupButtonPressed:(NSString *)email password:(NSString *)password
 {
-    [CCLEC.authenticationManager addAuthMethodWithEmail:email password:password];
+    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithEmail:email password:password];
     
-    [self processAccountCreationWithFailure:^(NSURLSessionDataTask *task, NSError *error) {
-        // TODO already taken
+    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {
     }];
 }
 
@@ -76,10 +80,9 @@
 
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    [CCLEC.authenticationManager addAuthMethodWithFacebookAccount:user];
+    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithFacebookAccount:user];
     
-    [self processAccountCreationWithFailure:^(NSURLSessionDataTask *task, NSError *error) {
-        
+    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {
     }];
 }
 

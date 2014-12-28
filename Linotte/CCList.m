@@ -42,13 +42,13 @@
     return sortedListZones;
 }
 
-+ (CCList *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
++ (CCList *)listWithIdentifier:(NSString *)identifier managedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSError *error = nil;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", dict[@"identifier"]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier = %@", identifier];
     [fetchRequest setPredicate:predicate];
-    [fetchRequest setFetchLimit:1];
+    fetchRequest.fetchLimit = 1;
     NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
     if (error != nil) {
@@ -56,10 +56,13 @@
         return nil;
     }
     
-    CCList *list;
-    if ([lists count] > 0)
-        list = [lists firstObject];
-    else {
+    return [lists firstObject];
+}
+
++ (CCList *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
+{
+    CCList *list = [self listWithIdentifier:dict[@"identifier"] managedObjectContext:managedObjectContext];
+    if (list == nil) {
         list = [self insertInManagedObjectContext:managedObjectContext];
     }
     [self setValuesForlist:list fromLinotteDict:dict];

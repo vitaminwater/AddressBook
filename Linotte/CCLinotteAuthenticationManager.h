@@ -35,10 +35,9 @@
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI;
 
-- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
-- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
-- (void)createAccountOrLoginWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
-
+- (CCAuthMethod *)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
+- (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
+- (void)createAccountOrLoginWithAuthMethod:(CCAuthMethod *)authMethod success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 @end

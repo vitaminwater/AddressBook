@@ -17,7 +17,7 @@
 
 #if defined(DEBUG)
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug79"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug92"
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountNameDebug"
@@ -55,50 +55,73 @@
     return self;
 }
 
-- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
-{
-    NSDictionary *infos = @{@"email" : email, @"password" : password};
+- (CCAuthMethod *)authMethodWithType:(NSString *)type {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    NSError *error;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type = %@", type];
+    [fetchRequest setPredicate:predicate];
     
-    CCAuthMethod *authMethod = nil;
+    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     
-    // check if already has an email type auth method
-    {
-        NSError *error;
-        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"type = %@", @"email"];
-        [fetchRequest setPredicate:predicate];
-        
-        NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        
-        if (error != nil) {
-            CCLog(@"%@", error);
-            return;
-        }
-        
-        if ([authMethods count] != 0) {
-            authMethod = [authMethods firstObject];
-        }
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return nil;
     }
     
-    if (authMethod == nil)
-        authMethod = [CCAuthMethod insertInManagedObjectContext:managedObjectContext];
+    if ([authMethods count] != 0) {
+        return [authMethods firstObject];
+    }
     
-    authMethod.type = @"email";
-    authMethod.infos = infos;
-    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    CCAuthMethod *authMethod = [CCAuthMethod insertInManagedObjectContext:managedObjectContext];
+    authMethod.type = type;
+    return authMethod;
 }
 
-- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
+- (CCAuthMethod *)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
+{
+    NSDictionary *infos = @{@"email" : email, @"password" : password};
+    
+    CCAuthMethod *authMethod = [self authMethodWithType:@"email"];
+    
+    authMethod.infosDict = infos;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
+    return authMethod;
+}
+
+- (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
 {
     FBAccessTokenData *accessTokenData = [FBSession activeSession].accessTokenData;
 
     NSString *expirationDateString = [_linotteAPI stringFromDate:accessTokenData.expirationDate];
-    NSDictionary *infos = @{@"access_token" : accessTokenData.accessToken, @"identifier" : user.objectID, @"expiration_date" : expirationDateString};
+    NSDictionary *infos = @{@"access_token" : accessTokenData.accessToken, @"identifier" : user.objectID, @"expiration_date" : expirationDateString, @"graph_object" : user};
+
+    CCAuthMethod *authMethod = [self authMethodWithType:@"facebook"];
+    
+    authMethod.infosDict = infos;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
+    return authMethod;
+}
+
+- (void)removeAuthMethods
+{
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    CCAuthMethod *unsentAuthMethod = [CCAuthMethod insertInManagedObjectContext:managedObjectContext];
-    unsentAuthMethod.type = @"facebook";
-    unsentAuthMethod.infos = infos;
+
+    NSError *error;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
+    for (CCAuthMethod *authMethod in authMethods) {
+        [managedObjectContext deleteObject:authMethod];
+    }
+    
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
@@ -168,21 +191,7 @@
     self.deviceId = nil;
     self.identifier = nil;
     
-    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-    
-    NSError *error;
-    NSArray *unsentAuthMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if (error != nil) {
-        CCLog(@"%@", error);
-        return;
-    }
-    
-    for (CCAuthMethod *unsentAuthMethod in unsentAuthMethods) {
-        [managedObjectContext deleteObject:unsentAuthMethod];
-    }
-    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    [self removeAuthMethods];
 }
 
 #pragma mark - helper methods

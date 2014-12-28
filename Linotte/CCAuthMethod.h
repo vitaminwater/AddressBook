@@ -2,7 +2,7 @@
 
 @interface CCAuthMethod : _CCAuthMethod {}
 
-@property (nonatomic, strong) NSDictionary* infos;
+@property (nonatomic, strong) NSDictionary* infosDict;
 
 - (NSDictionary *)requestDict;
 

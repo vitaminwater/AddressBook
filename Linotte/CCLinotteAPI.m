@@ -19,13 +19,12 @@
 
 
 #define kCCLinotteAPIVersionPrefix @"v2"
-#define LURL(url) [NSString stringWithFormat:@"/%@/%@", kCCLinotteAPIVersionPrefix, url]
+#define LURL(url) [NSString stringWithFormat:@"/%@%@", kCCLinotteAPIVersionPrefix, url]
 
 
 @implementation CCLinotteAPI
 {
     AFHTTPSessionManager *_apiManager;
-    AFHTTPSessionManager *_oauth2Manager;
     
     NSString *_clientId;
     NSString *_clientSecret;
@@ -49,9 +48,6 @@
         _apiManager.requestSerializer = [AFJSONRequestSerializer serializer];
         _apiManager.responseSerializer = [CCJSONResponseSerializer serializer];
         
-        _oauth2Manager = [[AFHTTPSessionManager alloc] initWithBaseURL:apiUrl];
-        _oauth2Manager.responseSerializer = [CCJSONResponseSerializer serializer];
-        
         _dateFormatter = [NSDateFormatter new];
         [_dateFormatter setLocale:[NSLocale currentLocale]];
         [_dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss.SSS'Z'"];
@@ -64,17 +60,16 @@
 
 - (void)setAuthHTTPHeader:(NSString *)accessToken
 {
-    NSString *oauth2Header = [NSString stringWithFormat:@"linotte %@", accessToken];
-    [_apiManager.requestSerializer setValue:oauth2Header forHTTPHeaderField:@"Authorization"];
+    NSString *authHeader = [NSString stringWithFormat:@"Linotte %@", accessToken];
+    [_apiManager.requestSerializer setValue:authHeader forHTTPHeaderField:@"Authorization"];
 }
 
-- (void)unsetOAuth2HttpHeader
+- (void)unsetAuthHttpHeader
 {
     [_apiManager.requestSerializer setValue:nil forHTTPHeaderField:@"Authorization"];
 }
 
 #pragma mark - Authentication methods
-
 
 /**
  * Parameters: type, infos (see auth methods doc, coming soon)
@@ -83,7 +78,7 @@
 {
     NSAssert(_clientId != nil && _clientSecret != nil, @"ClientId and/or clientSecret not set !");
     
-    return [_oauth2Manager POST:LURL(@"/user/login/") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    return [_apiManager POST:LURL(@"/user/login/") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         successBlock(response[@"identifier"], response[@"access_token"], response[@"auth_method"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
@@ -140,7 +135,7 @@
 
 - (NSURLSessionDataTask *)createDeviceWithSuccess:(void(^)(NSString *deviceId))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    return [_apiManager POST:LURL(@"/user/device/") parameters:nil success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+    return [_apiManager POST:LURL(@"/user/device/") parameters:@{} success:^(NSURLSessionDataTask *task, NSDictionary *response) {
         successBlock(response[@"identifier"]);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
@@ -213,7 +208,7 @@
     }
     
     NSString *url = [NSString stringWithFormat:@"/user/list/%@/", list_identifier];
-    return [_apiManager POST:LURL(url) parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+    return [_apiManager POST:LURL(url) parameters:@{} success:^(NSURLSessionDataTask *task, id responseObject) {
         successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
@@ -277,7 +272,7 @@
     }
     
     NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
-    return [_apiManager POST:LURL(path) parameters:nil success:^(NSURLSessionDataTask *task, id responseObject) {
+    return [_apiManager POST:LURL(path) parameters:@{} success:^(NSURLSessionDataTask *task, id responseObject) {
         successBlock();
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
@@ -504,7 +499,7 @@
 - (NSURLSessionDataTask *)fetchListLastEventDate:(NSString *)identifier success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"last_date_only" : @YES, @"list" : identifier};
-    return [_apiManager GET:LURL(@"events") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
+    return [_apiManager GET:LURL(@"/events/") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
         NSDate *date = [self dateFromString:lastEventDateDict[@"last_date"]];
         successBlock(date);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -516,7 +511,7 @@
 - (NSURLSessionDataTask *)fetchUserLastEventDateWithSuccess:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSDictionary *parameters = @{@"last_date_only" : @YES};
-    return [_apiManager GET:LURL(@"events") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
+    return [_apiManager GET:LURL(@"/events/") parameters:parameters success:^(NSURLSessionDataTask *task, NSDictionary *lastEventDateDict) {
         NSDate *date = [self dateFromString:lastEventDateDict[@"last_date"]];
         successBlock(date);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
@@ -527,10 +522,9 @@
 
 - (NSURLSessionDataTask *)fetchUserEventsWithLastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    NSString *path = @"/user/events/";
     NSString *lastDateString = [self stringFromDate:lastDate];
     NSDictionary *parameters = @{@"last_date" : lastDateString};
-    return [_apiManager GET:LURL(path) parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:LURL(@"/events/") parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);

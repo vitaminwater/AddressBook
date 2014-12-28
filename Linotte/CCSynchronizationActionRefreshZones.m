@@ -16,7 +16,7 @@
 #import "CCList.h"
 #import "CCListZone.h"
 
-#define kCCDateIntervalDifference -(3 * 24 * 60 * 60)
+#define kCCDateIntervalDifference -(24 * 60 * 60)
 
 @implementation CCSynchronizationActionRefreshZones
 {
@@ -36,7 +36,7 @@
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and (lastZonesRefresh = nil or lastZonesRefresh < %@)", minDate];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and (lastZonesRefresh = nil or lastZonesRefresh < %@ or zones.@count = 0)", minDate];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastZonesRefresh" ascending:YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];

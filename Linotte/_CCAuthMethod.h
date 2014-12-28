@@ -10,8 +10,6 @@ extern const struct CCAuthMethodAttributes {
 	__unsafe_unretained NSString *type;
 } CCAuthMethodAttributes;
 
-@class NSObject;
-
 @interface CCAuthMethodID : NSManagedObjectID {}
 @end
 
@@ -25,7 +23,7 @@ extern const struct CCAuthMethodAttributes {
 
 //- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) id infos;
+@property (nonatomic, strong) NSString* infos;
 
 //- (BOOL)validateInfos:(id*)value_ error:(NSError**)error_;
 
@@ -48,8 +46,8 @@ extern const struct CCAuthMethodAttributes {
 - (NSString*)primitiveIdentifier;
 - (void)setPrimitiveIdentifier:(NSString*)value;
 
-- (id)primitiveInfos;
-- (void)setPrimitiveInfos:(id)value;
+- (NSString*)primitiveInfos;
+- (void)setPrimitiveInfos:(NSString*)value;
 
 - (NSNumber*)primitiveSent;
 - (void)setPrimitiveSent:(NSNumber*)value;

@@ -114,7 +114,7 @@
     }
     
     NSArray *toRemoveIdentifiers = [alreadyInstalledMetas valueForKeyPath:@"@unionOfObjects.identifier"];
-    NSPredicate *keepPredicate = [NSPredicate predicateWithFormat:@"objectIdentifier not in %@", toRemoveIdentifiers];
+    NSPredicate *keepPredicate = [NSPredicate predicateWithFormat:@"not objectIdentifier in %@", toRemoveIdentifiers];
     NSPredicate *removePredicate = [NSPredicate predicateWithFormat:@"objectIdentifier in %@", toRemoveIdentifiers];
     NSArray *toRemoveEvents = [_events filteredArrayUsingPredicate:removePredicate];
     _events = [_events filteredArrayUsingPredicate:keepPredicate];

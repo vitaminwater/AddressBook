@@ -29,8 +29,9 @@ typedef enum : NSUInteger {
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI;
 
-- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
-- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
+- (CCAuthMethod *)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
+- (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
+- (void)removeAuthMethods;
 - (BOOL)hasAuthMethodToSend;
 - (CCAuthMethod *)nextUnsentAuthMethod;
 - (CCAuthMethod *)firstAuthMethod;

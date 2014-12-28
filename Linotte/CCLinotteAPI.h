@@ -26,7 +26,7 @@ typedef enum : NSUInteger {
 - (instancetype)initWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 
 - (void)setAuthHTTPHeader:(NSString *)accessToken;
-- (void)unsetOAuth2HttpHeader;
+- (void)unsetAuthHttpHeader;
 
 - (NSURLSessionDataTask *)authenticate:(NSDictionary *)parameters success:(void(^)(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 

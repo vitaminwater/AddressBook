@@ -32,7 +32,7 @@
     CCLinotteCredentialStore *_credentialStore;
 }
 
-@dynamic needsSync, readyToSend;
+@dynamic needsCredentials, needsSync, readyToSend;
 @dynamic identifier;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI
@@ -55,12 +55,7 @@
 
 - (BOOL)needsCredentials
 {
-    NSError *error;
-    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
-    
-    return count == 0;
+    return _credentialStore.accessToken == nil;
 }
 
 - (BOOL)needsSync
@@ -93,7 +88,9 @@
         case kCCCreateDeviceId: {
             [_linotteAPI createDeviceWithSuccess:^(NSString *deviceId) {
                 _credentialStore.deviceId = deviceId;
-                [weakSelf syncWithSuccess:successBlock failure:failureBlock];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf syncWithSuccess:successBlock failure:failureBlock];
+                });
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
                 failureBlock(task, error);
@@ -113,7 +110,9 @@
                 authMethod.identifier = identifier;
                 authMethod.sentValue = YES;
                 [[CCLinotteCoreDataStack sharedInstance] saveContext];
-                [weakSelf syncWithSuccess:successBlock failure:failureBlock];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf syncWithSuccess:successBlock failure:failureBlock];
+                });
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
                 failureBlock(task, error);
@@ -130,19 +129,18 @@
     }
 }
 
-- (void)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
+- (CCAuthMethod *)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password
 {
-    [_credentialStore addAuthMethodWithEmail:email password:password];
+    return [_credentialStore addAuthMethodWithEmail:email password:password];
 }
 
-- (void)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
+- (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user
 {
-    [_credentialStore addAuthMethodWithFacebookAccount:user];
+    return [_credentialStore addAuthMethodWithFacebookAccount:user];
 }
 
-- (void)createAccountOrLoginWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+- (void)createAccountOrLoginWithAuthMethod:(CCAuthMethod *)authMethod success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    CCAuthMethod *authMethod = [_credentialStore firstAuthMethod];
     [self authenticateWithAuthMethod:authMethod success:successBlock failure:^(NSURLSessionDataTask *task, NSError *error) {
         [self createUserWithAuthMethod:authMethod success:successBlock failure:failureBlock];
     }];
@@ -155,6 +153,7 @@
         _credentialStore.accessToken = accessToken;
         _credentialStore.identifier = identifier;
         authMethod.identifier = authMethodIdentifier;
+        authMethod.sentValue = YES;
         [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [_delegate authenticationManagerDidLogin:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidLogin object:@{kCCLinotteAuthenticationManagerUser : self}];
@@ -172,6 +171,7 @@
         authMethod.sentValue = YES;
         [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [_delegate authenticationManager:self didCreateUserWithAuthMethod:authMethod];
+        [_delegate authenticationManagerDidLogin:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerAuthMethod : authMethod, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
         successBlock();
     } failure:failureBlock];
@@ -183,7 +183,7 @@
 {
     [_credentialStore logout];
     
-    [_linotteAPI unsetOAuth2HttpHeader];
+    [_linotteAPI unsetAuthHttpHeader];
     [_linotteAPI unsetDeviceHTTPHeader];
 }
 

@@ -1,6 +1,7 @@
 #import "CCAddressMeta.h"
 
 #import "CCLinotteCoreDataStack.h"
+#import "CCList.h"
 
 @interface CCAddressMeta ()
 
@@ -33,7 +34,7 @@
     else {
         addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
     }
-    [self setValuesForAddressMeta:addressMeta fromLinotteDict:dict];
+    [self setValuesForAddressMeta:addressMeta fromLinotteDict:dict managedObjectContext:managedObjectContext];
     return addressMeta;
 }
 
@@ -44,7 +45,7 @@
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddressMeta entityName]];
     if (list != nil) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and identifier in %@", list, identifiers];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(list = %@ or list = nil) and identifier in %@", list, identifiers];
         [fetchRequest setPredicate:predicate];
     } else {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier in %@", identifiers];
@@ -69,7 +70,7 @@
         } else {
             addressMeta = alreadyInstalledAddressMetas[addressMetaIndex];
         }
-        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressDict];
+        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressDict managedObjectContext:managedObjectContext];
         
         [addressMetas addObject:addressMeta];
     }
@@ -81,23 +82,29 @@
     NSMutableArray *addressMetas = [@[] mutableCopy];
     for (NSDictionary *addressMetaDict in dictArray) {
         CCAddressMeta *addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
-        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressMetaDict];
+        [self setValuesForAddressMeta:addressMeta fromLinotteDict:addressMetaDict managedObjectContext:managedObjectContext];
         
         [addressMetas addObject:addressMeta];
     }
     return addressMetas;
 }
 
-+ (void)setValuesForAddressMeta:(CCAddressMeta *)addressMeta fromLinotteDict:(NSDictionary *)dict
++ (void)setValuesForAddressMeta:(CCAddressMeta *)addressMeta fromLinotteDict:(NSDictionary *)dict managedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSError *error = nil;
     addressMeta.identifier = dict[@"identifier"];
     addressMeta.action = dict[@"action"];
     addressMeta.uid = dict[@"uid"];
+    
+    id list = dict[@"list"];
+    if (list != nil && [list isKindOfClass:[NSString class]] && [list length] != 0)
+        addressMeta.list = [CCList listWithIdentifier:dict[@"list"] managedObjectContext:managedObjectContext];
+    
     NSDictionary *content = [NSJSONSerialization JSONObjectWithData:[dict[@"content"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-    addressMeta.content = content;
     if (error != nil) {
         NSLog(@"%@", error);
+    } else {
+        addressMeta.content = content;
     }
 }
 
