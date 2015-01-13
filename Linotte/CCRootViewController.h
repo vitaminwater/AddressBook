@@ -12,11 +12,8 @@
 
 #import "CCSplashViewControllerDelegate.h"
 
-#import "CCAddAddressViewControllerDelegate.h"
-#import "CCListStoreViewControllerDelegate.h"
-
 #import "CCViewControllerSwiperViewControllerDelegate.h"
 
-@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCListStoreViewControllerDelegate, CCAddAddressViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate>
+@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate>
 
 @end

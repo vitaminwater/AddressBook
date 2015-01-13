@@ -79,7 +79,7 @@ static CCActionResultHUD *_currentHUD = nil;
 
 #pragma mark - class methods
 
-+ (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image text:(NSString *)text delay:(NSTimeInterval)delay
++ (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image inView:(UIView *)view text:(NSString *)text delay:(NSTimeInterval)delay
 {
     if (_currentHUD != nil) {
         [self removeActionResult:_currentHUD];
@@ -89,7 +89,6 @@ static CCActionResultHUD *_currentHUD = nil;
     CCActionResultHUD *actionResultHUD = [[CCActionResultHUD alloc] initWithImage:image text:text];
     actionResultHUD.translatesAutoresizingMaskIntoConstraints = NO;
     
-    UIView *view = [UIApplication sharedApplication].delegate.window.rootViewController.view;
     [view addSubview:actionResultHUD];
     
     NSLayoutConstraint *centerXConstraint = [NSLayoutConstraint constraintWithItem:actionResultHUD attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
@@ -121,6 +120,11 @@ static CCActionResultHUD *_currentHUD = nil;
     } completion:^(BOOL finished) {
         [actionResultHUD removeFromSuperview];
     }];
+}
+
++ (UIView *)applicationRootView
+{
+    return [UIApplication sharedApplication].delegate.window.rootViewController.view;
 }
 
 @end

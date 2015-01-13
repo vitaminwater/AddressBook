@@ -21,7 +21,7 @@
 
 #import "CCAnimationDelegator.h"
 
-#import "CCListStoreViewController.h"
+#import "CCListStoreHomeViewController.h"
 
 #import "CCBookAndNotifiedListViewModel.h"
 #import "CCAddressListViewModel.h"
@@ -146,9 +146,7 @@
 
 - (void)filterList:(NSString *)filterText
 {
-    for (CCListViewController *listViewController in _listViewControllers) {
-        [listViewController filterList:filterText];
-    }
+    
 }
 
 #pragma mark - CCListViewControllerDelegate methods
@@ -168,7 +166,6 @@
 - (void)listSelected:(CCList *)list
 {
     CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list];
-    listOutputViewController.delegate = self;
     [self.navigationController pushViewController:listOutputViewController animated:YES];
 }
 
@@ -195,7 +192,7 @@
 - (void)alertViewDidSayYesForAddress:(CCAlertView *)sender
 {
     [CCModelHelper deleteAddress:sender.userInfo];
-    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] inView:self.view text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
     
     [CCAlertView closeAlertView:sender];
 }
@@ -203,7 +200,7 @@
 - (void)alertViewDidSayYesForList:(CCAlertView *)sender
 {
     [CCModelHelper deleteList:sender.userInfo];
-    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] inView:self.view text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
     
     [CCAlertView closeAlertView:sender];
 }

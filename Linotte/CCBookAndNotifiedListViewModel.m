@@ -28,7 +28,7 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems:(NSString *)filterText
+- (void)loadListItems
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
@@ -38,11 +38,7 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
         NSPredicate *predicate;
-        if (filterText != nil) {
-            predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists.notify = %@ AND name CONTAINS[c] %@", @YES, @YES, filterText];
-        } else {
-            predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists.notify = %@", @YES, @YES];
-        }
+        predicate = [NSPredicate predicateWithFormat:@"notify = %@ AND ANY lists.notify = %@", @YES, @YES];
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];

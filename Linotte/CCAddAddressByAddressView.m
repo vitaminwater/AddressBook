@@ -11,7 +11,9 @@
 #import "CCAlertView.h"
 #import "CCLinotteField.h"
 
-#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight}
+#import "CCAddAddressTabButtons.h"
+
+#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight, @"kCCButtonViewHeight" : kCCButtonViewHeight}
 
 @implementation CCAddAddressByAddressView
 {
@@ -49,12 +51,13 @@
 - (void)setupLayout
 {
     [super setupLayout];
+    UIView *tabButtons = self.tabButtons;
     UIView *autocompletedField = self.autocompletedField;
     UIView *tableView = self.tableView;
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_nameField, autocompletedField, tableView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_nameField, tabButtons, autocompletedField, tableView);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(==kCCAddTextFieldHeight)][autocompletedField(==kCCAddTextFieldHeight)][tableView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(kCCAddTextFieldHeight)][tabButtons(kCCButtonViewHeight)][autocompletedField(kCCAddTextFieldHeight)][tableView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -73,6 +76,11 @@
     _nameField.text = @"";
     [_nameField resignFirstResponder];
     [super cleanBeforeClose];
+}
+
+- (void)resetTabButtonPosition
+{
+    [self.tabButtons setSelectedTabButton:CCAddAddressByAddressType];
 }
 
 #pragma mark - UITextFieldDelegate methods

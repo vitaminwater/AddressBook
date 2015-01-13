@@ -8,14 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef enum : NSUInteger {
-    CCAddAddressByNameType = 0,
-    CCAddAddressByAddressType = 1,
-    CCAddAddressAtLocationType = 2,
-} CCAddAddressType;
-
 @protocol CCAddAddressViewDelegate <NSObject>
-
-- (void)addAddressTypeChangedTo:(CCAddAddressType)addAddressType;
 
 @end

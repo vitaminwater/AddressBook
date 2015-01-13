@@ -2,20 +2,16 @@
 //  CCListStoreView.m
 //  Linotte
 //
-//  Created by stant on 09/09/14.
-//  Copyright (c) 2014 CCSAS. All rights reserved.
+//  Created by stant on 04/01/15.
+//  Copyright (c) 2015 CCSAS. All rights reserved.
 //
 
-#import "CCListStoreView.h"
-
-#import "CCListStoreTableViewCell.h"
+#import "CCBaseListStoreView.h"
+#import "CCListStoreCollectionViewCell.h"
 
 #import "CCActionResultHUD.h"
 
-#define kCCListStoreTableViewCell @"kCCListStoreTableViewCell"
-
-
-@implementation CCListStoreView
+@implementation CCBaseListStoreView
 {
     UICollectionView *_listView;
     
@@ -28,7 +24,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor greenColor];
+        self.backgroundColor = [UIColor whiteColor];
         self.opaque = YES;
         
         [self setupList];
@@ -58,12 +54,12 @@
     
     _listView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
-    [_listView registerClass:[CCListStoreTableViewCell class] forCellWithReuseIdentifier:kCCListStoreTableViewCell];
-    _listView.delegate = self;
-    _listView.dataSource = self;
     _listView.backgroundColor = [UIColor whiteColor];
+    [self setupList:_listView];
     [self addSubview:_listView];
 }
+
+- (void)setupList:(UICollectionView *)listView {}
 
 - (void)setupLayout
 {
@@ -77,7 +73,7 @@
 
 - (void)unreachable
 {
-    _actionResult = [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"network_status"] text:NSLocalizedString(@"MISSING_LOCATION", @"") delay:0];
+    _actionResult = [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"network_status"] inView:self text:NSLocalizedString(@"MISSING_LOCATION", @"") delay:0];
     self.userInteractionEnabled = NO;
 }
 
@@ -130,36 +126,9 @@
 
 #pragma mark - List management
 
-- (void)firstLoad
+- (void)reloadData
 {
     [_listView reloadData];
-}
-
-#pragma mark - UICollectionViewDelegate/UICollectionViewDataSource methods
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    [_delegate listSelectedAtIndex:indexPath.row];
-}
-
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    CCListStoreTableViewCell *cell = [_listView dequeueReusableCellWithReuseIdentifier:kCCListStoreTableViewCell forIndexPath:indexPath];
-    
-    [cell setTitle:[_delegate nameForListAtIndex:indexPath.row]];
-    [cell setImage:[UIImage imageNamed:@"list_pin_neutral"]];
-    return cell;
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    return [_delegate numberOfLists];
-}
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
 }
 
 @end

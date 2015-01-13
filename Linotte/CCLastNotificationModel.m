@@ -22,7 +22,7 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems:(NSString *)filterText
+- (void)loadListItems
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
@@ -32,11 +32,7 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
         NSPredicate *predicate;
-        if (filterText != nil) {
-            predicate = [NSPredicate predicateWithFormat:@"lastnotif != nil AND name CONTAINS[c] %@", filterText];
-        } else {
-            predicate = [NSPredicate predicateWithFormat:@"lastnotif != nil"];
-        }
+        predicate = [NSPredicate predicateWithFormat:@"lastnotif != nil"];
         [fetchRequest setPredicate:predicate];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastnotif" ascending:NO];

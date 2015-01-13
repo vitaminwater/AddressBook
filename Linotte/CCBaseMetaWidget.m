@@ -12,7 +12,7 @@
 
 #import "CCDisplayMeta.h"
 #import "CCContactMeta.h"
-#import "CCPicsMeta.h"
+#import "CCPhotoMeta.h"
 #import "CCOpenHoursMeta.h"
 
 @implementation CCBaseMetaWidget
@@ -37,7 +37,7 @@
     static NSArray *widgets = nil;
     
     if (widgets == nil) {
-        widgets = @[[CCDisplayMeta class], [CCContactMeta class], [CCPicsMeta class], [CCOpenHoursMeta class]];
+        widgets = @[[CCDisplayMeta class], [CCContactMeta class], [CCPhotoMeta class], [CCOpenHoursMeta class]];
     }
     
     for (Class metaClass in widgets) {

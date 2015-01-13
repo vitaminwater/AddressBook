@@ -10,10 +10,13 @@
 
 #import "CCAutocompleteAddAddressViewDelegate.h"
 
+@class CCAddAddressTabButtons;
+
 @interface CCAutocompleteAddAddressView : UIView<UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
 
 @property(nonatomic, weak)id<CCAutocompleteAddAddressViewDelegate> delegate;
 
+@property(nonatomic, strong)CCAddAddressTabButtons *tabButtons;
 @property(nonatomic, strong)UITableView *tableView;
 @property(nonatomic, strong)UITextField *autocompletedField;
 @property(nonatomic, strong)NSString *nameFieldValue;
@@ -31,5 +34,7 @@
 
 - (void)showLoading:(NSString *)message;
 - (void)hideLoading;
+
+- (void)resetTabButtonPosition;
 
 @end

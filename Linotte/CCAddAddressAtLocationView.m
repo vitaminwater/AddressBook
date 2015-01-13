@@ -14,11 +14,15 @@
 #import "CCLinotteField.h"
 #import "CCFlatColorButton.h"
 
-#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight}
+#import "CCAddAddressTabButtons.h"
+
+#define kCCAddAddressViewMetrics @{@"kCCAddTextFieldHeight" : kCCLinotteTextFieldHeight, @"kCCButtonViewHeight" : kCCButtonViewHeight}
 
 @implementation CCAddAddressAtLocationView
 {
     UITextField *_nameField;
+    
+    CCAddAddressTabButtons *_tabButtons;
     
     GMSMapView *_mapView;
     GMSMarker *_positionMarker;
@@ -39,10 +43,11 @@
         self.opaque = YES;
         _mapMoved = NO;
         
+        [self setupNameField];
+        [self setupTabButtons];
         [self setupMapView];
         [self setupBackToCurrentLocationButton];
         [self setupValidateButton];
-        [self setupNameField];
         [self setupLayout];
     }
     return self;
@@ -55,6 +60,13 @@
     _nameField.placeholder = NSLocalizedString(@"PLACE_NAME", @"");
     _nameField.delegate = self;
     [self addSubview:_nameField];
+}
+
+- (void)setupTabButtons
+{
+    _tabButtons = [CCAddAddressTabButtons new];
+    _tabButtons.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_tabButtons];
 }
 
 - (void)setupMapView
@@ -107,9 +119,9 @@
 - (void)setupLayout
 {
     {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_nameField, _mapView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(_nameField, _tabButtons, _mapView);
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(==kCCAddTextFieldHeight)][_mapView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_nameField(kCCAddTextFieldHeight)][_tabButtons(kCCButtonViewHeight)][_mapView]|" options:0 metrics:kCCAddAddressViewMetrics views:views];
         [self addConstraints:verticalConstraints];
         
         for (UIView *view in views.allValues) {
@@ -149,6 +161,11 @@
 {
     [_nameField resignFirstResponder];
     _nameField.text = @"";
+}
+
+- (void)resetTabButtonPosition
+{
+    [_tabButtons setSelectedTabButton:CCAddAddressAtLocationType];
 }
 
 #pragma mark - UITextFieldDelegate methods
@@ -215,6 +232,12 @@
 - (void)setNameFieldValue:(NSString *)nameFieldValue
 {
     _nameField.text = nameFieldValue;
+}
+
+- (void)setDelegate:(id<CCAddAddressAtLocationViewDelegate>)delegate
+{
+    _delegate = delegate;
+    _tabButtons.delegate = delegate;
 }
 
 #pragma mark - getter methods

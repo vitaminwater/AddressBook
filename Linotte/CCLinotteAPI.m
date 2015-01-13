@@ -398,11 +398,45 @@
 
 #pragma mark - Fetch methods
 
-- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+- (NSURLSessionTask *)fetchListsAroundMe:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
     NSDictionary *parameters = @{@"geohash" : geohash};
-    return [_apiManager GET:LURL(@"/discover/public/") parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+    return [_apiManager GET:LURL(@"/discover/listsaroundme/") parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        successBlock(responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        failureBlock(task, error);
+    }];
+}
+
+- (NSURLSessionTask *)fetchGroupsAroundMe:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *groups))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSString *geohash = [CCGeohashHelper geohashFromCoordinates:coordinates];
+    NSDictionary *parameters = @{@"geohash" : geohash};
+    return [_apiManager GET:LURL(@"/discover/groupsaroundme/") parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        successBlock(responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        failureBlock(task, error);
+    }];
+}
+
+- (NSURLSessionTask *)fetchListsForGroup:(NSString *)identifier success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSString *path = [NSString stringWithFormat:@"/discover/listsforgroup/%@/", identifier];
+    return [_apiManager GET:LURL(path) parameters:nil success:^(NSURLSessionDataTask *task, NSArray *responses) {
+        successBlock(responses);
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+        failureBlock(task, error);
+    }];
+}
+
+- (NSURLSessionTask *)searchLists:(NSString *)search success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSDictionary *params = @{@"search" : search};
+    return [_apiManager GET:LURL(@"/discover/searchlist/") parameters:params success:^(NSURLSessionDataTask *task, NSArray *responses) {
         successBlock(responses);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);

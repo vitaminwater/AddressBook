@@ -15,12 +15,9 @@
 #import "CCAddAddressByAddressViewControllerDelegate.h"
 #import "CCAddAddressAtLocationViewControllerDelegate.h"
 
-#import "CCListStoreViewControllerDelegate.h"
-
-#import "CCListOutputViewControllerDelegate.h"
 #import "CCOutputViewControllerDelegate.h"
 #import "CCChildRootViewControllerProtocol.h"
 
-@interface CCHomeViewController : UIViewController<CCChildRootViewControllerProtocol, CCHomeViewDelegate, CCListViewControllerDelegate, CCListStoreViewControllerDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate>
+@interface CCHomeViewController : UIViewController<CCChildRootViewControllerProtocol, CCHomeViewDelegate, CCListViewControllerDelegate, CCOutputViewControllerDelegate>
 
 @end

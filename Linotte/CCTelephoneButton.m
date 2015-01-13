@@ -27,6 +27,8 @@
     return self;
 }
 
+#pragma mark - CCContactButtonProtocol methods
+
 - (void)buttonPressed
 {
     NSString *dialstring = [[NSString alloc] initWithFormat:@"tel:%@", _number];

@@ -22,7 +22,7 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems:(NSString *)filterText
+- (void)loadListItems
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
@@ -32,11 +32,7 @@
         NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
         
         NSPredicate *predicate;
-        if (filterText != nil) {
-            predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@ AND name CONTAINS[c] %@", @YES, filterText];
-        } else {
-            predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@", @YES];
-        }
+        predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@", @YES];
         [fetchRequest setPredicate:predicate];
         
         NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
@@ -46,11 +42,6 @@
         else
             [self.provider addAddresses:addresses];
     }
-}
-
-- (void)filterItems:(NSString *)filterText
-{
-    
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
@@ -90,6 +81,18 @@
     
     [myAddresses removeObjectsInArray:toDeleteAddresses];
     [self.provider refreshListItemContentsForObjects:myAddresses];
+    [self.provider removeAddresses:toDeleteAddresses];
+}
+
+- (void)listsWillRemove:(NSArray *)lists send:(BOOL)send
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isAuthor = %@ and lists.@count = 1", @YES];
+    NSMutableArray *toDeleteAddresses = [@[] mutableCopy];
+    
+    for (CCList *list in lists) {
+        NSArray *tmp = [[list.addresses filteredSetUsingPredicate:predicate] allObjects];
+        [toDeleteAddresses addObjectsFromArray:tmp];
+    }
     [self.provider removeAddresses:toDeleteAddresses];
 }
 

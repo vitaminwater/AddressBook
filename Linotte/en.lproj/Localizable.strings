@@ -93,8 +93,11 @@
 "LIST_CONFIG_HELP2" = "Books marked with a green check will have there addresses visible on your front page.";
 
 "LIST_STORE_SCREEN_NAME" = "DISCOVER";
+"LIST_STORE_SEARCH_NAME" = "SEARCH";
 "HOME_SCREEN_NAME" = "MY LINOTTE";
 "ADD_ADDRESS_SCREEN_NAME" = "CREATE AN ADDRESS";
+
+"LIST_STORE_SEE_MORE" = "See more";
 
 "MY_BOOKS" = "MY BOOKS";
 
@@ -138,3 +141,5 @@
 
 "EMAIL_PLACEHOLDER" = "Enter your email address here";
 "PASSWORD_PLACEHOLDER" = "And your password here";
+
+"CANNOT_SEND_MAIL" = "Cannot send mail,\nis it configured ?";

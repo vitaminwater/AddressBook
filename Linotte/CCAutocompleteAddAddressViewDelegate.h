@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCAutocompleteAddAddressViewDelegate <NSObject>
+#import "CCAddAddressTabButtonsDelegate.h"
+
+@protocol CCAutocompleteAddAddressViewDelegate <CCAddAddressTabButtonsDelegate>
 
 #pragma mark - auto completion methods
 

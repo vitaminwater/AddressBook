@@ -4,7 +4,7 @@
 
 @interface CCAddressMeta : _CCAddressMeta<CCMetaProtocol> {}
 
-@property (nonatomic, strong)NSDictionary *content;
+@property (nonatomic, strong)id content;
 
 + (CCAddressMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict;
 + (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list;

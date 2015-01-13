@@ -98,34 +98,30 @@
 
 - (void)setupLayout
 {
-    if ([_widgets count] == 0)
-        return;
-    
     if (_constraints != nil)
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
     
-    UIView *previousWidget = nil;
-    for (UIView *widget in _widgets) {
-        if (previousWidget != nil) {
-            NSLayoutConstraint *linkConstraint = [NSLayoutConstraint constraintWithItem:previousWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:widget attribute:NSLayoutAttributeTop multiplier:1 constant:-7];
-            [self addConstraint:linkConstraint];
-            [_constraints addObject:linkConstraint];
-        }
+    if ([_widgets count] == 0)
+        return;
+    
+    NSMutableDictionary *views = [@{} mutableCopy];
+    
+    NSUInteger index = 0;
+    NSMutableString *format = [@"V:|" mutableCopy];
+    for (UIView *view in _widgets) {
+        NSString *key = [NSString stringWithFormat:@"view%d", (unsigned int)index];
+        [views setValue:view forKey:key];
+        [format appendFormat:@"[%@]", key];
+        ++index;
         
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[widget]|" options:0 metrics:nil views:@{@"widget" : widget}];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:horizontalConstraints];
-        
-        previousWidget = widget;
     }
+    [format appendString:@"|"];
     
-    UIView *firstWidget = [_widgets firstObject];
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:firstWidget attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:7];
-    [_constraints addObject:topConstraint];
-    
-    UIView *lastWidget = [_widgets lastObject];
-    NSLayoutConstraint *bottomWidgetConstraint = [NSLayoutConstraint constraintWithItem:lastWidget attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-7];
-    [_constraints addObject:bottomWidgetConstraint];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
+    [_constraints addObjectsFromArray:verticalConstraints];
     
     [self addConstraints:_constraints];
 }

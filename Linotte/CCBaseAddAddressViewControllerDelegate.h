@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CCAddAddressTabButtonsDelegate.h"
+
 @class CCAddress;
 
-@protocol CCBaseAddAddressViewControllerDelegate <NSObject>
+@protocol CCBaseAddAddressViewControllerDelegate<CCAddAddressTabButtonsDelegate>
 
 - (void)addAddressViewController:(id)sender preSaveAddress:(CCAddress *)address;
 - (void)addAddressViewController:(id)sender postSaveAddress:(CCAddress *)address;

@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListStoreTableViewCell.h"
+#import "CCListStoreCollectionViewCell.h"
 
 #import <HexColors/HexColor.h>
 
-@implementation CCListStoreTableViewCell
+@implementation CCListStoreCollectionViewCell
 {
     UIImageView *_image;
     UILabel *_title;

@@ -31,8 +31,6 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 
 - (instancetype)initWithModel:(CCListViewModel<CCListViewModelProtocol> *)model;
 
-- (void)filterList:(NSString *)filterText;
-
 - (void)deleteItemAtIndex:(NSUInteger)index;
 - (void)deleteItemsAtIndexes:(NSIndexSet *)indexes;
 

@@ -14,6 +14,8 @@
 
 #import "CCAddAddressViewTableViewCell.h"
 
+#import "CCAddAddressTabButtons.h"
+
 #define kCCAddViewTableViewCell @"kCCAddViewTableViewCell"
 #define kCCLoadingViewHeight 25
 
@@ -42,9 +44,17 @@
 
 - (void)setupViews
 {
+    [self setupTabButtons];
     [self setupTableView];
     [self setupLoadingView];
     [self setupTextField];
+}
+
+- (void)setupTabButtons
+{
+    _tabButtons = [CCAddAddressTabButtons new];
+    _tabButtons.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_tabButtons];
 }
 
 - (void)setupTableView
@@ -182,6 +192,10 @@
     _autocompletedField.text = @"";
 }
 
+- (void)resetTabButtonPosition
+{
+}
+
 /*- (void)drawRect:(CGRect)rect
 {
     CGRect frame = _autocompletedField.bounds;
@@ -224,6 +238,14 @@
         [_autocompletedField resignFirstResponder];
     }
     return NO;
+}
+
+#pragma mark - setter methods
+
+- (void)setDelegate:(id<CCAutocompleteAddAddressViewDelegate>)delegate
+{
+    _delegate = delegate;
+    _tabButtons.delegate = delegate;
 }
 
 #pragma mark - UITableViewDataSource methods

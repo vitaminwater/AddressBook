@@ -8,7 +8,13 @@
 
 #import "CCRootViewController.h"
 
+#import <MessageUI/MessageUI.h>
+
+#import "CCLinotteBrowserViewController.h"
+
 #import "CCRootView.h"
+
+#import "CCActionResultHUD.h"
 
 #import "CCViewControllerSwiperViewController.h"
 
@@ -16,7 +22,7 @@
 
 #import "CCHomeViewController.h"
 #import "CCAddAddressViewController.h"
-#import "CCListStoreViewController.h"
+#import "CCListStoreNavigationController.h"
 
 #import "CCOutputViewControllersTransition.h"
 #import "CCListOutputViewController.h"
@@ -28,7 +34,7 @@
 
     CCViewControllerSwiperViewController *_swiperViewController;
     
-    CCListStoreViewController *_listStoreViewController;
+    CCListStoreNavigationController *_listStoreNavigationController;
     CCHomeViewController *_homeViewController;
     CCAddAddressViewController *_addAddressViewController;
 }
@@ -38,6 +44,11 @@
     self = [super init];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backToHome:) name:kCCBackToHomeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNotificationPanel:) name:kCCShowNotificationPanelNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showListOutput:) name:kCCShowListOutputNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showBrowser:) name:kCCShowBrowserNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showEmail:) name:kCCShowEmailNotification object:nil];
     }
     return self;
 }
@@ -49,14 +60,11 @@
 
 - (void)loadView
 {
-    _listStoreViewController = [CCListStoreViewController new];
-    _listStoreViewController.delegate = self;
+    _listStoreNavigationController = [CCListStoreNavigationController new];
     _homeViewController = [CCHomeViewController new];
-    //_homeViewController.delegate = self;
     _addAddressViewController = [CCAddAddressViewController new];
-    _addAddressViewController.delegate = self;
     
-    _swiperViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:@[_listStoreViewController, _homeViewController, _addAddressViewController] edgeOnly:NO startViewControllerIndex:1];
+    _swiperViewController = [[CCViewControllerSwiperViewController alloc] initWithViewControllers:@[_listStoreNavigationController, _homeViewController, _addAddressViewController] edgeOnly:NO startViewControllerIndex:1];
     _swiperViewController.delegate = self;
     
     [self addChildViewController:_swiperViewController];
@@ -137,6 +145,45 @@
     CCRootView *view = (CCRootView *)self.view;
     [_swiperViewController setCurrentViewControllerIndex:1];
     [view setSelectedTabItem:1];
+}
+
+- (void)showNotificationPanel:(NSNotification *)note
+{
+    CCRootView *view = (CCRootView *)self.view;
+    [_swiperViewController setCurrentViewControllerIndex:2];
+    [view setSelectedTabItem:2];
+}
+
+- (void)showListOutput:(NSNotification *)note
+{
+    CCList *list = [note object];
+    
+    CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list listIsNew:YES];
+    [self.navigationController pushViewController:listOutputViewController animated:YES];
+}
+
+- (void)showBrowser:(NSNotification *)note
+{
+    NSString *rootUrl = [note object];
+    
+    CCLinotteBrowserViewController *browserViewController = [[CCLinotteBrowserViewController alloc] initWithRootUrl:rootUrl];
+    [self presentViewController:browserViewController animated:YES completion:^{}];
+}
+
+- (void)showEmail:(NSNotification *)note
+{
+    NSDictionary *emailInfos = [note object];
+    
+    if ([MFMailComposeViewController canSendMail])
+    {
+        MFMailComposeViewController *mailComposerViewController = [[MFMailComposeViewController alloc] init];
+        [mailComposerViewController setToRecipients:@[emailInfos[@"email"]]];
+        [self presentViewController:mailComposerViewController animated:YES completion:^{}];
+    }
+    else
+    {
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:[CCActionResultHUD applicationRootView] text:NSLocalizedString(@"CANNOT_SEND_MAIL", @"") delay:3];
+    }
 }
 
 @end

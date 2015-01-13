@@ -252,19 +252,24 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 
 #pragma mark - public methods
 
-- (void)addAddresses:(NSArray *)addresses
+- (BOOL)addAddresses:(NSArray *)addresses
 {
     if (self.location == nil)
-        return;
+        return NO;
     
+    CLLocation *location = self.itemLocation;
     [self refreshListData];
+    return ![location isEqual:self.itemLocation];
 }
 
-- (void)removeAddresses:(NSArray *)addresses
+- (BOOL)removeAddresses:(NSArray *)addresses
 {
     if ([addresses containsObject:_closestAddress]) {
+        CLLocation *location = self.itemLocation;
         [self refreshListData];
+        return ![location isEqual:self.itemLocation];
     }
+    return NO;
 }
 
 - (void)refreshData

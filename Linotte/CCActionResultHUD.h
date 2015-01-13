@@ -10,7 +10,8 @@
 
 @interface CCActionResultHUD : UIView
 
-+ (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image text:(NSString *)text delay:(NSTimeInterval)delay;
++ (CCActionResultHUD *)showActionResultWithImage:(UIImage *)image inView:(UIView *)view text:(NSString *)text delay:(NSTimeInterval)delay;
 + (void)removeActionResult:(CCActionResultHUD *)actionResultHUD;
++ (UIView *)applicationRootView;
 
 @end

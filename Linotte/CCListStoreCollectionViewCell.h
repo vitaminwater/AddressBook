@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListStoreTableViewCell : UICollectionViewCell
+@interface CCListStoreCollectionViewCell : UICollectionViewCell
 
 - (void)setImage:(UIImage *)image;
 - (void)setTitle:(NSString *)title;

@@ -155,13 +155,13 @@
     if ([self validateEmail] == NO) {
         _emailField.layer.borderColor = [UIColor redColor].CGColor;
         _emailField.layer.borderWidth = 1;
-        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] text:NSLocalizedString(@"ENTER_VALID_EMAIL", @"") delay:3];
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:self.superview text:NSLocalizedString(@"ENTER_VALID_EMAIL", @"") delay:3];
         return;
     }
     if ([self validatePasswords] == NO) {
         _passwordField.layer.borderColor = [UIColor redColor].CGColor;
         _passwordField.layer.borderWidth = 1;
-        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] text:NSLocalizedString(@"ENTER_VALID_PASSWORDS", @"") delay:3];
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:self.superview text:NSLocalizedString(@"ENTER_VALID_PASSWORDS", @"") delay:3];
         _passwordField.text = @"";
         return;
     }

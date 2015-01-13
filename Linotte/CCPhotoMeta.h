@@ -10,6 +10,6 @@
 
 #import "CCBaseMetaWidgetProtocol.h"
 
-@interface CCPicsMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
+@interface CCPhotoMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
 
 @end

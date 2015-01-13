@@ -23,4 +23,6 @@
 - (void)setFirstInputAsFirstResponder;
 - (void)cleanBeforeClose;
 
+- (void)resetTabButtonPosition;
+
 @end

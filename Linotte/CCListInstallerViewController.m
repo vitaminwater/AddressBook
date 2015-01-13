@@ -146,7 +146,7 @@
 - (void)alertViewDidSayYesForList:(CCAlertView *)sender
 {
     [CCModelHelper deleteList:sender.userInfo];
-    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] inView:[CCActionResultHUD applicationRootView] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
     
     [CCAlertView closeAlertView:sender];
     

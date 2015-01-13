@@ -269,7 +269,7 @@
 - (void)alertViewDidSayYes:(CCAlertView *)sender
 {
     [CCModelHelper deleteAddress:sender.userInfo];
-    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
+    [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] inView:self.view text:NSLocalizedString(@"NOTIF_ADDRESS_DELETE_CONFIRM", @"") delay:1];
     
     [CCAlertView closeAlertView:sender];
 }

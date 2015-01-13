@@ -25,17 +25,12 @@
 
 #pragma mark CCListViewModelProtocol methods
 
-- (void)loadListItems:(NSString *)filterText
+- (void)loadListItems
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
-    
-    if (filterText != nil) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[c] %@", filterText];
-        [fetchRequest setPredicate:predicate];
-    }
     
     NSArray *lists = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
     

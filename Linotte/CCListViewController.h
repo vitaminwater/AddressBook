@@ -15,14 +15,13 @@
 #import "CCListViewDelegate.h"
 
 #import "CCListViewContentProviderDelegate.h"
-#import "CCListOutputViewControllerDelegate.h"
 #import "CCOutputViewControllerDelegate.h"
 
 @class CCAddress;
 @class CCListViewContentProvider;
 @class CCAnimationDelegator;
 
-@interface CCListViewController : UIViewController<CCListViewDelegate, CCListViewContentProviderDelegate, CCListOutputViewControllerDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate>
+@interface CCListViewController : UIViewController<CCListViewDelegate, CCListViewContentProviderDelegate, CCOutputViewControllerDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, weak)id<CCListViewControllerDelegate> delegate;
 @property(nonatomic, strong)CCListViewContentProvider *provider;
@@ -30,6 +29,5 @@
 @property(nonatomic, strong)CCAnimationDelegator *animatorDelegator;
 
 - (instancetype)initWithProvider:(CCListViewContentProvider *)provider;
-- (void)filterList:(NSString *)filterText;
 
 @end

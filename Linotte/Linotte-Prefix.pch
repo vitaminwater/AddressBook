@@ -19,7 +19,7 @@
 #endif
 
 #if defined(DEBUG)
-#define kCCLinotteAPIServer @"192.168.1.93"
+#define kCCLinotteAPIServer @"192.168.1.19"
 #else
 #define kCCLinotteAPIServer @"api.getlinotte.com"
 #endif
@@ -38,5 +38,11 @@
 
 
 #define kCCBackToHomeNotification @"kCCBackToHomeNotification"
+#define kCCShowNotificationPanelNotification @"kCCShowNotificationPanelNotification"
+
 #define kCCShowAddressesPanelNotification @"kCCShowAddressesPanelNotification"
 #define kCCShowBookPanelNotification @"kCCShowBookPanelNotification"
+
+#define kCCShowListOutputNotification @"kCCShowListOutputNotification"
+#define kCCShowBrowserNotification @"kCCShowBrowserNotification"
+#define kCCShowEmailNotification @"kCCShowEmailNotification"

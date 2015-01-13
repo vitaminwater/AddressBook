@@ -190,7 +190,7 @@
     if (sender.deletable)
         [_delegate deleteListItemAtIndex:indexPath.row];
     else
-        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] text:NSLocalizedString(@"CANNOT_DELETE_ADDRESS", @"") delay:3];
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:self text:NSLocalizedString(@"CANNOT_DELETE_ADDRESS", @"") delay:3];
 }
 
 - (void)setNotificationEnabled:(BOOL)enabled forCell:(id)sender

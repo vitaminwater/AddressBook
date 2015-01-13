@@ -34,8 +34,6 @@
     CCAddAddressAtLocationViewController *_addAddressAtLocationViewController;
 }
 
-@synthesize delegate = _delegate;
-
 - (instancetype)init
 {
     self = [super init];
@@ -98,22 +96,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowAddressesPanelNotification object:nil];
 }
 
-#pragma mark - CCChildRootViewControllerProtocol methods
-
-- (void)viewWillShow
-{
-//    id<CCAddAddressViewControllerProtocol> addAddressViewController = (id<CCAddAddressViewControllerProtocol>)_swapperViewController.currentViewController;
-//    [addAddressViewController setFirstInputAsFirstResponder];
-}
-
-- (void)viewWillHide
-{
-    id<CCAddAddressViewControllerProtocol> addAddressViewController = (id<CCAddAddressViewControllerProtocol>)_swapperViewController.currentViewController;
-    [addAddressViewController firstInputResignFirstResponder];
-}
-
-#pragma mark - CCAddAddressViewDelegate methods
-
 - (void)addAddressTypeChangedTo:(CCAddAddressType)addAddressType
 {
     NSArray *addAddressViewControllers = @[_addAddressByNameViewController, _addAddressByAddressViewController, _addAddressAtLocationViewController];
@@ -130,5 +112,21 @@
     [_swapperViewController swapToViewController:addAddressViewController];
     //[addAddressViewController setFirstInputAsFirstResponder];
 }
+
+#pragma mark - CCChildRootViewControllerProtocol methods
+
+- (void)viewWillShow
+{
+//    id<CCAddAddressViewControllerProtocol> addAddressViewController = (id<CCAddAddressViewControllerProtocol>)_swapperViewController.currentViewController;
+//    [addAddressViewController setFirstInputAsFirstResponder];
+}
+
+- (void)viewWillHide
+{
+    id<CCAddAddressViewControllerProtocol> addAddressViewController = (id<CCAddAddressViewControllerProtocol>)_swapperViewController.currentViewController;
+    [addAddressViewController firstInputResignFirstResponder];
+}
+
+#pragma mark - CCAddAddressViewDelegate methods
 
 @end

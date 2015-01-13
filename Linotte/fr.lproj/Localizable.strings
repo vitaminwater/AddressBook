@@ -93,8 +93,11 @@
 "LIST_CONFIG_HELP2" = "Les carnets marqués d'une coche verte verront leur adresses affichées sur votre page d'accueil.";
 
 "LIST_STORE_SCREEN_NAME" = "DÉCOUVRIR";
+"LIST_STORE_SEARCH_NAME" = "CHERCHER";
 "ADD_ADDRESS_SCREEN_NAME" = "AJOUTER UNE ADRESSE";
 "HOME_SCREEN_NAME" = "MA LINOTTE";
+
+"LIST_STORE_SEE_MORE" = "Voir plus";
 
 "LIST_NAME" = "NOUVEAU CARNET";
 "SEARCH_LIST_NAME" = "RECHERCHER UN CARNET";
@@ -134,3 +137,5 @@
 
 "EMAIL_PLACEHOLDER" = "Entrez votre address email ici";
 "PASSWORD_PLACEHOLDER" = "Et votre mot de passe ici";
+
+"CANNOT_SEND_MAIL" = "Impossible d'envoyer un mail,\nest-il configuré ?";

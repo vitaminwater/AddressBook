@@ -56,7 +56,10 @@ typedef enum : NSUInteger {
 
 #pragma mark - Fetch methods
 
-- (NSURLSessionTask *)fetchPublicLists:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionTask *)fetchListsAroundMe:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionTask *)fetchGroupsAroundMe:(CLLocationCoordinate2D)coordinates success:(void(^)(NSArray *groups))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionTask *)fetchListsForGroup:(NSString *)identifier success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionTask *)searchLists:(NSString *)search success:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchInstalledListsWithSuccess:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchCompleteListInfos:(NSString *)identifier success:(void(^)(NSDictionary *listInfo))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchListZones:(NSString *)identifier success:(void(^)(NSArray *listZones))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;

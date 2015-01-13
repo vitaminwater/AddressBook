@@ -16,11 +16,8 @@
 #import "CCAddAddressByAddressViewControllerDelegate.h"
 #import "CCAddAddressAtLocationViewControllerDelegate.h"
 
-#import "CCAddAddressViewControllerDelegate.h"
 #import "CCChildRootViewControllerProtocol.h"
 
 @interface CCAddAddressViewController : UIViewController<CCChildRootViewControllerProtocol, CCSwapperViewControllerDelegate, CCAddAddressViewDelegate, CCAddAddressByNameViewControllerDelegate, CCAddAddressByAddressViewControllerDelegate, CCAddAddressAtLocationViewControllerDelegate>
-
-@property(nonatomic, weak)id<CCAddAddressViewControllerDelegate> delegate;
 
 @end

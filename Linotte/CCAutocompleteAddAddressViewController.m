@@ -49,6 +49,11 @@
     [((CCAutocompleteAddAddressView *)self.view) cleanBeforeClose];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [((CCAutocompleteAddAddressView *)self.view) resetTabButtonPosition];
+}
+
 #pragma mark - CCAddAddressViewDelegate methods
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index {}
@@ -96,6 +101,11 @@
 - (void)autocompleteEnded:(id)sender
 {
     [(CCAutocompleteAddAddressView *)self.view hideLoading];
+}
+
+- (void)addAddressTypeChangedTo:(CCAddAddressType)addAddressType
+{
+    [_delegate addAddressTypeChangedTo:addAddressType];
 }
 
 #pragma mark - NSNotificationCenter methods

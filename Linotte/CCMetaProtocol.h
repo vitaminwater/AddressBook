@@ -10,8 +10,8 @@
 
 @protocol CCMetaProtocol <NSObject>
 
-@property (nonatomic, strong) NSString* action;
-@property (nonatomic, strong) NSString* uid;
-@property (nonatomic, strong) NSDictionary* content;
+@property (nonatomic, strong)NSString *action;
+@property (nonatomic, strong)NSString *uid;
+@property (nonatomic, strong)id content;
 
 @end

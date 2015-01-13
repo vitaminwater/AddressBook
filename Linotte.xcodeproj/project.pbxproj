@@ -62,7 +62,7 @@
 		C73183F81A2742AD00A99762 /* CCBaseMetaWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */; };
 		C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184051A27512D00A99762 /* CCDisplayMeta.m */; };
 		C731840C1A27514400A99762 /* CCContactMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840B1A27514400A99762 /* CCContactMeta.m */; };
-		C731840F1A27514E00A99762 /* CCPicsMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840E1A27514E00A99762 /* CCPicsMeta.m */; };
+		C731840F1A27514E00A99762 /* CCPhotoMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840E1A27514E00A99762 /* CCPhotoMeta.m */; };
 		C73184121A27515E00A99762 /* CCOpenHoursMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184111A27515E00A99762 /* CCOpenHoursMeta.m */; };
 		C73184161A2752FB00A99762 /* CCMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184151A2752FB00A99762 /* CCMeta.m */; };
 		C731841B1A275D1000A99762 /* CCMetaContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = C731841A1A275D1000A99762 /* CCMetaContainerView.m */; };
@@ -97,9 +97,9 @@
 		C761A00D19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C761A00C19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m */; };
 		C761A01919CC63D500C09F0D /* CCAddressListSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C761A01819CC63D500C09F0D /* CCAddressListSettingsViewController.m */; };
 		C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */; };
-		C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */; };
-		C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */; };
-		C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */; };
+		C76A1CDC19BF70EC00EE75E4 /* CCListStoreHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDB19BF70EC00EE75E4 /* CCListStoreHomeViewController.m */; };
+		C76A1CDF19BF715000EE75E4 /* CCListStoreHomeView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDE19BF715000EE75E4 /* CCListStoreHomeView.m */; };
+		C76A1CE419BF769100EE75E4 /* CCListStoreCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */; };
 		C76A1CE919C0CA2000EE75E4 /* CCListOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE819C0CA2000EE75E4 /* CCListOutputViewController.m */; };
 		C76A1CF219C0CA7F00EE75E4 /* CCListOutputView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CF119C0CA7F00EE75E4 /* CCListOutputView.m */; };
 		C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CF719C0DE2300EE75E4 /* CCListViewContentProvider.m */; };
@@ -144,6 +144,7 @@
 		C7B5DF4C1A42D993000791FF /* CCJSONResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B5DF4B1A42D993000791FF /* CCJSONResponseSerializer.m */; };
 		C7B5DF541A442ACE000791FF /* CCAuthMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B5DF521A442ACE000791FF /* CCAuthMethod.m */; };
 		C7B5DF571A442D53000791FF /* _CCAuthMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B5DF561A442D53000791FF /* _CCAuthMethod.m */; };
+		C7B5DF9B1A59E642000791FF /* CCBaseListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B5DF9A1A59E642000791FF /* CCBaseListStoreView.m */; };
 		C7BA707D193E107D000780D9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BA707F193E107D000780D9 /* Localizable.strings */; };
 		C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */; };
 		C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */; };
@@ -155,6 +156,27 @@
 		C7C2925919D4BA5200EBF5C3 /* CCListOutputAddressListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2925819D4BA5200EBF5C3 /* CCListOutputAddressListViewController.m */; };
 		C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2925F19D4BA7700EBF5C3 /* CCListOutputAddressListView.m */; };
 		C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2926419D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m */; };
+		C7C66A491A59F30B00FACC0C /* CCBaseListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A481A59F30B00FACC0C /* CCBaseListStoreViewController.m */; };
+		C7C66A4D1A59F42C00FACC0C /* CCListStoreNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A4C1A59F42C00FACC0C /* CCListStoreNavigationController.m */; };
+		C7C66A501A59F87800FACC0C /* CCGroupListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A4F1A59F87800FACC0C /* CCGroupListStoreViewController.m */; };
+		C7C66A531A59F88A00FACC0C /* CCSearchListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A521A59F88A00FACC0C /* CCSearchListStoreViewController.m */; };
+		C7C66A651A5A9E9E00FACC0C /* CCFlatListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A641A5A9E9E00FACC0C /* CCFlatListStoreView.m */; };
+		C7C66A681A5A9EC200FACC0C /* CCFlatListStoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A671A5A9EC200FACC0C /* CCFlatListStoreViewController.m */; };
+		C7C66A6B1A5AA37300FACC0C /* CCSearchListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A6A1A5AA37300FACC0C /* CCSearchListStoreView.m */; };
+		C7C66A711A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A701A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.m */; };
+		C7C66A761A5AC8C400FACC0C /* CCListStoreGroupFooterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A751A5AC8C400FACC0C /* CCListStoreGroupFooterCell.m */; };
+		C7C66A7E1A5BE98D00FACC0C /* CCWeblinkButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A7D1A5BE98D00FACC0C /* CCWeblinkButton.m */; };
+		C7C66A811A5BE99D00FACC0C /* CCEmailButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A801A5BE99D00FACC0C /* CCEmailButton.m */; };
+		C7C66A841A5BEB8800FACC0C /* CCSocialMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A831A5BEB8800FACC0C /* CCSocialMeta.m */; };
+		C7C66A881A5BF6C200FACC0C /* CCLinotteBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A871A5BF6C200FACC0C /* CCLinotteBrowserViewController.m */; };
+		C7C66A8A1A5BF78600FACC0C /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C66A891A5BF78600FACC0C /* MessageUI.framework */; };
+		C7C66A8F1A5C0D5400FACC0C /* CCLinotteBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A8E1A5C0D5400FACC0C /* CCLinotteBrowserView.m */; };
+		C7C66A981A5C16F100FACC0C /* CCFacebookSocialButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A971A5C16F100FACC0C /* CCFacebookSocialButton.m */; };
+		C7C66A9B1A5C16FF00FACC0C /* CCTwitterSocialButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A9A1A5C16FF00FACC0C /* CCTwitterSocialButton.m */; };
+		C7C66A9E1A5C170C00FACC0C /* CCPinterestSocialButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66A9D1A5C170C00FACC0C /* CCPinterestSocialButton.m */; };
+		C7C66AA11A5C171900FACC0C /* CCFoursquareSocialButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66AA01A5C171900FACC0C /* CCFoursquareSocialButton.m */; };
+		C7C66AA41A5C17A300FACC0C /* CCSocialButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66AA31A5C17A300FACC0C /* CCSocialButton.m */; };
+		C7C66AA81A5C426600FACC0C /* CCAddAddressTabButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66AA71A5C426600FACC0C /* CCAddAddressTabButtons.m */; };
 		C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470119FD56C600CBD29C /* CCListInstallerView.m */; };
 		C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
@@ -297,7 +319,6 @@
 		C73183EF1A25E3B400A99762 /* CCAddAddressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressViewController.h; sourceTree = "<group>"; };
 		C73183F01A25E3B400A99762 /* CCAddAddressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddAddressViewController.m; sourceTree = "<group>"; };
 		C73183F21A25E52700A99762 /* CCAddAddressViewControllerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressViewControllerProtocol.h; sourceTree = "<group>"; };
-		C73183F41A25E5DD00A99762 /* CCAddAddressViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressViewControllerDelegate.h; sourceTree = "<group>"; };
 		C73183F61A2742AD00A99762 /* CCBaseMetaWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseMetaWidget.h; sourceTree = "<group>"; };
 		C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseMetaWidget.m; sourceTree = "<group>"; };
 		C73183FE1A27439E00A99762 /* CCMetaProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMetaProtocol.h; sourceTree = "<group>"; };
@@ -305,8 +326,8 @@
 		C73184051A27512D00A99762 /* CCDisplayMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayMeta.m; sourceTree = "<group>"; };
 		C731840A1A27514400A99762 /* CCContactMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCContactMeta.h; sourceTree = "<group>"; };
 		C731840B1A27514400A99762 /* CCContactMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCContactMeta.m; sourceTree = "<group>"; };
-		C731840D1A27514E00A99762 /* CCPicsMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPicsMeta.h; sourceTree = "<group>"; };
-		C731840E1A27514E00A99762 /* CCPicsMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPicsMeta.m; sourceTree = "<group>"; };
+		C731840D1A27514E00A99762 /* CCPhotoMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhotoMeta.h; sourceTree = "<group>"; };
+		C731840E1A27514E00A99762 /* CCPhotoMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPhotoMeta.m; sourceTree = "<group>"; };
 		C73184101A27515E00A99762 /* CCOpenHoursMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOpenHoursMeta.h; sourceTree = "<group>"; };
 		C73184111A27515E00A99762 /* CCOpenHoursMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOpenHoursMeta.m; sourceTree = "<group>"; };
 		C73184141A2752FB00A99762 /* CCMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMeta.h; sourceTree = "<group>"; };
@@ -361,9 +382,7 @@
 		C7619FB819C441BC00C09F0D /* CCListListViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListListViewModel.m; sourceTree = "<group>"; };
 		C7619FBA19C454DB00C09F0D /* CCListViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListViewModelProtocol.h; sourceTree = "<group>"; };
 		C7619FBC19C4810400C09F0D /* CCOutputViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOutputViewControllerDelegate.h; sourceTree = "<group>"; };
-		C7619FBD19C48BEC00C09F0D /* CCListOutputViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7619FCC19C4997300C09F0D /* CCHomeViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCHomeViewDelegate.h; sourceTree = "<group>"; };
-		C7619FCD19C4C23100C09F0D /* CCListStoreViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7619FCF19C6D7C300C09F0D /* CCListOptionContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOptionContainer.h; sourceTree = "<group>"; };
 		C7619FD019C6D7C300C09F0D /* CCListOptionContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOptionContainer.m; sourceTree = "<group>"; };
 		C7619FD319C6DDAF00C09F0D /* CCListOptionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOptionButton.h; sourceTree = "<group>"; };
@@ -396,13 +415,12 @@
 		C761A01B19CC650B00C09F0D /* CCAddressListSettingsViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressListSettingsViewControllerDelegate.h; sourceTree = "<group>"; };
 		C76A1CBE19BF2F4B00EE75E4 /* CCFlatColorButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatColorButton.h; sourceTree = "<group>"; };
 		C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFlatColorButton.m; sourceTree = "<group>"; };
-		C76A1CDA19BF70EC00EE75E4 /* CCListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewController.h; sourceTree = "<group>"; };
-		C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreViewController.m; sourceTree = "<group>"; };
-		C76A1CDD19BF715000EE75E4 /* CCListStoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreView.h; sourceTree = "<group>"; };
-		C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreView.m; sourceTree = "<group>"; };
-		C76A1CE019BF716D00EE75E4 /* CCListStoreViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCListStoreViewDelegate.h; sourceTree = "<group>"; };
-		C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreTableViewCell.h; sourceTree = "<group>"; };
-		C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreTableViewCell.m; sourceTree = "<group>"; };
+		C76A1CDA19BF70EC00EE75E4 /* CCListStoreHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreHomeViewController.h; sourceTree = "<group>"; };
+		C76A1CDB19BF70EC00EE75E4 /* CCListStoreHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreHomeViewController.m; sourceTree = "<group>"; };
+		C76A1CDD19BF715000EE75E4 /* CCListStoreHomeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreHomeView.h; sourceTree = "<group>"; };
+		C76A1CDE19BF715000EE75E4 /* CCListStoreHomeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreHomeView.m; sourceTree = "<group>"; };
+		C76A1CE219BF769100EE75E4 /* CCListStoreCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreCollectionViewCell.h; sourceTree = "<group>"; };
+		C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreCollectionViewCell.m; sourceTree = "<group>"; };
 		C76A1CE719C0CA2000EE75E4 /* CCListOutputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputViewController.h; sourceTree = "<group>"; };
 		C76A1CE819C0CA2000EE75E4 /* CCListOutputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputViewController.m; sourceTree = "<group>"; };
 		C76A1CF019C0CA7F00EE75E4 /* CCListOutputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputView.h; sourceTree = "<group>"; };
@@ -505,6 +523,9 @@
 		C7B5DF551A442D53000791FF /* _CCAuthMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCAuthMethod.h; sourceTree = "<group>"; };
 		C7B5DF561A442D53000791FF /* _CCAuthMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCAuthMethod.m; sourceTree = "<group>"; };
 		C7B5DF581A446F7D000791FF /* CCLinotte.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCLinotte.h; sourceTree = "<group>"; };
+		C7B5DF981A59E5C8000791FF /* CCListStoreHomeViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreHomeViewDelegate.h; sourceTree = "<group>"; };
+		C7B5DF991A59E642000791FF /* CCBaseListStoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseListStoreView.h; sourceTree = "<group>"; };
+		C7B5DF9A1A59E642000791FF /* CCBaseListStoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseListStoreView.m; sourceTree = "<group>"; };
 		C7BA707B193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707C193E1025000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BA707E193E107D000780D9 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -532,6 +553,52 @@
 		C7C2926319D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputAddressListTableViewCell.h; sourceTree = "<group>"; };
 		C7C2926419D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputAddressListTableViewCell.m; sourceTree = "<group>"; };
 		C7C2926719D595B100EBF5C3 /* CCListOutputAddressListTableViewCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputAddressListTableViewCellDelegate.h; sourceTree = "<group>"; };
+		C7C66A471A59F30B00FACC0C /* CCBaseListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBaseListStoreViewController.h; sourceTree = "<group>"; };
+		C7C66A481A59F30B00FACC0C /* CCBaseListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBaseListStoreViewController.m; sourceTree = "<group>"; };
+		C7C66A4B1A59F42C00FACC0C /* CCListStoreNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreNavigationController.h; sourceTree = "<group>"; };
+		C7C66A4C1A59F42C00FACC0C /* CCListStoreNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreNavigationController.m; sourceTree = "<group>"; };
+		C7C66A4E1A59F87800FACC0C /* CCGroupListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGroupListStoreViewController.h; sourceTree = "<group>"; };
+		C7C66A4F1A59F87800FACC0C /* CCGroupListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGroupListStoreViewController.m; sourceTree = "<group>"; };
+		C7C66A511A59F88A00FACC0C /* CCSearchListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchListStoreViewController.h; sourceTree = "<group>"; };
+		C7C66A521A59F88A00FACC0C /* CCSearchListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSearchListStoreViewController.m; sourceTree = "<group>"; };
+		C7C66A5D1A5A9C0700FACC0C /* CCFlatListStoreViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatListStoreViewDelegate.h; sourceTree = "<group>"; };
+		C7C66A631A5A9E9E00FACC0C /* CCFlatListStoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatListStoreView.h; sourceTree = "<group>"; };
+		C7C66A641A5A9E9E00FACC0C /* CCFlatListStoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFlatListStoreView.m; sourceTree = "<group>"; };
+		C7C66A661A5A9EC200FACC0C /* CCFlatListStoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFlatListStoreViewController.h; sourceTree = "<group>"; };
+		C7C66A671A5A9EC200FACC0C /* CCFlatListStoreViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFlatListStoreViewController.m; sourceTree = "<group>"; };
+		C7C66A691A5AA37300FACC0C /* CCSearchListStoreView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchListStoreView.h; sourceTree = "<group>"; };
+		C7C66A6A1A5AA37300FACC0C /* CCSearchListStoreView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSearchListStoreView.m; sourceTree = "<group>"; };
+		C7C66A6D1A5AA38700FACC0C /* CCSearchListStoreViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchListStoreViewDelegate.h; sourceTree = "<group>"; };
+		C7C66A6F1A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreGroupHeaderCell.h; sourceTree = "<group>"; };
+		C7C66A701A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreGroupHeaderCell.m; sourceTree = "<group>"; };
+		C7C66A741A5AC8C400FACC0C /* CCListStoreGroupFooterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreGroupFooterCell.h; sourceTree = "<group>"; };
+		C7C66A751A5AC8C400FACC0C /* CCListStoreGroupFooterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreGroupFooterCell.m; sourceTree = "<group>"; };
+		C7C66A781A5AD10600FACC0C /* CCListStoreGroupFooterCellDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreGroupFooterCellDelegate.h; sourceTree = "<group>"; };
+		C7C66A7C1A5BE98D00FACC0C /* CCWeblinkButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCWeblinkButton.h; sourceTree = "<group>"; };
+		C7C66A7D1A5BE98D00FACC0C /* CCWeblinkButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCWeblinkButton.m; sourceTree = "<group>"; };
+		C7C66A7F1A5BE99D00FACC0C /* CCEmailButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEmailButton.h; sourceTree = "<group>"; };
+		C7C66A801A5BE99D00FACC0C /* CCEmailButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEmailButton.m; sourceTree = "<group>"; };
+		C7C66A821A5BEB8800FACC0C /* CCSocialMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSocialMeta.h; sourceTree = "<group>"; };
+		C7C66A831A5BEB8800FACC0C /* CCSocialMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSocialMeta.m; sourceTree = "<group>"; };
+		C7C66A861A5BF6C200FACC0C /* CCLinotteBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewController.h; sourceTree = "<group>"; };
+		C7C66A871A5BF6C200FACC0C /* CCLinotteBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLinotteBrowserViewController.m; sourceTree = "<group>"; };
+		C7C66A891A5BF78600FACC0C /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		C7C66A8D1A5C0D5400FACC0C /* CCLinotteBrowserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserView.h; sourceTree = "<group>"; };
+		C7C66A8E1A5C0D5400FACC0C /* CCLinotteBrowserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLinotteBrowserView.m; sourceTree = "<group>"; };
+		C7C66A911A5C16B400FACC0C /* CCSocialButtonProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSocialButtonProtocol.h; sourceTree = "<group>"; };
+		C7C66A961A5C16F100FACC0C /* CCFacebookSocialButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFacebookSocialButton.h; sourceTree = "<group>"; };
+		C7C66A971A5C16F100FACC0C /* CCFacebookSocialButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFacebookSocialButton.m; sourceTree = "<group>"; };
+		C7C66A991A5C16FF00FACC0C /* CCTwitterSocialButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTwitterSocialButton.h; sourceTree = "<group>"; };
+		C7C66A9A1A5C16FF00FACC0C /* CCTwitterSocialButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTwitterSocialButton.m; sourceTree = "<group>"; };
+		C7C66A9C1A5C170C00FACC0C /* CCPinterestSocialButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPinterestSocialButton.h; sourceTree = "<group>"; };
+		C7C66A9D1A5C170C00FACC0C /* CCPinterestSocialButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPinterestSocialButton.m; sourceTree = "<group>"; };
+		C7C66A9F1A5C171900FACC0C /* CCFoursquareSocialButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCFoursquareSocialButton.h; sourceTree = "<group>"; };
+		C7C66AA01A5C171900FACC0C /* CCFoursquareSocialButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCFoursquareSocialButton.m; sourceTree = "<group>"; };
+		C7C66AA21A5C17A300FACC0C /* CCSocialButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSocialButton.h; sourceTree = "<group>"; };
+		C7C66AA31A5C17A300FACC0C /* CCSocialButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSocialButton.m; sourceTree = "<group>"; };
+		C7C66AA61A5C426600FACC0C /* CCAddAddressTabButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressTabButtons.h; sourceTree = "<group>"; };
+		C7C66AA71A5C426600FACC0C /* CCAddAddressTabButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddAddressTabButtons.m; sourceTree = "<group>"; };
+		C7C66AAB1A5C446F00FACC0C /* CCAddAddressTabButtonsDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddAddressTabButtonsDelegate.h; sourceTree = "<group>"; };
 		C7C9470019FD56C600CBD29C /* CCListInstallerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerView.h; sourceTree = "<group>"; };
 		C7C9470119FD56C600CBD29C /* CCListInstallerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerView.m; sourceTree = "<group>"; };
 		C7C9470319FD56D600CBD29C /* CCListInstallerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewController.h; sourceTree = "<group>"; };
@@ -615,6 +682,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C66A8A1A5BF78600FACC0C /* MessageUI.framework in Frameworks */,
 				C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */,
 				C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */,
 				C7CE2C6B1918E48800D37A64 /* CoreData.framework in Frameworks */,
@@ -1166,7 +1234,6 @@
 		C73183EE1A25E34D00A99762 /* add address */ = {
 			isa = PBXGroup;
 			children = (
-				C73183F31A25E5CB00A99762 /* protocol */,
 				C73184311A2C6BC700A99762 /* ui */,
 				C73183EF1A25E3B400A99762 /* CCAddAddressViewController.h */,
 				C73183F01A25E3B400A99762 /* CCAddAddressViewController.m */,
@@ -1174,22 +1241,15 @@
 			name = "add address";
 			sourceTree = "<group>";
 		};
-		C73183F31A25E5CB00A99762 /* protocol */ = {
-			isa = PBXGroup;
-			children = (
-				C73183F41A25E5DD00A99762 /* CCAddAddressViewControllerDelegate.h */,
-			);
-			name = protocol;
-			sourceTree = "<group>";
-		};
 		C73183F51A27428100A99762 /* metas */ = {
 			isa = PBXGroup;
 			children = (
 				C73184541A30626900A99762 /* base */,
-				C73184031A2745A200A99762 /* open hours */,
-				C73184021A27454E00A99762 /* pics */,
-				C73184011A27453F00A99762 /* contact */,
 				C73183FF1A2744DC00A99762 /* display */,
+				C73184011A27453F00A99762 /* contact */,
+				C7C66A791A5BE63800FACC0C /* social */,
+				C73184031A2745A200A99762 /* open hours */,
+				C73184021A27454E00A99762 /* photo */,
 			);
 			name = metas;
 			sourceTree = "<group>";
@@ -1221,13 +1281,13 @@
 			name = contact;
 			sourceTree = "<group>";
 		};
-		C73184021A27454E00A99762 /* pics */ = {
+		C73184021A27454E00A99762 /* photo */ = {
 			isa = PBXGroup;
 			children = (
-				C731840D1A27514E00A99762 /* CCPicsMeta.h */,
-				C731840E1A27514E00A99762 /* CCPicsMeta.m */,
+				C731840D1A27514E00A99762 /* CCPhotoMeta.h */,
+				C731840E1A27514E00A99762 /* CCPhotoMeta.m */,
 			);
-			name = pics;
+			name = photo;
 			sourceTree = "<group>";
 		};
 		C73184031A2745A200A99762 /* open hours */ = {
@@ -1425,6 +1485,8 @@
 			children = (
 				C731845C1A30CF7300A99762 /* CCContactButtonProtocol.h */,
 				C731845B1A30734400A99762 /* tel */,
+				C7C66A7A1A5BE67100FACC0C /* weblink */,
+				C7C66A7B1A5BE67F00FACC0C /* email */,
 			);
 			name = "contact buttons";
 			sourceTree = "<group>";
@@ -1825,10 +1887,11 @@
 		C76A1CD519BF70C300EE75E4 /* list store */ = {
 			isa = PBXGroup;
 			children = (
-				C76A1CD719BF70CD00EE75E4 /* protocol */,
-				C76A1CD619BF70C700EE75E4 /* ui */,
-				C76A1CDA19BF70EC00EE75E4 /* CCListStoreViewController.h */,
-				C76A1CDB19BF70EC00EE75E4 /* CCListStoreViewController.m */,
+				C7C66A4A1A59F41100FACC0C /* navigation */,
+				C7B5DF931A59E55B000791FF /* common */,
+				C7B5DF9C1A59EA6F000791FF /* search */,
+				C7B5DF921A59E554000791FF /* group */,
+				C7B5DF911A59E54D000791FF /* home */,
 			);
 			name = "list store";
 			sourceTree = "<group>";
@@ -1836,26 +1899,18 @@
 		C76A1CD619BF70C700EE75E4 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				C76A1CE119BF767C00EE75E4 /* cell */,
 				C76A1CD819BF70D200EE75E4 /* view */,
 			);
 			name = ui;
 			sourceTree = "<group>";
 		};
-		C76A1CD719BF70CD00EE75E4 /* protocol */ = {
-			isa = PBXGroup;
-			children = (
-				C7619FCD19C4C23100C09F0D /* CCListStoreViewControllerDelegate.h */,
-			);
-			name = protocol;
-			sourceTree = "<group>";
-		};
 		C76A1CD819BF70D200EE75E4 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				C7C66A6E1A5AC87300FACC0C /* group cells */,
 				C76A1CD919BF70D600EE75E4 /* protocol */,
-				C76A1CDD19BF715000EE75E4 /* CCListStoreView.h */,
-				C76A1CDE19BF715000EE75E4 /* CCListStoreView.m */,
+				C76A1CDD19BF715000EE75E4 /* CCListStoreHomeView.h */,
+				C76A1CDE19BF715000EE75E4 /* CCListStoreHomeView.m */,
 			);
 			name = view;
 			sourceTree = "<group>";
@@ -1863,18 +1918,9 @@
 		C76A1CD919BF70D600EE75E4 /* protocol */ = {
 			isa = PBXGroup;
 			children = (
-				C76A1CE019BF716D00EE75E4 /* CCListStoreViewDelegate.h */,
+				C7B5DF981A59E5C8000791FF /* CCListStoreHomeViewDelegate.h */,
 			);
 			name = protocol;
-			sourceTree = "<group>";
-		};
-		C76A1CE119BF767C00EE75E4 /* cell */ = {
-			isa = PBXGroup;
-			children = (
-				C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */,
-				C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */,
-			);
-			name = cell;
 			sourceTree = "<group>";
 		};
 		C76A1CE619C0CA0600EE75E4 /* list output */ = {
@@ -1883,20 +1929,11 @@
 				C76C3C0B1A20E138000B0DD8 /* list view model */,
 				C7C2925619D4BA3000EBF5C3 /* address list */,
 				C7C2924619D4B09C00EBF5C3 /* settings */,
-				C76A1CEA19C0CA3400EE75E4 /* protocol */,
 				C76A1CEB19C0CA3B00EE75E4 /* ui */,
 				C76A1CE719C0CA2000EE75E4 /* CCListOutputViewController.h */,
 				C76A1CE819C0CA2000EE75E4 /* CCListOutputViewController.m */,
 			);
 			name = "list output";
-			sourceTree = "<group>";
-		};
-		C76A1CEA19C0CA3400EE75E4 /* protocol */ = {
-			isa = PBXGroup;
-			children = (
-				C7619FBD19C48BEC00C09F0D /* CCListOutputViewControllerDelegate.h */,
-			);
-			name = protocol;
 			sourceTree = "<group>";
 		};
 		C76A1CEB19C0CA3B00EE75E4 /* ui */ = {
@@ -2104,6 +2141,7 @@
 		C76C3C071A20CFEF000B0DD8 /* sub view controller */ = {
 			isa = PBXGroup;
 			children = (
+				C7C66A851A5BF54300FACC0C /* browser */,
 				C73184201A2BCDDB00A99762 /* view controller swapper */,
 				C7FE2C70199793F300D7D0DC /* splash */,
 				C73183961A22420000A99762 /* multi view controller swiper */,
@@ -2519,6 +2557,71 @@
 			name = "auth method";
 			sourceTree = "<group>";
 		};
+		C7B5DF911A59E54D000791FF /* home */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CD619BF70C700EE75E4 /* ui */,
+				C76A1CDA19BF70EC00EE75E4 /* CCListStoreHomeViewController.h */,
+				C76A1CDB19BF70EC00EE75E4 /* CCListStoreHomeViewController.m */,
+			);
+			name = home;
+			sourceTree = "<group>";
+		};
+		C7B5DF921A59E554000791FF /* group */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A4E1A59F87800FACC0C /* CCGroupListStoreViewController.h */,
+				C7C66A4F1A59F87800FACC0C /* CCGroupListStoreViewController.m */,
+			);
+			name = group;
+			sourceTree = "<group>";
+		};
+		C7B5DF931A59E55B000791FF /* common */ = {
+			isa = PBXGroup;
+			children = (
+				C7B5DF941A59E56D000791FF /* ui */,
+			);
+			name = common;
+			sourceTree = "<group>";
+		};
+		C7B5DF941A59E56D000791FF /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7B5DF961A59E58B000791FF /* cell */,
+				C7C66A611A5A9E7F00FACC0C /* flat */,
+				C7C66A601A5A9E6700FACC0C /* base */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7B5DF951A59E587000791FF /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7B5DF991A59E642000791FF /* CCBaseListStoreView.h */,
+				C7B5DF9A1A59E642000791FF /* CCBaseListStoreView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C7B5DF961A59E58B000791FF /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				C76A1CE219BF769100EE75E4 /* CCListStoreCollectionViewCell.h */,
+				C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */,
+			);
+			name = cell;
+			sourceTree = "<group>";
+		};
+		C7B5DF9C1A59EA6F000791FF /* search */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A551A59F89500FACC0C /* ui */,
+				C7C66A511A59F88A00FACC0C /* CCSearchListStoreViewController.h */,
+				C7C66A521A59F88A00FACC0C /* CCSearchListStoreViewController.m */,
+			);
+			name = search;
+			sourceTree = "<group>";
+		};
 		C7BE91A41A35F6020033B359 /* sign up */ = {
 			isa = PBXGroup;
 			children = (
@@ -2558,13 +2661,13 @@
 			name = "alert view";
 			sourceTree = "<group>";
 		};
-		C7C2923E19D47ECB00EBF5C3 /* image hud */ = {
+		C7C2923E19D47ECB00EBF5C3 /* result hud */ = {
 			isa = PBXGroup;
 			children = (
 				C7C2923F19D47F1600EBF5C3 /* CCActionResultHUD.h */,
 				C7C2924019D47F1600EBF5C3 /* CCActionResultHUD.m */,
 			);
-			name = "image hud";
+			name = "result hud";
 			sourceTree = "<group>";
 		};
 		C7C2924619D4B09C00EBF5C3 /* settings */ = {
@@ -2658,6 +2761,246 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
+		C7C66A4A1A59F41100FACC0C /* navigation */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A4B1A59F42C00FACC0C /* CCListStoreNavigationController.h */,
+				C7C66A4C1A59F42C00FACC0C /* CCListStoreNavigationController.m */,
+			);
+			name = navigation;
+			sourceTree = "<group>";
+		};
+		C7C66A551A59F89500FACC0C /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A5B1A5A9BDD00FACC0C /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7C66A5B1A5A9BDD00FACC0C /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A6C1A5AA37700FACC0C /* protocol */,
+				C7C66A691A5AA37300FACC0C /* CCSearchListStoreView.h */,
+				C7C66A6A1A5AA37300FACC0C /* CCSearchListStoreView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C7C66A5E1A5A9E1200FACC0C /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A5D1A5A9C0700FACC0C /* CCFlatListStoreViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7C66A601A5A9E6700FACC0C /* base */ = {
+			isa = PBXGroup;
+			children = (
+				C7B5DF951A59E587000791FF /* view */,
+				C7C66A471A59F30B00FACC0C /* CCBaseListStoreViewController.h */,
+				C7C66A481A59F30B00FACC0C /* CCBaseListStoreViewController.m */,
+			);
+			name = base;
+			sourceTree = "<group>";
+		};
+		C7C66A611A5A9E7F00FACC0C /* flat */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A621A5A9E8800FACC0C /* view */,
+				C7C66A661A5A9EC200FACC0C /* CCFlatListStoreViewController.h */,
+				C7C66A671A5A9EC200FACC0C /* CCFlatListStoreViewController.m */,
+			);
+			name = flat;
+			sourceTree = "<group>";
+		};
+		C7C66A621A5A9E8800FACC0C /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A5E1A5A9E1200FACC0C /* protocol */,
+				C7C66A631A5A9E9E00FACC0C /* CCFlatListStoreView.h */,
+				C7C66A641A5A9E9E00FACC0C /* CCFlatListStoreView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C7C66A6C1A5AA37700FACC0C /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A6D1A5AA38700FACC0C /* CCSearchListStoreViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7C66A6E1A5AC87300FACC0C /* group cells */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A721A5AC8A700FACC0C /* header */,
+				C7C66A731A5AC8AF00FACC0C /* footer */,
+			);
+			name = "group cells";
+			sourceTree = "<group>";
+		};
+		C7C66A721A5AC8A700FACC0C /* header */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A6F1A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.h */,
+				C7C66A701A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.m */,
+			);
+			name = header;
+			sourceTree = "<group>";
+		};
+		C7C66A731A5AC8AF00FACC0C /* footer */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A771A5AD0F700FACC0C /* protocol */,
+				C7C66A741A5AC8C400FACC0C /* CCListStoreGroupFooterCell.h */,
+				C7C66A751A5AC8C400FACC0C /* CCListStoreGroupFooterCell.m */,
+			);
+			name = footer;
+			sourceTree = "<group>";
+		};
+		C7C66A771A5AD0F700FACC0C /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A781A5AD10600FACC0C /* CCListStoreGroupFooterCellDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7C66A791A5BE63800FACC0C /* social */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A901A5C16A000FACC0C /* social buttons */,
+				C7C66A821A5BEB8800FACC0C /* CCSocialMeta.h */,
+				C7C66A831A5BEB8800FACC0C /* CCSocialMeta.m */,
+			);
+			name = social;
+			sourceTree = "<group>";
+		};
+		C7C66A7A1A5BE67100FACC0C /* weblink */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A7C1A5BE98D00FACC0C /* CCWeblinkButton.h */,
+				C7C66A7D1A5BE98D00FACC0C /* CCWeblinkButton.m */,
+			);
+			name = weblink;
+			sourceTree = "<group>";
+		};
+		C7C66A7B1A5BE67F00FACC0C /* email */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A7F1A5BE99D00FACC0C /* CCEmailButton.h */,
+				C7C66A801A5BE99D00FACC0C /* CCEmailButton.m */,
+			);
+			name = email;
+			sourceTree = "<group>";
+		};
+		C7C66A851A5BF54300FACC0C /* browser */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A8B1A5C0A2E00FACC0C /* ui */,
+				C7C66A861A5BF6C200FACC0C /* CCLinotteBrowserViewController.h */,
+				C7C66A871A5BF6C200FACC0C /* CCLinotteBrowserViewController.m */,
+			);
+			name = browser;
+			sourceTree = "<group>";
+		};
+		C7C66A8B1A5C0A2E00FACC0C /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A8C1A5C0A3800FACC0C /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7C66A8C1A5C0A3800FACC0C /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A8D1A5C0D5400FACC0C /* CCLinotteBrowserView.h */,
+				C7C66A8E1A5C0D5400FACC0C /* CCLinotteBrowserView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C7C66A901A5C16A000FACC0C /* social buttons */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A911A5C16B400FACC0C /* CCSocialButtonProtocol.h */,
+				C7C66AA21A5C17A300FACC0C /* CCSocialButton.h */,
+				C7C66AA31A5C17A300FACC0C /* CCSocialButton.m */,
+				C7C66A921A5C16B700FACC0C /* facebook */,
+				C7C66A931A5C16BE00FACC0C /* twitter */,
+				C7C66A941A5C16C700FACC0C /* pinterest */,
+				C7C66A951A5C16CD00FACC0C /* foursquare */,
+			);
+			name = "social buttons";
+			sourceTree = "<group>";
+		};
+		C7C66A921A5C16B700FACC0C /* facebook */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A961A5C16F100FACC0C /* CCFacebookSocialButton.h */,
+				C7C66A971A5C16F100FACC0C /* CCFacebookSocialButton.m */,
+			);
+			name = facebook;
+			sourceTree = "<group>";
+		};
+		C7C66A931A5C16BE00FACC0C /* twitter */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A991A5C16FF00FACC0C /* CCTwitterSocialButton.h */,
+				C7C66A9A1A5C16FF00FACC0C /* CCTwitterSocialButton.m */,
+			);
+			name = twitter;
+			sourceTree = "<group>";
+		};
+		C7C66A941A5C16C700FACC0C /* pinterest */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A9C1A5C170C00FACC0C /* CCPinterestSocialButton.h */,
+				C7C66A9D1A5C170C00FACC0C /* CCPinterestSocialButton.m */,
+			);
+			name = pinterest;
+			sourceTree = "<group>";
+		};
+		C7C66A951A5C16CD00FACC0C /* foursquare */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A9F1A5C171900FACC0C /* CCFoursquareSocialButton.h */,
+				C7C66AA01A5C171900FACC0C /* CCFoursquareSocialButton.m */,
+			);
+			name = foursquare;
+			sourceTree = "<group>";
+		};
+		C7C66AA51A5C424500FACC0C /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66AA91A5C445200FACC0C /* tab buttons */,
+			);
+			name = utils;
+			sourceTree = "<group>";
+		};
+		C7C66AA91A5C445200FACC0C /* tab buttons */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66AAA1A5C445A00FACC0C /* protocol */,
+				C7C66AA61A5C426600FACC0C /* CCAddAddressTabButtons.h */,
+				C7C66AA71A5C426600FACC0C /* CCAddAddressTabButtons.m */,
+			);
+			name = "tab buttons";
+			sourceTree = "<group>";
+		};
+		C7C66AAA1A5C445A00FACC0C /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66AAB1A5C446F00FACC0C /* CCAddAddressTabButtonsDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
 		C7C946FB19FD568B00CBD29C /* list installer */ = {
 			isa = PBXGroup;
 			children = (
@@ -2727,6 +3070,7 @@
 		C7CE2C631918E48800D37A64 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7C66A891A5BF78600FACC0C /* MessageUI.framework */,
 				C799AB4E1920D5370096B5A8 /* CoreLocation.framework */,
 				C7CE2C641918E48800D37A64 /* Foundation.framework */,
 				C7CE2C661918E48800D37A64 /* CoreGraphics.framework */,
@@ -2829,6 +3173,7 @@
 		C7CE2CA51918F0C600D37A64 /* add address */ = {
 			isa = PBXGroup;
 			children = (
+				C7C66AA51A5C424500FACC0C /* utils */,
 				C73183DB1A24A00600A99762 /* protocol */,
 				C73183E11A25DC2E00A99762 /* at location */,
 				C73183C91A238BE300A99762 /* autocompleted */,
@@ -3119,7 +3464,7 @@
 				C7619FD219C6DD9E00C09F0D /* image text button */,
 				C73184181A275CFC00A99762 /* metas container */,
 				C75EF4F519D8AFA5009BAB3A /* tween */,
-				C7C2923E19D47ECB00EBF5C3 /* image hud */,
+				C7C2923E19D47ECB00EBF5C3 /* result hud */,
 				C7C2923D19D47E5900EBF5C3 /* alert view */,
 				C7619FCE19C6D7A900C09F0D /* list option */,
 				C76A1CC119BF2F4D00EE75E4 /* flat color button */,
@@ -3290,15 +3635,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C66A8F1A5C0D5400FACC0C /* CCLinotteBrowserView.m in Sources */,
 				C7B5DF4C1A42D993000791FF /* CCJSONResponseSerializer.m in Sources */,
 				C7B5DF541A442ACE000791FF /* CCAuthMethod.m in Sources */,
 				C796D7C819BB8C0B00B97879 /* CCListMeta.m in Sources */,
 				C73E7D0B19F9551B00ADC1A2 /* CCModelHelper.m in Sources */,
+				C7C66A681A5A9EC200FACC0C /* CCFlatListStoreViewController.m in Sources */,
 				C785F4D91A3EF7860011A681 /* CCLinotteEngineCoordinator.m in Sources */,
 				C7216B901A19E6C800498CFE /* CCListZoneSynchronizationActionConsumeEvents.m in Sources */,
 				C7216B141A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.m in Sources */,
 				C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */,
 				C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */,
+				C7C66A9B1A5C16FF00FACC0C /* CCTwitterSocialButton.m in Sources */,
 				C7216B3E1A13C87000498CFE /* CCServerEventAddressUpdatedConsumer.m in Sources */,
 				C7216B4A1A13C8B800498CFE /* CCServerEventAddressMetaDeletedConsumer.m in Sources */,
 				C731843B1A2C98F200A99762 /* CCRootView.m in Sources */,
@@ -3309,6 +3657,7 @@
 				C7B5DF571A442D53000791FF /* _CCAuthMethod.m in Sources */,
 				C7E1E53C191A62D900602A4D /* CCHomeView.m in Sources */,
 				C73183AB1A236A1400A99762 /* CCLastNotificationModel.m in Sources */,
+				C7C66AA41A5C17A300FACC0C /* CCSocialButton.m in Sources */,
 				C76C3BEB1A1E2E85000B0DD8 /* CCServerEventListUserDataUpdatedConsumer.m in Sources */,
 				C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */,
 				C799AB4D1920CD150096B5A8 /* CCAddAddressViewTableViewCell.m in Sources */,
@@ -3333,7 +3682,9 @@
 				C73183B71A237A9F00A99762 /* CCAutocompleteAddAddressView.m in Sources */,
 				C737D6E81A3AEFDD00646F18 /* CCEmailLoginField.m in Sources */,
 				C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */,
+				C7C66A4D1A59F42C00FACC0C /* CCListStoreNavigationController.m in Sources */,
 				C73183A81A23661700A99762 /* CCAddressListViewModel.m in Sources */,
+				C7C66A761A5AC8C400FACC0C /* CCListStoreGroupFooterCell.m in Sources */,
 				C7E1E4F7191A46E700602A4D /* CCGeohashMonitor.m in Sources */,
 				C7216B031A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m in Sources */,
 				C73183D51A249F7100A99762 /* CCAddAddressByAddressView.m in Sources */,
@@ -3351,6 +3702,7 @@
 				C785F4D51A3EF7530011A681 /* CCLinotteAuthenticationManager.m in Sources */,
 				C7F4451E19FCE708009AE1C9 /* _CCServerEvent.m in Sources */,
 				C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */,
+				C7C66A501A59F87800FACC0C /* CCGroupListStoreViewController.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
 				C7216B171A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m in Sources */,
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
@@ -3363,17 +3715,20 @@
 				C799AB7619252E750096B5A8 /* CCModelChangeHandler.m in Sources */,
 				C73183BD1A237BBA00A99762 /* CCAddressAutocompletionResult.m in Sources */,
 				C7216B3B1A13C86100498CFE /* CCServerEventAddressMovedFromListConsumer.m in Sources */,
+				C7C66A9E1A5C170C00FACC0C /* CCPinterestSocialButton.m in Sources */,
 				C7C2924F19D4B35200EBF5C3 /* CCListOutputListEmptyView.m in Sources */,
 				C7619FD519C6DDAF00C09F0D /* CCListOptionButton.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
 				C796D7C119BB8C0000B97879 /* _CCList.m in Sources */,
 				C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */,
 				C7F4451F19FCE708009AE1C9 /* CCListZone.m in Sources */,
+				C7B5DF9B1A59E642000791FF /* CCBaseListStoreView.m in Sources */,
 				C7619FAD19C4415700C09F0D /* CCListViewModel.m in Sources */,
 				C73184231A2BCE1300A99762 /* CCSwapperViewController.m in Sources */,
 				C731841B1A275D1000A99762 /* CCMetaContainerView.m in Sources */,
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
 				C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */,
+				C7C66AA81A5C426600FACC0C /* CCAddAddressTabButtons.m in Sources */,
 				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
 				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */,
@@ -3382,16 +3737,19 @@
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
 				C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */,
 				C7216B411A13C88900498CFE /* CCServerEventAddressUserDataUpdatedConsumer.m in Sources */,
-				C76A1CDC19BF70EC00EE75E4 /* CCListStoreViewController.m in Sources */,
+				C76A1CDC19BF70EC00EE75E4 /* CCListStoreHomeViewController.m in Sources */,
 				C73184531A2E3E7A00A99762 /* CCOutputViewControllersTransition.m in Sources */,
 				C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */,
 				C7619FB619C441A400C09F0D /* CCListOutputListViewModel.m in Sources */,
 				C73184161A2752FB00A99762 /* CCMeta.m in Sources */,
 				C7FE2C7A199795BA00D7D0DC /* CCSplashView.m in Sources */,
-				C731840F1A27514E00A99762 /* CCPicsMeta.m in Sources */,
+				C7C66A981A5C16F100FACC0C /* CCFacebookSocialButton.m in Sources */,
+				C731840F1A27514E00A99762 /* CCPhotoMeta.m in Sources */,
 				C7F4452019FCE708009AE1C9 /* CCServerEvent.m in Sources */,
 				C796D7CE19BB8C1300B97879 /* CCAddressMeta.m in Sources */,
+				C7C66A711A5AC89B00FACC0C /* CCListStoreGroupHeaderCell.m in Sources */,
 				C731845A1A30733F00A99762 /* CCTelephoneButton.m in Sources */,
+				C7C66A491A59F30B00FACC0C /* CCBaseListStoreViewController.m in Sources */,
 				C7216B351A13C83F00498CFE /* CCServerEventListMetaDeletedConsumer.m in Sources */,
 				C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */,
 				C731841F1A2882C600A99762 /* CCRootViewController.m in Sources */,
@@ -3410,11 +3768,14 @@
 				C76A1CF219C0CA7F00EE75E4 /* CCListOutputView.m in Sources */,
 				C7619FD119C6D7C300C09F0D /* CCListOptionContainer.m in Sources */,
 				C73183B01A237A7E00A99762 /* CCAutocompleteAddAddressViewController.m in Sources */,
+				C7C66A7E1A5BE98D00FACC0C /* CCWeblinkButton.m in Sources */,
 				C731839F1A22425400A99762 /* CCViewControllerSwiperView.m in Sources */,
 				C73184441A2DAD0400A99762 /* CCTabStyleButton.m in Sources */,
+				C7C66A811A5BE99D00FACC0C /* CCEmailButton.m in Sources */,
 				C7619FB319C4419000C09F0D /* CCBookAndNotifiedListViewModel.m in Sources */,
 				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
 				C76C3BF31A1E411F000B0DD8 /* CCCurrentUserData.m in Sources */,
+				C7C66A651A5A9E9E00FACC0C /* CCFlatListStoreView.m in Sources */,
 				C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */,
 				C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */,
 				C7A1621E19DEA5FE003EFE5B /* CCLocalEvent.m in Sources */,
@@ -3422,19 +3783,24 @@
 				C7DCAA761A35FBC1009140B5 /* CCEmailLoginView.m in Sources */,
 				C759A9CF19F6968A008549B3 /* CCLinotteCoreDataStack.m in Sources */,
 				C731842A1A2BCE3D00A99762 /* CCSwapperView.m in Sources */,
-				C76A1CDF19BF715000EE75E4 /* CCListStoreView.m in Sources */,
+				C76A1CDF19BF715000EE75E4 /* CCListStoreHomeView.m in Sources */,
+				C7C66A841A5BEB8800FACC0C /* CCSocialMeta.m in Sources */,
 				C7216B441A13C89900498CFE /* CCServerEventAddressMetaAddedConsumer.m in Sources */,
 				C7C2924419D482B300EBF5C3 /* CCAlertView.m in Sources */,
 				C7FE2C6E1996B56200D7D0DC /* CCListViewTableViewCellDetailLabel.m in Sources */,
 				C76C3BDF1A1E0236000B0DD8 /* CCUserSynchronizationActionConsumeEvents.m in Sources */,
+				C7C66A531A59F88A00FACC0C /* CCSearchListStoreViewController.m in Sources */,
 				C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C73184121A27515E00A99762 /* CCOpenHoursMeta.m in Sources */,
+				C7C66AA11A5C171900FACC0C /* CCFoursquareSocialButton.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
+				C7C66A6B1A5AA37300FACC0C /* CCSearchListStoreView.m in Sources */,
 				C73184401A2CBC3800A99762 /* CCLinotteField.m in Sources */,
-				C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */,
+				C76A1CE419BF769100EE75E4 /* CCListStoreCollectionViewCell.m in Sources */,
 				C7619FF119CC233F00C09F0D /* CCSettingsView.m in Sources */,
 				C796D7D319BBA8F700B97879 /* CCAddressListSettingsView.m in Sources */,
+				C7C66A881A5BF6C200FACC0C /* CCLinotteBrowserViewController.m in Sources */,
 				C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */,
 				C7E1E4FB191A46FD00602A4D /* CCLinotteAPI.m in Sources */,
 				C7216B381A13C85200498CFE /* CCServerEventAddressAddedToListConsumer.m in Sources */,

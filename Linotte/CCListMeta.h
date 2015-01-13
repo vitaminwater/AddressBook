@@ -4,7 +4,7 @@
 
 @interface CCListMeta : _CCListMeta<CCMetaProtocol> {}
 
-@property (nonatomic, strong)NSDictionary *content;
+@property (nonatomic, strong)id content;
 
 + (CCListMeta *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict;
 + (NSArray *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDictArray:(NSArray *)dictArray list:(CCList *)list;

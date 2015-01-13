@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CCAddAddressAtLocationViewDelegate <NSObject>
+#import "CCAddAddressTabButtonsDelegate.h"
+
+@protocol CCAddAddressAtLocationViewDelegate <CCAddAddressTabButtonsDelegate>
 
 - (void)validateButtonPressed;
 

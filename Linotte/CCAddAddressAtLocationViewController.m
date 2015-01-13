@@ -56,6 +56,11 @@
     [((CCAddAddressAtLocationView *)self.view) cleanBeforeClose];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [((CCAddAddressAtLocationView *)self.view) resetTabButtonPosition];
+}
+
 #pragma mark - getter/setter methods
 
 - (NSString *)nameFieldValue
@@ -92,7 +97,7 @@
     address.address = [NSString stringWithFormat:@"%.05f %.05f", addressCoordinates.latitude, addressCoordinates.longitude];
     address.latitudeValue = addressCoordinates.latitude;
     address.longitudeValue = addressCoordinates.longitude;
-    address.provider = @"";
+    address.provider = @"user";
     address.providerId = @"";
     address.isAuthorValue = YES;
     
@@ -108,6 +113,11 @@
     @catch(NSException *e) {
         CCLog(@"%@", e);
     }
+}
+
+- (void)addAddressTypeChangedTo:(CCAddAddressType)addAddressType
+{
+    [_delegate addAddressTypeChangedTo:addAddressType];
 }
 
 @end

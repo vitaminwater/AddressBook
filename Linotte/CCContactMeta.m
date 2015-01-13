@@ -11,6 +11,8 @@
 #import "CCContactButtonProtocol.h"
 
 #import "CCTelephoneButton.h"
+#import "CCWeblinkButton.h"
+#import "CCEmailButton.h"
 
 @implementation CCContactMeta
 {
@@ -22,23 +24,38 @@
 {
     self = [super initWithMeta:meta];
     if (self) {
-        [self setupContactButtons];
-        [self setupLayout];
+        [self setupContent];
     }
     return self;
 }
 
-- (void)setupContactButtons
+- (void)setupContent
+{
+    [self setupButtons];
+    [self setupLayout];
+}
+
+- (void)setupButtons
 {
     _contactButtons = [@[] mutableCopy];
     
     if (self.meta.content[@"tel"] != nil) {
-        CCTelephoneButton *telButton = [[CCTelephoneButton alloc] initWithNumber:self.meta.content[@"tel"]];
-        telButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [telButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:telButton];
-        [_contactButtons addObject:telButton];
+        [self addContactButton:[[CCTelephoneButton alloc] initWithNumber:self.meta.content[@"tel"]]];
     }
+    if (self.meta.content[@"email"] != nil) {
+        [self addContactButton:[[CCEmailButton alloc] initWithEmail:self.meta.content[@"email"]]];
+    }
+    if (self.meta.content[@"weblink"] != nil) {
+        [self addContactButton:[[CCWeblinkButton alloc] initWithLink:self.meta.content[@"weblink"]]];
+    }
+}
+
+- (void)addContactButton:(UIButton *)button
+{
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:button];
+    [_contactButtons addObject:button];
 }
 
 - (void)setupLayout
@@ -47,27 +64,26 @@
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
     
-    UIButton *previousButton = nil;
-    for (UIButton *contactButton in _contactButtons) {
-        if (previousButton != nil) {
-            NSLayoutConstraint *linkConstraint = [NSLayoutConstraint constraintWithItem:previousButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contactButton attribute:NSLayoutAttributeTop multiplier:1 constant:7];
-            [self addConstraint:linkConstraint];
-            [_constraints addObject:linkConstraint];
-        }
+    if ([_contactButtons count] == 0)
+        return;
+    
+    NSMutableDictionary *views = [@{} mutableCopy];
+    
+    NSUInteger index = 0;
+    NSMutableString *format = [@"V:|" mutableCopy];
+    for (UIView *view in _contactButtons) {
+        NSString *key = [NSString stringWithFormat:@"view%d", (unsigned int)index];
+        [views setValue:view forKey:key];
+        [format appendFormat:@"[%@]", key];
+        ++index;
         
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contactButton]|" options:0 metrics:nil views:@{@"contactButton" : contactButton}];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:horizontalConstraints];
-        
-        previousButton = contactButton;
     }
+    [format appendString:@"|"];
     
-    UIView *firstButton = [_contactButtons firstObject];
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:firstButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:7];
-    [_constraints addObject:topConstraint];
-    
-    UIView *lastButton = [_contactButtons lastObject];
-    NSLayoutConstraint *bottomWidgetConstraint = [NSLayoutConstraint constraintWithItem:lastButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:-7];
-    [_constraints addObject:bottomWidgetConstraint];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
+    [_constraints addObjectsFromArray:verticalConstraints];
     
     [self addConstraints:_constraints];
 }
@@ -83,7 +99,12 @@
 
 - (void)updateContent
 {
+    for (UIView *view in _contactButtons) {
+        [view removeFromSuperview];
+    }
+    [_contactButtons removeAllObjects];
     
+    [self setupContent];
 }
 
 + (NSString *)action

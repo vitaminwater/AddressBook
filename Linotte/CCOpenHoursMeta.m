@@ -36,7 +36,7 @@
 
 + (NSString *)action
 {
-    return @"open_hours";
+    return @"hours";
 }
 
 @end

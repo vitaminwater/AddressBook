@@ -104,15 +104,6 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)filterList:(NSString *)filterText
-{
-    CCListView *view = (CCListView *)self.view;
-    
-    view.noAnimation = YES;
-    [self.provider filterList:filterText];
-    view.noAnimation = NO;
-}
-
 #pragma mark - CLLocationManagerDelegate methods
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
