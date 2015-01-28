@@ -47,7 +47,7 @@
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
     CGFloat itemEdge = screenSize.width / 2 - 21;
-    layout.itemSize = CGSizeMake(itemEdge, itemEdge);
+    layout.itemSize = CGSizeMake(itemEdge, 200);
     
     layout.minimumInteritemSpacing = 7;
     layout.minimumLineSpacing = 7;

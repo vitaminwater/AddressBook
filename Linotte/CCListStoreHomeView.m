@@ -42,7 +42,9 @@
     CCListStoreCollectionViewCell *cell = [self.listView dequeueReusableCellWithReuseIdentifier:kCCListStoreCell forIndexPath:indexPath];
     
     [cell setTitle:[_delegate nameForListAtIndex:indexPath.row forGroupAtIndex:indexPath.section]];
-    [cell setImage:[UIImage imageNamed:@"list_pin_neutral"]];
+
+    NSString *iconUrl = [_delegate iconUrlForListAtIndex:indexPath.row forGroupAtIndex:indexPath.section];
+    [cell loadImageFromUrl:iconUrl];
     return cell;
 }
 

@@ -25,7 +25,7 @@
 #import "CCListZone.h"
 #import "CCServerEvent.h"
 
-#define kCCDateIntervalDifference -10//-(12 * 60 * 60)
+#define kCCDateIntervalDifference -(12 * 60 * 60)
 
 @implementation CCListZoneSynchronizationActionConsumeEvents
 {

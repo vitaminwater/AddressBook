@@ -8,6 +8,7 @@
 
 #import "CCListInstallerView.h"
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <HexColors/HexColor.h>
 
 #import "CCListInstallerCloseButton.h"
@@ -62,6 +63,7 @@
     _nameLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:21];
     _nameLabel.textColor = [UIColor colorWithHexString:color];
     _nameLabel.textAlignment = NSTextAlignmentCenter;
+    _nameLabel.numberOfLines = 0;
     [self addSubview:_nameLabel];
 }
 
@@ -132,7 +134,7 @@
     _constraints = [@[] mutableCopy];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_imageView, _nameLabel, _infoLabel, _addToLinotteView, _closeButton);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_imageView]-[_nameLabel]-[_infoLabel]-[_addToLinotteView]-[_closeButton]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_imageView(==150)]-[_nameLabel]-[_infoLabel]-[_addToLinotteView]-[_closeButton]|" options:0 metrics:nil views:views];
     [_constraints addObjectsFromArray:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -144,6 +146,12 @@
 }
 
 #pragma mark - setter methods
+
+- (void)loadListIconWithUrl:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@_in_app_big", kCCLinotteStaticServer, urlString]];
+    [_imageView setImageWithURL:url placeholderImage:[UIImage imageNamed:@"list_pin_neutral"]];
+}
 
 - (void)setListIconImage:(UIImage *)iconImage
 {

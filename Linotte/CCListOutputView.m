@@ -8,6 +8,8 @@
 
 #import "CCListOutputView.h"
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
+
 #import "CCAnimationDelegator.h"
 
 #import "CCListView.h"
@@ -70,11 +72,11 @@
     {
         NSDictionary *views = NSDictionaryOfVariableBindings(_listIcon, _listInfos);
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==8)-[_listIcon(==100)][_listInfos]-(==8)-|" options:0 metrics:nil views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==8)-[_listIcon(==150)][_listInfos]-(==8)-|" options:0 metrics:nil views:views];
         [_listHeaderView addConstraints:verticalConstraints];
         
         for (UIView *view in views.allValues) {
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view" : view}];
             [_listHeaderView addConstraints:horizontalConstraints];
         }
     }
@@ -208,6 +210,12 @@
     }
     
     [self addConstraints:_constraints];
+}
+
+- (void)loadListIconWithUrl:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@_in_app_big", kCCLinotteStaticServer, urlString]];
+    [_listIcon setImageWithURL:url placeholderImage:[UIImage imageNamed:@"list_pin_neutral"]];
 }
 
 - (void)setListIconImage:(UIImage *)image

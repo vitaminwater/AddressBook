@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 
 #import <CoreLocation/CoreLocation.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 #import "CCOutputViewDelegate.h"
 
 #import "CCMetaProtocol.h"
 
-@interface CCOutputView : UIView<UITabBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
+@interface CCOutputView : UIView<UITabBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate, GMSMapViewDelegate>
 
 @property(nonatomic, readonly)NSString *currentColor;
 

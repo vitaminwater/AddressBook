@@ -14,6 +14,7 @@
 
 @property(nonatomic, assign)id<CCListInstallerViewDelegate> delegate;
 
+- (void)loadListIconWithUrl:(NSString *)urlString;
 - (void)setListIconImage:(UIImage *)iconImage;
 - (void)setListName:(NSString *)listName;
 - (void)setListInfos:(NSString *)listAuthor numberOfAddresses:(NSUInteger)numberOfAddresses numberOfInstalls:(NSUInteger)numberOfInstalls lastUpdate:(NSDate *)lastUpdate;

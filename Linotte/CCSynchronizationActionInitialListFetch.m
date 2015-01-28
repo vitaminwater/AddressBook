@@ -47,6 +47,7 @@
         
         [CCLEC.linotteAPI fetchUserLastEventDateWithSuccess:^(NSDate *lastEventDate) {
             CCUD.lastUserEventDate = lastEventDate;
+            CCUD.lastUserEventUpdate = [NSDate date];
             completionBlock(YES, NO);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             completionBlock(NO, YES);

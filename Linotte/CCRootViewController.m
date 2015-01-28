@@ -138,6 +138,13 @@
     [(UIViewController<CCChildRootViewControllerProtocol> *)viewController viewWillHide];
 }
 
+#pragma mark - CCLinotteBrowserViewControllerDelegate methods
+
+- (void)closeBrowserViewController
+{
+    [self dismissViewControllerAnimated:YES completion:^{}];
+}
+
 #pragma mark - NSNotificationCenter target methods
 
 - (void)backToHome:(NSNotification *)note
@@ -167,6 +174,7 @@
     NSString *rootUrl = [note object];
     
     CCLinotteBrowserViewController *browserViewController = [[CCLinotteBrowserViewController alloc] initWithRootUrl:rootUrl];
+    browserViewController.delegate = self;
     [self presentViewController:browserViewController animated:YES completion:^{}];
 }
 

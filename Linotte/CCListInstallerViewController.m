@@ -61,11 +61,12 @@
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
     if (_publicListDict != nil) {
         CCListInstallerView *view = (CCListInstallerView *)self.view;
         
         [view setListName:_publicListDict[@"name"]];
-        [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
+        [view loadListIconWithUrl:_publicListDict[@"icon"]];
     }
     [self loadCompleteList:_identifier];
 }
@@ -78,7 +79,7 @@
         
         NSDate *lastUpdateDate = [CCLEC.linotteAPI dateFromString:_completeListInfoDict[@"last_update"]];
         [view setListName:_completeListInfoDict[@"name"]];
-        [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
+        [view loadListIconWithUrl:_completeListInfoDict[@"icon"]];
         [view setListInfos:_completeListInfoDict[@"author"] numberOfAddresses:[_completeListInfoDict[@"n_addresses"] unsignedIntegerValue] numberOfInstalls:[_completeListInfoDict[@"n_installs"] unsignedIntegerValue] lastUpdate:lastUpdateDate];
     } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
 }

@@ -14,6 +14,8 @@
 
 #import "CCViewControllerSwiperViewControllerDelegate.h"
 
-@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate>
+#import "CCLinotteBrowserViewControllerDelegate.h"
+
+@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate, CCLinotteBrowserViewControllerDelegate>
 
 @end

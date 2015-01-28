@@ -23,7 +23,7 @@
 {
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+        self.backgroundColor = [UIColor clearColor];
         
         _widgets = [@[] mutableCopy];
         _batchingAdd = NO;
@@ -118,7 +118,7 @@
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:horizontalConstraints];
     }
-    [format appendString:@"|"];
+    [format appendString:@"-(>=0)-|"];
     
     NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
     [_constraints addObjectsFromArray:verticalConstraints];

@@ -74,6 +74,13 @@
 
 - (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
+    if (list != nil && [self listNeedProcess:list] == NO) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO, NO);
+        });
+        return;
+    }
+    
     list = list ?: [self findNextListToProcess:coordinates];
     if (list == nil) {
         dispatch_async(dispatch_get_main_queue(), ^{

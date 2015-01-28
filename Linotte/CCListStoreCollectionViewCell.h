@@ -10,6 +10,7 @@
 
 @interface CCListStoreCollectionViewCell : UICollectionViewCell
 
+- (void)loadImageFromUrl:(NSString *)urlString;
 - (void)setImage:(UIImage *)image;
 - (void)setTitle:(NSString *)title;
 

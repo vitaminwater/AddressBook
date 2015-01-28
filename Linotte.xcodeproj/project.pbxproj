@@ -605,6 +605,8 @@
 		C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerViewController.m; sourceTree = "<group>"; };
 		C7C9470619FD56F100CBD29C /* CCListInstallerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewDelegate.h; sourceTree = "<group>"; };
 		C7C9470719FD570100CBD29C /* CCListInstallerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewControllerDelegate.h; sourceTree = "<group>"; };
+		C7CDA3C91A72B406007B8CCD /* CCLinotteBrowserViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewDelegate.h; sourceTree = "<group>"; };
+		C7CDA3CB1A72B461007B8CCD /* CCLinotteBrowserViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7CE2C611918E48800D37A64 /* Linotte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Linotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7CE2C641918E48800D37A64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7CE2C661918E48800D37A64 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -723,7 +725,7 @@
 				C76C3BEC1A1E32A9000B0DD8 /* initial list fetch */,
 				C7216B071A110BEA00498CFE /* refresh zones */,
 				C7216B091A110C0300498CFE /* clean useless zones */,
-				C7216B0A1A110C0E00498CFE /* initial zone fetch */,
+				C7216B0A1A110C0E00498CFE /* initial address fetch */,
 				C7216B0B1A110C1800498CFE /* consume events */,
 			);
 			name = actions;
@@ -764,13 +766,13 @@
 			name = "clean useless zones";
 			sourceTree = "<group>";
 		};
-		C7216B0A1A110C0E00498CFE /* initial zone fetch */ = {
+		C7216B0A1A110C0E00498CFE /* initial address fetch */ = {
 			isa = PBXGroup;
 			children = (
 				C7216B121A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.h */,
 				C7216B131A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.m */,
 			);
-			name = "initial zone fetch";
+			name = "initial address fetch";
 			sourceTree = "<group>";
 		};
 		C7216B0B1A110C1800498CFE /* consume events */ = {
@@ -2901,6 +2903,7 @@
 		C7C66A851A5BF54300FACC0C /* browser */ = {
 			isa = PBXGroup;
 			children = (
+				C7CDA3CA1A72B453007B8CCD /* protocol */,
 				C7C66A8B1A5C0A2E00FACC0C /* ui */,
 				C7C66A861A5BF6C200FACC0C /* CCLinotteBrowserViewController.h */,
 				C7C66A871A5BF6C200FACC0C /* CCLinotteBrowserViewController.m */,
@@ -2919,6 +2922,7 @@
 		C7C66A8C1A5C0A3800FACC0C /* view */ = {
 			isa = PBXGroup;
 			children = (
+				C7CDA3C81A72B3F9007B8CCD /* protocol */,
 				C7C66A8D1A5C0D5400FACC0C /* CCLinotteBrowserView.h */,
 				C7C66A8E1A5C0D5400FACC0C /* CCLinotteBrowserView.m */,
 			);
@@ -3043,6 +3047,22 @@
 			isa = PBXGroup;
 			children = (
 				C7C9470619FD56F100CBD29C /* CCListInstallerViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7CDA3C81A72B3F9007B8CCD /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7CDA3C91A72B406007B8CCD /* CCLinotteBrowserViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C7CDA3CA1A72B453007B8CCD /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C7CDA3CB1A72B461007B8CCD /* CCLinotteBrowserViewControllerDelegate.h */,
 			);
 			name = protocol;
 			sourceTree = "<group>";

@@ -10,8 +10,7 @@
 
 @implementation CCDisplayMeta
 {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    UITextView *_textView;
 }
 
 - (instancetype)initWithMeta:(id<CCMetaProtocol>)meta
@@ -26,41 +25,62 @@
 
 - (void)setupLabels
 {
-    _titleLabel = [UILabel new];
-    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _titleLabel.textColor = [UIColor darkGrayColor];
-    _titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:18];
-    _titleLabel.numberOfLines = 0;
-    [self addSubview:_titleLabel];
-    
-    _textLabel = [UILabel new];
-    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.textColor = [UIColor darkGrayColor];
-    _textLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
-    _textLabel.numberOfLines = 0;
-    [self addSubview:_textLabel];
+    _textView = [UITextView new];
+    _textView.translatesAutoresizingMaskIntoConstraints = NO;
+    _textView.scrollEnabled = NO;
+    _textView.backgroundColor = [UIColor clearColor];
+    [self addSubview:_textView];
     
     [self updateContent];
 }
 
 - (void)setupLayout
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _textLabel);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_titleLabel]-(==4)-[_textLabel]|" options:0 metrics:nil views:views];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_textView);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_textView]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
-    for (UIView *view in views.allValues) {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-        [self addConstraints:horizontalConstraints];
-    }
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_textView]|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
 }
 
 #pragma mark - CCBaseMetaWidgetProtocol methods
 
 - (void)updateContent
 {
-    _titleLabel.text = self.meta.content[@"title"];
-    _textLabel.text = self.meta.content[@"text"];
+    _textView.text = @"";
+    
+    NSMutableAttributedString *content = [NSMutableAttributedString new];
+    for (NSString *title in ((NSDictionary *)self.meta.content).allKeys) {
+        id bodyId = ((NSDictionary *)self.meta.content)[title];
+        NSString *body;
+        
+        if ([bodyId isKindOfClass:[NSNumber class]])
+            body = [(NSNumber *)bodyId stringValue];
+        else if ([bodyId isKindOfClass:[NSString class]])
+            body = bodyId;
+        else if ([bodyId isKindOfClass:[NSArray class]]) {
+            NSMutableString *tmp = [@"" mutableCopy];
+            for (NSString *line in (NSArray *)bodyId) {
+                [tmp appendString:line];
+            }
+            body = tmp;
+        }
+            
+        if ([body length] == 0)
+            continue;
+        
+        NSCharacterSet *cs = [NSCharacterSet characterSetWithCharactersInString:@"\r\n"];
+        
+        if ([title isEqualToString:@"notitle"] == false) {
+            NSAttributedString *displayString = [[NSAttributedString alloc] initWithString:[[title stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Montserrat-Bold" size:22], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
+            [content appendAttributedString:displayString];
+        }
+        
+        NSAttributedString *contentString = [[NSAttributedString alloc] initWithString:[[body stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:19], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
+        [content appendAttributedString:contentString];
+    }
+    [_textView setAttributedText:content];
 }
 
 + (NSString *)action

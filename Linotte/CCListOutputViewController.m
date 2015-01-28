@@ -90,7 +90,7 @@
     [view setupListView:(CCListView *)_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
     
-    [view setListIconImage:[UIImage imageNamed:@"list_pin_neutral"]];
+    [view loadListIconWithUrl:_list.icon];
     [view setListInfosText:_list.name];
     
     if (_listIsNew) {

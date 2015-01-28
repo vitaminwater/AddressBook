@@ -23,7 +23,6 @@
 
 #import "CCAddress.h"
 
-
 @implementation CCAppDelegate
 {
     NSDate *_dateActive;

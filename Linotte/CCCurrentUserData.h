@@ -13,6 +13,7 @@
 @interface CCCurrentUserData : NSObject
 
 @property(nonatomic, strong)NSDate *lastUserEventDate;
+@property(nonatomic, strong)NSDate *lastUserEventUpdate;
 
 + (instancetype)sharedInstance;
 

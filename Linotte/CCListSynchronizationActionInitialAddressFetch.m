@@ -121,6 +121,7 @@
                     _currentConnection = nil;
                     
                     zone.firstFetchValue = NO;
+                    zone.lastAddressFirstFetchDate = nil;
                     zone.lastEventDate = lastEventDate;
                     zone.lastUpdate = [NSDate date];
                     [[CCLinotteCoreDataStack sharedInstance] saveContext];

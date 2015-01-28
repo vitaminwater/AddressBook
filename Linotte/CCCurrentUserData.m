@@ -9,6 +9,7 @@
 #import "CCCurrentUserData.h"
 
 #define kCCLastUserEventDate @"kCCLastUserEventDate"
+#define kCCLastUserEventUpdate @"kCCLastUserEventUpdate"
 
 @implementation CCCurrentUserData
 {
@@ -16,6 +17,7 @@
 }
 
 @dynamic lastUserEventDate;
+@dynamic lastUserEventUpdate;
 
 - (instancetype)init
 {
@@ -44,6 +46,24 @@
     NSString *lastEventDateString = [_dateFormatter stringFromDate:lastEventDate];
     
     [[NSUserDefaults standardUserDefaults] setValue:lastEventDateString forKey:kCCLastUserEventDate];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSDate *)lastUserEventUpdate
+{
+    NSString *lastUserEventDateString = [[NSUserDefaults standardUserDefaults] valueForKey:kCCLastUserEventUpdate];
+    
+    if (lastUserEventDateString == nil)
+        return nil;
+    
+    return [_dateFormatter dateFromString:lastUserEventDateString];
+}
+
+- (void)setLastUserEventUpdate:(NSDate *)lastEventUpdate
+{
+    NSString *lastEventUpdateString = [_dateFormatter stringFromDate:lastEventUpdate];
+    
+    [[NSUserDefaults standardUserDefaults] setValue:lastEventUpdateString forKey:kCCLastUserEventUpdate];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

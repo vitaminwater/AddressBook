@@ -29,9 +29,17 @@
     [super loadView];
     
     CCLinotteBrowserView *view = [CCLinotteBrowserView new];
+    view.delegate = self;
     self.view = view;
     
     [view loadRootUrl:_rootUrl];
+}
+
+#pragma mark - CCLinotteBrowserViewDelegate methods
+
+- (void)closeButtonPressed
+{
+    [_delegate closeBrowserViewController];
 }
 
 @end

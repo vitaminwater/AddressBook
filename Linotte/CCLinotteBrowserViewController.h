@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCLinotteBrowserViewController : UIViewController
+#import "CCLinotteBrowserViewDelegate.h"
+#import "CCLinotteBrowserViewControllerDelegate.h"
+
+@interface CCLinotteBrowserViewController : UIViewController<CCLinotteBrowserViewDelegate>
+
+@property(nonatomic, weak)id<CCLinotteBrowserViewControllerDelegate> delegate;
 
 - (instancetype)initWithRootUrl:(NSString *)rootUrl;
 

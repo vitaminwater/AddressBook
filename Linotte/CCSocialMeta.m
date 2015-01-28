@@ -75,17 +75,17 @@
     NSMutableDictionary *views = [@{} mutableCopy];
     
     NSUInteger index = 0;
-    NSMutableString *format = [@"H:|" mutableCopy];
+    NSMutableString *format = [@"H:|-" mutableCopy];
     for (UIView *view in _socialSiteButtons) {
         NSString *key = [NSString stringWithFormat:@"view%d", (unsigned int)index];
         [views setValue:view forKey:key];
-        [format appendFormat:@"[%@]", key];
+        [format appendFormat:@"[%@]-", key];
         ++index;
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view]-|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:verticalConstraints];
     }
-    [format appendString:@"|"];
+    [format deleteCharactersInRange:(NSRange){[format length] - 1, 1}];
     
     NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
     [_constraints addObjectsFromArray:horizontalConstraints];

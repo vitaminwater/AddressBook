@@ -8,6 +8,7 @@
 
 #import "CCListStoreCollectionViewCell.h"
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <HexColors/HexColor.h>
 
 @implementation CCListStoreCollectionViewCell
@@ -58,7 +59,7 @@
     _constraints = [@[] mutableCopy];
 
     NSDictionary *views = NSDictionaryOfVariableBindings(_image, _title);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_image]-(==20)-[_title]-|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_image(==80)]-(==20)-[_title]-|" options:0 metrics:nil views:views];
     [_constraints addObjectsFromArray:verticalConstraints];
     
     for (UIView *view in views.allValues) {
@@ -67,6 +68,12 @@
     }
 
     [self addConstraints:_constraints];
+}
+
+- (void)loadImageFromUrl:(NSString *)urlString
+{
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@_store_small", kCCLinotteStaticServer, urlString]];
+    [_image setImageWithURL:url placeholderImage:[UIImage imageNamed:@"list_pin_neutral"]];
 }
 
 #pragma mark - setter methods

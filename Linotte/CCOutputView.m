@@ -59,7 +59,7 @@
         self.opaque = YES;
         _metaExpanded = NO;
         
-        {
+        /*{
             UISwipeGestureRecognizer *swipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognizer:)];
             swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionDown;
             swipeGestureRecognizer.delegate = self;
@@ -71,7 +71,7 @@
             swipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionUp;
             swipeGestureRecognizer.delegate = self;
             [self addGestureRecognizer:swipeGestureRecognizer];
-        }
+        }*/
         
         {
             UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
@@ -99,6 +99,7 @@
     _mapView.myLocationEnabled = YES;
     _mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _mapView.frame = self.bounds;
+    _mapView.delegate = self;
     [self addSubview:_mapView];
     
     _marker = [[GMSMarker alloc] init];
@@ -134,6 +135,7 @@
     
     _expandIcon = [UIImageView new];
     _expandIcon.translatesAutoresizingMaskIntoConstraints = NO;
+    [_expandIcon setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _expandIcon.image = [UIImage imageNamed:@"expand_icon"];
     _expandIcon.backgroundColor = [UIColor clearColor];
     _expandIcon.contentMode = UIViewContentModeCenter;
@@ -141,6 +143,7 @@
     
     _nameLabel = [UILabel new];
     _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_nameLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _nameLabel.textColor = [UIColor darkGrayColor];
     _nameLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:18];
     _nameLabel.numberOfLines = 0;
@@ -148,6 +151,7 @@
     
     _addressLabel = [UILabel new];
     _addressLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_addressLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _addressLabel.textColor = [UIColor darkGrayColor];
     _addressLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
     _addressLabel.numberOfLines = 0;
@@ -155,6 +159,7 @@
     
     _distanceLabel = [UILabel new];
     _distanceLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_distanceLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _distanceLabel.textColor = [UIColor darkGrayColor];
     _distanceLabel.font = [UIFont fontWithName:@"Futura-Book" size:16];
     _distanceLabel.text = NSLocalizedString(@"DISTANCE_UNAVAILABLE", @"");
@@ -162,6 +167,7 @@
     
     _providerLabel = [UILabel new];
     _providerLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_providerLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _providerLabel.textColor = [UIColor darkGrayColor];
     _providerLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
     _providerLabel.numberOfLines = 0;
@@ -188,10 +194,8 @@
     // _infosView constraints
     {
         NSDictionary *views = NSDictionaryOfVariableBindings(_expandIcon, _nameLabel, _addressLabel, _distanceLabel, _providerLabel, _metaScrollView);
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_expandIcon][_nameLabel][_addressLabel]-(==7)-[_distanceLabel]-(==7)-[_providerLabel]-(==7)-[_metaScrollView]" options:0 metrics:nil views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_expandIcon][_nameLabel][_addressLabel]-(==7)-[_distanceLabel]-(==7)-[_providerLabel]-(==7)-[_metaScrollView]-(==25)-|" options:0 metrics:nil views:views];
         [_infosView addConstraints:verticalConstraints];
-        
-        [self infosViewConstraints];
         
         for (UIView *view in views.allValues) {
             NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view" : view}];
@@ -219,9 +223,14 @@
 {
     NSDictionary *views = NSDictionaryOfVariableBindings(_infosView, _tabBar);
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_infosView][_tabBar]|" options:0 metrics:nil views:views];
-    [self addConstraints:verticalConstraints];
+    NSArray *tabBarBottomConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_tabBar]|" options:0 metrics:nil views:views];
+    [self addConstraints:tabBarBottomConstraints];
     
+    NSLayoutConstraint *infosViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_infosView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+    [self addConstraint:infosViewHeightConstraint];
+
+    [self infosViewConstraints];
+
     for (UIView *view in views.allValues) {
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [self addConstraints:horizontalConstraints];
@@ -321,20 +330,17 @@
 - (void)infosViewConstraints
 {
     if (_bottomInfosViewContraint != nil)
-        [_infosView removeConstraint:_bottomInfosViewContraint];
+        [self removeConstraint:_bottomInfosViewContraint];
     
     if (_topInfosViewConstraint != nil)
         [self removeConstraint:_topInfosViewConstraint];
     
     if (_metaExpanded) {
-        _bottomInfosViewContraint = [NSLayoutConstraint constraintWithItem:_metaScrollView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_infosView attribute:NSLayoutAttributeBottom multiplier:1 constant:-7];
-        [_infosView addConstraint:_bottomInfosViewContraint];
-        
         _topInfosViewConstraint = [NSLayoutConstraint constraintWithItem:_infosView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
         [self addConstraint:_topInfosViewConstraint];
     } else {
-        _bottomInfosViewContraint = [NSLayoutConstraint constraintWithItem:_distanceLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_infosView attribute:NSLayoutAttributeBottom multiplier:1 constant:-7];
-        [_infosView addConstraint:_bottomInfosViewContraint];
+        _bottomInfosViewContraint = [NSLayoutConstraint constraintWithItem:_distanceLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_tabBar attribute:NSLayoutAttributeTop multiplier:1 constant:-7];
+        [self addConstraint:_bottomInfosViewContraint];
     }
 }
 
@@ -447,6 +453,7 @@
     [_marker setPosition:coordinates];
     _marker.snippet = address;
     _marker.title = name;
+    _mapView.selectedMarker = _marker;
     
     GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:coordinates zoom:14];
     _mapView.camera = cameraPosition;
@@ -473,5 +480,16 @@
     
     _marker.icon = [UIImage imageNamed:iconName];
 }
+
+#pragma mark - GMSMapViewDelegate methods
+
+/*- (UIView *)mapView:(GMSMapView *)mapView markerInfoContents:(GMSMarker *)marker
+{
+    UILabel *label = [UILabel new];
+    label.text = @"pouet pout pwoeutproe";
+    label.textColor = [UIColor blackColor];
+    [label sizeThatFits:CGSizeMake(500, CGFLOAT_MAX)];
+    return label;
+}*/
 
 @end

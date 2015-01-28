@@ -19,6 +19,7 @@
 - (void)setupListView:(CCListView *)listView;
 - (void)setupLayout;
 
+- (void)loadListIconWithUrl:(NSString *)urlString;
 - (void)setListIconImage:(UIImage *)image;
 - (void)setListInfosText:(NSString *)listInfos;
 - (void)setNotificationEnabled:(BOOL)notificationEnabled;
