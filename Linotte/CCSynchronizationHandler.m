@@ -62,7 +62,7 @@
         _locationManager.delegate = self;
         
         [_locationManager startMonitoringSignificantLocationChanges];
-        
+                
         [[CCLocationMonitor sharedInstance] addDelegate:self];
     }
     return self;

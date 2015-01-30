@@ -10,8 +10,11 @@ const struct CCListZoneAttributes CCListZoneAttributes = {
 	.lastEventDate = @"lastEventDate",
 	.lastUpdate = @"lastUpdate",
 	.latitude = @"latitude",
+	.longNextRefreshDate = @"longNextRefreshDate",
 	.longitude = @"longitude",
 	.nAddresses = @"nAddresses",
+	.shortNextRefreshDate = @"shortNextRefreshDate",
+	.waitingTime = @"waitingTime",
 };
 
 const struct CCListZoneRelationships CCListZoneRelationships = {
@@ -61,6 +64,11 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 	}
 	if ([key isEqualToString:@"nAddressesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"nAddresses"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"waitingTimeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"waitingTime"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -116,6 +124,8 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 	[self setPrimitiveLatitude:[NSNumber numberWithDouble:value_]];
 }
 
+@dynamic longNextRefreshDate;
+
 @dynamic longitude;
 
 - (double)longitudeValue {
@@ -154,6 +164,28 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 
 - (void)setPrimitiveNAddressesValue:(int16_t)value_ {
 	[self setPrimitiveNAddresses:[NSNumber numberWithShort:value_]];
+}
+
+@dynamic shortNextRefreshDate;
+
+@dynamic waitingTime;
+
+- (int32_t)waitingTimeValue {
+	NSNumber *result = [self waitingTime];
+	return [result intValue];
+}
+
+- (void)setWaitingTimeValue:(int32_t)value_ {
+	[self setWaitingTime:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveWaitingTimeValue {
+	NSNumber *result = [self primitiveWaitingTime];
+	return [result intValue];
+}
+
+- (void)setPrimitiveWaitingTimeValue:(int32_t)value_ {
+	[self setPrimitiveWaitingTime:[NSNumber numberWithInt:value_]];
 }
 
 @dynamic list;

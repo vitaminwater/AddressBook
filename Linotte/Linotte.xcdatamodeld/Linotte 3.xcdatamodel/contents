@@ -14,7 +14,6 @@
         <attribute name="notify" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="provider" attributeType="String" defaultValueString="foursquare" syncable="YES"/>
         <attribute name="providerId" attributeType="String" defaultValueString="0" syncable="YES"/>
-        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCCategory" inverseName="address" inverseEntity="CCCategory" syncable="YES"/>
         <relationship name="lists" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCList" inverseName="addresses" inverseEntity="CCList" syncable="YES"/>
         <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCAddressMeta" inverseName="address" inverseEntity="CCAddressMeta" syncable="YES"/>
     </entity>
@@ -32,11 +31,6 @@
         <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="CCCategory" representedClassName="CCCategory" syncable="YES">
-        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="categories" inverseEntity="CCAddress" syncable="YES"/>
-    </entity>
     <entity name="CCList" representedClassName="CCList" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="authorIdentifier" optional="YES" attributeType="String" syncable="YES"/>
@@ -53,9 +47,12 @@
         <attribute name="lastZoneRefreshLongitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="lastZonesRefresh" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="longNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notify" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
+        <attribute name="shortNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="waitingTime" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>
         <relationship name="addressMetas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCAddressMeta" inverseName="list" inverseEntity="CCAddressMeta" syncable="YES"/>
         <relationship name="metas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CCListMeta" inverseName="list" inverseEntity="CCListMeta" syncable="YES"/>
@@ -77,7 +74,10 @@
         <attribute name="lastUpdate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="nAddresses" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="shortNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="waitingTime" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="zones" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <entity name="CCLocalEvent" representedClassName="CCLocalEvent" syncable="YES">
@@ -96,13 +96,12 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="0" positionY="0" width="128" height="285"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="270"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
         <element name="CCAuthMethod" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="CCCategory" positionX="0" positionY="0" width="128" height="90"/>
-        <element name="CCList" positionX="0" positionY="0" width="128" height="390"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="433"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
-        <element name="CCListZone" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="CCListZone" positionX="0" positionY="0" width="128" height="223"/>
         <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="135"/>
     </elements>

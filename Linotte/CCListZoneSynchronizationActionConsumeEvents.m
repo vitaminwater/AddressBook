@@ -62,8 +62,6 @@
 
 - (CCList *)findNextListToProcess
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
-    
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
@@ -78,7 +76,8 @@
     }
     
     if ([lists count] == 0) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and subquery(zones, $zone, $zone.firstFetch = %@ and $zone.lastUpdate < %@).@count > 0", @NO, minDate];
+        NSString *predicateFormat = [NSString stringWithFormat:@"identifier != nil and subquery(zones, $zone, $zone.firstFetch = %%@ and %@ < %%@).@count > 0", kCCFullSync ? @"shortNextRefreshDate" : @"longNextRefreshDate"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, @NO, [NSDate date]];
         [fetchRequest setPredicate:predicate];
         
         lists = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
@@ -109,11 +108,10 @@
 
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
-    
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and firstFetch = %@ and lastUpdate < %@", list, @(NO), minDate];
+    NSString *predicateFormat = [NSString stringWithFormat:@"list = %%@ and firstFetch = %%@ and %@ < %%@", kCCFullSync ? @"shortNextRefreshDate" : @"longNextRefreshDate"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, list, @(NO), [NSDate date]];
     NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"lastUpdate" ascending:YES];
     [fetchRequest setPredicate:predicate];
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
@@ -147,10 +145,12 @@
         
         listZone.lastUpdate = [NSDate date];
         if ([eventsDicts count] == 0) {
+            [listZone updateNextRefreshDate:YES];
             [[CCLinotteCoreDataStack sharedInstance] saveContext];
             completionBlock(multipleWaiting, NO);
             return;
         }
+        [listZone updateNextRefreshDate:NO];
         
         CCLog(@"%lu events received", [eventsDicts count]);
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;

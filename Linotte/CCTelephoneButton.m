@@ -21,7 +21,7 @@
         
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
         [self setTitle:_number forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     }
     return self;
@@ -31,7 +31,8 @@
 
 - (void)buttonPressed
 {
-    NSString *dialstring = [[NSString alloc] initWithFormat:@"tel:%@", _number];
+    NSString *cleanNumber = [[_number componentsSeparatedByCharactersInSet:[[NSCharacterSet characterSetWithCharactersInString:@"0123456789-+()"] invertedSet]] componentsJoinedByString:@""];
+    NSString *dialstring = [[NSString alloc] initWithFormat:@"tel:%@", cleanNumber];
     
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:dialstring]];
 }

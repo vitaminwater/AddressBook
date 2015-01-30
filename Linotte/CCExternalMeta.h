@@ -10,6 +10,6 @@
 
 #import "CCBaseMetaWidgetProtocol.h"
 
-@interface CCContactMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
+@interface CCExternalMeta : CCBaseMetaWidget<CCBaseMetaWidgetProtocol>
 
 @end

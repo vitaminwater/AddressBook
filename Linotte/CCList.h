@@ -5,6 +5,9 @@
 @interface CCList : _CCList {}
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location;
+- (NSArray *)metasForActions:(NSArray *)action;
+- (void)updateNextRefreshDate:(BOOL)doubleWaitingTime;
+- (void)setNextRefreshDate;
 
 + (CCList *)listWithIdentifier:(NSString *)identifier managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 

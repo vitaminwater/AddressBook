@@ -21,7 +21,7 @@
         
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
         [self setTitle:_email forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     }
     return self;

@@ -21,8 +21,10 @@
 
 @property(nonatomic, weak)id <CCOutputViewDelegate>delegate;
 
-- (void)addMetas:(NSArray *)metas;
-- (void)updateMeta:(NSArray *)metas;
+- (void)setDisplayMetas:(NSArray *)metas;
+- (void)setSocialMetas:(NSArray *)metas;
+- (void)setExternalMetas:(NSArray *)metas;
+- (void)setHoursMetas:(NSArray *)metas;
 - (void)setAddressInfos:(NSString *)name address:(NSString *)address provider:(NSString *)provider coordinates:(CLLocationCoordinate2D)coordinates;
 - (void)setDistance:(double)distance;
 

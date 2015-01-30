@@ -15,6 +15,8 @@
     [super awakeFromInsert];
     self.localIdentifier = [[NSUUID UUID] UUIDString];
     self.lastUpdate = [NSDate date];
+    self.waitingTimeValue = (12 * 3600) + rand() % (12 * 3600);
+    [self setNextRefreshDate];
 }
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location
@@ -40,6 +42,37 @@
     }];
     
     return sortedListZones;
+}
+
+- (NSArray *)metasForActions:(NSArray *)actions
+{
+    NSMutableArray *metas = [@[] mutableCopy];
+    for (NSString *action in actions) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"action = %@", action];
+        [metas addObjectsFromArray:[[self.metas filteredSetUsingPredicate:predicate] allObjects]];
+    }
+    return metas;
+}
+
+- (void)updateNextRefreshDate:(BOOL)doubleWaitingTime
+{
+    if (kCCApplicationBackground) {
+        if (doubleWaitingTime) {
+            self.waitingTimeValue *= 2;
+            self.waitingTimeValue = MIN((24 * 3600 * 180), self.waitingTimeValue);
+        } else {
+            self.waitingTimeValue /= 2;
+            self.waitingTimeValue = MAX(30, self.waitingTimeValue);
+        }
+    }
+    
+    [self setNextRefreshDate];
+}
+
+- (void)setNextRefreshDate
+{
+    self.shortNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue / 2];
+    self.longNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue];
 }
 
 + (CCList *)listWithIdentifier:(NSString *)identifier managedObjectContext:(NSManagedObjectContext *)managedObjectContext
@@ -103,6 +136,7 @@
     for (NSDictionary *dict in dictArray) {
         if ([listIdentifiers containsObject:dict[@"identifier"]] == NO) {
             CCList *list = [self insertInManagedObjectContext:managedObjectContext];
+            [list setNextRefreshDate];
             [self setValuesForlist:list fromLinotteDict:dict];
             [insertedLists addObject:list];
         }
@@ -149,7 +183,8 @@
     list.author = dict[@"author"];
     list.authorIdentifier = dict[@"author_id"];
     list.notify = dict[@"notification"] ?: @NO;
-    list.owned = dict[@"owned"];
+    list.owned = dict[@"is_owned"];
+    list.isdefault = dict[@"is_default"];
 }
 
 @end

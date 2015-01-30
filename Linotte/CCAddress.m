@@ -14,6 +14,16 @@
     self.localIdentifier = [[NSUUID UUID] UUIDString];
 }
 
+- (NSArray *)metasForActions:(NSArray *)actions
+{
+    NSMutableArray *metas = [@[] mutableCopy];
+    for (NSString *action in actions) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"action = %@", action];
+        [metas addObjectsFromArray:[[self.metas filteredSetUsingPredicate:predicate] allObjects]];
+    }
+    return metas;
+}
+
 + (CCAddress *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict
 {
     NSError *error = nil;

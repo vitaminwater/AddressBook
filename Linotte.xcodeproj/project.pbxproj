@@ -22,8 +22,6 @@
 
 /* Begin PBXBuildFile section */
 		6F468212137B4D43BF3CB196 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6741CE8E2CF64C42BEA00356 /* libPods.a */; };
-		C705882E192CEC500096A335 /* _CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882B192CEC500096A335 /* _CCCategory.m */; };
-		C705882F192CEC500096A335 /* CCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = C705882D192CEC500096A335 /* CCCategory.m */; };
 		C7216B031A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B021A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m */; };
 		C7216B0E1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */; };
 		C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B101A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m */; };
@@ -61,7 +59,7 @@
 		C73183F11A25E3B400A99762 /* CCAddAddressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F01A25E3B400A99762 /* CCAddAddressViewController.m */; };
 		C73183F81A2742AD00A99762 /* CCBaseMetaWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183F71A2742AD00A99762 /* CCBaseMetaWidget.m */; };
 		C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184051A27512D00A99762 /* CCDisplayMeta.m */; };
-		C731840C1A27514400A99762 /* CCContactMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840B1A27514400A99762 /* CCContactMeta.m */; };
+		C731840C1A27514400A99762 /* CCExternalMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840B1A27514400A99762 /* CCExternalMeta.m */; };
 		C731840F1A27514E00A99762 /* CCPhotoMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C731840E1A27514E00A99762 /* CCPhotoMeta.m */; };
 		C73184121A27515E00A99762 /* CCOpenHoursMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184111A27515E00A99762 /* CCOpenHoursMeta.m */; };
 		C73184161A2752FB00A99762 /* CCMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C73184151A2752FB00A99762 /* CCMeta.m */; };
@@ -147,6 +145,8 @@
 		C7B5DF9B1A59E642000791FF /* CCBaseListStoreView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B5DF9A1A59E642000791FF /* CCBaseListStoreView.m */; };
 		C7BA707D193E107D000780D9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BA707F193E107D000780D9 /* Localizable.strings */; };
 		C7BA7083193E1697000780D9 /* NSString+CCLocalizedString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */; };
+		C7BDF7301A7A6FDF00F9F93D /* CCNoteView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BDF72F1A7A6FDF00F9F93D /* CCNoteView.m */; };
+		C7BDF7341A7A7CCD00F9F93D /* CCActionViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BDF7331A7A7CCD00F9F93D /* CCActionViewContainer.m */; };
 		C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */; };
 		C7BE91AC1A35F6410033B359 /* CCSignUpView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BE91AB1A35F6410033B359 /* CCSignUpView.m */; };
 		C7C2924119D47F1600EBF5C3 /* CCActionResultHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C2924019D47F1600EBF5C3 /* CCActionResultHUD.m */; };
@@ -179,6 +179,7 @@
 		C7C66AA81A5C426600FACC0C /* CCAddAddressTabButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66AA71A5C426600FACC0C /* CCAddAddressTabButtons.m */; };
 		C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470119FD56C600CBD29C /* CCListInstallerView.m */; };
 		C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */; };
+		C7CDA3D01A7A439B007B8CCD /* CCActionButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CDA3CF1A7A439B007B8CCD /* CCActionButtonsView.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
 		C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C661918E48800D37A64 /* CoreGraphics.framework */; };
 		C7CE2C691918E48800D37A64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C681918E48800D37A64 /* UIKit.framework */; };
@@ -233,10 +234,6 @@
 		2DF6C977A428448EC61830A0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		6741CE8E2CF64C42BEA00356 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A82545F81FB62D02945A6F11 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		C705882A192CEC500096A335 /* _CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCCategory.h; sourceTree = "<group>"; };
-		C705882B192CEC500096A335 /* _CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCCategory.m; sourceTree = "<group>"; };
-		C705882C192CEC500096A335 /* CCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCategory.h; sourceTree = "<group>"; };
-		C705882D192CEC500096A335 /* CCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCategory.m; sourceTree = "<group>"; };
 		C7216B011A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionSendLocalEvents.h; sourceTree = "<group>"; };
 		C7216B021A110BB500498CFE /* CCSynchronizationActionSendLocalEvents.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionSendLocalEvents.m; sourceTree = "<group>"; };
 		C7216B051A110BD200498CFE /* CCSynchronizationActionProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionProtocol.h; sourceTree = "<group>"; };
@@ -324,8 +321,8 @@
 		C73183FE1A27439E00A99762 /* CCMetaProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMetaProtocol.h; sourceTree = "<group>"; };
 		C73184041A27512D00A99762 /* CCDisplayMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDisplayMeta.h; sourceTree = "<group>"; };
 		C73184051A27512D00A99762 /* CCDisplayMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDisplayMeta.m; sourceTree = "<group>"; };
-		C731840A1A27514400A99762 /* CCContactMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCContactMeta.h; sourceTree = "<group>"; };
-		C731840B1A27514400A99762 /* CCContactMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCContactMeta.m; sourceTree = "<group>"; };
+		C731840A1A27514400A99762 /* CCExternalMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCExternalMeta.h; sourceTree = "<group>"; };
+		C731840B1A27514400A99762 /* CCExternalMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCExternalMeta.m; sourceTree = "<group>"; };
 		C731840D1A27514E00A99762 /* CCPhotoMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhotoMeta.h; sourceTree = "<group>"; };
 		C731840E1A27514E00A99762 /* CCPhotoMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPhotoMeta.m; sourceTree = "<group>"; };
 		C73184101A27515E00A99762 /* CCOpenHoursMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOpenHoursMeta.h; sourceTree = "<group>"; };
@@ -532,6 +529,10 @@
 		C7BA7080193E10A4000780D9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C7BA7081193E1697000780D9 /* NSString+CCLocalizedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CCLocalizedString.h"; sourceTree = "<group>"; };
 		C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CCLocalizedString.m"; sourceTree = "<group>"; };
+		C7BDF72E1A7A6FDF00F9F93D /* CCNoteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNoteView.h; sourceTree = "<group>"; };
+		C7BDF72F1A7A6FDF00F9F93D /* CCNoteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNoteView.m; sourceTree = "<group>"; };
+		C7BDF7321A7A7CCD00F9F93D /* CCActionViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionViewContainer.h; sourceTree = "<group>"; };
+		C7BDF7331A7A7CCD00F9F93D /* CCActionViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCActionViewContainer.m; sourceTree = "<group>"; };
 		C7BE91A51A35F61C0033B359 /* CCSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpViewController.h; sourceTree = "<group>"; };
 		C7BE91A61A35F61C0033B359 /* CCSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSignUpViewController.m; sourceTree = "<group>"; };
 		C7BE91AA1A35F6410033B359 /* CCSignUpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpView.h; sourceTree = "<group>"; };
@@ -607,6 +608,8 @@
 		C7C9470719FD570100CBD29C /* CCListInstallerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7CDA3C91A72B406007B8CCD /* CCLinotteBrowserViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewDelegate.h; sourceTree = "<group>"; };
 		C7CDA3CB1A72B461007B8CCD /* CCLinotteBrowserViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewControllerDelegate.h; sourceTree = "<group>"; };
+		C7CDA3CE1A7A439B007B8CCD /* CCActionButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionButtonsView.h; sourceTree = "<group>"; };
+		C7CDA3CF1A7A439B007B8CCD /* CCActionButtonsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCActionButtonsView.m; sourceTree = "<group>"; };
 		C7CE2C611918E48800D37A64 /* Linotte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Linotte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7CE2C641918E48800D37A64 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7CE2C661918E48800D37A64 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1243,17 +1246,17 @@
 			name = "add address";
 			sourceTree = "<group>";
 		};
-		C73183F51A27428100A99762 /* metas */ = {
+		C73183F51A27428100A99762 /* widgets */ = {
 			isa = PBXGroup;
 			children = (
 				C73184541A30626900A99762 /* base */,
 				C73183FF1A2744DC00A99762 /* display */,
-				C73184011A27453F00A99762 /* contact */,
+				C73184011A27453F00A99762 /* external */,
 				C7C66A791A5BE63800FACC0C /* social */,
 				C73184031A2745A200A99762 /* open hours */,
 				C73184021A27454E00A99762 /* photo */,
 			);
-			name = metas;
+			name = widgets;
 			sourceTree = "<group>";
 		};
 		C73183FD1A27439100A99762 /* protocol */ = {
@@ -1273,14 +1276,14 @@
 			name = display;
 			sourceTree = "<group>";
 		};
-		C73184011A27453F00A99762 /* contact */ = {
+		C73184011A27453F00A99762 /* external */ = {
 			isa = PBXGroup;
 			children = (
-				C73184571A3072FD00A99762 /* contact buttons */,
-				C731840A1A27514400A99762 /* CCContactMeta.h */,
-				C731840B1A27514400A99762 /* CCContactMeta.m */,
+				C73184571A3072FD00A99762 /* external buttons */,
+				C731840A1A27514400A99762 /* CCExternalMeta.h */,
+				C731840B1A27514400A99762 /* CCExternalMeta.m */,
 			);
-			name = contact;
+			name = external;
 			sourceTree = "<group>";
 		};
 		C73184021A27454E00A99762 /* photo */ = {
@@ -1310,14 +1313,13 @@
 			name = meta;
 			sourceTree = "<group>";
 		};
-		C73184181A275CFC00A99762 /* metas container */ = {
+		C73184181A275CFC00A99762 /* metas widgets */ = {
 			isa = PBXGroup;
 			children = (
-				C73183F51A27428100A99762 /* metas */,
-				C73184191A275D1000A99762 /* CCMetaContainerView.h */,
-				C731841A1A275D1000A99762 /* CCMetaContainerView.m */,
+				C7CDA3CC1A7A435D007B8CCD /* container */,
+				C73183F51A27428100A99762 /* widgets */,
 			);
-			name = "metas container";
+			name = "metas widgets";
 			sourceTree = "<group>";
 		};
 		C731841C1A2882AE00A99762 /* root */ = {
@@ -1482,7 +1484,7 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
-		C73184571A3072FD00A99762 /* contact buttons */ = {
+		C73184571A3072FD00A99762 /* external buttons */ = {
 			isa = PBXGroup;
 			children = (
 				C731845C1A30CF7300A99762 /* CCContactButtonProtocol.h */,
@@ -1490,7 +1492,7 @@
 				C7C66A7A1A5BE67100FACC0C /* weblink */,
 				C7C66A7B1A5BE67F00FACC0C /* email */,
 			);
-			name = "contact buttons";
+			name = "external buttons";
 			sourceTree = "<group>";
 		};
 		C731845B1A30734400A99762 /* tel */ = {
@@ -1845,17 +1847,6 @@
 				C761A01B19CC650B00C09F0D /* CCAddressListSettingsViewControllerDelegate.h */,
 			);
 			name = protocol;
-			sourceTree = "<group>";
-		};
-		C762975B192CCC2C00B9B6E5 /* category */ = {
-			isa = PBXGroup;
-			children = (
-				C705882A192CEC500096A335 /* _CCCategory.h */,
-				C705882B192CEC500096A335 /* _CCCategory.m */,
-				C705882C192CEC500096A335 /* CCCategory.h */,
-				C705882D192CEC500096A335 /* CCCategory.m */,
-			);
-			name = category;
 			sourceTree = "<group>";
 		};
 		C762975C192CCC3500B9B6E5 /* address */ = {
@@ -2415,6 +2406,7 @@
 		C799AB5419216BF90096B5A8 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				C7BDF72D1A7A6FD000F9F93D /* note view */,
 				C799AB5519216BFD0096B5A8 /* view */,
 			);
 			name = ui;
@@ -2622,6 +2614,24 @@
 				C7C66A521A59F88A00FACC0C /* CCSearchListStoreViewController.m */,
 			);
 			name = search;
+			sourceTree = "<group>";
+		};
+		C7BDF72D1A7A6FD000F9F93D /* note view */ = {
+			isa = PBXGroup;
+			children = (
+				C7BDF72E1A7A6FDF00F9F93D /* CCNoteView.h */,
+				C7BDF72F1A7A6FDF00F9F93D /* CCNoteView.m */,
+			);
+			name = "note view";
+			sourceTree = "<group>";
+		};
+		C7BDF7311A7A7CBD00F9F93D /* action container */ = {
+			isa = PBXGroup;
+			children = (
+				C7BDF7321A7A7CCD00F9F93D /* CCActionViewContainer.h */,
+				C7BDF7331A7A7CCD00F9F93D /* CCActionViewContainer.m */,
+			);
+			name = "action container";
 			sourceTree = "<group>";
 		};
 		C7BE91A41A35F6020033B359 /* sign up */ = {
@@ -3067,6 +3077,25 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
+		C7CDA3CC1A7A435D007B8CCD /* container */ = {
+			isa = PBXGroup;
+			children = (
+				C73184191A275D1000A99762 /* CCMetaContainerView.h */,
+				C731841A1A275D1000A99762 /* CCMetaContainerView.m */,
+			);
+			name = container;
+			sourceTree = "<group>";
+		};
+		C7CDA3CD1A7A4366007B8CCD /* action buttons */ = {
+			isa = PBXGroup;
+			children = (
+				C7BDF7311A7A7CBD00F9F93D /* action container */,
+				C7CDA3CE1A7A439B007B8CCD /* CCActionButtonsView.h */,
+				C7CDA3CF1A7A439B007B8CCD /* CCActionButtonsView.m */,
+			);
+			name = "action buttons";
+			sourceTree = "<group>";
+		};
 		C7CE2C581918E48800D37A64 = {
 			isa = PBXGroup;
 			children = (
@@ -3171,7 +3200,6 @@
 				C796D7BC19BB8B4A00B97879 /* list */,
 				C796D7B919BB8B2E00B97879 /* meta */,
 				C762975C192CCC3500B9B6E5 /* address */,
-				C762975B192CCC2C00B9B6E5 /* category */,
 			);
 			name = "core data";
 			sourceTree = "<group>";
@@ -3482,7 +3510,8 @@
 				C73184411A2DACEE00A99762 /* tab style button */,
 				C731843D1A2CBC2600A99762 /* linotte field */,
 				C7619FD219C6DD9E00C09F0D /* image text button */,
-				C73184181A275CFC00A99762 /* metas container */,
+				C7CDA3CD1A7A4366007B8CCD /* action buttons */,
+				C73184181A275CFC00A99762 /* metas widgets */,
 				C75EF4F519D8AFA5009BAB3A /* tween */,
 				C7C2923E19D47ECB00EBF5C3 /* result hud */,
 				C7C2923D19D47E5900EBF5C3 /* alert view */,
@@ -3714,7 +3743,6 @@
 				C799AB7219237D340096B5A8 /* CCNotificationGenerator.m in Sources */,
 				C7A2EB3019BBBF5B003EF099 /* CCAddressListSettingsTableViewCell.m in Sources */,
 				C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */,
-				C705882F192CEC500096A335 /* CCCategory.m in Sources */,
 				C7216B2C1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m in Sources */,
 				C7619FDF19C97D4800C09F0D /* CCAddListViewController.m in Sources */,
 				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
@@ -3724,13 +3752,14 @@
 				C7C2926019D4BA7700EBF5C3 /* CCListOutputAddressListView.m in Sources */,
 				C7C66A501A59F87800FACC0C /* CCGroupListStoreViewController.m in Sources */,
 				C799AB5819216C110096B5A8 /* CCOutputViewController.m in Sources */,
+				C7CDA3D01A7A439B007B8CCD /* CCActionButtonsView.m in Sources */,
 				C7216B171A110CDE00498CFE /* CCBaseSynchronizationActionConsumeEvents.m in Sources */,
 				C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */,
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m in Sources */,
 				C7F9F0941A41BC770028BCE3 /* CCLinotteCredentialStore.m in Sources */,
-				C731840C1A27514400A99762 /* CCContactMeta.m in Sources */,
+				C731840C1A27514400A99762 /* CCExternalMeta.m in Sources */,
 				C7619FFE19CC310A00C09F0D /* UIView+CCShowSettingsView.m in Sources */,
 				C799AB7619252E750096B5A8 /* CCModelChangeHandler.m in Sources */,
 				C73183BD1A237BBA00A99762 /* CCAddressAutocompletionResult.m in Sources */,
@@ -3752,10 +3781,12 @@
 				C796D7CD19BB8C1300B97879 /* _CCAddressMeta.m in Sources */,
 				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */,
+				C7BDF7341A7A7CCD00F9F93D /* CCActionViewContainer.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressByNameViewController.m in Sources */,
 				C73183EA1A25DC9500A99762 /* CCAddAddressAtLocationView.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
 				C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */,
+				C7BDF7301A7A6FDF00F9F93D /* CCNoteView.m in Sources */,
 				C7216B411A13C88900498CFE /* CCServerEventAddressUserDataUpdatedConsumer.m in Sources */,
 				C76A1CDC19BF70EC00EE75E4 /* CCListStoreHomeViewController.m in Sources */,
 				C73184531A2E3E7A00A99762 /* CCOutputViewControllersTransition.m in Sources */,
@@ -3793,7 +3824,6 @@
 				C73184441A2DAD0400A99762 /* CCTabStyleButton.m in Sources */,
 				C7C66A811A5BE99D00FACC0C /* CCEmailButton.m in Sources */,
 				C7619FB319C4419000C09F0D /* CCBookAndNotifiedListViewModel.m in Sources */,
-				C705882E192CEC500096A335 /* _CCCategory.m in Sources */,
 				C76C3BF31A1E411F000B0DD8 /* CCCurrentUserData.m in Sources */,
 				C7C66A651A5A9E9E00FACC0C /* CCFlatListStoreView.m in Sources */,
 				C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */,

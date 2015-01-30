@@ -73,7 +73,7 @@
             
             if (list.identifier == nil) {
                 listAddEvent.eventValue = CCLocalEventListCreated;
-                listAddEvent.parameters = @{@"name" : list.name};
+                listAddEvent.parameters = @{@"name" : list.name, @"is_default" : @(list.isdefaultValue)};
             } else {
                 listAddEvent.eventValue = CCLocalEventListAdded;
                 listAddEvent.parameters = @{@"list" : list.identifier};

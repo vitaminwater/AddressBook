@@ -19,9 +19,12 @@ const struct CCListAttributes CCListAttributes = {
 	.lastZoneRefreshLongitude = @"lastZoneRefreshLongitude",
 	.lastZonesRefresh = @"lastZonesRefresh",
 	.localIdentifier = @"localIdentifier",
+	.longNextRefreshDate = @"longNextRefreshDate",
 	.name = @"name",
 	.notify = @"notify",
 	.owned = @"owned",
+	.shortNextRefreshDate = @"shortNextRefreshDate",
+	.waitingTime = @"waitingTime",
 };
 
 const struct CCListRelationships CCListRelationships = {
@@ -95,6 +98,11 @@ const struct CCListRelationships CCListRelationships = {
 	}
 	if ([key isEqualToString:@"ownedValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"owned"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"waitingTimeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"waitingTime"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -240,6 +248,8 @@ const struct CCListRelationships CCListRelationships = {
 
 @dynamic localIdentifier;
 
+@dynamic longNextRefreshDate;
+
 @dynamic name;
 
 @dynamic notify;
@@ -280,6 +290,28 @@ const struct CCListRelationships CCListRelationships = {
 
 - (void)setPrimitiveOwnedValue:(BOOL)value_ {
 	[self setPrimitiveOwned:[NSNumber numberWithBool:value_]];
+}
+
+@dynamic shortNextRefreshDate;
+
+@dynamic waitingTime;
+
+- (int32_t)waitingTimeValue {
+	NSNumber *result = [self waitingTime];
+	return [result intValue];
+}
+
+- (void)setWaitingTimeValue:(int32_t)value_ {
+	[self setWaitingTime:[NSNumber numberWithInt:value_]];
+}
+
+- (int32_t)primitiveWaitingTimeValue {
+	NSNumber *result = [self primitiveWaitingTime];
+	return [result intValue];
+}
+
+- (void)setPrimitiveWaitingTimeValue:(int32_t)value_ {
+	[self setPrimitiveWaitingTime:[NSNumber numberWithInt:value_]];
 }
 
 @dynamic addressMetas;

@@ -73,7 +73,11 @@
 - (void)loadImageFromUrl:(NSString *)urlString
 {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/%@_store_small", kCCLinotteStaticServer, urlString]];
-    [_image setImageWithURL:url placeholderImage:[UIImage imageNamed:@"list_pin_neutral"]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.cachePolicy = NSURLRequestReturnCacheDataElseLoad;
+    [request addValue:@"image/*" forHTTPHeaderField:@"Accept"];
+    
+    [_image setImageWithURLRequest:request placeholderImage:[UIImage imageNamed:@"list_pin_neutral"] success:nil failure:nil];
 }
 
 #pragma mark - setter methods

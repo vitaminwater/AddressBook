@@ -139,3 +139,5 @@
 "PASSWORD_PLACEHOLDER" = "Et votre mot de passe ici";
 
 "CANNOT_SEND_MAIL" = "Impossible d'envoyer un mail,\nest-il configuré ?";
+
+"NOTE_VIEW_TITLE" = "Note";

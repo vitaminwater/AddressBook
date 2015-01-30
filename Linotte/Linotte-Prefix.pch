@@ -19,7 +19,7 @@
 #endif
 
 #if defined(DEBUG)
-#define kCCLinotteAPIServer @"192.168.1.11"
+#define kCCLinotteAPIServer @"192.168.1.12"
 #define kCCLinotteStaticServer @"http://dev.static.getlinotte.com"
 #else
 #define kCCLinotteAPIServer @"api.getlinotte.com"
@@ -37,6 +37,10 @@
 #define kCCAddressFetchLimit 50
 
 #define kCCListDefaultProvider @"user"
+
+#define kCCDeviceCharging ([[UIDevice currentDevice] batteryState] != UIDeviceBatteryStateUnplugged)
+#define kCCApplicationBackground ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+#define kCCFullSync (kCCDeviceCharging && kCCApplicationBackground)
 
 
 #define kCCBackToHomeNotification @"kCCBackToHomeNotification"

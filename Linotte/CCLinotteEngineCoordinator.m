@@ -29,7 +29,8 @@
     CCModelChangeHandler *_modelChangeHandler;
     CCSynchronizationHandler *_synchronizationHandler;
     
-    BOOL _monitoringAndSynchronizationStarted;
+    BOOL _notifyingStarted;
+    BOOL _synchronizationStarted;
     
     NSTimer *_timer;
 }
@@ -60,22 +61,30 @@
     _authenticationManager.delegate = self;
     
     if (_authenticationManager.readyToSend)
-        [self startMonitoringAndSynchronization];
+        [self startSynchronization];
 }
 
-- (void)startMonitoringAndSynchronization
+- (void)startSynchronization
 {
-    if (_monitoringAndSynchronizationStarted)
+    if (_synchronizationStarted)
+        return;
+
+    _modelChangeHandler = [CCModelChangeHandler new];
+    _synchronizationHandler = [CCSynchronizationHandler new];
+    
+    _synchronizationStarted = YES;
+}
+
+- (void)startNotifying
+{
+    if (_notifyingStarted)
         return;
     
     _geohashMonitor = [CCGeohashMonitor new];
     _notificationGenerator = [CCNotificationGenerator new];
     _geohashMonitor.delegate = _notificationGenerator;
     
-    _modelChangeHandler = [CCModelChangeHandler new];
-    _synchronizationHandler = [CCSynchronizationHandler new];
-    
-    _monitoringAndSynchronizationStarted = YES;
+    _notifyingStarted = YES;
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
@@ -118,7 +127,7 @@
 }
 
 - (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager {
-    [self startMonitoringAndSynchronization];
+    [self startSynchronization];
 }
 
 #pragma mark - NSNotificationCenter methods

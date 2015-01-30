@@ -9,9 +9,6 @@
 #import "CCSocialButton.h"
 
 @implementation CCSocialButton
-{
-    NSString *_userName;
-}
 
 - (id)initWithUserName:(NSString *)userName
 {

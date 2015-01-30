@@ -41,16 +41,16 @@
 {
     _socialSiteButtons = [@[] mutableCopy];
     
-    if (self.meta.content[@"facebook"] != nil) {
+    if ([self.meta.content[@"facebook"] length]) {
         [self addSocialSiteButton:[[CCFacebookSocialButton alloc] initWithUserName:self.meta.content[@"facebook"]]];
     }
-    if (self.meta.content[@"twitter"] != nil) {
+    if ([self.meta.content[@"twitter"] length]) {
         [self addSocialSiteButton:[[CCTwitterSocialButton alloc] initWithUserName:self.meta.content[@"twitter"]]];
     }
-    if (self.meta.content[@"pinterest"] != nil) {
+    if ([self.meta.content[@"pinterest"] length]) {
         [self addSocialSiteButton:[[CCPinterestSocialButton alloc] initWithUserName:self.meta.content[@"pinterest"]]];
     }
-    if (self.meta.content[@"foursquare"] != nil) {
+    if ([self.meta.content[@"foursquare"] length]) {
         [self addSocialSiteButton:[[CCFoursquareSocialButton alloc] initWithUserName:self.meta.content[@"foursquare"]]];
     }
 }
@@ -75,17 +75,19 @@
     NSMutableDictionary *views = [@{} mutableCopy];
     
     NSUInteger index = 0;
-    NSMutableString *format = [@"H:|-" mutableCopy];
+    NSMutableString *format = [@"V:|" mutableCopy];
     for (UIView *view in _socialSiteButtons) {
         NSString *key = [NSString stringWithFormat:@"view%d", (unsigned int)index];
         [views setValue:view forKey:key];
-        [format appendFormat:@"[%@]-", key];
+        if (index != 0)
+            [format appendString:@"-"];
+        [format appendFormat:@"[%@]", key];
         ++index;
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[view]-|" options:0 metrics:nil views:@{@"view" : view}];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:verticalConstraints];
     }
-    [format deleteCharactersInRange:(NSRange){[format length] - 1, 1}];
+    [format appendString:@"|"];
     
     NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
     [_constraints addObjectsFromArray:horizontalConstraints];

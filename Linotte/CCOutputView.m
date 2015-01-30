@@ -14,6 +14,9 @@
 #import "CCFlatColorButton.h"
 
 #import "CCMetaContainerView.h"
+#import "CCActionButtonsView.h"
+
+#import "CCNoteView.h"
 
 #import "NSString+CCLocalizedString.h"
 
@@ -38,17 +41,14 @@
     UILabel *_distanceLabel;
     UILabel *_providerLabel;
     UIScrollView *_metaScrollView;
-    CCMetaContainerView *_metaContainerView;
+    CCMetaContainerView *_displayMetaContainerView;
     UITabBar *_tabBar;
     
     NSLayoutConstraint *_topInfosViewConstraint;
     NSLayoutConstraint *_bottomInfosViewContraint;
     
-    CCFlatColorButton *_noteButton;
-    UIView *_noteView;
-    UITextView *_noteField;
-    NSLayoutConstraint *_noteViewYConstraint;
-    NSLayoutConstraint *_noteViewHeightConstraint;
+    CCActionButtonsView *_actionButtonsView;
+    CCNoteView *_noteView;
 }
 
 - (instancetype)init
@@ -72,15 +72,9 @@
             swipeGestureRecognizer.delegate = self;
             [self addGestureRecognizer:swipeGestureRecognizer];
         }*/
-        
-        {
-            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
-            tapGestureRecognizer.delegate = self;
-            [self addGestureRecognizer:tapGestureRecognizer];
-        }
 
         [self setupMap];
-        [self setupNoteButton];
+        [self setupActionsButtonView];
         [self setupInfoView];
         [self setupButtons];
         [self setupLayout];
@@ -107,22 +101,22 @@
     _marker.map = _mapView;
 }
 
-- (void)setupNoteButton
+- (void)setupActionsButtonView
 {
-    _noteButton = [CCFlatColorButton new];
-    _noteButton.translatesAutoresizingMaskIntoConstraints = NO;
-    _noteButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    [_noteButton setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.7] forState:UIControlStateHighlighted];
-    [_noteButton setImage:[UIImage imageNamed:@"note_icon"] forState:UIControlStateNormal];
-    [_noteButton addTarget:self action:@selector(noteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    _noteButton.layer.cornerRadius = 4;
-    [self addSubview:_noteButton];
+    _actionButtonsView = [[CCActionButtonsView alloc] initWithActionViewParent:self];
+    _actionButtonsView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_actionButtonsView];
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_noteButton);
-    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_noteButton]-(==5)-|" options:0 metrics:nil views:views];
+    _noteView = [CCNoteView new];
+    _noteView.delegate = self;
+    [_actionButtonsView addActionWithView:_noteView fullWidth:YES minHeight:200 icon:[UIImage imageNamed:@"note_icon"]];
+    [_actionButtonsView setupLayout];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_actionButtonsView);
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_actionButtonsView(==60)]-(==5)-|" options:0 metrics:nil views:views];
     [self addConstraints:horizontalConstraints];
 
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==5)-[_noteButton]" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==5)-[_actionButtonsView]" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
 }
 
@@ -133,12 +127,19 @@
     _infosView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     [self addSubview:_infosView];
     
+    {
+        UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
+        tapGestureRecognizer.delegate = self;
+        [_infosView addGestureRecognizer:tapGestureRecognizer];
+    }
+    
     _expandIcon = [UIImageView new];
     _expandIcon.translatesAutoresizingMaskIntoConstraints = NO;
     [_expandIcon setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     _expandIcon.image = [UIImage imageNamed:@"expand_icon"];
     _expandIcon.backgroundColor = [UIColor clearColor];
     _expandIcon.contentMode = UIViewContentModeCenter;
+    _expandIcon.hidden = YES;
     [_infosView addSubview:_expandIcon];
     
     _nameLabel = [UILabel new];
@@ -177,17 +178,17 @@
     _metaScrollView.translatesAutoresizingMaskIntoConstraints = NO;
     [_infosView addSubview:_metaScrollView];
     
-    _metaContainerView = [CCMetaContainerView new];
-    _metaContainerView.translatesAutoresizingMaskIntoConstraints = NO;
-    [_metaScrollView addSubview:_metaContainerView];
+    _displayMetaContainerView = [CCMetaContainerView new];
+    _displayMetaContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [_metaScrollView addSubview:_displayMetaContainerView];
     
     // _metaContainerView constraints
     {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_metaContainerView, _metaScrollView);
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_metaContainerView(==_metaScrollView)]|" options:0 metrics:nil views:views];
+        NSDictionary *views = NSDictionaryOfVariableBindings(_displayMetaContainerView, _metaScrollView);
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_displayMetaContainerView(==_metaScrollView)]|" options:0 metrics:nil views:views];
         [_metaScrollView addConstraints:horizontalConstraints];
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_metaContainerView]|" options:0 metrics:nil views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_displayMetaContainerView]|" options:0 metrics:nil views:views];
         [_metaScrollView addConstraints:verticalConstraints];
     }
     
@@ -237,96 +238,6 @@
     }
 }
 
-- (void)showNoteView
-{
-    if (_noteView != nil)
-        return;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShowNotification:) name:UIKeyboardWillShowNotification object:nil];
-
-    _noteView = [UIView new];
-    _noteView.translatesAutoresizingMaskIntoConstraints = NO;
-    _noteView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    [self addSubview:_noteView];
-    
-    _noteField = [UITextView new];
-    _noteField.translatesAutoresizingMaskIntoConstraints = NO;
-    _noteField.backgroundColor = [UIColor clearColor];
-    _noteField.textColor = [UIColor whiteColor];
-    _noteField.font = [UIFont fontWithName:@"Futura-Book" size:21];
-    _noteField.text = [_delegate addressNote];
-    [_noteField setTintColor:[UIColor whiteColor]];
-    _noteField.delegate = self;
-    [_noteView addSubview:_noteField];
-    
-    CCFlatColorButton *closeButton = [CCFlatColorButton new];
-    closeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    closeButton.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:23];
-    [closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    closeButton.backgroundColor = [UIColor colorWithWhite:1 alpha:0.1];
-    [closeButton setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.3] forState:UIControlStateHighlighted];
-    [closeButton addTarget:self action:@selector(closeNoteViewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [closeButton setTitle:NSLocalizedString(@"CLOSE", @"") forState:UIControlStateNormal];
-    [_noteView addSubview:closeButton];
-    
-    {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_noteField, closeButton);
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_noteField][closeButton(==40)]|" options:0 metrics:nil views:views];
-        [_noteView addConstraints:verticalConstraints];
-        
-        for (UIView *view in views.allValues) {
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:view == _noteField ? @"H:|-[view]-|" : @"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
-            [_noteView addConstraints:horizontalConstraints];
-        }
-    }
-    
-    {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_noteView);
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_noteView]|" options:0 metrics:nil views:views];
-        [self addConstraints:horizontalConstraints];
-        
-        _noteViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
-        [self addConstraint:_noteViewHeightConstraint];
-        
-        NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        [self addConstraint:yConstraint];
-        
-        [self layoutIfNeeded];
-        
-        [UIView animateWithDuration:0.2 animations:^{
-            [self removeConstraint:yConstraint];
-            
-            _noteButton.alpha = 0;
-            
-            _noteViewYConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-            [self addConstraint:_noteViewYConstraint];
-            [self layoutIfNeeded];
-        }];
-    }
-    
-    if ([_noteField.text isEqualToString:@""])
-        [_noteField becomeFirstResponder];
-}
-
-- (void)removeNoteView
-{
-    [self removeConstraint:_noteViewYConstraint];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:_noteView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        [self addConstraint:yConstraint];
-        
-        _noteButton.alpha = 1;
-        
-        [self layoutIfNeeded];
-    } completion:^(BOOL finished) {
-        [_noteView removeFromSuperview];
-        _noteView = nil;
-    }];
-}
-
 - (void)infosViewConstraints
 {
     if (_bottomInfosViewContraint != nil)
@@ -344,26 +255,49 @@
     }
 }
 
-- (void)addMetas:(NSArray *)metas
+- (void)setDisplayMetas:(NSArray *)metas
 {
-    [_metaContainerView addMetas:metas];
+    if ([metas count] == 0)
+        return;
+    [_displayMetaContainerView addMetas:metas];
+    _expandIcon.hidden = NO;
 }
 
-- (void)updateMeta:(NSArray *)metas
+- (void)setSocialMetas:(NSArray *)metas
 {
-    [_metaContainerView updateMetas:metas];
+    if ([metas count] == 0)
+        return;
+    CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
+    [metaContainerView addMetas:metas];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"social_icon"]];
+    [_actionButtonsView setupLayout];
 }
 
-#pragma mark - UIButton target methods
-
-- (void)noteButtonPressed:(UIButton *)sender
+- (void)setExternalMetas:(NSArray *)metas
 {
-    [self showNoteView];
+    if ([metas count] == 0)
+        return;
+    CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
+    metas = [metas sortedArrayUsingComparator:^NSComparisonResult(id<CCMetaProtocol> obj1, id<CCMetaProtocol> obj2) {
+        if (obj1.content[@"title"] != nil && obj2.content[@"title"] == nil)
+            return NSOrderedDescending;
+        else if (obj2.content[@"title"] != nil && obj1.content[@"title"] == nil)
+            return NSOrderedAscending;
+        return NSOrderedSame;
+    }];
+    [metaContainerView addMetas:metas];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
+    [_actionButtonsView setupLayout];
 }
 
-- (void)closeNoteViewButtonPressed:(UIButton *)sender
+- (void)setHoursMetas:(NSArray *)metas
 {
-    [self removeNoteView];
+    if ([metas count] == 0)
+        return;
+    CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
+    [metaContainerView addMetas:metas];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"clock_icon"]];
+    [_actionButtonsView setupLayout];
 }
 
 #pragma mark - UIGestureRecognizer methods
@@ -383,12 +317,14 @@
 
 - (void)tapGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer
 {
+    if (_expandIcon.hidden == YES)
+        return;
     if (tapGestureRecognizer.state == UIGestureRecognizerStateRecognized) {
         CGPoint location = [tapGestureRecognizer locationInView:_infosView];
 
         if (location.y > 40)
             return;
-        
+        [_actionButtonsView removeActionView];
         [self changeExpandedValue:!_metaExpanded];
     }
 }
@@ -415,21 +351,6 @@
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
     [_delegate setAddressNote:textView.text];
-}
-
-#pragma mark - NSNotificationCenter target methods
-
-- (void)keyboardWillShowNotification:(NSNotification *)notification
-{
-    NSDictionary* keyboardInfo = [notification userInfo];
-    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardFrameEndRect = [keyboardFrameEnd CGRectValue];
-    
-    _noteViewHeightConstraint.constant = -keyboardFrameEndRect.size.height;
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        [self layoutIfNeeded];
-    }];
 }
 
 #pragma mark - UIGestureRecognizerDelegate methods
@@ -479,6 +400,12 @@
     }
     
     _marker.icon = [UIImage imageNamed:iconName];
+}
+
+- (void)setDelegate:(id<CCOutputViewDelegate>)delegate
+{
+    _delegate = delegate;
+    _noteView.text = [_delegate addressNote];
 }
 
 #pragma mark - GMSMapViewDelegate methods

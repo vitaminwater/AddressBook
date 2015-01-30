@@ -20,7 +20,6 @@ const struct CCAddressAttributes CCAddressAttributes = {
 };
 
 const struct CCAddressRelationships CCAddressRelationships = {
-	.categories = @"categories",
 	.lists = @"lists",
 	.metas = @"metas",
 };
@@ -172,17 +171,6 @@ const struct CCAddressRelationships CCAddressRelationships = {
 @dynamic provider;
 
 @dynamic providerId;
-
-@dynamic categories;
-
-- (NSMutableSet*)categoriesSet {
-	[self willAccessValueForKey:@"categories"];
-
-	NSMutableSet *result = (NSMutableSet*)[self mutableSetValueForKey:@"categories"];
-
-	[self didAccessValueForKey:@"categories"];
-	return result;
-}
 
 @dynamic lists;
 

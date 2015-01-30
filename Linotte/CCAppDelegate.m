@@ -113,6 +113,8 @@
 
 - (void)initAll:(UIApplication *)application
 {
+    [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+    
     // Facebook SDK
     [FBAppEvents activateApp];
     

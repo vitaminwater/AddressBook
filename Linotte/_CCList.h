@@ -19,9 +19,12 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *lastZoneRefreshLongitude;
 	__unsafe_unretained NSString *lastZonesRefresh;
 	__unsafe_unretained NSString *localIdentifier;
+	__unsafe_unretained NSString *longNextRefreshDate;
 	__unsafe_unretained NSString *name;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
+	__unsafe_unretained NSString *shortNextRefreshDate;
+	__unsafe_unretained NSString *waitingTime;
 } CCListAttributes;
 
 extern const struct CCListRelationships {
@@ -131,6 +134,10 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateLocalIdentifier:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSDate* longNextRefreshDate;
+
+//- (BOOL)validateLongNextRefreshDate:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSString* name;
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
@@ -150,6 +157,18 @@ extern const struct CCListRelationships {
 - (void)setOwnedValue:(BOOL)value_;
 
 //- (BOOL)validateOwned:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSDate* shortNextRefreshDate;
+
+//- (BOOL)validateShortNextRefreshDate:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* waitingTime;
+
+@property (atomic) int32_t waitingTimeValue;
+- (int32_t)waitingTimeValue;
+- (void)setWaitingTimeValue:(int32_t)value_;
+
+//- (BOOL)validateWaitingTime:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSSet *addressMetas;
 
@@ -278,6 +297,9 @@ extern const struct CCListRelationships {
 - (NSString*)primitiveLocalIdentifier;
 - (void)setPrimitiveLocalIdentifier:(NSString*)value;
 
+- (NSDate*)primitiveLongNextRefreshDate;
+- (void)setPrimitiveLongNextRefreshDate:(NSDate*)value;
+
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
 
@@ -292,6 +314,15 @@ extern const struct CCListRelationships {
 
 - (BOOL)primitiveOwnedValue;
 - (void)setPrimitiveOwnedValue:(BOOL)value_;
+
+- (NSDate*)primitiveShortNextRefreshDate;
+- (void)setPrimitiveShortNextRefreshDate:(NSDate*)value;
+
+- (NSNumber*)primitiveWaitingTime;
+- (void)setPrimitiveWaitingTime:(NSNumber*)value;
+
+- (int32_t)primitiveWaitingTimeValue;
+- (void)setPrimitiveWaitingTimeValue:(int32_t)value_;
 
 - (NSMutableSet*)primitiveAddressMetas;
 - (void)setPrimitiveAddressMetas:(NSMutableSet*)value;

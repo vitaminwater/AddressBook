@@ -57,7 +57,6 @@
 
 - (CCList *)findNextListToProcess
 {
-    
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];
@@ -73,8 +72,8 @@
     }
     
     if ([lists count] == 0) {
-        NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier != nil and lastUpdate < %@", minDate];
+        NSString *predicateFormat = [NSString stringWithFormat:@"identifier != nil and %@ < %%@", kCCFullSync ? @"shortNextRefreshDate" : @"longNextRefreshDate"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, [NSDate date]];
         [fetchRequest setPredicate:predicate];
         
         lists = [[managedObjectContext executeFetchRequest:fetchRequest error:&error] mutableCopy];
@@ -130,12 +129,13 @@
         _currentConnection = nil;
         
         list.lastUpdate = [NSDate date];
-        
         if ([eventsDicts count] == 0) {
+            [list updateNextRefreshDate:YES];
             [[CCLinotteCoreDataStack sharedInstance] saveContext];
             completionBlock(multipleWaitingLists, NO);
             return;
         }
+        [list updateNextRefreshDate:NO];
         
         CCLog(@"%lu events received", [eventsDicts count]);
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;

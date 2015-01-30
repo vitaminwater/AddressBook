@@ -19,9 +19,10 @@
     if (self) {
         _link = link;
         
+        NSString *domain = [[NSURL URLWithString:_link] host];
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
-        [self setTitle:_link forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [self setTitle:domain forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     }
     return self;

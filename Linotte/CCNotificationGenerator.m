@@ -18,7 +18,7 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCAddress.h"
-#import "CCCategory.h"
+#import "CCMetaProtocol.h"
 
 @implementation CCNotificationGenerator
 
@@ -73,14 +73,14 @@
 
 - (void)configureLocalNotificationForAddress:(CCAddress *)address localNotification:(UILocalNotification *)localNotification
 {
-    CCCategory *category = [address.categories.allObjects firstObject];
+    id<CCMetaProtocol> notificationMeta = [[address metasForActions:@[@"notification_info"]] firstObject];
     NSDictionary *userInfo = @{@"addressLocalIdentifier" : address.localIdentifier}; // TODO set notification ID on migration
     int notifRand = rand() % 4 + 1;
     
-    if (category == nil)
+    if (notificationMeta == nil || notificationMeta.content[@"name"] == nil)
         localNotification.alertBody = [NSString localizedStringByReplacingFromDictionnary:@{@"[PlaceName]" : address.name} localizedKey:[NSString stringWithFormat:@"NOTIFICATION_%d_0", notifRand]];
     else
-        localNotification.alertBody = [NSString localizedStringByReplacingFromDictionnary:@{@"[PlaceName]" : address.name, @"[Category]" : category.name} localizedKey:[NSString stringWithFormat:@"NOTIFICATION_%d", notifRand]];
+        localNotification.alertBody = [NSString localizedStringByReplacingFromDictionnary:@{@"[PlaceName]" : address.name, @"[Category]" : notificationMeta.content[@"name"]} localizedKey:[NSString stringWithFormat:@"NOTIFICATION_%d", notifRand]];
     
     localNotification.userInfo = userInfo;
     

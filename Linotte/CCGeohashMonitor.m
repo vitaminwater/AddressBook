@@ -22,6 +22,7 @@
     if (self) {
         if (![CLLocationManager isMonitoringAvailableForClass:[CLCircularRegion class]] ||
             ![CLLocationManager significantLocationChangeMonitoringAvailable]) {
+            // TODO: tell user
         }
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;

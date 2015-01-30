@@ -20,12 +20,10 @@ extern const struct CCAddressAttributes {
 } CCAddressAttributes;
 
 extern const struct CCAddressRelationships {
-	__unsafe_unretained NSString *categories;
 	__unsafe_unretained NSString *lists;
 	__unsafe_unretained NSString *metas;
 } CCAddressRelationships;
 
-@class CCCategory;
 @class CCList;
 @class CCAddressMeta;
 
@@ -106,10 +104,6 @@ extern const struct CCAddressRelationships {
 
 //- (BOOL)validateProviderId:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSSet *categories;
-
-- (NSMutableSet*)categoriesSet;
-
 @property (nonatomic, strong) NSSet *lists;
 
 - (NSMutableSet*)listsSet;
@@ -117,14 +111,6 @@ extern const struct CCAddressRelationships {
 @property (nonatomic, strong) NSSet *metas;
 
 - (NSMutableSet*)metasSet;
-
-@end
-
-@interface _CCAddress (CategoriesCoreDataGeneratedAccessors)
-- (void)addCategories:(NSSet*)value_;
-- (void)removeCategories:(NSSet*)value_;
-- (void)addCategoriesObject:(CCCategory*)value_;
-- (void)removeCategoriesObject:(CCCategory*)value_;
 
 @end
 
@@ -196,9 +182,6 @@ extern const struct CCAddressRelationships {
 
 - (NSString*)primitiveProviderId;
 - (void)setPrimitiveProviderId:(NSString*)value;
-
-- (NSMutableSet*)primitiveCategories;
-- (void)setPrimitiveCategories:(NSMutableSet*)value;
 
 - (NSMutableSet*)primitiveLists;
 - (void)setPrimitiveLists:(NSMutableSet*)value;

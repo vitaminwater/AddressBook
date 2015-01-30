@@ -98,7 +98,7 @@
 
 - (void)setupLayout
 {
-    if (_constraints != nil)
+    if ([_constraints count])
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
     
@@ -111,14 +111,16 @@
     NSMutableString *format = [@"V:|" mutableCopy];
     for (UIView *view in _widgets) {
         NSString *key = [NSString stringWithFormat:@"view%d", (unsigned int)index];
-        [views setValue:view forKey:key];
+        views[key] = view;
+        if (index != 0)
+            [format appendString:@"-"];
         [format appendFormat:@"[%@]", key];
         ++index;
         
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
         [_constraints addObjectsFromArray:horizontalConstraints];
     }
-    [format appendString:@"-(>=0)-|"];
+    [format appendString:@"|"];
     
     NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:format options:0 metrics:0 views:views];
     [_constraints addObjectsFromArray:verticalConstraints];
