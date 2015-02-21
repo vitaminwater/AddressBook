@@ -53,13 +53,13 @@
 {
     _contactButtons = [@[] mutableCopy];
     
-    if (self.meta.content[@"tel"] != nil) {
+    if (self.meta.content[@"tel"] != nil && [self.meta.content[@"tel"] length] != 0) {
         [self addContactButton:[[CCTelephoneButton alloc] initWithNumber:self.meta.content[@"tel"]]];
     }
-    if (self.meta.content[@"email"] != nil) {
+    if (self.meta.content[@"email"] != nil && [self.meta.content[@"email"] length] != 0) {
         [self addContactButton:[[CCEmailButton alloc] initWithEmail:self.meta.content[@"email"]]];
     }
-    if (self.meta.content[@"weblink"] != nil) {
+    if (self.meta.content[@"weblink"] != nil && [self.meta.content[@"weblink"] length] != 0) {
         [self addContactButton:[[CCWeblinkButton alloc] initWithLink:self.meta.content[@"weblink"]]];
     }
 }
@@ -97,7 +97,7 @@
         NSUInteger index = 0;
         NSMutableString *format;
         if (_titleLabel != nil) {
-            format = [@"V:[_titleLabel]" mutableCopy];
+            format = [@"V:|[_titleLabel]" mutableCopy];
             views[@"_titleLabel"] = _titleLabel;
         } else
             format = [@"V:|" mutableCopy];

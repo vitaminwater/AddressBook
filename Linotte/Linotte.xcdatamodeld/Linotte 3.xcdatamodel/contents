@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14B25" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CCAddress" representedClassName="CCAddress" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -99,7 +99,7 @@
         <element name="CCAddress" positionX="0" positionY="0" width="128" height="270"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
         <element name="CCAuthMethod" positionX="0" positionY="0" width="128" height="105"/>
-        <element name="CCList" positionX="0" positionY="0" width="128" height="433"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="435"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="223"/>
         <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="120"/>

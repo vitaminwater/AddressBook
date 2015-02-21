@@ -42,6 +42,9 @@
 		C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216B921A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m */; };
 		C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */ = {isa = PBXBuildFile; fileRef = C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */; };
 		C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C72B50E719F9845200F39E7F /* CCDictStackCache.m */; };
+		C72DBE881A8BB5380020BE29 /* CCSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C72DBE871A8BB5380020BE29 /* CCSearchViewController.m */; };
+		C72DBE8B1A8BB55E0020BE29 /* CCSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C72DBE8A1A8BB55E0020BE29 /* CCSearchView.m */; };
+		C72DBE921A8E41630020BE29 /* CCSearchViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C72DBE911A8E41630020BE29 /* CCSearchViewCell.m */; };
 		C73183991A22423000A99762 /* CCViewControllerSwiperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183981A22423000A99762 /* CCViewControllerSwiperViewController.m */; };
 		C731839F1A22425400A99762 /* CCViewControllerSwiperView.m in Sources */ = {isa = PBXBuildFile; fileRef = C731839E1A22425400A99762 /* CCViewControllerSwiperView.m */; };
 		C73183A81A23661700A99762 /* CCAddressListViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C73183A71A23661700A99762 /* CCAddressListViewModel.m */; };
@@ -276,6 +279,14 @@
 		C7216BA81A1B635B00498CFE /* CCNetworkLogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworkLogs.m; sourceTree = "<group>"; };
 		C72B50E619F9845200F39E7F /* CCDictStackCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCDictStackCache.h; sourceTree = "<group>"; };
 		C72B50E719F9845200F39E7F /* CCDictStackCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCDictStackCache.m; sourceTree = "<group>"; };
+		C72DBE861A8BB5380020BE29 /* CCSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchViewController.h; sourceTree = "<group>"; };
+		C72DBE871A8BB5380020BE29 /* CCSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSearchViewController.m; sourceTree = "<group>"; };
+		C72DBE891A8BB55E0020BE29 /* CCSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchView.h; sourceTree = "<group>"; };
+		C72DBE8A1A8BB55E0020BE29 /* CCSearchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSearchView.m; sourceTree = "<group>"; };
+		C72DBE8C1A8BB56E0020BE29 /* CCSearchViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchViewDelegate.h; sourceTree = "<group>"; };
+		C72DBE8E1A8BC17E0020BE29 /* CCSearchViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchViewControllerDelegate.h; sourceTree = "<group>"; };
+		C72DBE901A8E41630020BE29 /* CCSearchViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSearchViewCell.h; sourceTree = "<group>"; };
+		C72DBE911A8E41630020BE29 /* CCSearchViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSearchViewCell.m; sourceTree = "<group>"; };
 		C73183971A22423000A99762 /* CCViewControllerSwiperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperViewController.h; sourceTree = "<group>"; };
 		C73183981A22423000A99762 /* CCViewControllerSwiperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCViewControllerSwiperViewController.m; sourceTree = "<group>"; };
 		C731839D1A22425400A99762 /* CCViewControllerSwiperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCViewControllerSwiperView.h; sourceTree = "<group>"; };
@@ -960,6 +971,61 @@
 				C72B50E719F9845200F39E7F /* CCDictStackCache.m */,
 			);
 			name = "dict cache";
+			sourceTree = "<group>";
+		};
+		C72DBE821A8BB5100020BE29 /* search */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE8D1A8BC1700020BE29 /* protocol */,
+				C72DBE831A8BB5160020BE29 /* ui */,
+				C72DBE861A8BB5380020BE29 /* CCSearchViewController.h */,
+				C72DBE871A8BB5380020BE29 /* CCSearchViewController.m */,
+			);
+			name = search;
+			sourceTree = "<group>";
+		};
+		C72DBE831A8BB5160020BE29 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE8F1A8E414A0020BE29 /* cell */,
+				C72DBE841A8BB51B0020BE29 /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C72DBE841A8BB51B0020BE29 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE851A8BB51E0020BE29 /* protocol */,
+				C72DBE891A8BB55E0020BE29 /* CCSearchView.h */,
+				C72DBE8A1A8BB55E0020BE29 /* CCSearchView.m */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C72DBE851A8BB51E0020BE29 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE8C1A8BB56E0020BE29 /* CCSearchViewDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C72DBE8D1A8BC1700020BE29 /* protocol */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE8E1A8BC17E0020BE29 /* CCSearchViewControllerDelegate.h */,
+			);
+			name = protocol;
+			sourceTree = "<group>";
+		};
+		C72DBE8F1A8E414A0020BE29 /* cell */ = {
+			isa = PBXGroup;
+			children = (
+				C72DBE901A8E41630020BE29 /* CCSearchViewCell.h */,
+				C72DBE911A8E41630020BE29 /* CCSearchViewCell.m */,
+			);
+			name = cell;
 			sourceTree = "<group>";
 		};
 		C73183961A22420000A99762 /* multi view controller swiper */ = {
@@ -2134,6 +2200,7 @@
 		C76C3C071A20CFEF000B0DD8 /* sub view controller */ = {
 			isa = PBXGroup;
 			children = (
+				C72DBE821A8BB5100020BE29 /* search */,
 				C7C66A851A5BF54300FACC0C /* browser */,
 				C73184201A2BCDDB00A99762 /* view controller swapper */,
 				C7FE2C70199793F300D7D0DC /* splash */,
@@ -3575,7 +3642,7 @@
 						DevelopmentTeam = 4S49S5KKNH;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
-								enabled = 0;
+								enabled = 1;
 							};
 							com.apple.Keychain = {
 								enabled = 1;
@@ -3730,6 +3797,7 @@
 				C73183F11A25E3B400A99762 /* CCAddAddressViewController.m in Sources */,
 				C73183B71A237A9F00A99762 /* CCAutocompleteAddAddressView.m in Sources */,
 				C737D6E81A3AEFDD00646F18 /* CCEmailLoginField.m in Sources */,
+				C72DBE8B1A8BB55E0020BE29 /* CCSearchView.m in Sources */,
 				C75EF4F819D8AFBC009BAB3A /* CCAnimationDelegator.m in Sources */,
 				C7C66A4D1A59F42C00FACC0C /* CCListStoreNavigationController.m in Sources */,
 				C73183A81A23661700A99762 /* CCAddressListViewModel.m in Sources */,
@@ -3773,6 +3841,7 @@
 				C7F4451F19FCE708009AE1C9 /* CCListZone.m in Sources */,
 				C7B5DF9B1A59E642000791FF /* CCBaseListStoreView.m in Sources */,
 				C7619FAD19C4415700C09F0D /* CCListViewModel.m in Sources */,
+				C72DBE921A8E41630020BE29 /* CCSearchViewCell.m in Sources */,
 				C73184231A2BCE1300A99762 /* CCSwapperViewController.m in Sources */,
 				C731841B1A275D1000A99762 /* CCMetaContainerView.m in Sources */,
 				C7C2926519D5949F00EBF5C3 /* CCListOutputAddressListTableViewCell.m in Sources */,
@@ -3853,6 +3922,7 @@
 				C7C66A881A5BF6C200FACC0C /* CCLinotteBrowserViewController.m in Sources */,
 				C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */,
 				C7E1E4FB191A46FD00602A4D /* CCLinotteAPI.m in Sources */,
+				C72DBE881A8BB5380020BE29 /* CCSearchViewController.m in Sources */,
 				C7216B381A13C85200498CFE /* CCServerEventAddressAddedToListConsumer.m in Sources */,
 				C73183E41A25DC6A00A99762 /* CCAddAddressAtLocationViewController.m in Sources */,
 				C7A1621B19DEA48E003EFE5B /* _CCLocalEvent.m in Sources */,
@@ -3993,8 +4063,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Linotte/Linotte.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
@@ -4005,7 +4075,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "688b07e5-0a3b-4e40-b250-a26e5d4cd32c";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
@@ -4019,15 +4089,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Linotte/Linotte.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "688b07e5-0a3b-4e40-b250-a26e5d4cd32c";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
@@ -4038,6 +4108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Linotte.app/Linotte";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -4051,6 +4122,7 @@
 				);
 				INFOPLIST_FILE = "LinotteTests/LinotteTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "688b07e5-0a3b-4e40-b250-a26e5d4cd32c";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -4060,6 +4132,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Linotte.app/Linotte";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Marie-Amélie Frere (G2SRZRF56L)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -4069,6 +4142,7 @@
 				GCC_PREFIX_HEADER = "Linotte/Linotte-Prefix.pch";
 				INFOPLIST_FILE = "LinotteTests/LinotteTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "688b07e5-0a3b-4e40-b250-a26e5d4cd32c";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};

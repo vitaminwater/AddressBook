@@ -29,6 +29,8 @@
     _textView.translatesAutoresizingMaskIntoConstraints = NO;
     _textView.scrollEnabled = NO;
     _textView.backgroundColor = [UIColor clearColor];
+    _textView.textContainer.lineFragmentPadding = 0;
+    _textView.textContainerInset = UIEdgeInsetsZero;
     [self addSubview:_textView];
     
     [self updateContent];
@@ -73,11 +75,11 @@
         NSCharacterSet *cs = [NSCharacterSet characterSetWithCharactersInString:@"\r\n"];
         
         if ([title isEqualToString:@"notitle"] == false) {
-            NSAttributedString *displayString = [[NSAttributedString alloc] initWithString:[[title stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Montserrat-Bold" size:22], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
+            NSAttributedString *displayString = [[NSAttributedString alloc] initWithString:[[title stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Montserrat-Bold" size:18], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
             [content appendAttributedString:displayString];
         }
         
-        NSAttributedString *contentString = [[NSAttributedString alloc] initWithString:[[body stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:19], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
+        NSAttributedString *contentString = [[NSAttributedString alloc] initWithString:[[body stringByTrimmingCharactersInSet:cs] stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:17], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
         [content appendAttributedString:contentString];
     }
     [_textView setAttributedText:content];

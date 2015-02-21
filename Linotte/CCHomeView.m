@@ -26,6 +26,7 @@
 {
     UITextField *_searchField;
     UIView *_listView;
+    UIView *_searchViewControllerView;
     
     NSString *_lastFilterText;
     
@@ -148,6 +149,37 @@
     [self listOptionButtonPressed:listOptionButton];
 }
 
+- (void)presentSearchViewControllerView:(UIView *)searchViewControllerView
+{
+    _searchViewControllerView = searchViewControllerView;
+    _searchViewControllerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_searchViewControllerView];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_searchField, _searchViewControllerView);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_searchField][_searchViewControllerView]|" options:0 metrics:nil views:views];
+    [self addConstraints:verticalConstraints];
+    
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_searchViewControllerView]|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
+    
+    [self layoutIfNeeded];
+    
+    _searchViewControllerView.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        _searchViewControllerView.alpha = 1;
+    }];
+}
+
+- (void)dismissSearchViewControllerView
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        _searchViewControllerView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_searchViewControllerView removeFromSuperview];
+        _searchViewControllerView = nil;
+    }];
+}
+
 #pragma mark - UIButton target methods
 
 - (void)listOptionButtonPressed:(UIButton *)pressedButton
@@ -160,6 +192,7 @@
     for (UIButton *button in _buttonContainer.buttons) {
         button.selected = button == pressedButton;
     }
+    [_searchField resignFirstResponder];
 }
 
 #pragma mark - UITextField target methods
@@ -177,6 +210,12 @@
 }
 
 #pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if ([_searchField.text length] != 0)
+        [_delegate filterList:_searchField.text];
+}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

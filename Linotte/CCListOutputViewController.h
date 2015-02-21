@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "CCListOutputViewDelegate.h"
+#import "CCModelChangeMonitor.h"
 
 #import "CCListOutputSettingsViewControllerDelegate.h"
 
@@ -21,7 +22,7 @@
 
 @class CCList;
 
-@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCOutputViewControllerDelegate, CCFirstListDisplaySettingsViewControllerDelegate>
+@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCOutputViewControllerDelegate, CCFirstListDisplaySettingsViewControllerDelegate, CCModelChangeMonitorDelegate>
 
 - (instancetype)initWithList:(CCList *)list listIsNew:(BOOL)listIsNew;
 - (instancetype)initWithList:(CCList *)list;

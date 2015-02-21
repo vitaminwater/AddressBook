@@ -10,6 +10,7 @@
 
 #define kCCLastUserEventDate @"kCCLastUserEventDate"
 #define kCCLastUserEventUpdate @"kCCLastUserEventUpdate"
+#define kCCPushNotificationDeviceToken @"kCCPushNotificationDeviceToken"
 
 @implementation CCCurrentUserData
 {
@@ -64,6 +65,17 @@
     NSString *lastEventUpdateString = [_dateFormatter stringFromDate:lastEventUpdate];
     
     [[NSUserDefaults standardUserDefaults] setValue:lastEventUpdateString forKey:kCCLastUserEventUpdate];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSData *)pushNotificationDeviceToken
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:kCCPushNotificationDeviceToken];
+}
+
+- (void)setPushNotificationDeviceToken:(NSData *)deviceToken
+{
+    [[NSUserDefaults standardUserDefaults] setValue:deviceToken forKey:kCCPushNotificationDeviceToken];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

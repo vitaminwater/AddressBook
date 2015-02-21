@@ -58,6 +58,7 @@
     self = [self initWithList:list];
     if (self) {
         _listIsNew = listIsNew;
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
     }
     return self;
 }
@@ -67,8 +68,14 @@
     self = [super init];
     if (self) {
         _list = list;
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[CCModelChangeMonitor sharedInstance] removeDelegate:self];
 }
 
 - (void)loadView
@@ -90,8 +97,7 @@
     [view setupListView:(CCListView *)_listViewController.view];
     [_listViewController didMoveToParentViewController:self];
     
-    [view loadListIconWithUrl:_list.icon];
-    [view setListInfosText:_list.name];
+    [self updateListInfos];
     
     if (_listIsNew) {
         CCFirstListDisplaySettingsViewController *firstAddressDisplaySettingsViewController = [[CCFirstListDisplaySettingsViewController alloc] initWithList:_list];
@@ -104,6 +110,12 @@
     }
 
     [view setupLayout];
+}
+
+- (void)updateListInfos {
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    [view loadListIconWithUrl:_list.icon];
+    [view setListInfosText:_list.name];
 }
 
 - (void)viewDidLoad
@@ -277,6 +289,15 @@
 - (void)alertViewDidSayNo:(CCAlertView *)sender
 {
     [CCAlertView closeAlertView:sender];
+}
+
+#pragma mark CCModelChangeMonitorDelegate -
+
+- (void)listsDidUpdate:(NSArray *)lists send:(BOOL)send
+{
+    if ([lists containsObject:_list]) {
+        [self updateListInfos];
+    }
 }
 
 @end

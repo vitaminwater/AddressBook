@@ -20,6 +20,8 @@
     self = [super init];
     if (self) {
         _rootUrl = rootUrl;
+        if ([_rootUrl hasPrefix:@"http://"] == NO && [_rootUrl hasPrefix:@"https://"] == NO)
+            _rootUrl = [NSString stringWithFormat:@"http://%@", _rootUrl];
     }
     return self;
 }
@@ -40,6 +42,11 @@
 - (void)closeButtonPressed
 {
     [_delegate closeBrowserViewController];
+}
+
+- (void)externalButtonPressed
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_rootUrl]];
 }
 
 @end

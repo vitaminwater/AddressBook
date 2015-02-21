@@ -19,11 +19,11 @@
 {
     if (kCCApplicationBackground) {
         if (doubleWaitingTime) {
-            self.waitingTimeValue *= 2;
+            self.waitingTimeValue *= 1.2;
             self.waitingTimeValue = MIN((24 * 3600 * 180), self.waitingTimeValue);
         } else {
-            self.waitingTimeValue /= 2;
-            self.waitingTimeValue = MAX(30, self.waitingTimeValue);
+            self.waitingTimeValue /= 1.2;
+            self.waitingTimeValue = MAX(20, self.waitingTimeValue);
         }
     }
     

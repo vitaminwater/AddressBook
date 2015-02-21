@@ -61,7 +61,7 @@
     [button setImage:icon forState:UIControlStateNormal];
     [button addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     button.layer.cornerRadius = 4;
-    button.imageView.contentMode = UIViewContentModeCenter;
+    button.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:button];
     [_buttons addObject:button];
     
@@ -139,7 +139,7 @@
                 [format appendString:@"-"];
             [format appendFormat:@"[%@(==45)]", key];
             
-            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|%@[view]-|", _currentActionIndex == index ? @"" : @"-"] options:0 metrics:nil views:@{@"view" : button}];
+            NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|%@[view]-(==5)-|", _currentActionIndex == index ? @"" : @"-(==5)-"] options:0 metrics:nil views:@{@"view" : button}];
             [_constraints addObjectsFromArray:horizontalConstraints];
             ++index;
         }
@@ -170,7 +170,7 @@
         if (actionItem.fullWidth)
             horizontalConstraintsFormat = @"H:|-[_actionViewContainer][self]";
         else
-            horizontalConstraintsFormat = @"H:|-(>=8)-[_actionViewContainer][self]";
+            horizontalConstraintsFormat = @"H:|-(==8)-[_actionViewContainer][self]";
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:horizontalConstraintsFormat options:0 metrics:nil views:views];
         [_actionViewConstraints addObjectsFromArray:horizontalConstraints];
         

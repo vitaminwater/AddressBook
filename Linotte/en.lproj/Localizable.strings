@@ -131,6 +131,8 @@
 "LAST_NOTIFICATIONS" = "Notifications";
 
 "SEARCH" = "SEARCH";
+"LISTS" = "Books";
+"ADDRESSES" = "Addresses";
 
 "HIDE_KEYBOARD" = "Hide keyboard";
 
@@ -145,3 +147,16 @@
 "CANNOT_SEND_MAIL" = "Cannot send mail,\nis it configured ?";
 
 "NOTE_VIEW_TITLE" = "Note";
+
+"CLOSE_SEARCH" = "Close search";
+
+"DAY_MON" = "Monday";
+"DAY_TUE" = "Tuesday";
+"DAY_WED" = "Wednesday";
+"DAY_THU" = "Thursday";
+"DAY_FRI" = "Friday";
+"DAY_SAT" = "Saturday";
+"DAY_SUN" = "Sunday";
+
+"CLOSED" = "Closed";
+"OPENED" = "Opened";

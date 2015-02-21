@@ -62,6 +62,12 @@
     }
 }
 
+- (BOOL)resignFirstResponder
+{
+    [_searchField resignFirstResponder];
+    return [super resignFirstResponder];
+}
+
 #pragma mark - UITextField target methods
 
 - (void)searchFieldChanged:(UITextField *)sender

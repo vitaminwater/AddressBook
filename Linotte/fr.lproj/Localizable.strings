@@ -127,6 +127,8 @@
 "LAST_NOTIFICATIONS" = "Notifications";
 
 "SEARCH" = "CHERCHER";
+"LISTS" = "Carnets";
+"ADDRESSES" = "Adresses";
 
 "HIDE_KEYBOARD" = "Cacher le clavier";
 
@@ -141,3 +143,16 @@
 "CANNOT_SEND_MAIL" = "Impossible d'envoyer un mail,\nest-il configuré ?";
 
 "NOTE_VIEW_TITLE" = "Note";
+
+"CLOSE_SEARCH" = "Fermer recherche";
+
+"DAY_MON" = "Lundi";
+"DAY_TUE" = "Mardi";
+"DAY_WED" = "Mercredi";
+"DAY_THU" = "Jeudi";
+"DAY_FRI" = "Vendredi";
+"DAY_SAT" = "Samedi";
+"DAY_SUN" = "Dimanche";
+
+"CLOSED" = "Fermé";
+"OPENED" = "Ouvert";

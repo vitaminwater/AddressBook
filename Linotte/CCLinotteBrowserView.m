@@ -12,7 +12,13 @@
 {
     UIView *_topBar;
     UIView *_bottomBar;
+    UIActivityIndicatorView *_loadingView;
     UIWebView *_webView;
+    
+    UIButton *_backButton;
+    UIButton *_forwardButton;
+    
+    NSUInteger _webviewLoadings;
 }
 
 - (instancetype)init
@@ -20,6 +26,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        _webviewLoadings = 0;
         
         [self setupTopButtons];
         [self setupBottomButtons];
@@ -42,13 +49,38 @@
     [closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [_topBar addSubview:closeButton];
     
-    // UIButton *closeButton
+    UIButton *externalButton = [UIButton new];
+    externalButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [externalButton setTitle:@"external" forState:UIControlStateNormal];
+    [externalButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [externalButton addTarget:self action:@selector(externalButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [_topBar addSubview:externalButton];
+    
+    _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _loadingView.translatesAutoresizingMaskIntoConstraints = NO;
+    _loadingView.hidesWhenStopped = YES;
+    [_topBar addSubview:_loadingView];
+    
+    // UIButton *closeButton, UIButton *externalButton
     {
-        NSLayoutConstraint *sideConstraint = [NSLayoutConstraint constraintWithItem:closeButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_topBar attribute:NSLayoutAttributeLeft multiplier:1 constant:10];
+        NSDictionary *views = NSDictionaryOfVariableBindings(externalButton, closeButton);
+
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[externalButton]-[closeButton]-|" options:0 metrics:nil views:views];
+        [_topBar addConstraints:horizontalConstraints];
+        
+        for (UIView *view in views.allValues) {
+            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            [_topBar addConstraints:verticalConstraints];
+        }
+    }
+    
+    // _loadingView
+    {
+        NSLayoutConstraint *sideConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_topBar attribute:NSLayoutAttributeLeft multiplier:1 constant:10];
         [_topBar addConstraint:sideConstraint];
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : closeButton}];
-        [_topBar addConstraints:verticalConstraints];
+        NSLayoutConstraint *centerYConstraint = [NSLayoutConstraint constraintWithItem:_loadingView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_topBar attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        [_topBar addConstraint:centerYConstraint];
     }
 }
 
@@ -58,43 +90,49 @@
     _bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_bottomBar];
 
-    UIButton *backButton = [UIButton new];
-    backButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [backButton setTitle:@"Back" forState:UIControlStateNormal];
-    [backButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [_bottomBar addSubview:backButton];
+    _backButton = [UIButton new];
+    _backButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [_backButton setTitle:@"Back" forState:UIControlStateNormal];
+    [_backButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_backButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [_backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _backButton.enabled = NO;
+    [_bottomBar addSubview:_backButton];
     
-    UIButton *forwardButton = [UIButton new];
-    forwardButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [forwardButton setTitle:@"Next" forState:UIControlStateNormal];
-    [forwardButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [forwardButton addTarget:self action:@selector(forwardButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [_bottomBar addSubview:forwardButton];
+    _forwardButton = [UIButton new];
+    _forwardButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [_forwardButton setTitle:@"Next" forState:UIControlStateNormal];
+    [_forwardButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_forwardButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    [_forwardButton addTarget:self action:@selector(forwardButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    _forwardButton.enabled = NO;
+    [_bottomBar addSubview:_forwardButton];
     
-    // UIButton *backButton
+    // UIButton *backButton, UIButton *forwardButton
     {
-        NSLayoutConstraint *sideConstraint = [NSLayoutConstraint constraintWithItem:backButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_bottomBar attribute:NSLayoutAttributeLeft multiplier:1 constant:10];
-        [_bottomBar addConstraint:sideConstraint];
+        NSDictionary *views = NSDictionaryOfVariableBindings(_backButton, _forwardButton);
         
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : backButton}];
-        [_bottomBar addConstraints:verticalConstraints];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_backButton]-[_forwardButton]-|" options:0 metrics:nil views:views];
+        [_bottomBar addConstraints:horizontalConstraints];
+        
+        for (UIView *view in views.allValues) {
+            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            [_bottomBar addConstraints:verticalConstraints];
+        }
     }
+}
 
-    // UIButton *forwardButton
-    {
-        NSLayoutConstraint *sideConstraint = [NSLayoutConstraint constraintWithItem:forwardButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_bottomBar attribute:NSLayoutAttributeRight multiplier:1 constant:-10];
-        [_bottomBar addConstraint:sideConstraint];
-        
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : forwardButton}];
-        [_bottomBar addConstraints:verticalConstraints];
-    }
+- (void)updateNavigationButtons
+{
+    _backButton.enabled = [_webView canGoBack];
+    _forwardButton.enabled = [_webView canGoForward];
 }
 
 - (void)setupWebView
 {
     _webView = [UIWebView new];
     _webView.translatesAutoresizingMaskIntoConstraints = NO;
+    _webView.delegate = self;
     [self addSubview:_webView];
 }
 
@@ -121,6 +159,36 @@
     [_webView loadRequest:request];
 }
 
+#pragma mark - UIWebViewDelegate methods
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    CCLog(@"Browser: %@", error);
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    ++_webviewLoadings;
+    if (_webviewLoadings == 1) {
+        [_loadingView startAnimating];
+    }
+    [self updateNavigationButtons];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    --_webviewLoadings;
+    if (_webviewLoadings == 0) {
+        [_loadingView stopAnimating];
+    }
+    [self updateNavigationButtons];
+}
+
 #pragma mark - UIButton target methods
 
 - (void)backButtonPressed:(id)sender
@@ -136,6 +204,11 @@
 - (void)closeButtonPressed:(id)sender
 {
     [_delegate closeButtonPressed];
+}
+
+- (void)externalButtonPressed:(id)sender
+{
+    [_delegate externalButtonPressed];
 }
 
 @end

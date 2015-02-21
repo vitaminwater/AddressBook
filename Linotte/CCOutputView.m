@@ -257,8 +257,11 @@
 
 - (void)setDisplayMetas:(NSArray *)metas
 {
-    if ([metas count] == 0)
+    if ([metas count] == 0) {
+        NSLayoutConstraint *expandIconHeightConstraint = [NSLayoutConstraint constraintWithItem:_expandIcon attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
+        [_infosView addConstraint:expandIconHeightConstraint];
         return;
+    }
     [_displayMetaContainerView addMetas:metas];
     _expandIcon.hidden = NO;
 }

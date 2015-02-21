@@ -20,6 +20,8 @@
         _link = link;
         
         NSString *domain = [[NSURL URLWithString:_link] host];
+        if (domain == nil)
+            domain = _link;
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
         [self setTitle:domain forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

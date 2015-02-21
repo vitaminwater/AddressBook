@@ -95,6 +95,7 @@
                 completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
             }];
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
+            completionHandler(UIBackgroundFetchResultNoData);
             CCLog(@"%@", error);
         }];
         return;

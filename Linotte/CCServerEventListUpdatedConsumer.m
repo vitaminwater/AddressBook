@@ -46,7 +46,9 @@
         _currentConnection = nil;
         
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-        [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:listInfo];
+        NSMutableDictionary *mutableListInfo = [listInfo mutableCopy];
+        mutableListInfo[@"identifier"] = list.identifier;
+        [CCList insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDict:mutableListInfo];
         
         CCLog(@"Updating list %@", list.identifier);
         

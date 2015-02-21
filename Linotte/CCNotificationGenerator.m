@@ -34,7 +34,7 @@
     
     NSDate *date = [[NSDate date] dateByAddingTimeInterval:-3600 * 8];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash IN %@ && (lastnotif = nil || lastnotif < %@) && notify = %@", geohash, date, @YES];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(notify = %@ || ANY lists.notify = %@) && geohash IN %@ && (lastnotif = nil || lastnotif < %@)", @YES, @YES, geohash, date];
     [fetchRequest setPredicate:predicate];
     
     NSArray *results = [managedObjectContext executeFetchRequest:fetchRequest error:&error];

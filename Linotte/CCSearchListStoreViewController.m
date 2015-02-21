@@ -58,6 +58,14 @@
     }];
 }
 
+#pragma mark - CCFlatListStoreViewDelegate methods
+
+- (void)listSelectedAtIndex:(NSUInteger)index
+{
+    [super listSelectedAtIndex:index];
+    [self.view resignFirstResponder];
+}
+
 #pragma mark - CCSearchListStoreViewDelegate methods
 
 - (void)searchTextChanged:(NSString *)search

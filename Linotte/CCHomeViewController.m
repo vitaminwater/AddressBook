@@ -37,6 +37,7 @@
 
 #import "CCOutputViewController.h"
 #import "CCListOutputViewController.h"
+#import "CCSearchViewController.h"
 
 #import "CCHomeListEmptyView.h"
 
@@ -48,6 +49,7 @@
 @implementation CCHomeViewController
 {
     CCSwapperViewController *_swapViewController;
+    CCSearchViewController *_searchViewController;
     
     NSArray *_listViewControllers;
     
@@ -108,6 +110,31 @@
     return listViewController;
 }
 
+- (void)showSearchViewControllerIfNotPresent
+{
+    if (_searchViewController != nil)
+        return;
+    _searchViewController = [CCSearchViewController new];
+    _searchViewController.delegate = self;
+    
+    CCHomeView *view = (CCHomeView *)self.view;
+    [self addChildViewController:_searchViewController];
+    [view presentSearchViewControllerView:_searchViewController.view];
+    [_searchViewController didMoveToParentViewController:self];
+}
+
+- (void)hideSearchViewControllerIfPresent
+{
+    if (_searchViewController == nil)
+        return;
+    
+    CCHomeView *view = (CCHomeView *)self.view;
+    [_searchViewController willMoveToParentViewController:nil];
+    [view dismissSearchViewControllerView];
+    [_searchViewController removeFromParentViewController];
+    _searchViewController = nil;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -129,12 +156,14 @@
 
 - (void)viewWillShow
 {
+    
 }
 
 - (void)viewWillHide
 {
     CCHomeView *view = (CCHomeView *)self.view;
     [view searchFieldResignFirstResponder];
+    [self hideSearchViewControllerIfPresent];
 }
 
 #pragma mark - CCHomeViewDelegate methods
@@ -146,7 +175,17 @@
 
 - (void)filterList:(NSString *)filterText
 {
-    
+    [self showSearchViewControllerIfNotPresent];
+    [_searchViewController updateSearchString:filterText];
+}
+
+#pragma mark - CCSearchViewControllerDelegate methods
+
+- (void)closeSearchViewController
+{
+    CCHomeView *view = (CCHomeView *)self.view;
+    [view searchFieldResignFirstResponder];
+    [self hideSearchViewControllerIfPresent];
 }
 
 #pragma mark - CCListViewControllerDelegate methods

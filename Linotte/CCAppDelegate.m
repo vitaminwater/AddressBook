@@ -16,12 +16,14 @@
 
 #import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAuthenticationManager.h"
+#import "CCCurrentUserData.h"
 
 #import "CCRootViewController.h"
 #import "CCSignUpViewController.h"
 #import "CCOutputViewController.h"
 
 #import "CCAddress.h"
+#import "CCLocalEvent.h"
 
 @implementation CCAppDelegate
 {
@@ -30,9 +32,64 @@
     UINavigationController *_navigationController;
 }
 
+#if defined(DEBUG)
+
+- (void)deleteLocalEvents
+{
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
+    NSArray *localEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCLocalEvent *localEvent in localEvents) {
+        [managedObjectContext deleteObject:localEvent];
+    }
+    
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
+- (void)deleteFirstLocalEvent
+{
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCLocalEvent entityName]];
+    fetchRequest.fetchLimit = 1;
+    
+    NSSortDescriptor *dateSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES];
+    [fetchRequest setSortDescriptors:@[dateSortDescriptor]];
+    
+    NSArray *localEvents = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    [managedObjectContext deleteObject:[localEvents firstObject]];
+    
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
+- (void)generateFakeNotifications
+{
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    fetchRequest.fetchLimit = 10;
+    
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCAddress *address in addresses) {
+        address.lastnotif = [[NSDate date] dateByAddingTimeInterval:-(3600 * rand() % 100)];
+    }
+    
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
+#endif
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self initAll:application];
+    
+    //[self deleteLocalEvents];
+    //[self deleteFirstLocalEvent];
+    //[self generateFakeNotifications];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
@@ -93,6 +150,7 @@
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+    CCLog(@"Background fetch called");
     [CCLEC application:application performFetchWithCompletionHandler:completionHandler];
 }
 
@@ -114,6 +172,14 @@
 - (void)initAll:(UIApplication *)application
 {
     [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        [application registerForRemoteNotifications];
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil]];
+    } else {
+        [application registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeNewsstandContentAvailability];
+    }
     
     // Facebook SDK
     [FBAppEvents activateApp];
@@ -142,6 +208,11 @@
 #endif
         [CCLEC initializeLinotteEngineWithClientId:clientId clientSecret:clientSecret];
     }
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    CCUD.pushNotificationDeviceToken = deviceToken;
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification

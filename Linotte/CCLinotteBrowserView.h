@@ -10,7 +10,7 @@
 
 #import "CCLinotteBrowserViewDelegate.h"
 
-@interface CCLinotteBrowserView : UIView
+@interface CCLinotteBrowserView : UIView<UIWebViewDelegate>
 
 @property(nonatomic, weak)id<CCLinotteBrowserViewDelegate> delegate;
 

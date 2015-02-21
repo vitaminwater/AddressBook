@@ -249,7 +249,23 @@
         return;
     
     NSString *dateString = [_dateFormatter stringFromDate:[NSDate date]];
-    NSString *logStringWithCR = [NSString stringWithFormat:@"%@: %@\n", dateString, logString];
+    NSString *applicationState;
+    UIApplicationState stateValue = [[UIApplication sharedApplication] applicationState];
+    switch (stateValue) {
+        case UIApplicationStateActive:
+            applicationState = @"UIApplicationStateActive";
+            break;
+        case UIApplicationStateInactive:
+            applicationState = @"UIApplicationStateInactive";
+            break;
+        case UIApplicationStateBackground:
+            applicationState = @"UIApplicationStateBackground";
+            break;
+        default:
+            applicationState = [NSString stringWithFormat:@"Unknown: %d", (int)stateValue];
+            break;
+    }
+    NSString *logStringWithCR = [NSString stringWithFormat:@"%@ (%@): %@\n", dateString, applicationState, logString];
     [_logFile writeData:[NSData dataWithBytes:[logStringWithCR UTF8String] length:[logStringWithCR length]]];
     
     [self checkFileLength];

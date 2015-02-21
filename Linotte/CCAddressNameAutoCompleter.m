@@ -76,6 +76,12 @@
                 [metas addObject:meta];
             }
             
+            CCMeta *meta = [CCMeta new];
+            meta.uid = @"pics";
+            meta.action = @"external";
+            meta.content = @{@"title" : @"Voir les photos", @"weblink" : [NSString stringWithFormat:@"https://foursquare.com/v/%@/photos", venue[@"id"]]};
+            [metas addObject:meta];
+            
             autocompletionResult.name = venue[@"name"];
             autocompletionResult.address = addressString;
             autocompletionResult.metas = metas;

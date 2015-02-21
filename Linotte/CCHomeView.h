@@ -18,6 +18,9 @@
 
 - (instancetype)initWithListView:(UIView *)listView animationDelegator:(CCAnimationDelegator *)animatorDelegator;
 
+- (void)presentSearchViewControllerView:(UIView *)searchViewControllerView;
+- (void)dismissSearchViewControllerView;
+
 - (void)searchFieldResignFirstResponder;
 - (void)setSelectedButtonAtIndex:(NSUInteger)index;
 

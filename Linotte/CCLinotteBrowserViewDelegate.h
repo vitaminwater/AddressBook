@@ -11,5 +11,6 @@
 @protocol CCLinotteBrowserViewDelegate <NSObject>
 
 - (void)closeButtonPressed;
+- (void)externalButtonPressed;
 
 @end

@@ -62,7 +62,7 @@
     _tableView = [UITableView new];
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     _tableView.backgroundColor = [UIColor clearColor];
-    _tableView.rowHeight = 60;
+    _tableView.rowHeight = 50;
     
     _tableView.delegate = self;
     _tableView.dataSource = self;
