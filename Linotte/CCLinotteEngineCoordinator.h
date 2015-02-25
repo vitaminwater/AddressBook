@@ -22,6 +22,7 @@
 @property(nonatomic, readonly)CCLinotteAuthenticationManager *authenticationManager;
 
 - (void)initializeLinotteEngineWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
+- (void)startNotifying;
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 
 - (void)forceListSynchronization:(CCList *)list;

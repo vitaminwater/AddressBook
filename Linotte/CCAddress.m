@@ -1,6 +1,7 @@
 #import "CCAddress.h"
 
 #import "CCGeohashHelper.h"
+#import "CCLinotteEngineCoordinator.h"
 
 @interface CCAddress ()
 
@@ -12,6 +13,38 @@
 {
     [super awakeFromInsert];
     self.localIdentifier = [[NSUUID UUID] UUIDString];
+    [self setObservers];
+}
+
+- (void)awakeFromFetch
+{
+    [super awakeFromFetch];
+    [self setObservers];
+}
+
+- (void)willTurnIntoFault
+{
+    [super willTurnIntoFault];
+    [self unsetObservers];
+}
+
+- (void)setObservers
+{
+    [self addObserver:self forKeyPath:@"notify" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)unsetObservers
+{
+    [self removeObserver:self forKeyPath:@"notify"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"notify"]) {
+        NSNumber *newValue = change[NSKeyValueChangeNewKey];
+        if ([newValue boolValue] == YES)
+            [[CCLinotteEngineCoordinator sharedInstance] startNotifying];
+    }
 }
 
 - (NSArray *)metasForActions:(NSArray *)actions
@@ -22,6 +55,24 @@
         [metas addObjectsFromArray:[[self.metas filteredSetUsingPredicate:predicate] allObjects]];
     }
     return metas;
+}
+
++ (NSUInteger)numberOfNotifyingAddressesInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"notify = %@ or ANY lists.notify = %@", @(YES), @(YES)];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return 0;
+    }
+    
+    return count;
 }
 
 + (CCAddress *)insertOrUpdateInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict

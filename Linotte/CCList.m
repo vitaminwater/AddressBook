@@ -3,6 +3,7 @@
 #import "CCListZone.h"
 
 #import "CCGeohashHelper.h"
+#import "CCLinotteEngineCoordinator.h"
 
 @interface CCList ()
 
@@ -17,6 +18,39 @@
     self.lastUpdate = [NSDate date];
     self.waitingTimeValue = (12 * 3600) + rand() % (12 * 3600);
     [self setNextRefreshDate];
+    
+    [self setObservers];
+}
+
+- (void)awakeFromFetch
+{
+    [super awakeFromFetch];
+    [self setObservers];
+}
+
+- (void)willTurnIntoFault
+{
+    [super willTurnIntoFault];
+    [self unsetObservers];
+}
+
+- (void)setObservers
+{
+    [self addObserver:self forKeyPath:@"notify" options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)unsetObservers
+{
+    [self removeObserver:self forKeyPath:@"notify"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"notify"]) {
+        NSNumber *newValue = change[NSKeyValueChangeNewKey];
+        if ([newValue boolValue] == YES)
+            [[CCLinotteEngineCoordinator sharedInstance] startNotifying];
+    }
 }
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location

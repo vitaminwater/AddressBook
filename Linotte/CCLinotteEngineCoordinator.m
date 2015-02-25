@@ -14,12 +14,15 @@
 #import "CCLinotteAuthenticationManager.h"
 
 #import "CCLinotteAPI.h"
+#import "CCLinotteCoreDataStack.h"
 
 #import "CCNotificationGenerator.h"
 #import "CCGeohashMonitor.h"
 
 #import "CCModelChangeHandler.h"
 #import "CCSynchronizationHandler.h"
+
+#import "CCAddress.h"
 
 @implementation CCLinotteEngineCoordinator
 {
@@ -60,8 +63,13 @@
     _authenticationManager = [[CCLinotteAuthenticationManager alloc] initWithLinotteAPI:_linotteAPI];
     _authenticationManager.delegate = self;
     
-    if (_authenticationManager.readyToSend)
+    if (_authenticationManager.readyToSend) {
         [self startSynchronization];
+        
+        NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+        if ([CCAddress numberOfNotifyingAddressesInManagedObjectContext:managedObjectContext] > 0)
+            [self startNotifying];
+    }
 }
 
 - (void)startSynchronization
