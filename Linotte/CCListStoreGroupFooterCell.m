@@ -19,6 +19,8 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.contentView.backgroundColor = [UIColor whiteColor];
+        
         [self setupButton];
         [self setupLayout];
     }
@@ -29,8 +31,8 @@
 {
     _button = [UIButton new];
     _button.translatesAutoresizingMaskIntoConstraints = NO;
-    _button.titleLabel.font = [UIFont fontWithName:@"Futura-BookItalic" size:25];
-    [_button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    _button.titleLabel.font = [UIFont fontWithName:@"Futura-BookItalic" size:18];
+    [_button setTitleColor:[UIColor colorWithHexString:@"#037AFF"] forState:UIControlStateNormal];
     [_button setTitle:NSLocalizedString(@"LIST_STORE_SEE_MORE", @"") forState:UIControlStateNormal];
     [_button addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_button];

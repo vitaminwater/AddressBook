@@ -198,6 +198,8 @@
         [Mixpanel sharedInstanceWithToken:token];
     }
     
+    
+    
     {
 #if defined(DEBUG)
         NSString *clientId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_client_debug"];
@@ -207,12 +209,18 @@
         NSString *clientSecret = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"linotte_api_secret"];
 #endif
         [CCLEC initializeLinotteEngineWithClientId:clientId clientSecret:clientSecret];
+        
+        if (CCLEC.authenticationManager.deviceId != nil) {
+            [CCNetworkLogs sharedInstance].identifier = CCLEC.authenticationManager.deviceId;
+        }
     }
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    CCUD.pushNotificationDeviceToken = deviceToken;
+    if (CCUD.pushNotificationDeviceToken == nil || ![CCUD.pushNotificationDeviceToken isEqualToData:deviceToken]) {
+        CCUD.pushNotificationDeviceToken = deviceToken;
+    }
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification

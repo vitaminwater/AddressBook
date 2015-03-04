@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListStoreGroupHeaderCell : UICollectionViewCell
+@interface CCListStoreGroupHeaderCell : UITableViewHeaderFooterView
 
 @property(nonatomic, strong)NSString *groupTitle;
 

@@ -12,6 +12,7 @@
 
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
+#import "CCCurrentUserData.h"
 
 #import "CCAuthMethod.h"
 
@@ -26,7 +27,7 @@
 
 #else
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName1000" // Apstore
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName1001" // Apstore
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountName"
@@ -244,6 +245,8 @@
         return kCCCreateDeviceId;
     else if ([self hasAuthMethodToSend])
         return kCCSendAuthMethod;
+    else if (CCUD.pushNotificationDeviceTokenSent == NO)
+        return kCCSendPushNotificationDeviceToken;
     else
         return kCCLoggedIn;
 }

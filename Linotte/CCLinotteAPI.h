@@ -34,6 +34,7 @@ typedef enum : NSUInteger {
 - (NSURLSessionDataTask *)addAuthenticationMethod:(NSDictionary *)parameters success:(void(^)(NSString *identifier))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 
 - (NSURLSessionDataTask *)createDeviceWithSuccess:(void(^)(NSString *deviceId))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)sendDevicePushNotificationToken:(NSString *)token success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (void)setDeviceHTTPHeader:(NSString *)deviceId;
 - (void)unsetDeviceHTTPHeader;
 

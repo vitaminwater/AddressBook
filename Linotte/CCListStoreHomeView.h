@@ -13,7 +13,7 @@
 #import "CCListStoreHomeViewDelegate.h"
 #import "CCListStoreGroupFooterCellDelegate.h"
 
-@interface CCListStoreHomeView : CCBaseListStoreView<CCListStoreGroupFooterCellDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
+@interface CCListStoreHomeView : CCBaseListStoreView<CCListStoreGroupFooterCellDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, assign)id<CCListStoreHomeViewDelegate> delegate;
 

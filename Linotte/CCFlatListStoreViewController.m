@@ -62,6 +62,12 @@
     return listDict[@"name"];
 }
 
+- (NSString *)authorForListAtIndex:(NSUInteger)index
+{
+    NSDictionary *listDict = _lists[index];
+    return listDict[@"author"];
+}
+
 - (NSString *)iconUrlForListAtIndex:(NSUInteger)index
 {
     NSDictionary *listDict = _lists[index];

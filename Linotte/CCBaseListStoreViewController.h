@@ -19,6 +19,6 @@
 @property(nonatomic, assign)CLLocation *location;
 @property(nonatomic, readonly)CCBaseListStoreView *listStoreView;
 
-- (void)showListInstaller:(NSString *)identifier;
+- (void)showListInstaller:(NSDictionary *)identifier;
 
 @end

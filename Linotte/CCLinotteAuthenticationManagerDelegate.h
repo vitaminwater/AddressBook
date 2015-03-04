@@ -13,6 +13,7 @@
 
 @protocol CCLinotteAuthenticationManagerDelegate <NSObject>
 
+- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateDeviceWithIdentifier:(NSString *)identifier;
 - (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithAuthMethod:(CCAuthMethod *)authMethod;
 - (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager;
 

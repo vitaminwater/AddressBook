@@ -7,13 +7,13 @@
 //
 
 #import "CCBaseListStoreView.h"
-#import "CCListStoreCollectionViewCell.h"
+#import "CCListStoreTableViewCell.h"
 
 #import "CCActionResultHUD.h"
 
 @implementation CCBaseListStoreView
 {
-    UICollectionView *_listView;
+    UITableView *_listView;
     
     UIView *_networkStatusView;
     
@@ -52,14 +52,15 @@
     layout.minimumInteritemSpacing = 7;
     layout.minimumLineSpacing = 7;
     
-    _listView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    _listView = [UITableView new];
     _listView.translatesAutoresizingMaskIntoConstraints = NO;
     _listView.backgroundColor = [UIColor whiteColor];
+    _listView.rowHeight = 70;
     [self setupList:_listView];
     [self addSubview:_listView];
 }
 
-- (void)setupList:(UICollectionView *)listView {}
+- (void)setupList:(UITableView *)listView {}
 
 - (void)setupLayout
 {
@@ -82,46 +83,6 @@
     if (_actionResult != nil)
         [CCActionResultHUD removeActionResult:_actionResult];
     self.userInteractionEnabled = YES;
-}
-
-- (void)addListInstallerView:(UIView *)view
-{
-    view.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:view];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(view);
-    NSArray *widthConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:views];
-    [self addConstraints:widthConstraints];
-    
-    NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [self addConstraint:bottomConstraint];
-    
-    [self layoutIfNeeded];
-    
-    [self removeConstraint:bottomConstraint];
-    
-    NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [self addConstraint:topConstraint];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        [self layoutIfNeeded];
-    }];
-}
-
-- (void)removeListInstallerView:(UIView *)view completionBlock:(void(^)())completionBlock
-{
-    NSLayoutConstraint *topConstraint = [[self.constraints filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"firstItem = %@ && firstAttribute = %d", view, NSLayoutAttributeTop]] firstObject];
-    [self removeConstraint:topConstraint];
-    
-    NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    [self addConstraint:bottomConstraint];
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        [self layoutIfNeeded];
-    } completion:^(BOOL finished) {
-        [view removeFromSuperview];
-        completionBlock();
-    }];
 }
 
 #pragma mark - List management

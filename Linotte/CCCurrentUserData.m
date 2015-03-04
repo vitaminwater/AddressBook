@@ -11,6 +11,7 @@
 #define kCCLastUserEventDate @"kCCLastUserEventDate"
 #define kCCLastUserEventUpdate @"kCCLastUserEventUpdate"
 #define kCCPushNotificationDeviceToken @"kCCPushNotificationDeviceToken"
+#define kCCPushNotificationDeviceTokenSent @"kCCPushNotificationDeviceTokenSent"
 
 @implementation CCCurrentUserData
 {
@@ -76,6 +77,19 @@
 - (void)setPushNotificationDeviceToken:(NSData *)deviceToken
 {
     [[NSUserDefaults standardUserDefaults] setValue:deviceToken forKey:kCCPushNotificationDeviceToken];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    self.pushNotificationDeviceTokenSent = NO;
+}
+
+- (BOOL)pushNotificationDeviceTokenSent
+{
+    return [[[NSUserDefaults standardUserDefaults] valueForKey:kCCPushNotificationDeviceTokenSent] boolValue];
+}
+
+- (void)setPushNotificationDeviceTokenSent:(BOOL)pushNotificationDeviceTokenSent
+{
+    [[NSUserDefaults standardUserDefaults] setValue:@(pushNotificationDeviceTokenSent) forKey:kCCPushNotificationDeviceTokenSent];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

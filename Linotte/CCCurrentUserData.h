@@ -15,6 +15,7 @@
 @property(nonatomic, strong)NSDate *lastUserEventDate;
 @property(nonatomic, strong)NSDate *lastUserEventUpdate;
 @property(nonatomic, strong)NSData *pushNotificationDeviceToken;
+@property(nonatomic, assign)BOOL pushNotificationDeviceTokenSent;
 
 + (instancetype)sharedInstance;
 

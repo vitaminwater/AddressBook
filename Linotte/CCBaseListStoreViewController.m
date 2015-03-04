@@ -70,14 +70,9 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)showListInstaller:(NSString *)identifier
+- (void)showListInstaller:(NSDictionary *)listDict
 {
-    CCListInstallerViewController *listInstallerViewController = [[CCListInstallerViewController alloc] initWithIdentifier:identifier];
-    listInstallerViewController.delegate = self;
-    
-    [self addChildViewController:listInstallerViewController];
-    [self.listStoreView addListInstallerView:listInstallerViewController.view];
-    [listInstallerViewController didMoveToParentViewController:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowListInstallerNotification object:listDict];
 }
 
 - (void)updateReachableState
@@ -128,21 +123,6 @@
 }
 
 #pragma mark - CCListInstallerViewControllerDelegate
-
-- (void)closeListInstaller:(CCListInstallerViewController *)sender
-{
-    [sender willMoveToParentViewController:nil];
-    [self.listStoreView removeListInstallerView:sender.view completionBlock:^{
-        [sender removeFromParentViewController];
-    }];
-}
-
-- (void)listInstaller:(CCListInstallerViewController *)sender listInstalled:(CCList *)list
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowListOutputNotification object:list];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCCBackToHomeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowBookPanelNotification object:nil];
-}
 
 #pragma mark - NSNotificationCenter methods
 

@@ -190,6 +190,7 @@
 {
     [_autocompletedField resignFirstResponder];
     _autocompletedField.text = @"";
+    [_tableView reloadData];
 }
 
 - (void)resetTabButtonPosition

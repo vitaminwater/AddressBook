@@ -17,5 +17,6 @@
 @property(nonatomic, assign)id<CCListInstallerViewControllerDelegate> delegate;
 
 - (instancetype)initWithIdentifier:(NSString *)identifier;
+- (instancetype)initWithpublicListDict:(NSDictionary *)publicListDict;
 
 @end

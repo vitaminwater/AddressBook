@@ -14,6 +14,7 @@
 
 - (NSUInteger)numberOfLists;
 - (NSString *)nameForListAtIndex:(NSUInteger)index;
+- (NSString *)authorForListAtIndex:(NSUInteger)index;
 - (NSString *)iconUrlForListAtIndex:(NSUInteger)index;
 
 @end

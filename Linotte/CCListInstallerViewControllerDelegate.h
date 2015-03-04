@@ -8,12 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class CCListInstallerViewController;
-@class CCList;
-
 @protocol CCListInstallerViewControllerDelegate <NSObject>
-
-- (void)closeListInstaller:(CCListInstallerViewController *)sender;
-- (void)listInstaller:(CCListInstallerViewController *)sender listInstalled:(CCList *)list;
 
 @end

@@ -12,7 +12,7 @@
 
 #import "CCFlatListStoreViewDelegate.h"
 
-@interface CCFlatListStoreView : CCBaseListStoreView<UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
+@interface CCFlatListStoreView : CCBaseListStoreView<UITableViewDataSource, UITableViewDelegate>
 
 @property(nonatomic, weak)id<CCFlatListStoreViewDelegate> delegate;
 

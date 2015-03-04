@@ -30,7 +30,7 @@
 
 
 #if defined(DEBUG)
-#define kCCLinotteAPIServer @"192.168.1.16"
+#define kCCLinotteAPIServer @"192.168.1.93"
 #define kCCLinotteStaticServer @"http://dev.static.getlinotte.com"
 #else
 #define kCCLinotteAPIServer @"api.getlinotte.com"
@@ -44,7 +44,7 @@
 #define kCCLinotteTextFieldHeight @50
 #define kCCStatusBarHeight @20
 
-#define kCCMaxAddressesForList 600
+#define kCCMaxAddressesForList 800
 #define kCCAddressFetchLimit 50
 
 #define kCCListDefaultProvider @"user"
@@ -61,5 +61,6 @@
 #define kCCShowBookPanelNotification @"kCCShowBookPanelNotification"
 
 #define kCCShowListOutputNotification @"kCCShowListOutputNotification"
+#define kCCShowListInstallerNotification @"kCCShowListInstallerNotification"
 #define kCCShowBrowserNotification @"kCCShowBrowserNotification"
 #define kCCShowEmailNotification @"kCCShowEmailNotification"

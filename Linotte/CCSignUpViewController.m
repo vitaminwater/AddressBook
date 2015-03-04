@@ -54,8 +54,8 @@
             [_delegate signupCompleted];
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             CCLog(@"%@", error);
-            NSDictionary *response = [CCLEC.linotteAPI errorDescription:task error:error];
-            NSLog(@"%@", response);
+            //NSDictionary *response = [CCLEC.linotteAPI errorDescription:task error:error];
+            //NSLog(@"%@", response);
             
             NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
             [managedObjectContext deleteObject:authMethod];

@@ -15,6 +15,7 @@ typedef enum : NSUInteger {
     kCCLoggedIn, // When everything is fine
     kCCCreateDeviceId, // When device is not created yet
     kCCSendAuthMethod, // When there are pending social account
+    kCCSendPushNotificationDeviceToken
 } CCCredentialStoreState;
 
 @class CCAuthMethod;

@@ -92,6 +92,7 @@
     CCLog(@"Starting CCListSynchronizationActionCleanUselessZones job");
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSArray *sortedZones = [list getListZonesSortedByDistanceFromLocation:coordinates];
+    
     NSUInteger addressCounter = 0;
     BOOL cleaned = NO;
     NSMutableArray *removedAddresses = [@[] mutableCopy];
@@ -120,6 +121,11 @@
             listZone.lastAddressFirstFetchDate = nil;
             listZone.lastEventDate = nil;
             listZone.lastUpdate = nil;
+        } else if (addressCounter < kCCMaxAddressesForList) {
+            NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", list, listZone.geohash]];
+            NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:NULL];
+            NSLog(@"%@ %d %d", listZone.geohash, listZone.nAddressesValue, (unsigned int)count);
         }
         addressCounter += listZone.nAddressesValue;
     }

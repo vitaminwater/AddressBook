@@ -12,18 +12,15 @@
 #define kCCListStoreGroupHeaderCell @"kCCListStoreGroupHeaderCell"
 #define kCCListStoreGroupFooterCell @"kCCListStoreGroupFooterCell"
 
-@class CCListStoreCollectionViewCell;
+@class CCListStoreTableViewCell;
 
 @interface CCBaseListStoreView : UIView
 
-@property(nonatomic, strong)UICollectionView *listView;
+@property(nonatomic, strong)UITableView *listView;
 
 - (void)reloadData;
 
 - (void)unreachable;
 - (void)reachable;
-
-- (void)addListInstallerView:(UIView *)view;
-- (void)removeListInstallerView:(UIView *)view completionBlock:(void(^)())completionBlock;
 
 @end

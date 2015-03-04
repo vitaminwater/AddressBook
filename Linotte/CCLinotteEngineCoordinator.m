@@ -15,6 +15,7 @@
 
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
+#import "CCNetworkLogs.h"
 
 #import "CCNotificationGenerator.h"
 #import "CCGeohashMonitor.h"
@@ -125,6 +126,11 @@
 }
 
 #pragma mark - CCLinotteAuthenticationManagerDelegate methods
+
+- (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateDeviceWithIdentifier:(NSString *)identifier
+{
+    [CCNetworkLogs sharedInstance].identifier = identifier;
+}
 
 - (void)authenticationManager:(CCLinotteAuthenticationManager *)authenticationManager didCreateUserWithAuthMethod:(CCAuthMethod *)authMethod
 {

@@ -18,6 +18,7 @@
 
 - (NSUInteger)numberOfListsForGroupAtIndex:(NSUInteger)index;
 - (NSString *)nameForListAtIndex:(NSUInteger)index forGroupAtIndex:(NSUInteger)index;
+- (NSString *)authorForListAtIndex:(NSUInteger)index forGroupAtIndex:(NSUInteger)groupIndex;
 - (NSString *)iconUrlForListAtIndex:(NSUInteger)index forGroupAtIndex:(NSUInteger)index;
 
 @end

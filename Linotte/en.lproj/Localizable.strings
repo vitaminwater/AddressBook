@@ -56,6 +56,9 @@
 "DISABLE_NOTIF_BUTTON_TEXT" = "Deactivate\nnotifications";
 "SHOW_LIST_SETTING" = "Move this address in a book";
 
+"LISTCREATED" = "This book is now registered.";
+"LISTCREATED_SUBTEXT" = "You can now choose to be notified, or not.";
+
 "AWAITING_LOCATION" = "Awaiting location";
 "LOADING" = "Loading";
 
@@ -160,3 +163,6 @@
 
 "CLOSED" = "Closed";
 "OPENED" = "Opened";
+
+"ADD_LIST_TO_LINOTTE" = "Add";
+"REMOVE_LIST_FROM_LINOTTE" = "Remove";

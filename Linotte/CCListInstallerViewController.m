@@ -8,6 +8,8 @@
 
 #import "CCListInstallerViewController.h"
 
+#import <HexColors/HexColor.h>
+
 #import "CCLinotteAPI.h"
 #import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAuthenticationManager.h"
@@ -54,14 +56,54 @@
 {
     CCListInstallerView *view = [CCListInstallerView new];
     view.delegate = self;
-    if ([self alreadyInstalled])
-        [view setAlreadyInstalled];
     self.view = view;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    NSString *color = @"#6b6b6b";
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+    
+    { // left bar button items
+        CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);
+        UIButton *backButton = [UIButton new];
+        [backButton setImage:[UIImage imageNamed:@"back_icon.png"] forState:UIControlStateNormal];
+        backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        backButton.frame = backButtonFrame;
+        [backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+        
+        UIBarButtonItem *emptyBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        emptyBarButtonItem.width = -10;
+        self.navigationItem.leftBarButtonItems = @[emptyBarButtonItem, barButtonItem];
+    }
+    
+    // right bar button item
+    {
+        CGRect rightButtonFrame = CGRectMake(0, 0, 60, 30);
+        UIButton *rightButton = [UIButton new];
+        [rightButton setTitle:NSLocalizedString(@"ADD_LIST_TO_LINOTTE", @"") forState:UIControlStateNormal];
+        [rightButton setTitleColor:[UIColor colorWithHexString:@"#037AFF"] forState:UIControlStateNormal];
+        rightButton.frame = rightButtonFrame;
+        rightButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+        [rightButton addTarget:self action:@selector(addToLinotteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
+        
+        UIBarButtonItem *emptyBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        emptyBarButtonItem.width = -10;
+        self.navigationItem.rightBarButtonItems = @[barButtonItem, emptyBarButtonItem];
+    }
+    
+    self.navigationItem.hidesBackButton = YES;
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.extendedLayoutIncludesOpaqueBars = YES;
+    
     if (_publicListDict != nil) {
         CCListInstallerView *view = (CCListInstallerView *)self.view;
         
@@ -69,6 +111,15 @@
         [view loadListIconWithUrl:_publicListDict[@"icon"]];
     }
     [self loadCompleteList:_identifier];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 - (void)loadCompleteList:(NSString *)identifier
@@ -102,7 +153,20 @@
     return installed;
 }
 
-#pragma mark - CCListInstallerViewDelegate methods
+#pragma mark - UIBarButtons target methods
+
+- (void)backButtonPressed:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)addToLinotteButtonPressed:(id)sender
+{
+    if ([self alreadyInstalled])
+        [self removeFromLinotteButtonPressed];
+    else
+        [self addToLinotteButtonPressed];
+}
 
 - (void)addToLinotteButtonPressed
 {
@@ -114,8 +178,10 @@
     [[CCModelChangeMonitor sharedInstance] listsDidAdd:@[list] send:YES];
     [CCLEC forceListSynchronization:list];
     
-    [_delegate closeListInstaller:self];
-    [_delegate listInstaller:self listInstalled:list];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowListOutputNotification object:list];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCBackToHomeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowBookPanelNotification object:nil];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)removeFromLinotteButtonPressed
@@ -137,11 +203,6 @@
     alertView.userInfo = [lists firstObject];
 }
 
-- (void)closeButtonPressed
-{
-    [_delegate closeListInstaller:self];
-}
-
 #pragma mark - CCAlertView target methods
 
 - (void)alertViewDidSayYesForList:(CCAlertView *)sender
@@ -150,15 +211,11 @@
     [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"completed"] inView:[CCActionResultHUD applicationRootView] text:NSLocalizedString(@"NOTIF_LIST_DELETE_CONFIRM", @"") delay:1];
     
     [CCAlertView closeAlertView:sender];
-    
-    [_delegate closeListInstaller:self];
 }
 
 - (void)alertViewDidSayNo:(CCAlertView *)sender
 {
     [CCAlertView closeAlertView:sender];
-    
-    [((CCListInstallerView *)self.view) cancelInstallAction];
 }
 
 @end

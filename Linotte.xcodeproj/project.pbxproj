@@ -100,7 +100,7 @@
 		C76A1CC019BF2F4B00EE75E4 /* CCFlatColorButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CBF19BF2F4B00EE75E4 /* CCFlatColorButton.m */; };
 		C76A1CDC19BF70EC00EE75E4 /* CCListStoreHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDB19BF70EC00EE75E4 /* CCListStoreHomeViewController.m */; };
 		C76A1CDF19BF715000EE75E4 /* CCListStoreHomeView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CDE19BF715000EE75E4 /* CCListStoreHomeView.m */; };
-		C76A1CE419BF769100EE75E4 /* CCListStoreCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */; };
+		C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */; };
 		C76A1CE919C0CA2000EE75E4 /* CCListOutputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CE819C0CA2000EE75E4 /* CCListOutputViewController.m */; };
 		C76A1CF219C0CA7F00EE75E4 /* CCListOutputView.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CF119C0CA7F00EE75E4 /* CCListOutputView.m */; };
 		C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C76A1CF719C0DE2300EE75E4 /* CCListViewContentProvider.m */; };
@@ -182,6 +182,7 @@
 		C7C66AA81A5C426600FACC0C /* CCAddAddressTabButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C66AA71A5C426600FACC0C /* CCAddAddressTabButtons.m */; };
 		C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470119FD56C600CBD29C /* CCListInstallerView.m */; };
 		C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */; };
+		C7CB992A1AA5113200B0AFAB /* NSData+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CB99291AA5113200B0AFAB /* NSData+HexString.m */; };
 		C7CDA3D01A7A439B007B8CCD /* CCActionButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CDA3CF1A7A439B007B8CCD /* CCActionButtonsView.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
 		C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C661918E48800D37A64 /* CoreGraphics.framework */; };
@@ -427,8 +428,8 @@
 		C76A1CDB19BF70EC00EE75E4 /* CCListStoreHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreHomeViewController.m; sourceTree = "<group>"; };
 		C76A1CDD19BF715000EE75E4 /* CCListStoreHomeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreHomeView.h; sourceTree = "<group>"; };
 		C76A1CDE19BF715000EE75E4 /* CCListStoreHomeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreHomeView.m; sourceTree = "<group>"; };
-		C76A1CE219BF769100EE75E4 /* CCListStoreCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreCollectionViewCell.h; sourceTree = "<group>"; };
-		C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreCollectionViewCell.m; sourceTree = "<group>"; };
+		C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListStoreTableViewCell.h; sourceTree = "<group>"; };
+		C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListStoreTableViewCell.m; sourceTree = "<group>"; };
 		C76A1CE719C0CA2000EE75E4 /* CCListOutputViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputViewController.h; sourceTree = "<group>"; };
 		C76A1CE819C0CA2000EE75E4 /* CCListOutputViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputViewController.m; sourceTree = "<group>"; };
 		C76A1CF019C0CA7F00EE75E4 /* CCListOutputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputView.h; sourceTree = "<group>"; };
@@ -617,6 +618,8 @@
 		C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerViewController.m; sourceTree = "<group>"; };
 		C7C9470619FD56F100CBD29C /* CCListInstallerViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewDelegate.h; sourceTree = "<group>"; };
 		C7C9470719FD570100CBD29C /* CCListInstallerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewControllerDelegate.h; sourceTree = "<group>"; };
+		C7CB99281AA5113200B0AFAB /* NSData+HexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+HexString.h"; sourceTree = "<group>"; };
+		C7CB99291AA5113200B0AFAB /* NSData+HexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+HexString.m"; sourceTree = "<group>"; };
 		C7CDA3C91A72B406007B8CCD /* CCLinotteBrowserViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewDelegate.h; sourceTree = "<group>"; };
 		C7CDA3CB1A72B461007B8CCD /* CCLinotteBrowserViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7CDA3CE1A7A439B007B8CCD /* CCActionButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionButtonsView.h; sourceTree = "<group>"; };
@@ -2209,7 +2212,6 @@
 				C7619FDA19C97D0F00C09F0D /* add list */,
 				C7619FE719CC226900C09F0D /* settings */,
 				C7CE2CA61918F0E500D37A64 /* list */,
-				C7C946FB19FD568B00CBD29C /* list installer */,
 			);
 			name = "sub view controller";
 			sourceTree = "<group>";
@@ -2338,6 +2340,7 @@
 		C785F4DA1A3EFBB70011A681 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C7CB992B1AA6051800B0AFAB /* network */,
 				C72B50E519F9844100F39E7F /* dict cache */,
 			);
 			name = utils;
@@ -2541,6 +2544,8 @@
 				C7BA7082193E1697000780D9 /* NSString+CCLocalizedString.m */,
 				C76C3BF71A1F3FDD000B0DD8 /* NSArray+CCArray.h */,
 				C76C3BF81A1F3FDD000B0DD8 /* NSArray+CCArray.m */,
+				C7CB99281AA5113200B0AFAB /* NSData+HexString.h */,
+				C7CB99291AA5113200B0AFAB /* NSData+HexString.m */,
 			);
 			name = categories;
 			sourceTree = "<group>";
@@ -2640,7 +2645,8 @@
 		C7B5DF931A59E55B000791FF /* common */ = {
 			isa = PBXGroup;
 			children = (
-				C7B5DF941A59E56D000791FF /* ui */,
+				C7CB992D1AA6068700B0AFAB /* base */,
+				C7C66A611A5A9E7F00FACC0C /* flat */,
 			);
 			name = common;
 			sourceTree = "<group>";
@@ -2649,8 +2655,7 @@
 			isa = PBXGroup;
 			children = (
 				C7B5DF961A59E58B000791FF /* cell */,
-				C7C66A611A5A9E7F00FACC0C /* flat */,
-				C7C66A601A5A9E6700FACC0C /* base */,
+				C7B5DF951A59E587000791FF /* view */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -2667,8 +2672,8 @@
 		C7B5DF961A59E58B000791FF /* cell */ = {
 			isa = PBXGroup;
 			children = (
-				C76A1CE219BF769100EE75E4 /* CCListStoreCollectionViewCell.h */,
-				C76A1CE319BF769100EE75E4 /* CCListStoreCollectionViewCell.m */,
+				C76A1CE219BF769100EE75E4 /* CCListStoreTableViewCell.h */,
+				C76A1CE319BF769100EE75E4 /* CCListStoreTableViewCell.m */,
 			);
 			name = cell;
 			sourceTree = "<group>";
@@ -2875,20 +2880,10 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
-		C7C66A601A5A9E6700FACC0C /* base */ = {
-			isa = PBXGroup;
-			children = (
-				C7B5DF951A59E587000791FF /* view */,
-				C7C66A471A59F30B00FACC0C /* CCBaseListStoreViewController.h */,
-				C7C66A481A59F30B00FACC0C /* CCBaseListStoreViewController.m */,
-			);
-			name = base;
-			sourceTree = "<group>";
-		};
 		C7C66A611A5A9E7F00FACC0C /* flat */ = {
 			isa = PBXGroup;
 			children = (
-				C7C66A621A5A9E8800FACC0C /* view */,
+				C7CB992C1AA6067D00B0AFAB /* ui */,
 				C7C66A661A5A9EC200FACC0C /* CCFlatListStoreViewController.h */,
 				C7C66A671A5A9EC200FACC0C /* CCFlatListStoreViewController.m */,
 			);
@@ -3128,6 +3123,31 @@
 			name = protocol;
 			sourceTree = "<group>";
 		};
+		C7CB992B1AA6051800B0AFAB /* network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = network;
+			sourceTree = "<group>";
+		};
+		C7CB992C1AA6067D00B0AFAB /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				C7C66A621A5A9E8800FACC0C /* view */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
+		C7CB992D1AA6068700B0AFAB /* base */ = {
+			isa = PBXGroup;
+			children = (
+				C7B5DF941A59E56D000791FF /* ui */,
+				C7C66A471A59F30B00FACC0C /* CCBaseListStoreViewController.h */,
+				C7C66A481A59F30B00FACC0C /* CCBaseListStoreViewController.m */,
+			);
+			name = base;
+			sourceTree = "<group>";
+		};
 		C7CDA3C81A72B3F9007B8CCD /* protocol */ = {
 			isa = PBXGroup;
 			children = (
@@ -3274,6 +3294,7 @@
 		C7CE2CA31918F0AF00D37A64 /* view controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C7C946FB19FD568B00CBD29C /* list installer */,
 				C7BE91A41A35F6020033B359 /* sign up */,
 				C73183EE1A25E34D00A99762 /* add address */,
 				C731841C1A2882AE00A99762 /* root */,
@@ -3854,6 +3875,7 @@
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressByNameViewController.m in Sources */,
 				C73183EA1A25DC9500A99762 /* CCAddAddressAtLocationView.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
+				C7CB992A1AA5113200B0AFAB /* NSData+HexString.m in Sources */,
 				C76C3BE81A1E02F0000B0DD8 /* CCServerEventListRemovedConsumer.m in Sources */,
 				C7BDF7301A7A6FDF00F9F93D /* CCNoteView.m in Sources */,
 				C7216B411A13C88900498CFE /* CCServerEventAddressUserDataUpdatedConsumer.m in Sources */,
@@ -3916,7 +3938,7 @@
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
 				C7C66A6B1A5AA37300FACC0C /* CCSearchListStoreView.m in Sources */,
 				C73184401A2CBC3800A99762 /* CCLinotteField.m in Sources */,
-				C76A1CE419BF769100EE75E4 /* CCListStoreCollectionViewCell.m in Sources */,
+				C76A1CE419BF769100EE75E4 /* CCListStoreTableViewCell.m in Sources */,
 				C7619FF119CC233F00C09F0D /* CCSettingsView.m in Sources */,
 				C796D7D319BBA8F700B97879 /* CCAddressListSettingsView.m in Sources */,
 				C7C66A881A5BF6C200FACC0C /* CCLinotteBrowserViewController.m in Sources */,
@@ -4004,10 +4026,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -4043,6 +4062,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

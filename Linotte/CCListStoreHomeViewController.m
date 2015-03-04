@@ -74,7 +74,9 @@
     [CCLEC.linotteAPI fetchGroupsAroundMe:self.location.coordinate success:^(NSArray *groups) {
         _groups = groups;
         [((CCBaseListStoreView *)self.view) reloadData];
-    } failure:^(NSURLSessionDataTask *task, NSError *error) {}];
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        CCLog(@"%@", error);
+    }];
 }
 
 #pragma mark - UIListStoreViewDelegate methods
@@ -91,7 +93,7 @@
     NSDictionary *groupDict = _groups[groupIndex];
     NSDictionary *listDict = groupDict[@"lists"][index];
 
-    [self showListInstaller:listDict[@"identifier"]];
+    [self showListInstaller:listDict];
 }
 
 - (NSUInteger)numberOfGroups
@@ -116,6 +118,13 @@
     NSDictionary *groupDict = _groups[groupIndex];
     NSDictionary *listDict = groupDict[@"lists"][index];
     return listDict[@"name"];
+}
+
+- (NSString *)authorForListAtIndex:(NSUInteger)index forGroupAtIndex:(NSUInteger)groupIndex
+{
+    NSDictionary *groupDict = _groups[groupIndex];
+    NSDictionary *listDict = groupDict[@"lists"][index];
+    return listDict[@"author"];
 }
 
 - (NSString *)iconUrlForListAtIndex:(NSUInteger)index forGroupAtIndex:(NSUInteger)groupIndex

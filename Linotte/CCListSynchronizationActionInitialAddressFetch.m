@@ -76,13 +76,16 @@
     CCLog(@"Starting CCListSynchronizationActionInitialAddressFetch job");
     
     for (CCListZone *zone in sortedZones) {
-        if (zone.firstFetchValue == NO)
+        if (zone.firstFetchValue == NO) {
+            NSLog(@"%@ %d", zone.geohash, zone.nAddressesValue);
             continue;
+        }
         _currentList = list;
         _currentConnection = [CCLEC.linotteAPI fetchAddressesFromList:list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit success:^(NSArray *addressesDicts) {
             BOOL finished = NO;
             CCLog(@"Fetching zone %@", zone.geohash);
             NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+            
             if ([addressesDicts count] != kCCAddressFetchLimit) {
                 finished = YES;
                 CCLog(@"Zone %@ completed", zone.geohash);
@@ -102,8 +105,9 @@
                 NSArray *metaDictArray = addressDict[@"metas"];
                 
                 NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
-                [list addAddressMetas:[NSSet setWithArray:addressMetas]];
-                [address addMetas:[NSSet setWithArray:addressMetas]];
+                NSSet *addressMetasSet = [NSSet setWithArray:addressMetas];
+                [list addAddressMetas:addressMetasSet];
+                [address addMetas:addressMetasSet];
             }
             
             [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:NO];

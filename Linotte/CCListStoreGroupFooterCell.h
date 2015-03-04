@@ -10,9 +10,9 @@
 
 #import "CCListStoreGroupFooterCellDelegate.h"
 
-@interface CCListStoreGroupFooterCell : UICollectionViewCell
+@interface CCListStoreGroupFooterCell : UITableViewHeaderFooterView
 
 @property(nonatomic, weak)id<CCListStoreGroupFooterCellDelegate> delegate;
-@property(nonatomic, strong)NSIndexPath *indexPath;
+@property(nonatomic, assign)NSUInteger section;
 
 @end

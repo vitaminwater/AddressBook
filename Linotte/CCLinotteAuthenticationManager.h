@@ -32,6 +32,7 @@
 @property(nonatomic, readonly)BOOL syncing;
 @property(nonatomic, readonly)BOOL readyToSend;
 @property(nonatomic, readonly)NSString *identifier;
+@property(nonatomic, readonly)NSString *deviceId;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI;
 

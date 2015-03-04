@@ -143,6 +143,16 @@
     }];
 }
 
+- (NSURLSessionDataTask *)sendDevicePushNotificationToken:(NSString *)token success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+{
+    NSDictionary *params = @{@"token" : token};
+    return [_apiManager PATCH:LURL(@"/user/device/token/") parameters:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        successBlock();
+    } failure:^(NSURLSessionDataTask *task, NSError *error) {
+        failureBlock(task, error);
+    }];
+}
+
 - (void)setDeviceHTTPHeader:(NSString *)deviceId
 {
     [_apiManager.requestSerializer setValue:deviceId forHTTPHeaderField:@"X-Linotte-Device-Id"];

@@ -64,7 +64,7 @@
     NSDictionary *views = NSDictionaryOfVariableBindings(_iconView, _nameLabel, _detailLabel);
     
     {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_iconView(==40)]-[_nameLabel]|" options:0 metrics:nil views:views];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(==8)-[_iconView(==40)]-[_nameLabel]-(==8)-|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:horizontalConstraints];
     }
     

@@ -23,6 +23,7 @@
 #import "CCHomeViewController.h"
 #import "CCAddAddressViewController.h"
 #import "CCListStoreNavigationController.h"
+#import "CCListInstallerViewController.h"
 
 #import "CCOutputViewControllersTransition.h"
 #import "CCListOutputViewController.h"
@@ -47,6 +48,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNotificationPanel:) name:kCCShowNotificationPanelNotification object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showListOutput:) name:kCCShowListOutputNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showListInstaller:) name:kCCShowListInstallerNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showBrowser:) name:kCCShowBrowserNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showEmail:) name:kCCShowEmailNotification object:nil];
     }
@@ -115,7 +117,8 @@
                                    animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC
 {
     if ([fromVC isKindOfClass:[CCListOutputViewController class]] || [toVC isKindOfClass:[CCListOutputViewController class]]
-        || [fromVC isKindOfClass:[CCOutputViewController class]] || [toVC isKindOfClass:[CCOutputViewController class]]) {
+        || [fromVC isKindOfClass:[CCOutputViewController class]] || [toVC isKindOfClass:[CCOutputViewController class]]
+        || [fromVC isKindOfClass:[CCListInstallerViewController class]] || [toVC isKindOfClass:[CCListInstallerViewController class]]) {
         CCOutputViewControllersTransition *transition = [CCOutputViewControllersTransition new];
         transition.reversed = operation == UINavigationControllerOperationPop;
         return transition;
@@ -167,6 +170,19 @@
     
     CCListOutputViewController *listOutputViewController = [[CCListOutputViewController alloc] initWithList:list listIsNew:YES];
     [self.navigationController pushViewController:listOutputViewController animated:YES];
+}
+
+- (void)showListInstaller:(NSNotification *)note
+{
+    id param = [note object];
+    CCListInstallerViewController *listInstallerViewController;
+    
+    if ([param isKindOfClass:[NSDictionary class]]) {
+        listInstallerViewController = [[CCListInstallerViewController alloc] initWithpublicListDict:param];
+    } else if ([param isKindOfClass:[NSString class]]) {
+        listInstallerViewController = [[CCListInstallerViewController alloc] initWithIdentifier:param];
+    }
+    [self.navigationController pushViewController:listInstallerViewController animated:YES];
 }
 
 - (void)showBrowser:(NSNotification *)note

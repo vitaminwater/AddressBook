@@ -18,7 +18,5 @@
 - (void)setListIconImage:(UIImage *)iconImage;
 - (void)setListName:(NSString *)listName;
 - (void)setListInfos:(NSString *)listAuthor numberOfAddresses:(NSUInteger)numberOfAddresses numberOfInstalls:(NSUInteger)numberOfInstalls lastUpdate:(NSDate *)lastUpdate;
-- (void)setAlreadyInstalled;
-- (void)cancelInstallAction;
 
 @end

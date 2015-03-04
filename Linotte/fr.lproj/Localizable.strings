@@ -56,6 +56,9 @@
 "DISABLE_NOTIF_BUTTON_TEXT" = "Désactiver\nnotifications";
 "SHOW_LIST_SETTING" = "Placer cette adresse dans un carnet.";
 
+"LISTCREATED" = "Ce carnet est désormais enregistré";
+"LISTCREATED_SUBTEXT" = "Vous pouvez choisir d'être notifié à proximité, ou non.";
+
 "AWAITING_LOCATION" = "En attente de localisation";
 "LOADING" = "Chargement";
 
@@ -156,3 +159,6 @@
 
 "CLOSED" = "Fermé";
 "OPENED" = "Ouvert";
+
+"ADD_LIST_TO_LINOTTE" = "Ajouter";
+"REMOVE_LIST_FROM_LINOTTE" = "Retirer";

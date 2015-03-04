@@ -12,6 +12,8 @@
 
 @interface CCNetworkLogs : NSObject
 
+@property(nonatomic, strong)NSString *identifier;
+
 + (void)log:(NSString *)format, ...;
 
 + (instancetype)sharedInstance;

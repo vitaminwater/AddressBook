@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCListStoreCollectionViewCell : UICollectionViewCell
+@interface CCListStoreTableViewCell : UITableViewCell
 
 - (void)loadImageFromUrl:(NSString *)urlString;
 - (void)setImage:(UIImage *)image;
-- (void)setTitle:(NSString *)title;
+- (void)setTitle:(NSString *)title author:(NSString *)author;
 
 @end

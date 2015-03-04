@@ -13,7 +13,7 @@
 #import "CCAppDelegate.h"
 
 #if defined(DEBUG)
-#define kCCNetworkLogsUploadServerUrl @"http://192.168.1.13:4242"
+#define kCCNetworkLogsUploadServerUrl @"http://192.168.1.93:4242"
 #else
 #define kCCNetworkLogsUploadServerUrl @"https://logs.getlinotte.com"
 #endif
@@ -71,6 +71,10 @@
                                                  selector:@selector(reachabilityChanged:)
                                                      name:AFNetworkingReachabilityDidChangeNotification
                                                    object:nil];
+        
+        if ([AFNetworkReachabilityManager sharedManager].reachable) {
+            [self startTimer];
+        }
     }
     return self;
 }
@@ -197,12 +201,13 @@
     if (toSendFileName == nil)
         return;
     
+    NSString *serverFileName = [NSString stringWithFormat:@"%@_%@", self.identifier ?: @"no_identifier", [toSendFileName stringByReplacingOccurrencesOfString:@"network_logs_to_send_" withString:@""]];
     NSString *toSendFilePath = [NSString stringWithFormat:@"%@/%@", _logDirectory, toSendFileName];
     NSData *toSendFileContent = [NSData dataWithContentsOfFile:toSendFilePath];
     
     _isSending = YES;
     [_manager POST:kCCNetworkLogsUploadServerUrl parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        [formData appendPartWithFileData:toSendFileContent name:@"logFile" fileName:toSendFileName mimeType:@"text/plain"];
+        [formData appendPartWithFileData:toSendFileContent name:@"logFile" fileName:serverFileName mimeType:@"text/plain"];
     } success:^(NSURLSessionDataTask *task, id responseObject) {
         NSError *error = nil;
         [fileManager removeItemAtPath:toSendFilePath error:&error];

@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 CCSAS. All rights reserved.
 //
 
-#import "CCListStoreCollectionViewCell.h"
+#import "CCListStoreTableViewCell.h"
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <HexColors/HexColor.h>
 
-@implementation CCListStoreCollectionViewCell
+@implementation CCListStoreTableViewCell
 {
     UIImageView *_image;
     UILabel *_title;
@@ -20,9 +20,9 @@
     NSMutableArray *_constraints;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self setupImage];
         [self setupTitle];
@@ -44,8 +44,6 @@
     NSString *color = @"#6b6b6b";
     _title = [UILabel new];
     _title.translatesAutoresizingMaskIntoConstraints = NO;
-    _title.font = [UIFont fontWithName:@"Montserrat-Bold" size:18];
-    _title.textColor = [UIColor colorWithHexString:color];
     _title.textAlignment = NSTextAlignmentCenter;
     _title.numberOfLines = 0;
     [self addSubview:_title];
@@ -59,12 +57,12 @@
     _constraints = [@[] mutableCopy];
 
     NSDictionary *views = NSDictionaryOfVariableBindings(_image, _title);
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_image(==80)]-(==20)-[_title]-|" options:0 metrics:nil views:views];
-    [_constraints addObjectsFromArray:verticalConstraints];
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(==8)-[_image(==100)]-(==3)-[_title]-|" options:0 metrics:nil views:views];
+    [_constraints addObjectsFromArray:horizontalConstraints];
     
     for (UIView *view in views.allValues) {
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[view]-|" options:0 metrics:nil views:@{@"view" : view}];
-        [_constraints addObjectsFromArray:horizontalConstraints];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==5)-[view]-(==5)-|" options:0 metrics:nil views:@{@"view" : view}];
+        [_constraints addObjectsFromArray:verticalConstraints];
     }
 
     [self addConstraints:_constraints];
@@ -87,9 +85,17 @@
     _image.image = image;
 }
 
-- (void)setTitle:(NSString *)title
+- (void)setTitle:(NSString *)title author:(NSString *)author
 {
-    _title.text = title;
+    NSMutableAttributedString *attributedString = [NSMutableAttributedString new];
+    
+    NSAttributedString *nameAttributedString = [[NSAttributedString alloc] initWithString:[title stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Montserrat-Bold" size:18], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
+    NSAttributedString *authorAttributedString = [[NSAttributedString alloc] initWithString:[@"By " stringByAppendingString:author] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Futura-Book" size:16], NSForegroundColorAttributeName : [UIColor grayColor]}];
+    
+    [attributedString appendAttributedString:nameAttributedString];
+    [attributedString appendAttributedString:authorAttributedString];
+    
+    [_title setAttributedText:attributedString];
 }
 
 @end

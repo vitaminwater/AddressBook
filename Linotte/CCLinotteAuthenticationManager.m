@@ -11,6 +11,9 @@
 #import <SSKeychain/SSKeychain.h>
 #import <AFNetworking/AFNetworkReachabilityManager.h>
 
+#import "NSData+HexString.h"
+
+#import "CCCurrentUserData.h"
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
 
@@ -33,7 +36,7 @@
 }
 
 @dynamic needsCredentials, needsSync, readyToSend;
-@dynamic identifier;
+@dynamic identifier, deviceId;
 
 - (id)initWithLinotteAPI:(CCLinotteAPI *)linotteAPI
 {
@@ -88,6 +91,7 @@
         case kCCCreateDeviceId: {
             [_linotteAPI createDeviceWithSuccess:^(NSString *deviceId) {
                 _credentialStore.deviceId = deviceId;
+                [_delegate authenticationManager:self didCreateDeviceWithIdentifier:deviceId];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf syncWithSuccess:successBlock failure:failureBlock];
                 });
@@ -118,6 +122,18 @@
                 failureBlock(task, error);
             }];
             break;
+        }
+        case kCCSendPushNotificationDeviceToken: {
+            NSString *pushNotificationDeviceToken = [CCUD.pushNotificationDeviceToken hexString];
+            [_linotteAPI sendDevicePushNotificationToken:pushNotificationDeviceToken success:^{
+                CCUD.pushNotificationDeviceTokenSent = YES;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [weakSelf syncWithSuccess:successBlock failure:failureBlock];
+                });
+            } failure:^(NSURLSessionDataTask *task, NSError *error) {
+                weakSelf.syncing = NO;
+                failureBlock(task, error);
+            }];
         }
         case kCCLoggedIn: {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -175,6 +191,18 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerAuthMethod : authMethod, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
         successBlock();
     } failure:failureBlock];
+}
+
+#pragma mark - getter methods
+
+- (NSString *)identifier
+{
+    return _credentialStore.identifier;
+}
+
+- (NSString *)deviceId
+{
+    return _credentialStore.deviceId;
 }
 
 #pragma mark - tokens storage
