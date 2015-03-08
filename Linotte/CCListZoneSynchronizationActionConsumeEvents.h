@@ -8,6 +8,11 @@
 
 #import "CCBaseSynchronizationActionConsumeEvents.h"
 
+@class CCList;
+@class CCListZone;
+
+void fetchListEventsProcess(CCList *list, CCListZone *listZone, NSArray *eventsDicts);
+
 @interface CCListZoneSynchronizationActionConsumeEvents : CCBaseSynchronizationActionConsumeEvents<CCSynchronizationActionConsumeEventsProviderProtocol>
 
 @end

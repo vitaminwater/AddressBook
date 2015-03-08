@@ -15,6 +15,7 @@
 
 #import "CCList.h"
 #import "CCAddress.h"
+#import "CCListZone.h"
 
 @implementation CCServerEventAddressMovedFromListConsumer
 {
@@ -34,7 +35,7 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
@@ -55,9 +56,13 @@
     
     NSMutableArray *addressesToDelete = [@[] mutableCopy];
     for (CCAddress *address in addresses) {
-        if ([address.lists count] == 1)
+        if ([address.lists count] == 1) {
             [addressesToDelete addObject:address];
+        }
     }
+    
+    // update concerned zones nAddresses, keep trace of all the geohashes
+    NSArray *geohashes = [addressesToDelete valueForKeyPath:@"@distinctUnionOfObjects.geohash"];
     
     [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveFromList:list send:NO];
     [list removeAddresses:[NSSet setWithArray:addresses]];
@@ -70,6 +75,10 @@
     [CCServerEvent deleteEvents:_events];
     _events = nil;
     
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
+    // update concerned zones nAddresses
+    [CCListZone updateNAddressesForGeohashes:[NSSet setWithArray:geohashes] list:list inManagedObjectContext:managedObjectContext];
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     dispatch_async(dispatch_get_main_queue(), ^{

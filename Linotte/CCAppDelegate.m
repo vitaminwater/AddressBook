@@ -23,6 +23,7 @@
 #import "CCOutputViewController.h"
 
 #import "CCAddress.h"
+#import "CCListZone.h"
 #import "CCLocalEvent.h"
 
 @implementation CCAppDelegate
@@ -81,6 +82,23 @@
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
+- (void)clearCredentials
+{
+    [CCLEC.authenticationManager logout];
+}
+
+- (void)dumpZones
+{
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCListZone entityName]];
+    
+    NSArray *zones = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCListZone *zone in zones) {
+        NSLog(@"%@ %@ %@ %@ %@", zone.geohash, zone.nAddresses, zone.needsMerge, zone.readyToMerge, zone.firstFetch);
+    }
+}
+
 #endif
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -90,6 +108,8 @@
     //[self deleteLocalEvents];
     //[self deleteFirstLocalEvent];
     //[self generateFakeNotifications];
+    //[self clearCredentials];
+    //[self dumpZones];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     

@@ -11,6 +11,7 @@
 #import "CCLinotteCoreDataStack.h"
 
 #import "CCLinotteAPI.h"
+#import "CCModelChangeMonitor.h"
 
 #import "CCServerEventConsumerProtocol.h"
 
@@ -28,11 +29,13 @@
     self = [super init];
     if (self) {
         _provider = provider;
+        
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
     }
     return self;
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     list = list ?: [_provider findNextListToProcess];
     if (list == nil && [_provider requiresList]) {

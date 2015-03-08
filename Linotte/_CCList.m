@@ -21,6 +21,7 @@ const struct CCListAttributes CCListAttributes = {
 	.localIdentifier = @"localIdentifier",
 	.longNextRefreshDate = @"longNextRefreshDate",
 	.name = @"name",
+	.needsRefreshZone = @"needsRefreshZone",
 	.notify = @"notify",
 	.owned = @"owned",
 	.shortNextRefreshDate = @"shortNextRefreshDate",
@@ -88,6 +89,11 @@ const struct CCListRelationships CCListRelationships = {
 	}
 	if ([key isEqualToString:@"lastZoneRefreshLongitudeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"lastZoneRefreshLongitude"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"needsRefreshZoneValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"needsRefreshZone"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -251,6 +257,26 @@ const struct CCListRelationships CCListRelationships = {
 @dynamic longNextRefreshDate;
 
 @dynamic name;
+
+@dynamic needsRefreshZone;
+
+- (BOOL)needsRefreshZoneValue {
+	NSNumber *result = [self needsRefreshZone];
+	return [result boolValue];
+}
+
+- (void)setNeedsRefreshZoneValue:(BOOL)value_ {
+	[self setNeedsRefreshZone:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveNeedsRefreshZoneValue {
+	NSNumber *result = [self primitiveNeedsRefreshZone];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveNeedsRefreshZoneValue:(BOOL)value_ {
+	[self setPrimitiveNeedsRefreshZone:[NSNumber numberWithBool:value_]];
+}
 
 @dynamic notify;
 

@@ -41,7 +41,6 @@
 
 - (void)setupTitle
 {
-    NSString *color = @"#6b6b6b";
     _title = [UILabel new];
     _title.translatesAutoresizingMaskIntoConstraints = NO;
     _title.textAlignment = NSTextAlignmentCenter;

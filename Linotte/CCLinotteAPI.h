@@ -48,7 +48,7 @@ typedef enum : NSUInteger {
 - (NSURLSessionDataTask *)addList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)removeList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)removeAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
-- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)(NSDictionary *zone))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)removeAddressFromList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)updateAddress:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)updateList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
@@ -64,7 +64,7 @@ typedef enum : NSUInteger {
 - (NSURLSessionDataTask *)fetchInstalledListsWithSuccess:(void(^)(NSArray *lists))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchCompleteListInfos:(NSString *)identifier success:(void(^)(NSDictionary *listInfo))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchListZones:(NSString *)identifier success:(void(^)(NSArray *listZones))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
-- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash excludeGeohashes:(NSArray *)excludeGeohashes lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier geohash:(NSString *)geohash lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchListEvents:(NSString *)identifier lastDate:(NSDate *)lastDate success:(void(^)(NSArray *events))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (NSURLSessionDataTask *)fetchListZoneLastEventDate:(NSString *)identifier geohash:(NSString *)geohash success:(void(^)(NSDate *lastEventDate))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;

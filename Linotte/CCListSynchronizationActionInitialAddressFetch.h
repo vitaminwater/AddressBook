@@ -12,6 +12,12 @@
 
 #import "CCModelChangeMonitorDelegate.h"
 
+@class CCList;
+@class CCListZone;
+
+void saveNewAddressesInList(CCList *list, NSArray *addressesDicts, NSManagedObjectContext *managedObjectContext);
+void initialAddressFetchProcess(CCList *list, CCListZone *zone, NSArray *addressesDicts);
+
 @interface CCListSynchronizationActionInitialAddressFetch : NSObject<CCModelChangeMonitorDelegate, CCSynchronizationActionProtocol>
 
 @end

@@ -268,10 +268,10 @@
     }];
 }
 
-- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+- (NSURLSessionDataTask *)addAddressToList:(NSDictionary *)parameters success:(void(^)(NSDictionary *zone))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
-    NSString *list_identifier = [self popValueFromDict:@"list" dict:&parameters];
-    NSString *address_identifier = [self popValueFromDict:@"address" dict:&parameters];
+    NSString *list_identifier = parameters[@"list"];
+    NSString *address_identifier = parameters[@"address"];
     
     if ([list_identifier length] == 0 || [address_identifier length] == 0) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -281,9 +281,9 @@
         return nil;
     }
     
-    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/", list_identifier, address_identifier];
-    return [_apiManager POST:LURL(path) parameters:@{} success:^(NSURLSessionDataTask *task, id responseObject) {
-        successBlock();
+    NSString *path = [NSString stringWithFormat:@"/list/%@/address/%@/?return_zone=true", list_identifier, address_identifier];
+    return [_apiManager POST:LURL(path) parameters:@{} success:^(NSURLSessionDataTask *task, NSDictionary *response) {
+        successBlock(response);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         CCLog(@"%@", error);
         failureBlock(task, error);
@@ -486,15 +486,15 @@
     }];
 }
 
-- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
+- (NSURLSessionDataTask *)fetchAddressesFromList:(NSString *)identifier geohash:(NSString *)geohash excludeGeohashes:(NSArray *)excludeGeohashes lastAddressDate:(NSDate *)lastAddressDate limit:(NSUInteger)limit success:(void(^)(NSArray *addresses))successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     NSString *path = [NSString stringWithFormat:@"/list/%@/addresses/", identifier];
     NSDictionary *parameters;
     if (lastAddressDate != nil) {
         NSString *lastAddressDateString = [self stringFromDate:lastAddressDate];
-        parameters = @{@"last_address_date" : lastAddressDateString, @"limit" : @(limit), @"geohash" : geohash};
+        parameters = @{@"last_address_date" : lastAddressDateString, @"limit" : @(limit), @"geohash" : geohash, @"eg" : excludeGeohashes};
     } else {
-        parameters = @{@"limit" : @(limit), @"geohash" : geohash};
+        parameters = @{@"limit" : @(limit), @"geohash" : geohash, @"eg" : excludeGeohashes};
     }
     return [_apiManager GET:LURL(path) parameters:parameters success:^(NSURLSessionDataTask *task, NSArray *responses) {
         successBlock(responses);

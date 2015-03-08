@@ -1,6 +1,8 @@
 #import "CCListZone.h"
 
 #import "CCGeohashHelper.h"
+#import "CCAddress.h"
+#import "CCList.h"
 
 @interface CCListZone ()
 
@@ -34,6 +36,30 @@
 {
     self.shortNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue / 2];
     self.longNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue];
+}
+
+- (void)updateNAddresses:(NSManagedObjectContext *)managedObjectContext
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", self.list, self.geohash]];
+    NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:NULL];
+    self.nAddressesValue = count;
+}
+
++ (void)updateNAddressesForGeohashes:(NSSet *)geohashes list:(CCList *)list inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSMutableSet *mutableGeohashes = [geohashes mutableCopy];
+    for (CCListZone *zone in list.zones) {
+        for (NSString *geohash in mutableGeohashes) {
+            if ([geohash hasPrefix:zone.geohash]) {
+                [zone updateNAddresses:managedObjectContext];
+                [mutableGeohashes removeObject:geohash];
+                if ([mutableGeohashes count] == 0)
+                    return;
+                break;
+            }
+        }
+    }
 }
 
 + (CCListZone *)insertInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext fromLinotteAPIDict:(NSDictionary *)dict

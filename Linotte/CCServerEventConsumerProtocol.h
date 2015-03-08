@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "CCServerEvent.h"
+#import "CCSynchronizationActionProtocol.h"
 
 @class CCList;
 
@@ -17,6 +18,6 @@
 @property(nonatomic, readonly)CCServerEventEvent event;
 
 - (BOOL)hasEventsForList:(CCList *)list;
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock;
+- (void)triggerWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock;
 
 @end

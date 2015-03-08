@@ -13,6 +13,8 @@ extern const struct CCListZoneAttributes {
 	__unsafe_unretained NSString *longNextRefreshDate;
 	__unsafe_unretained NSString *longitude;
 	__unsafe_unretained NSString *nAddresses;
+	__unsafe_unretained NSString *needsMerge;
+	__unsafe_unretained NSString *readyToMerge;
 	__unsafe_unretained NSString *shortNextRefreshDate;
 	__unsafe_unretained NSString *waitingTime;
 } CCListZoneAttributes;
@@ -84,6 +86,18 @@ extern const struct CCListZoneRelationships {
 
 //- (BOOL)validateNAddresses:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSString* needsMerge;
+
+//- (BOOL)validateNeedsMerge:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* readyToMerge;
+
+@property (atomic) BOOL readyToMergeValue;
+- (BOOL)readyToMergeValue;
+- (void)setReadyToMergeValue:(BOOL)value_;
+
+//- (BOOL)validateReadyToMerge:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSDate* shortNextRefreshDate;
 
 //- (BOOL)validateShortNextRefreshDate:(id*)value_ error:(NSError**)error_;
@@ -142,6 +156,15 @@ extern const struct CCListZoneRelationships {
 
 - (int16_t)primitiveNAddressesValue;
 - (void)setPrimitiveNAddressesValue:(int16_t)value_;
+
+- (NSString*)primitiveNeedsMerge;
+- (void)setPrimitiveNeedsMerge:(NSString*)value;
+
+- (NSNumber*)primitiveReadyToMerge;
+- (void)setPrimitiveReadyToMerge:(NSNumber*)value;
+
+- (BOOL)primitiveReadyToMergeValue;
+- (void)setPrimitiveReadyToMergeValue:(BOOL)value_;
 
 - (NSDate*)primitiveShortNextRefreshDate;
 - (void)setPrimitiveShortNextRefreshDate:(NSDate*)value;

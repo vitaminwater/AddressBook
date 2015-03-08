@@ -17,6 +17,7 @@
 #import "CCAddress.h"
 #import "CCAddressMeta.h"
 #import "CCList.h"
+#import "CCListZone.h"
 
 @implementation CCServerEventAddressAddedToListConsumer
 {
@@ -39,7 +40,7 @@
     return [_events count] != 0;
 }
 
-- (void)triggerWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     NSArray *addressIdentifiers = [_events valueForKeyPath:@"@unionOfObjects.objectIdentifier"];
     
@@ -75,6 +76,8 @@
         NSArray *newAddresses = [CCAddress insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts];
         [addressesToAdd addObjectsFromArray:newAddresses];
         
+        NSPredicate *listAddressMetaPredicate = [NSPredicate predicateWithFormat:@"list = %@", list.identifier];
+        
         NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
         for (CCAddress *address in newAddresses) {
             NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
@@ -86,7 +89,9 @@
             NSArray *metaDictArray = addressDict[@"metas"];
             
             NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
-            [list addAddressMetas:[NSSet setWithArray:addressMetas]];
+
+            // on ajoute les metas à la liste, uniquement si elles ont un identifiant de liste
+            [list addAddressMetas:[NSSet setWithArray:[addressMetas filteredArrayUsingPredicate:listAddressMetaPredicate]]];
             [address addMetas:[NSSet setWithArray:addressMetas]];
         }
         
@@ -98,6 +103,12 @@
         
         [[CCLinotteCoreDataStack sharedInstance] saveContext];
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd didMoveToList:list send:NO];
+        
+        // update concerned zones nAddresses
+        NSArray *geohashes = [addressesToAdd valueForKeyPath:@"@distinctUnionOfObjects.geohash"];
+        [CCListZone updateNAddressesForGeohashes:[NSSet setWithArray:geohashes] list:list inManagedObjectContext:managedObjectContext];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+        
         completionBlock(YES, NO);
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         _currentList = nil;

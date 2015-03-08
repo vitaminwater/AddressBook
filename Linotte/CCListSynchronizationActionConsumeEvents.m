@@ -22,8 +22,6 @@
 #import "CCListZone.h"
 #import "CCServerEvent.h"
 
-#define kCCDateIntervalDifference -(12 * 60 * 60)
-
 @implementation CCListSynchronizationActionConsumeEvents
 {
     CCList *_currentList;
@@ -102,7 +100,7 @@
     return _events;
 }
 
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     _currentList = list;
     BOOL multipleWaitingLists = _multipleWaitingLists;

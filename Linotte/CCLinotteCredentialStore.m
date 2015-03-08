@@ -18,7 +18,7 @@
 
 #if defined(DEBUG)
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug92"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug93"
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountNameDebug"
@@ -27,7 +27,7 @@
 
 #else
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName1001" // Apstore
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName1002" // Apstore
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountName"

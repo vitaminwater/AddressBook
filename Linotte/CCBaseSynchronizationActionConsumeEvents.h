@@ -21,7 +21,7 @@
 - (NSArray *)consumers;
 - (CCList *)findNextListToProcess;
 - (NSArray *)eventsList;
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock;
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock;
 - (BOOL)requiresList;
 
 @end

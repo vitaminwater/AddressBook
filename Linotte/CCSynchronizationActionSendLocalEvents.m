@@ -13,6 +13,7 @@
 #import "CCLinotteCoreDataStack.h"
 
 #import "CCList.h"
+#import "CCListZone.h"
 #import "CCAddress.h"
 #import "CCLocalEvent.h"
 
@@ -52,7 +53,7 @@
     }
 }
 
-- (void)sendEvent:(CCLocalEvent *)event completionBlock:(void(^)(BOOL done, BOOL error))completionBlock
+- (void)sendEvent:(CCLocalEvent *)event completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     void (^deleteCurrentRequestBlock)() = ^() {
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
@@ -137,7 +138,36 @@
             break;
         case CCLocalEventAddressMovedToList:
         {
-            [CCLEC.linotteAPI addAddressToList:event.parameters success:eventSendRequestSuccessBlock failure:eventSendRequestFailureBlock];
+            [CCLEC.linotteAPI addAddressToList:event.parameters success:^(NSDictionary *zoneDict) {
+                NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+                CCList *list = [CCList listWithIdentifier:event.parameters[@"list"] managedObjectContext:managedObjectContext];
+                
+                if (list == nil) {
+                    eventSendRequestSuccessBlock();
+                    return;
+                }
+
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash = %@ or geohash beginswith %@ or %@ beginswith geohash ", zoneDict[@"geohash"], zoneDict[@"geohash"], zoneDict[@"geohash"]];
+                
+                NSArray *zones = [[list.zones filteredSetUsingPredicate:predicate] allObjects];
+                
+                if ([zones count] == 0) {
+                    CCListZone *zone = [CCListZone insertInManagedObjectContext:managedObjectContext fromLinotteAPIDict:zoneDict];
+                    zone.firstFetchValue = NO;
+                    zone.lastAddressFirstFetchDate = nil;
+                    zone.lastEventDate = nil;
+                    zone.lastUpdate = [NSDate date];
+                    [list addZonesObject:zone];
+                } else {
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash = %@", zoneDict[@"geohash"]];
+                    if ([[zones filteredArrayUsingPredicate:predicate] count] == 0) {
+                        list.needsRefreshZoneValue = YES;
+                    }
+                }
+                
+                [[CCLinotteCoreDataStack sharedInstance] saveContext];
+                eventSendRequestSuccessBlock();
+            } failure:eventSendRequestFailureBlock];
         }
             break;
         case CCLocalEventAddressMovedFromList:

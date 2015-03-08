@@ -54,7 +54,7 @@
     return _events;
 }
 
-- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)fetchServerEventsWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
     

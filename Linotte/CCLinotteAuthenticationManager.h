@@ -40,5 +40,6 @@
 - (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
 - (void)createAccountOrLoginWithAuthMethod:(CCAuthMethod *)authMethod success:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
 - (void)syncWithSuccess:(void(^)())successBlock failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock;
+- (void)logout;
 
 @end

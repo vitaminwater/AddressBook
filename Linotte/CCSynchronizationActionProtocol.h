@@ -12,8 +12,10 @@
 
 @class CCList;
 
+typedef void(^CCSynchronizationCompletionBlock)(BOOL goOnSyncing, BOOL error);
+
 @protocol CCSynchronizationActionProtocol <NSObject>
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock;
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(CCSynchronizationCompletionBlock)completionBlock;
 
 @end

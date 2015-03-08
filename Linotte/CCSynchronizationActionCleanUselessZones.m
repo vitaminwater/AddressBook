@@ -17,6 +17,15 @@
 
 @implementation CCSynchronizationActionCleanUselessZones
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
+    }
+    return self;
+}
+
 - (BOOL)listNeedProcess:(CCList *)list
 {
     NSUInteger totalNAddresses = [[list.zones valueForKeyPath:@"@sum.nAddresses"] unsignedIntegerValue];
@@ -72,7 +81,7 @@
     return [farLists firstObject];
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     if (list != nil && [self listNeedProcess:list] == NO) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -121,12 +130,12 @@
             listZone.lastAddressFirstFetchDate = nil;
             listZone.lastEventDate = nil;
             listZone.lastUpdate = nil;
-        } else if (addressCounter < kCCMaxAddressesForList) {
+        }/* else if (addressCounter < kCCMaxAddressesForList) {
             NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
             [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@)", list, listZone.geohash]];
             NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:NULL];
             NSLog(@"%@ %d %d", listZone.geohash, listZone.nAddressesValue, (unsigned int)count);
-        }
+        }*/
         addressCounter += listZone.nAddressesValue;
     }
     

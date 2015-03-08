@@ -13,6 +13,8 @@ const struct CCListZoneAttributes CCListZoneAttributes = {
 	.longNextRefreshDate = @"longNextRefreshDate",
 	.longitude = @"longitude",
 	.nAddresses = @"nAddresses",
+	.needsMerge = @"needsMerge",
+	.readyToMerge = @"readyToMerge",
 	.shortNextRefreshDate = @"shortNextRefreshDate",
 	.waitingTime = @"waitingTime",
 };
@@ -64,6 +66,11 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 	}
 	if ([key isEqualToString:@"nAddressesValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"nAddresses"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
+	if ([key isEqualToString:@"readyToMergeValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"readyToMerge"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -164,6 +171,28 @@ const struct CCListZoneRelationships CCListZoneRelationships = {
 
 - (void)setPrimitiveNAddressesValue:(int16_t)value_ {
 	[self setPrimitiveNAddresses:[NSNumber numberWithShort:value_]];
+}
+
+@dynamic needsMerge;
+
+@dynamic readyToMerge;
+
+- (BOOL)readyToMergeValue {
+	NSNumber *result = [self readyToMerge];
+	return [result boolValue];
+}
+
+- (void)setReadyToMergeValue:(BOOL)value_ {
+	[self setReadyToMerge:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveReadyToMergeValue {
+	NSNumber *result = [self primitiveReadyToMerge];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveReadyToMergeValue:(BOOL)value_ {
+	[self setPrimitiveReadyToMerge:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic shortNextRefreshDate;

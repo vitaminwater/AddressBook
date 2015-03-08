@@ -21,6 +21,7 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *localIdentifier;
 	__unsafe_unretained NSString *longNextRefreshDate;
 	__unsafe_unretained NSString *name;
+	__unsafe_unretained NSString *needsRefreshZone;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
 	__unsafe_unretained NSString *shortNextRefreshDate;
@@ -141,6 +142,14 @@ extern const struct CCListRelationships {
 @property (nonatomic, strong) NSString* name;
 
 //- (BOOL)validateName:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* needsRefreshZone;
+
+@property (atomic) BOOL needsRefreshZoneValue;
+- (BOOL)needsRefreshZoneValue;
+- (void)setNeedsRefreshZoneValue:(BOOL)value_;
+
+//- (BOOL)validateNeedsRefreshZone:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSNumber* notify;
 
@@ -302,6 +311,12 @@ extern const struct CCListRelationships {
 
 - (NSString*)primitiveName;
 - (void)setPrimitiveName:(NSString*)value;
+
+- (NSNumber*)primitiveNeedsRefreshZone;
+- (void)setPrimitiveNeedsRefreshZone:(NSNumber*)value;
+
+- (BOOL)primitiveNeedsRefreshZoneValue;
+- (void)setPrimitiveNeedsRefreshZoneValue:(BOOL)value_;
 
 - (NSNumber*)primitiveNotify;
 - (void)setPrimitiveNotify:(NSNumber*)value;

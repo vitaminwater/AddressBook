@@ -19,7 +19,7 @@
 
 @implementation CCSynchronizationActionInitialListFetch
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     if (list != nil) {
         dispatch_async(dispatch_get_main_queue(), ^{

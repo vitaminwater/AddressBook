@@ -183,6 +183,8 @@
 		C7C9470219FD56C600CBD29C /* CCListInstallerView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470119FD56C600CBD29C /* CCListInstallerView.m */; };
 		C7C9470519FD56D600CBD29C /* CCListInstallerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C9470419FD56D600CBD29C /* CCListInstallerViewController.m */; };
 		C7CB992A1AA5113200B0AFAB /* NSData+HexString.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CB99291AA5113200B0AFAB /* NSData+HexString.m */; };
+		C7CB99301AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CB992F1AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.m */; };
+		C7CB993B1AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CB993A1AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.m */; };
 		C7CDA3D01A7A439B007B8CCD /* CCActionButtonsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CDA3CF1A7A439B007B8CCD /* CCActionButtonsView.m */; };
 		C7CE2C651918E48800D37A64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C641918E48800D37A64 /* Foundation.framework */; };
 		C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7CE2C661918E48800D37A64 /* CoreGraphics.framework */; };
@@ -620,6 +622,10 @@
 		C7C9470719FD570100CBD29C /* CCListInstallerViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7CB99281AA5113200B0AFAB /* NSData+HexString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+HexString.h"; sourceTree = "<group>"; };
 		C7CB99291AA5113200B0AFAB /* NSData+HexString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+HexString.m"; sourceTree = "<group>"; };
+		C7CB992E1AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationActionMergeZones.h; sourceTree = "<group>"; };
+		C7CB992F1AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSynchronizationActionMergeZones.m; sourceTree = "<group>"; };
+		C7CB99391AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListSynchronizationActionLastEventDateFetch.h; sourceTree = "<group>"; };
+		C7CB993A1AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListSynchronizationActionLastEventDateFetch.m; sourceTree = "<group>"; };
 		C7CDA3C91A72B406007B8CCD /* CCLinotteBrowserViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewDelegate.h; sourceTree = "<group>"; };
 		C7CDA3CB1A72B461007B8CCD /* CCLinotteBrowserViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteBrowserViewControllerDelegate.h; sourceTree = "<group>"; };
 		C7CDA3CE1A7A439B007B8CCD /* CCActionButtonsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionButtonsView.h; sourceTree = "<group>"; };
@@ -768,8 +774,8 @@
 		C7216B071A110BEA00498CFE /* refresh zones */ = {
 			isa = PBXGroup;
 			children = (
-				C7216B0C1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.h */,
-				C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */,
+				C7CB99321AA723BF00B0AFAB /* merge */,
+				C7CB99311AA723B600B0AFAB /* refresh */,
 			);
 			name = "refresh zones";
 			sourceTree = "<group>";
@@ -786,8 +792,8 @@
 		C7216B0A1A110C0E00498CFE /* initial address fetch */ = {
 			isa = PBXGroup;
 			children = (
-				C7216B121A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.h */,
-				C7216B131A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.m */,
+				C7CB99381AAAFDB300B0AFAB /* last event date fetch */,
+				C7CB99371AAAFD9B00B0AFAB /* address fetch */,
 			);
 			name = "initial address fetch";
 			sourceTree = "<group>";
@@ -3148,6 +3154,42 @@
 			name = base;
 			sourceTree = "<group>";
 		};
+		C7CB99311AA723B600B0AFAB /* refresh */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B0C1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.h */,
+				C7216B0D1A110CAD00498CFE /* CCSynchronizationActionRefreshZones.m */,
+			);
+			name = refresh;
+			sourceTree = "<group>";
+		};
+		C7CB99321AA723BF00B0AFAB /* merge */ = {
+			isa = PBXGroup;
+			children = (
+				C7CB992E1AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.h */,
+				C7CB992F1AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.m */,
+			);
+			name = merge;
+			sourceTree = "<group>";
+		};
+		C7CB99371AAAFD9B00B0AFAB /* address fetch */ = {
+			isa = PBXGroup;
+			children = (
+				C7216B121A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.h */,
+				C7216B131A110CCC00498CFE /* CCListSynchronizationActionInitialAddressFetch.m */,
+			);
+			name = "address fetch";
+			sourceTree = "<group>";
+		};
+		C7CB99381AAAFDB300B0AFAB /* last event date fetch */ = {
+			isa = PBXGroup;
+			children = (
+				C7CB99391AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.h */,
+				C7CB993A1AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.m */,
+			);
+			name = "last event date fetch";
+			sourceTree = "<group>";
+		};
 		C7CDA3C81A72B3F9007B8CCD /* protocol */ = {
 			isa = PBXGroup;
 			children = (
@@ -3872,6 +3914,7 @@
 				C7216B111A110CBE00498CFE /* CCSynchronizationActionCleanUselessZones.m in Sources */,
 				C73184061A27512D00A99762 /* CCDisplayMeta.m in Sources */,
 				C7BDF7341A7A7CCD00F9F93D /* CCActionViewContainer.m in Sources */,
+				C7CB993B1AAAFEE500B0AFAB /* CCListSynchronizationActionLastEventDateFetch.m in Sources */,
 				C7CE2CAF1918F12500D37A64 /* CCAddAddressByNameViewController.m in Sources */,
 				C73183EA1A25DC9500A99762 /* CCAddAddressAtLocationView.m in Sources */,
 				C76A1CF819C0DE2300EE75E4 /* CCListViewContentProvider.m in Sources */,
@@ -3916,6 +3959,7 @@
 				C7C66A811A5BE99D00FACC0C /* CCEmailButton.m in Sources */,
 				C7619FB319C4419000C09F0D /* CCBookAndNotifiedListViewModel.m in Sources */,
 				C76C3BF31A1E411F000B0DD8 /* CCCurrentUserData.m in Sources */,
+				C7CB99301AA7239C00B0AFAB /* CCSynchronizationActionMergeZones.m in Sources */,
 				C7C66A651A5A9E9E00FACC0C /* CCFlatListStoreView.m in Sources */,
 				C72B50E819F9845200F39E7F /* CCDictStackCache.m in Sources */,
 				C761A00A19CC5D9F00C09F0D /* CCFirstAddressDisplaySettingsViewController.m in Sources */,
@@ -4026,7 +4070,10 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"CCSHORT_REFRESH=1",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -4062,7 +4109,10 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"CCSHORT_REFRESH=1",
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;

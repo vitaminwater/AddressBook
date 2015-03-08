@@ -14,9 +14,11 @@
 #import "CCSynchronizationActionInitialListFetch.h"
 #import "CCSynchronizationActionSendLocalEvents.h"
 #import "CCUserSynchronizationActionConsumeEvents.h"
+#import "CCSynchronizationActionMergeZones.h"
 #import "CCSynchronizationActionRefreshZones.h"
 #import "CCSynchronizationActionCleanUselessZones.h"
 #import "CCListSynchronizationActionInitialAddressFetch.h"
+#import "CCListSynchronizationActionLastEventDateFetch.h"
 #import "CCListSynchronizationActionConsumeEvents.h"
 #import "CCListZoneSynchronizationActionConsumeEvents.h"
 
@@ -70,7 +72,9 @@
 
 - (void)setupSynchronizationActions
 {
-    _synchronizationActions = @[[CCSynchronizationActionSendLocalEvents new],
+    _synchronizationActions = @[[CCListSynchronizationActionLastEventDateFetch new],
+                                [CCSynchronizationActionMergeZones new],
+                                [CCSynchronizationActionSendLocalEvents new],
                                 [CCSynchronizationActionInitialListFetch new],
                                 [CCUserSynchronizationActionConsumeEvents new],
                                 [CCSynchronizationActionRefreshZones new],

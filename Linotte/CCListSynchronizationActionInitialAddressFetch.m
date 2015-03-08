@@ -20,10 +20,81 @@
 #import "CCAddress.h"
 #import "CCAddressMeta.h"
 
+NSDate *getLastAddressDate(NSArray *addressesDicts) {
+    NSDate *lastAddressDate = nil;
+    
+    for (NSDictionary *addressDict in addressesDicts) {
+        NSDate *dateCreated = [CCLEC.linotteAPI dateFromString:addressDict[@"date_created"]];
+        if (lastAddressDate == nil || [lastAddressDate compare:dateCreated] == NSOrderedAscending) {
+            lastAddressDate = dateCreated;
+        }
+    }
+    return lastAddressDate;
+}
+
+void saveNewAddressesInList(CCList *list, NSArray *addressesDicts, NSManagedObjectContext *managedObjectContext) {
+    NSMutableArray *addresses = [[CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts list:nil] mutableCopy];
+    
+    NSPredicate *metaForListPredicate = [NSPredicate predicateWithFormat:@"list != nil"];
+    
+    NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
+    for (CCAddress *address in addresses) {
+        NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
+        
+        if (addressDictIndex == NSNotFound)
+            continue;
+        
+        NSDictionary *addressDict = addressesDicts[addressDictIndex];
+        NSArray *metaDictArray = addressDict[@"metas"];
+        
+        NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
+        NSSet *addressMetasSet = [NSSet setWithArray:addressMetas];
+        [list addAddressMetas:[addressMetasSet filteredSetUsingPredicate:metaForListPredicate]];
+        [address addMetas:addressMetasSet];
+    }
+    
+    [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:NO];
+    [list addAddresses:[NSSet setWithArray:addresses]];
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:list send:NO];
+}
+
+void initialAddressFetchProcess(CCList *list, CCListZone *zone, NSArray *addressesDicts) {
+    CCLog(@"Fetching zone %@", zone.geohash);
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    
+    NSDate *lastAddressFirstFetchDate = getLastAddressDate(addressesDicts);
+    zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
+    
+    saveNewAddressesInList(list, addressesDicts, managedObjectContext);
+    
+    if ([addressesDicts count] != kCCAddressFetchLimit) { // finish
+        if (zone.needsMerge != nil)
+            zone.readyToMergeValue = YES;
+        zone.firstFetchValue = NO;
+        zone.lastAddressFirstFetchDate = nil;
+        zone.lastEventDate = nil;
+        zone.lastUpdate = [NSDate date];
+        [zone updateNAddresses:managedObjectContext];
+        CCLog(@"Zone %@ completed", zone.geohash);
+    }
+    
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
 @implementation CCListSynchronizationActionInitialAddressFetch
 {
     CCList *_currentList;
     NSURLSessionTask *_currentConnection;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [[CCModelChangeMonitor sharedInstance] addDelegate:self];
+    }
+    return self;
 }
 
 - (BOOL)listNeedProcess:(CCList *)list
@@ -54,7 +125,7 @@
     return [lists firstObject];
 }
 
-- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(void(^)(BOOL goOnSyncing, BOOL error))completionBlock
+- (void)triggerWithList:(CCList *)list coordinates:(CLLocationCoordinate2D)coordinates completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
     if (list != nil && [self listNeedProcess:list] == NO) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -77,71 +148,16 @@
     
     for (CCListZone *zone in sortedZones) {
         if (zone.firstFetchValue == NO) {
-            NSLog(@"%@ %d", zone.geohash, zone.nAddressesValue);
             continue;
         }
         _currentList = list;
-        _currentConnection = [CCLEC.linotteAPI fetchAddressesFromList:list.identifier geohash:zone.geohash lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit success:^(NSArray *addressesDicts) {
-            BOOL finished = NO;
-            CCLog(@"Fetching zone %@", zone.geohash);
-            NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+        _currentConnection = [CCLEC.linotteAPI fetchAddressesFromList:list.identifier geohash:zone.geohash excludeGeohashes:@[] lastAddressDate:zone.lastAddressFirstFetchDate limit:kCCAddressFetchLimit success:^(NSArray *addressesDicts) {
+            _currentList = nil;
+            _currentConnection = nil;
             
-            if ([addressesDicts count] != kCCAddressFetchLimit) {
-                finished = YES;
-                CCLog(@"Zone %@ completed", zone.geohash);
-            }
+            initialAddressFetchProcess(list, zone, addressesDicts);
             
-            NSMutableArray *addresses = [[CCAddress insertOrUpdateInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:addressesDicts list:nil] mutableCopy];
-            NSDate *lastAddressFirstFetchDate = [self getLastAddressDate:addressesDicts];
-            
-            NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
-            for (CCAddress *address in addresses) {
-                NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
-                
-                if (addressDictIndex == NSNotFound)
-                    continue;
-                
-                NSDictionary *addressDict = addressesDicts[addressDictIndex];
-                NSArray *metaDictArray = addressDict[@"metas"];
-                
-                NSArray *addressMetas = [CCAddressMeta insertInManagedObjectContext:managedObjectContext fromLinotteAPIDictArray:metaDictArray];
-                NSSet *addressMetasSet = [NSSet setWithArray:addressMetas];
-                [list addAddressMetas:addressMetasSet];
-                [address addMetas:addressMetasSet];
-            }
-            
-            [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:NO];
-            [list addAddresses:[NSSet setWithArray:addresses]];
-            [[CCLinotteCoreDataStack sharedInstance] saveContext];
-            [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:list send:NO];
-            
-            zone.lastAddressFirstFetchDate = lastAddressFirstFetchDate;
-            
-            [[CCLinotteCoreDataStack sharedInstance] saveContext];
-            
-            if (finished == YES) {
-                _currentConnection = [CCLEC.linotteAPI fetchListZoneLastEventDate:list.identifier geohash:zone.geohash success:^(NSDate *lastEventDate) {
-                    _currentList = nil;
-                    _currentConnection = nil;
-                    
-                    zone.firstFetchValue = NO;
-                    zone.lastAddressFirstFetchDate = nil;
-                    zone.lastEventDate = lastEventDate;
-                    zone.lastUpdate = [NSDate date];
-                    [[CCLinotteCoreDataStack sharedInstance] saveContext];
-                    
-                    completionBlock(YES, NO);
-                } failure:^(NSURLSessionDataTask *task, NSError *error) {
-                    _currentList = nil;
-                    _currentConnection = nil;
-                    
-                    completionBlock(NO, NO);
-                }];
-            } else {
-                _currentList = nil;
-                _currentConnection = nil;
-                completionBlock(YES, NO);
-            }
+            completionBlock(YES, NO);
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             _currentList = nil;
             _currentConnection = nil;
@@ -152,19 +168,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         completionBlock(NO, NO);
     });
-}
-
-- (NSDate *)getLastAddressDate:(NSArray *)addressDicts
-{
-    NSDate *lastAddressDate = nil;
-    
-    for (NSDictionary *addressDict in addressDicts) {
-        NSDate *dateCreated = [CCLEC.linotteAPI dateFromString:addressDict[@"date_created"]];
-        if (lastAddressDate == nil || [lastAddressDate compare:dateCreated] == NSOrderedAscending) {
-            lastAddressDate = dateCreated;
-        }
-    }
-    return lastAddressDate;
 }
 
 #pragma mark - CCModelChangeMonitorDelegate
