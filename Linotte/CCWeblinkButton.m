@@ -18,6 +18,8 @@
     self = [super init];
     if (self) {
         _link = link;
+        self.backgroundColor = [UIColor clearColor];
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2] forState:UIControlStateHighlighted];
         
         NSString *domain = [[NSURL URLWithString:_link] host];
         if (domain == nil)

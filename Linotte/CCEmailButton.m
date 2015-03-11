@@ -18,6 +18,8 @@
     self = [super init];
     if (self) {
         _email = email;
+        self.backgroundColor = [UIColor clearColor];
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2] forState:UIControlStateHighlighted];
         
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:18];
         [self setTitle:_email forState:UIControlStateNormal];

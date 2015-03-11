@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCFlatColorButton.h"
+
 #import "CCContactButtonProtocol.h"
 
-@interface CCWeblinkButton : UIButton<CCContactButtonProtocol>
+@interface CCWeblinkButton : CCFlatColorButton<CCContactButtonProtocol>
 
 - (instancetype)initWithLink:(NSString *)link;
 

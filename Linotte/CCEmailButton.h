@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCFlatColorButton.h"
+
 #import "CCContactButtonProtocol.h"
 
-@interface CCEmailButton : UIButton<CCContactButtonProtocol>
+@interface CCEmailButton : CCFlatColorButton<CCContactButtonProtocol>
 
 - (instancetype)initWithEmail:(NSString *)email;
 

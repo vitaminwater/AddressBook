@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCFlatColorButton.h"
+
 #import "CCContactButtonProtocol.h"
 
-@interface CCTelephoneButton : UIButton<CCContactButtonProtocol>
+@interface CCTelephoneButton : CCFlatColorButton<CCContactButtonProtocol>
 
 - (instancetype)initWithNumber:(NSString *)number;
 

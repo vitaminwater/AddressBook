@@ -250,20 +250,26 @@
         _topInfosViewConstraint = [NSLayoutConstraint constraintWithItem:_infosView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
         [self addConstraint:_topInfosViewConstraint];
     } else {
-        _bottomInfosViewContraint = [NSLayoutConstraint constraintWithItem:_distanceLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_tabBar attribute:NSLayoutAttributeTop multiplier:1 constant:-7];
+        _bottomInfosViewContraint = [NSLayoutConstraint constraintWithItem:_providerLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_tabBar attribute:NSLayoutAttributeTop multiplier:1 constant:-7];
         [self addConstraint:_bottomInfosViewContraint];
     }
 }
 
 - (void)setDisplayMetas:(NSArray *)metas
 {
-    if ([metas count] == 0) {
+    if ([metas count] == 0)
+        return;
+    CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
+    [metaContainerView addMetas:metas];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
+    [_actionButtonsView setupLayout];
+    /*if ([metas count] == 0) {
         NSLayoutConstraint *expandIconHeightConstraint = [NSLayoutConstraint constraintWithItem:_expandIcon attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
         [_infosView addConstraint:expandIconHeightConstraint];
         return;
     }
     [_displayMetaContainerView addMetas:metas];
-    _expandIcon.hidden = NO;
+    _expandIcon.hidden = NO;*/
 }
 
 - (void)setSocialMetas:(NSArray *)metas
@@ -272,7 +278,7 @@
         return;
     CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
     [metaContainerView addMetas:metas];
-    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"social_icon"]];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
     [_actionButtonsView setupLayout];
 }
 
@@ -283,13 +289,13 @@
     CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
     metas = [metas sortedArrayUsingComparator:^NSComparisonResult(id<CCMetaProtocol> obj1, id<CCMetaProtocol> obj2) {
         if (obj1.content[@"title"] != nil && obj2.content[@"title"] == nil)
-            return NSOrderedDescending;
-        else if (obj2.content[@"title"] != nil && obj1.content[@"title"] == nil)
             return NSOrderedAscending;
+        else if (obj2.content[@"title"] != nil && obj1.content[@"title"] == nil)
+            return NSOrderedDescending;
         return NSOrderedSame;
     }];
     [metaContainerView addMetas:metas];
-    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
+    [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"social_icon"]];
     [_actionButtonsView setupLayout];
 }
 

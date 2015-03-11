@@ -79,17 +79,14 @@
 
     CCOutputView *view = [CCOutputView new];
     
+    NSArray *hoursMetas = [_address metasForActions:@[@"hours"]];
+    [view setHoursMetas:hoursMetas];
+    
     NSArray *infosViewMetas = [_address metasForActions:@[@"photos", @"display"]];
     [view setDisplayMetas:infosViewMetas];
     
-    NSArray *socialMetas = [_address metasForActions:@[@"social"]];
-    [view setSocialMetas:socialMetas];
-    
-    NSArray *externalMetas = [_address metasForActions:@[@"external"]];
+    NSArray *externalMetas = [_address metasForActions:@[@"external", @"social"]];
     [view setExternalMetas:externalMetas];
-    
-    NSArray *hoursMetas = [_address metasForActions:@[@"hours"]];
-    [view setHoursMetas:hoursMetas];
     
     CLLocationCoordinate2D coordinates = CLLocationCoordinate2DMake(_address.latitudeValue, _address.longitudeValue);
     [view setAddressInfos:[_address.name capitalizedString] address:[_address.address capitalizedString] provider:_address.provider coordinates:coordinates];

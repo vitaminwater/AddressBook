@@ -18,6 +18,8 @@
     self = [super init];
     if (self) {
         _number = [NSString stringWithFormat:@"%@", number];
+        self.backgroundColor = [UIColor clearColor];
+        [self setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2] forState:UIControlStateHighlighted];
         
         self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
         [self setTitle:_number forState:UIControlStateNormal];
