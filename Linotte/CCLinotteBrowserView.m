@@ -44,16 +44,16 @@
     
     UIButton *closeButton = [UIButton new];
     closeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [closeButton setTitle:@"Close" forState:UIControlStateNormal];
-    [closeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [closeButton setImage:[UIImage imageNamed:@"close_browser_icon"] forState:UIControlStateNormal];
     [closeButton addTarget:self action:@selector(closeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    closeButton.contentMode = UIViewContentModeScaleAspectFit;
     [_topBar addSubview:closeButton];
     
     UIButton *externalButton = [UIButton new];
     externalButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [externalButton setTitle:@"external" forState:UIControlStateNormal];
-    [externalButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [externalButton setImage:[UIImage imageNamed:@"icon_browser_external"] forState:UIControlStateNormal];
     [externalButton addTarget:self action:@selector(externalButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    externalButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_topBar addSubview:externalButton];
     
     _loadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -65,7 +65,7 @@
     {
         NSDictionary *views = NSDictionaryOfVariableBindings(externalButton, closeButton);
 
-        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[externalButton]-[closeButton]-|" options:0 metrics:nil views:views];
+        NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[externalButton(==40)]-[closeButton(==externalButton)]-|" options:0 metrics:nil views:views];
         [_topBar addConstraints:horizontalConstraints];
         
         for (UIView *view in views.allValues) {
@@ -92,18 +92,20 @@
 
     _backButton = [UIButton new];
     _backButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [_backButton setTitle:@"Back" forState:UIControlStateNormal];
+    [_backButton setImage:[UIImage imageNamed:@"back_browser_icon"] forState:UIControlStateNormal];
     [_backButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [_backButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    _backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     _backButton.enabled = NO;
     [_bottomBar addSubview:_backButton];
     
     _forwardButton = [UIButton new];
     _forwardButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [_forwardButton setTitle:@"Next" forState:UIControlStateNormal];
+    [_forwardButton setImage:[UIImage imageNamed:@"next_browser_icon"] forState:UIControlStateNormal];
     [_forwardButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [_forwardButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateDisabled];
+    _forwardButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [_forwardButton addTarget:self action:@selector(forwardButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     _forwardButton.enabled = NO;
     [_bottomBar addSubview:_forwardButton];
@@ -116,7 +118,7 @@
         [_bottomBar addConstraints:horizontalConstraints];
         
         for (UIView *view in views.allValues) {
-            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
+            NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==3)-[view]-(==5)-|" options:0 metrics:nil views:@{@"view" : view}];
             [_bottomBar addConstraints:verticalConstraints];
         }
     }
@@ -132,6 +134,7 @@
 {
     _webView = [UIWebView new];
     _webView.translatesAutoresizingMaskIntoConstraints = NO;
+    _webView.scalesPageToFit = YES;
     _webView.delegate = self;
     [self addSubview:_webView];
 }
@@ -143,7 +146,7 @@
     [_topBar setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     [_bottomBar setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
-    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_topBar(==30)]-[_webView]-[_bottomBar(==30)]|" options:0 metrics:nil views:views];
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==20)-[_topBar(==30)]-[_webView]-[_bottomBar(==35)]|" options:0 metrics:nil views:views];
     [self addConstraints:verticalConstraints];
     
     for (UIView *view in views.allValues) {

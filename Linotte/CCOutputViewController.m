@@ -101,7 +101,7 @@
         firstAddressDisplaySettingsViewController.delegate = self;
         [self addChildViewController:firstAddressDisplaySettingsViewController];
         
-        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view];
+        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view fullScreen:NO];
         
         [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
     }
@@ -189,7 +189,7 @@
     addressSettingsViewController.delegate = self;
     [self addChildViewController:addressSettingsViewController];
     
-    [self.view showSettingsView:addressSettingsViewController.view];
+    [self.view showSettingsView:addressSettingsViewController.view fullScreen:NO];
     
     [addressSettingsViewController didMoveToParentViewController:self];
     
@@ -300,7 +300,7 @@
     addressListSettingsViewController.delegate = self;
     [self addChildViewController:addressListSettingsViewController];
     
-    [self.view showSettingsView:addressListSettingsViewController.view];
+    [self.view showSettingsView:addressListSettingsViewController.view fullScreen:YES];
     
     [addressListSettingsViewController didMoveToParentViewController:self];
 }

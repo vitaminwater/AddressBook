@@ -17,12 +17,13 @@
 #import "CCFirstListDisplaySettingsViewControllerDelegate.h"
 
 #import "CCOutputViewControllerDelegate.h"
+#import "CCSearchViewControllerDelegate.h"
 
 #import "CCListViewController.h"
 
 @class CCList;
 
-@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCOutputViewControllerDelegate, CCFirstListDisplaySettingsViewControllerDelegate, CCModelChangeMonitorDelegate>
+@interface CCListOutputViewController : UIViewController<CCListOutputViewDelegate, CCListOutputSettingsViewControllerDelegate, CCListOutputListEmptyViewDelegate, CCListViewControllerDelegate, CCOutputViewControllerDelegate, CCFirstListDisplaySettingsViewControllerDelegate, CCModelChangeMonitorDelegate, CCSearchViewControllerDelegate>
 
 - (instancetype)initWithList:(CCList *)list listIsNew:(BOOL)listIsNew;
 - (instancetype)initWithList:(CCList *)list;

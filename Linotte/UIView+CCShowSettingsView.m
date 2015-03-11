@@ -10,7 +10,7 @@
 
 @implementation UIView (CCShowSettingsView)
 
-- (void)showSettingsView:(UIView *)settingsView
+- (void)showSettingsView:(UIView *)settingsView fullScreen:(BOOL)fullScreen
 {
     settingsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:settingsView];
@@ -23,6 +23,11 @@
     
     NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:settingsView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeWidth multiplier:1 constant:-20];
     [self addConstraint:widthConstraint];
+    
+    if (fullScreen) {
+        NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:settingsView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1 constant:-30];
+        [self addConstraint:heightConstraint];
+    }
     
     settingsView.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{

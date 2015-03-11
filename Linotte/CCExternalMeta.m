@@ -46,6 +46,7 @@
     _titleLabel.text = self.meta.content[@"title"];
     _titleLabel.textColor = [UIColor whiteColor];
     _titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:20];
+    _titleLabel.numberOfLines = 0;
     [self addSubview:_titleLabel];
 }
 

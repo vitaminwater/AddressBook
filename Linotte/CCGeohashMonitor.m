@@ -57,6 +57,8 @@
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     if ([region isKindOfClass:[CLCircularRegion class]]) {
+        CCLog(@"CCGeohashMonitor locationManager:didEnterRegion:");
+        
         NSArray *geohashes = [CCGeohashHelper calculateAdjacentGeohashes:region.identifier];
         [_delegate didEnterGeohashes:geohashes];
         [self updateMonitoredGeohashes:((CLCircularRegion *)region).center];
@@ -71,6 +73,8 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    CCLog(@"CCGeohashMonitor locationManager:didUpdateLocations:");
+    
     CLLocation *location = [locations lastObject];
     [self updateMonitoredGeohashes:location.coordinate];
 }

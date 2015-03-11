@@ -10,7 +10,7 @@
 
 @interface UIView (CCShowSettingsView)
 
-- (void)showSettingsView:(UIView *)settingsView;
+- (void)showSettingsView:(UIView *)settingsView fullScreen:(BOOL)fullScreen;
 - (void)hideSettingsView:(UIView *)settingsView;
 
 @end

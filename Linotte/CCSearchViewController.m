@@ -23,6 +23,8 @@
 {
     NSString *_lastSearchString;
     
+    CCList *_filterList;
+    
     NSArray *_lists;
     NSArray *_addresses;
     
@@ -33,6 +35,16 @@
 {
     self = [super init];
     if (self) {
+        [[CCLocationMonitor sharedInstance] addDelegate: self];
+    }
+    return self;
+}
+
+- (instancetype)initWithList:(CCList *)list
+{
+    self = [super init];
+    if (self) {
+        _filterList = list;
         [[CCLocationMonitor sharedInstance] addDelegate: self];
     }
     return self;
@@ -71,9 +83,9 @@
 
 - (void)updateListsForSearchString:(NSString *)searchString
 {
-    if ([searchString length] == 0) {
+    if ([searchString length] == 0 || _filterList != nil) {
         _lists = @[];
-        return;
+        return; 
     }
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@ OR author CONTAINS[cd] %@", searchString, searchString];
     _lists = [self fetchResultsForEntityName:[CCList entityName] predicate:predicate];
@@ -85,7 +97,12 @@
         _addresses = @[];
         return;
     }
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@ OR address CONTAINS[cd] %@", searchString, searchString];
+    NSPredicate *predicate = nil;
+    if (_filterList != nil) {
+        predicate = [NSPredicate predicateWithFormat:@"(name CONTAINS[cd] %@ OR address CONTAINS[cd] %@) AND ANY lists = %@", searchString, searchString, _filterList];
+    } else {
+        predicate = [NSPredicate predicateWithFormat:@"name CONTAINS[cd] %@ OR address CONTAINS[cd] %@", searchString, searchString];
+    }
     _addresses = [self fetchResultsForEntityName:[CCAddress entityName] predicate:predicate];
 }
 
@@ -102,6 +119,11 @@
 }
 
 #pragma mark - CCSeachViewDelegate methods
+
+- (BOOL)showSections
+{
+    return _filterList == nil;
+}
 
 - (UIImage *)listIconAtIndex:(NSUInteger)index
 {

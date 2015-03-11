@@ -10,12 +10,14 @@
 
 #import "CCRootViewDelegate.h"
 
+#import <MessageUI/MessageUI.h>
+
 #import "CCSplashViewControllerDelegate.h"
 
 #import "CCViewControllerSwiperViewControllerDelegate.h"
 
 #import "CCLinotteBrowserViewControllerDelegate.h"
 
-@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate, CCLinotteBrowserViewControllerDelegate>
+@interface CCRootViewController : UIViewController<UINavigationControllerDelegate, CCRootViewDelegate, CCSplashViewControllerDelegate, CCViewControllerSwiperViewControllerDelegate, CCLinotteBrowserViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end

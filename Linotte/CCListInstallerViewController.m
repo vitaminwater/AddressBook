@@ -10,6 +10,8 @@
 
 #import <HexColors/HexColor.h>
 
+#import "UINavigationController+CCRemoveViewController.h"
+
 #import "CCLinotteAPI.h"
 #import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAuthenticationManager.h"
@@ -83,7 +85,7 @@
     
     // right bar button item
     {
-        CGRect rightButtonFrame = CGRectMake(0, 0, 60, 30);
+        CGRect rightButtonFrame = CGRectMake(0, 0, 120, 30);
         UIButton *rightButton = [UIButton new];
         [rightButton setTitle:NSLocalizedString(@"ADD_LIST_TO_LINOTTE", @"") forState:UIControlStateNormal];
         [rightButton setTitleColor:[UIColor colorWithHexString:@"#037AFF"] forState:UIControlStateNormal];
@@ -179,9 +181,9 @@
     [CCLEC forceListSynchronization:list];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowListOutputNotification object:list];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCCBackToHomeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kCCShowBookPanelNotification object:nil];
-    [self.navigationController popViewControllerAnimated:YES];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:kCCBackToHomeNotification object:nil];
+    //[[NSNotificationCenter defaultCenter] postNotificationName:kCCShowBookPanelNotification object:nil];
+    [self.navigationController removeViewController:self];
 }
 
 - (void)removeFromLinotteButtonPressed

@@ -99,6 +99,23 @@
     }
 }
 
+- (void)dumpMissingLocalIdentifier {
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"localIdentifier = nil"];
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+    
+    for (CCAddress *address in addresses) {
+        [managedObjectContext deleteObject:address];
+        NSLog(@"%@", address);
+    }
+    
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+}
+
 #endif
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -110,6 +127,7 @@
     //[self generateFakeNotifications];
     //[self clearCredentials];
     //[self dumpZones];
+    //[self dumpMissingLocalIdentifier];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
@@ -217,8 +235,6 @@
         
         [Mixpanel sharedInstanceWithToken:token];
     }
-    
-    
     
     {
 #if defined(DEBUG)

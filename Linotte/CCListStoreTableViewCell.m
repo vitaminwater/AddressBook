@@ -89,7 +89,7 @@
     NSMutableAttributedString *attributedString = [NSMutableAttributedString new];
     
     NSAttributedString *nameAttributedString = [[NSAttributedString alloc] initWithString:[title stringByAppendingString:@"\n"] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Montserrat-Bold" size:18], NSForegroundColorAttributeName : [UIColor darkGrayColor]}];
-    NSAttributedString *authorAttributedString = [[NSAttributedString alloc] initWithString:[@"By " stringByAppendingString:author] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Futura-Book" size:16], NSForegroundColorAttributeName : [UIColor grayColor]}];
+    NSAttributedString *authorAttributedString = [[NSAttributedString alloc] initWithString:[@"by " stringByAppendingString:author] attributes:@{NSFontAttributeName : [UIFont fontWithName:@"Futura-Book" size:16], NSForegroundColorAttributeName : [UIColor grayColor]}];
     
     [attributedString appendAttributedString:nameAttributedString];
     [attributedString appendAttributedString:authorAttributedString];

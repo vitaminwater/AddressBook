@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6751" systemVersion="14C1510" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="CCAddress" representedClassName="CCAddress" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="geohash" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -100,13 +100,13 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="serverEvents" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CCAddress" positionX="367" positionY="-414" width="128" height="270"/>
-        <element name="CCAddressMeta" positionX="34" positionY="108" width="128" height="135"/>
-        <element name="CCAuthMethod" positionX="358" positionY="246" width="128" height="105"/>
-        <element name="CCList" positionX="90" positionY="-525" width="128" height="463"/>
-        <element name="CCListMeta" positionX="-135" positionY="-261" width="128" height="120"/>
-        <element name="CCListZone" positionX="-270" positionY="-12" width="128" height="255"/>
-        <element name="CCLocalEvent" positionX="430" positionY="-135" width="128" height="120"/>
-        <element name="CCServerEvent" positionX="403" positionY="18" width="128" height="135"/>
+        <element name="CCAddress" positionX="0" positionY="0" width="128" height="270"/>
+        <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
+        <element name="CCAuthMethod" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="CCList" positionX="0" positionY="0" width="128" height="463"/>
+        <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="CCListZone" positionX="0" positionY="0" width="128" height="255"/>
+        <element name="CCLocalEvent" positionX="0" positionY="0" width="128" height="120"/>
+        <element name="CCServerEvent" positionX="0" positionY="0" width="128" height="135"/>
     </elements>
 </model>

@@ -12,12 +12,16 @@
 
 @class CCListView;
 
-@interface CCListOutputView : UIView
+@interface CCListOutputView : UIView<UITextFieldDelegate>
 
 @property(nonatomic, assign)id<CCListOutputViewDelegate> delegate;
 
 - (void)setupListView:(CCListView *)listView;
 - (void)setupLayout;
+
+- (void)searchFieldResignFirstResponder;
+- (void)presentSearchViewControllerView:(UIView *)searchViewControllerView;
+- (void)dismissSearchViewControllerView;
 
 - (void)loadListIconWithUrl:(NSString *)urlString;
 - (void)setListIconImage:(UIImage *)image;

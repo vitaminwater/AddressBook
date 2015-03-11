@@ -11,5 +11,6 @@
 @protocol CCListOutputViewDelegate <NSObject>
 
 - (void)notificationEnabled:(BOOL)enabled;
+- (void)filterList:(NSString *)filterText;
 
 @end

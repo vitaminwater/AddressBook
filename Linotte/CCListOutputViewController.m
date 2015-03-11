@@ -33,6 +33,7 @@
 #import "CCListOutputListViewModel.h"
 #import "CCListViewContentProvider.h"
 
+#import "CCSearchViewController.h"
 #import "CCListOutputSettingsViewController.h"
 #import "CCListOutputAddressListViewController.h"
 #import "CCOutputViewController.h"
@@ -49,6 +50,7 @@
     UIButton *_settingsButton;
     
     CCListViewController *_listViewController;
+    CCSearchViewController *_searchViewController;
     
     CCListOutputAddressListViewController *_listOutputAddressListViewController;
 }
@@ -104,7 +106,7 @@
         firstAddressDisplaySettingsViewController.delegate = self;
         [self addChildViewController:firstAddressDisplaySettingsViewController];
         
-        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view];
+        [self.view showSettingsView:firstAddressDisplaySettingsViewController.view fullScreen:NO];
         
         [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
     }
@@ -180,6 +182,31 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)showSearchViewControllerIfNotPresent
+{
+    if (_searchViewController != nil)
+        return;
+    _searchViewController = [[CCSearchViewController alloc] initWithList:_list];
+    _searchViewController.delegate = self;
+    
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    [self addChildViewController:_searchViewController];
+    [view presentSearchViewControllerView:_searchViewController.view];
+    [_searchViewController didMoveToParentViewController:self];
+}
+
+- (void)hideSearchViewControllerIfPresent
+{
+    if (_searchViewController == nil)
+        return;
+    
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    [_searchViewController willMoveToParentViewController:nil];
+    [view dismissSearchViewControllerView];
+    [_searchViewController removeFromParentViewController];
+    _searchViewController = nil;
+}
+
 #pragma mark - UIBarButtons target methods
 
 - (void)backButtonPressed:(id)sender
@@ -193,7 +220,7 @@
     listOutputSettingsViewController.delegate = self;
     [self addChildViewController:listOutputSettingsViewController];
     
-    [self.view showSettingsView:listOutputSettingsViewController.view];
+    [self.view showSettingsView:listOutputSettingsViewController.view fullScreen:NO];
     
     [listOutputSettingsViewController didMoveToParentViewController:self];
     
@@ -208,6 +235,21 @@
     _list.notify = @(enabled);
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
     [[CCModelChangeMonitor sharedInstance] listsDidUpdateUserData:@[_list] send:YES];
+}
+
+- (void)filterList:(NSString *)filterText
+{
+    [self showSearchViewControllerIfNotPresent];
+    [_searchViewController updateSearchString:filterText];
+}
+
+#pragma mark - CCSearchViewControllerDelegate methods
+
+- (void)closeSearchViewController
+{
+    CCListOutputView *view = (CCListOutputView *)self.view;
+    [view searchFieldResignFirstResponder];
+    [self hideSearchViewControllerIfPresent];
 }
 
 #pragma mark - CCListOutputListEmptyViewDelegate methods

@@ -27,7 +27,7 @@
 
 #else
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceName1002" // Apstore
+#define kCCKeyChainServiceName @"kCCKeyChainServiceName1003" // Apstore
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountName"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountName"

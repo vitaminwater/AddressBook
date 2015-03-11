@@ -19,7 +19,7 @@
     if (self) {
         _email = email;
         
-        self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
+        self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:18];
         [self setTitle:_email forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;

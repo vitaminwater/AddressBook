@@ -10,6 +10,8 @@
 
 @protocol CCSearchViewDelegate <NSObject>
 
+- (BOOL)showSections;
+
 - (UIImage *)listIconAtIndex:(NSUInteger)index;
 - (NSString *)listNameAtIndex:(NSUInteger)index;
 - (NSString *)listDetailAtIndex:(NSUInteger)index;

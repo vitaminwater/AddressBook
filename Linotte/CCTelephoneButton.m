@@ -19,7 +19,7 @@
     if (self) {
         _number = [NSString stringWithFormat:@"%@", number];
         
-        self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:15];
+        self.titleLabel.font = [UIFont fontWithName:@"Futura-Book" size:20];
         [self setTitle:_number forState:UIControlStateNormal];
         [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;

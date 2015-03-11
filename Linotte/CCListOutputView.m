@@ -13,13 +13,20 @@
 #import "CCAnimationDelegator.h"
 
 #import "CCListView.h"
+#import "CCLinotteField.h"
 
 #define kCCListOutputViewHeaderConstraintTimelineTween @"kCCListOutputViewHeaderConstraintTimelineTween"
 #define kCCListHeaderViewHeight @150
+#define kCCListOutputSearchFieldHeight [kCCLinotteTextFieldHeight floatValue]
 
 
 @implementation CCListOutputView
 {
+    UITextField *_searchField;
+    NSString *_lastFilterText;
+    UIView *_searchViewControllerView;
+    NSLayoutConstraint *_searchViewControllerViewBottomConstraint;
+    
     UIView *_listHeaderView;
     UIImageView *_listIcon;
     UITextView *_listInfos;
@@ -39,10 +46,29 @@
         self.backgroundColor = [UIColor whiteColor];
         self.opaque = YES;
         
+        [self setupSearchField];
         [self setupListHeader];
         [self setupListNotificationView];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)setupSearchField
+{
+    _searchField = [[CCLinotteField alloc] initWithImage:[UIImage imageNamed:@"search_icon"]];
+    _searchField.translatesAutoresizingMaskIntoConstraints = NO;
+    _searchField.placeholder = NSLocalizedString(@"SEARCH", @"");
+    [_searchField addTarget:self action:@selector(searchFieldChanged:) forControlEvents:UIControlEventEditingChanged];
+    _searchField.delegate = self;
+    [self addSubview:_searchField];
 }
 
 - (void)setupListHeader
@@ -150,35 +176,59 @@
         [self removeConstraints:_constraints];
     _constraints = [@[] mutableCopy];
     
-    // list header
+    // list header + search
     {
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listHeaderView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-        [_constraints addObject:topConstraint];
+        NSDictionary *views = NSDictionaryOfVariableBindings(_searchField, _listHeaderView);
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_searchField][_listHeaderView]" options:0 metrics:nil views:views];
+        [_constraints addObjectsFromArray:verticalConstraints];
     }
+    
+    NSLayoutConstraint *searchHeightConstraint = [NSLayoutConstraint constraintWithItem:_searchField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:0 multiplier:1 constant:0];
+    [_constraints addObject:searchHeightConstraint];
     
     // list notification view
     {
         NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listNotificationView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listHeaderView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
         [_constraints addObject:topConstraint];
         
+        __weak typeof(_searchField) weakSearchField = _searchField;
         __weak typeof(_listHeaderView) weakListHeaderView = _listHeaderView;
         __weak typeof(self) weakSelf = self;
         [_listView.animatorDelegator setTimeLineAnimationItemForKey:kCCListOutputViewHeaderConstraintTimelineTween animationBlock:^BOOL(CGFloat value) {
             if (value > 0) {
-                if (topConstraint.constant >= 0)
-                    return NO;
-                topConstraint.constant = MIN(0, topConstraint.constant + value);
-                [weakSelf layoutIfNeeded];
-                return YES;
+                if (topConstraint.constant < 0) {
+                    topConstraint.constant = MIN(0, topConstraint.constant + value);
+                    [weakSelf layoutIfNeeded];
+                    return YES;
+                } else if (topConstraint.constant >= 0 && searchHeightConstraint.constant < kCCListOutputSearchFieldHeight) {
+                    searchHeightConstraint.constant = MIN(kCCListOutputSearchFieldHeight, searchHeightConstraint.constant + value);
+                    [weakSelf layoutIfNeeded];
+                    return YES;
+                }
+                return NO;
             } else {
-                if (topConstraint.constant <= -weakListHeaderView.bounds.size.height)
-                    return NO;
-                topConstraint.constant = MAX(-weakListHeaderView.bounds.size.height, topConstraint.constant + value);
-                [weakSelf layoutIfNeeded];
-                return YES;
+                if (topConstraint.constant > -weakListHeaderView.bounds.size.height) {
+                    topConstraint.constant = MAX(-weakListHeaderView.bounds.size.height, topConstraint.constant + value);
+                    [weakSelf layoutIfNeeded];
+                    return YES;
+                } else if (topConstraint.constant <= -weakListHeaderView.bounds.size.height && searchHeightConstraint.constant > 0) {
+                    [weakSearchField resignFirstResponder];
+                    searchHeightConstraint.constant = MAX(0, searchHeightConstraint.constant + value);
+                    [weakSelf layoutIfNeeded];
+                    return YES;
+                }
+                return NO;
             }
             return NO;
         } fingerLiftBlock:^(){
+            if (searchHeightConstraint.constant >= kCCListOutputSearchFieldHeight / 2) {
+                //[weakSearchField becomeFirstResponder];
+                searchHeightConstraint.constant = kCCListOutputSearchFieldHeight;
+            } else {
+                //[weakSearchField resignFirstResponder];
+                searchHeightConstraint.constant = 0;
+            }
+            
             if (topConstraint.constant <= -weakListHeaderView.bounds.size.height / 2)
                 topConstraint.constant = -weakListHeaderView.bounds.size.height;
             else
@@ -192,16 +242,14 @@
     
     // list view
     {
-        NSLayoutConstraint *topConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_listNotificationView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [_constraints addObject:topConstraint];
-        
-        NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:_listView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-        [_constraints addObject:bottomConstraint];
+        NSDictionary *views = NSDictionaryOfVariableBindings(_listNotificationView, _listView);
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_listNotificationView][_listView]|" options:0 metrics:nil views:views];
+        [_constraints addObjectsFromArray:verticalConstraints];
     }
     
     // horizontal constraints
     {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_listHeaderView, _listNotificationView, _listView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(_searchField, _listHeaderView, _listNotificationView, _listView);
         
         for (UIView *view in views.allValues) {
             NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[view]|" options:0 metrics:nil views:@{@"view" : view}];
@@ -210,6 +258,45 @@
     }
     
     [self addConstraints:_constraints];
+}
+
+- (void)searchFieldResignFirstResponder
+{
+    [_searchField resignFirstResponder];
+}
+
+- (void)presentSearchViewControllerView:(UIView *)searchViewControllerView
+{
+    _searchViewControllerView = searchViewControllerView;
+    _searchViewControllerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_searchViewControllerView];
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(_searchField, _searchViewControllerView);
+    NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:[_searchField][_searchViewControllerView]" options:0 metrics:nil views:views];
+    [self addConstraints:verticalConstraints];
+    
+    _searchViewControllerViewBottomConstraint = [NSLayoutConstraint constraintWithItem:_searchViewControllerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    [self addConstraint:_searchViewControllerViewBottomConstraint];
+    
+    NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_searchViewControllerView]|" options:0 metrics:nil views:views];
+    [self addConstraints:horizontalConstraints];
+    
+    [self layoutIfNeeded];
+    
+    _searchViewControllerView.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        _searchViewControllerView.alpha = 1;
+    }];
+}
+
+- (void)dismissSearchViewControllerView
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        _searchViewControllerView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_searchViewControllerView removeFromSuperview];
+        _searchViewControllerView = nil;
+    }];
 }
 
 - (void)loadListIconWithUrl:(NSString *)urlString
@@ -233,12 +320,63 @@
     _listNotificationButton.selected = notificationEnabled;
 }
 
+#pragma mark NSNtoficationCenter target methods
+
+- (void)keyboardWillShow:(NSNotification *)note
+{
+    NSDictionary* keyboardInfo = [note userInfo];
+    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardFrameEndRect = [keyboardFrameEnd CGRectValue];
+    
+    _searchViewControllerViewBottomConstraint.constant = -keyboardFrameEndRect.size.height;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
+}
+
+- (void)keyboardWillHide:(NSNotification *)note
+{
+    _searchViewControllerViewBottomConstraint.constant = 0;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        [self layoutIfNeeded];
+    }];
+}
+
 #pragma mark - UIButton target methods
 
 - (void)notificationPressed:(id)sender
 {
     _listNotificationButton.selected = !_listNotificationButton.selected;
     [_delegate notificationEnabled:_listNotificationButton.selected];
+}
+
+#pragma mark - UITextField target methods
+
+- (void)searchFieldChanged:(UITextField *)sender
+{
+    NSString *text = [sender.text length] ? sender.text : nil;
+    
+    if ((_lastFilterText == text) || ([_lastFilterText isEqualToString:text]))
+        return;
+    
+    [_delegate filterList:text];
+    
+    _lastFilterText = text;
+}
+
+#pragma mark - UITextFieldDelegate methods
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    [_delegate filterList:_searchField.text];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return NO;
 }
 
 @end

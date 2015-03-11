@@ -8,8 +8,6 @@
 
 #import "CCRootViewController.h"
 
-#import <MessageUI/MessageUI.h>
-
 #import "CCLinotteBrowserViewController.h"
 
 #import "CCRootView.h"
@@ -202,12 +200,22 @@
     {
         MFMailComposeViewController *mailComposerViewController = [[MFMailComposeViewController alloc] init];
         [mailComposerViewController setToRecipients:@[emailInfos[@"email"]]];
-        [self presentViewController:mailComposerViewController animated:YES completion:^{}];
+        mailComposerViewController.mailComposeDelegate = self;
+        [self.parentViewController presentViewController:mailComposerViewController animated:YES completion:^{}];
     }
     else
     {
         [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:[CCActionResultHUD applicationRootView] text:NSLocalizedString(@"CANNOT_SEND_MAIL", @"") delay:3];
     }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate methods
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
 }
 
 @end

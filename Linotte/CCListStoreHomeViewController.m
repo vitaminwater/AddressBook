@@ -57,6 +57,13 @@
     self.navigationItem.rightBarButtonItems = @[emptyBarButtonItem, searchButtonItem];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    if ([_groups count] == 0) {
+        [self loadData:0];
+    }
+}
+
 #pragma mark - UIButton target methods
 
 - (void)searchButtonPressed:(id)sender

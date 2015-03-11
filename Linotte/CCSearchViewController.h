@@ -13,9 +13,13 @@
 #import "CCSearchViewDelegate.h"
 #import "CCSearchViewControllerDelegate.h"
 
+@class CCList;
+
 @interface CCSearchViewController : UIViewController<CCSearchViewDelegate, CLLocationManagerDelegate>
 
 @property(nonatomic, weak)id<CCSearchViewControllerDelegate> delegate;
+
+- (instancetype)initWithList:(CCList *)list;
 
 - (void)updateSearchString:(NSString *)searchString;
 

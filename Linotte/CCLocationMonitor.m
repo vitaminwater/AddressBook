@@ -110,6 +110,8 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+        CCLog(@"CCLocationMonitor locationManager:didUpdateLocations:");
     CLLocation *location = [locations lastObject];
     if (_currentLocation) {
         CGFloat distance = [location distanceFromLocation:_currentLocation];
@@ -126,6 +128,8 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
 {
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)
+        CCLog(@"CCLocationMonitor locationManager:didUpdateHeading:");
     _currentHeading = newHeading;
     for (__weak id<CLLocationManagerDelegate> delegate in _delegates) {
         if ([delegate respondsToSelector:@selector(locationManager:didUpdateHeading:)])

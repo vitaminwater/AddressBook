@@ -102,8 +102,9 @@
     __weak typeof(_searchField) weakSearchField = _searchField;
     [_animationDelegator setTimeLineAnimationItemForKey:kCCMainViewTopListConstraintAnimator animationBlock:^BOOL(CGFloat value) {
         if (value > 0) {
-            if (searchHeightConstraint.constant >= kCCHomeSearchFieldHeight)
+            if (searchHeightConstraint.constant >= kCCHomeSearchFieldHeight) {
                 return NO;
+            }
             searchHeightConstraint.constant = MIN(kCCHomeSearchFieldHeight, searchHeightConstraint.constant + value);
             [weakSelf layoutIfNeeded];
             return YES;

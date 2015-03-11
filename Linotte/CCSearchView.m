@@ -132,6 +132,8 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
+    if ([_delegate showSections] == NO)
+        return nil;
     if (section == kCCSearchViewListSection) {
         return NSLocalizedString(@"LISTS", @"");
     } else {
