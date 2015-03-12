@@ -59,6 +59,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     if ([_groups count] == 0) {
         [self loadData:0];
     }

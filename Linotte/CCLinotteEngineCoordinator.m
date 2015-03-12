@@ -24,6 +24,8 @@
 #import "CCModelChangeHandler.h"
 #import "CCSynchronizationHandler.h"
 
+#import "CCAddListCommand.h"
+
 #import "CCAddress.h"
 
 @implementation CCLinotteEngineCoordinator
@@ -115,6 +117,31 @@
     [_synchronizationHandler performSynchronizationsWithMaxDuration:15 list:nil completionBlock:^(BOOL didSync){
         completionHandler(didSync ? UIBackgroundFetchResultNewData : UIBackgroundFetchResultNoData);
     }];
+}
+
+- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
+{
+    if (![[url scheme] isEqualToString:@"comlinotte"])
+        return NO;
+    
+    NSString *commandLine = [NSString stringWithFormat:@"%@%@/", [url host], [url relativePath]];
+    
+    if (commandLine == nil)
+        return NO;
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%@ MATCHES match", commandLine];
+    NSArray *commands = @[[CCAddListCommand new]];
+    
+    id<CCLinotteUrlCommand> command = [[commands filteredArrayUsingPredicate:predicate] firstObject];
+    
+    if (command == nil)
+        return NO;
+    
+    NSArray *args = [commandLine componentsSeparatedByString:@"/"];
+    [command execute:args];
+    
+    NSLog(@"%@ %@", url, sourceApplication);
+    return YES;
 }
 
 - (void)forceListSynchronization:(CCList *)list

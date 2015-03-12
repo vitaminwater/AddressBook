@@ -24,6 +24,7 @@
 - (void)initializeLinotteEngineWithClientId:(NSString *)clientId clientSecret:(NSString *)clientSecret;
 - (void)startNotifying;
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
+- (BOOL)handleOpenURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication;
 
 - (void)forceListSynchronization:(CCList *)list;
 

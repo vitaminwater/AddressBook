@@ -117,6 +117,7 @@
 		C76C3BF91A1F3FDD000B0DD8 /* NSArray+CCArray.m in Sources */ = {isa = PBXBuildFile; fileRef = C76C3BF81A1F3FDD000B0DD8 /* NSArray+CCArray.m */; };
 		C770A74E19A7BCE400803E75 /* default_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C76A3C501999115000998F9F /* default_notification.caf */; };
 		C770A75319AB647700803E75 /* CCAddressSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C770A75219AB647700803E75 /* CCAddressSettingsView.m */; };
+		C7725E561AB240E8002973D1 /* CCAddListCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = C7725E551AB240E8002973D1 /* CCAddListCommand.m */; };
 		C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */; };
 		C77F8E071A023D0300AE2655 /* CCSynchronizationHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F8E061A023D0300AE2655 /* CCSynchronizationHandler.m */; };
 		C7804C7319D1AA3D00D546BD /* CCModelChangeMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C7804C7219D1AA3D00D546BD /* CCModelChangeMonitor.m */; };
@@ -473,6 +474,9 @@
 		C770A75119AB647700803E75 /* CCAddressSettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsView.h; sourceTree = "<group>"; };
 		C770A75219AB647700803E75 /* CCAddressSettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddressSettingsView.m; sourceTree = "<group>"; };
 		C770A75519AB64E000803E75 /* CCAddressSettingsViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAddressSettingsViewDelegate.h; sourceTree = "<group>"; };
+		C7725E541AB240E8002973D1 /* CCAddListCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAddListCommand.h; sourceTree = "<group>"; };
+		C7725E551AB240E8002973D1 /* CCAddListCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAddListCommand.m; sourceTree = "<group>"; };
+		C7725E581AB24105002973D1 /* CCLinotteUrlCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLinotteUrlCommand.h; sourceTree = "<group>"; };
 		C77F8DD61A00F6C400AE2655 /* CCListInstallerCloseButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListInstallerCloseButton.h; sourceTree = "<group>"; };
 		C77F8DD71A00F6C400AE2655 /* CCListInstallerCloseButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListInstallerCloseButton.m; sourceTree = "<group>"; };
 		C77F8E051A023D0300AE2655 /* CCSynchronizationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSynchronizationHandler.h; sourceTree = "<group>"; };
@@ -2287,6 +2291,24 @@
 			name = "last notifications";
 			sourceTree = "<group>";
 		};
+		C7725E531AB240CF002973D1 /* url commands */ = {
+			isa = PBXGroup;
+			children = (
+				C7725E571AB240EC002973D1 /* add list */,
+				C7725E581AB24105002973D1 /* CCLinotteUrlCommand.h */,
+			);
+			name = "url commands";
+			sourceTree = "<group>";
+		};
+		C7725E571AB240EC002973D1 /* add list */ = {
+			isa = PBXGroup;
+			children = (
+				C7725E541AB240E8002973D1 /* CCAddListCommand.h */,
+				C7725E551AB240E8002973D1 /* CCAddListCommand.m */,
+			);
+			name = "add list";
+			sourceTree = "<group>";
+		};
 		C77F8DD51A00F6A300AE2655 /* close button */ = {
 			isa = PBXGroup;
 			children = (
@@ -2355,6 +2377,7 @@
 		C785F4D61A3EF7690011A681 /* coordinator */ = {
 			isa = PBXGroup;
 			children = (
+				C7725E531AB240CF002973D1 /* url commands */,
 				C785F4D71A3EF7860011A681 /* CCLinotteEngineCoordinator.h */,
 				C785F4D81A3EF7860011A681 /* CCLinotteEngineCoordinator.m */,
 			);
@@ -3940,6 +3963,7 @@
 				C79D804B19D408D50073F1CF /* CCLocationMonitor.m in Sources */,
 				C7BE91A71A35F61C0033B359 /* CCSignUpViewController.m in Sources */,
 				C761A00D19CC5DB200C09F0D /* CCFirstAddressDisplaySettingsView.m in Sources */,
+				C7725E561AB240E8002973D1 /* CCAddListCommand.m in Sources */,
 				C7F9F0941A41BC770028BCE3 /* CCLinotteCredentialStore.m in Sources */,
 				C731840C1A27514400A99762 /* CCExternalMeta.m in Sources */,
 				C7619FFE19CC310A00C09F0D /* UIView+CCShowSettingsView.m in Sources */,

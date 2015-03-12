@@ -198,11 +198,12 @@
          annotation:(id)annotation {
     
     // Call FBAppCall's handleOpenURL:sourceApplication to handle Facebook app responses
-    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
+    if ([FBAppCall handleOpenURL:url sourceApplication:sourceApplication])
+        return YES;
+    else if ([[CCLinotteEngineCoordinator sharedInstance] handleOpenURL:url sourceApplication:sourceApplication])
+        return YES;
     
-    // You can add your app-specific url handling code here if needed
-    
-    return wasHandled;
+    return NO;
 }
 
 #pragma mark - RestKit initialization
