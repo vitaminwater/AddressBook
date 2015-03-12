@@ -4193,7 +4193,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "436a3ce8-ca47-4386-a32e-90bd18b4ea85";
+				PROVISIONING_PROFILE = "dcbd1a3c-e2dc-46c1-b4ee-77c47f1480a4";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
@@ -4215,7 +4215,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "27be2bd5-10b8-43d7-a0b0-4a71e9b1bebc";
+				PROVISIONING_PROFILE = "dcbd1a3c-e2dc-46c1-b4ee-77c47f1480a4";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;

@@ -13,7 +13,6 @@
 #import <FacebookSDK/FacebookSDK.h>
 
 #import "CCLinotteCoreDataStack.h"
-#import "CCOldLinotteMigration.h"
 
 #import "CCLinotteEngineCoordinator.h"
 #import "CCLinotteAuthenticationManager.h"
@@ -251,8 +250,6 @@
             [CCNetworkLogs sharedInstance].identifier = CCLEC.authenticationManager.deviceId;
         }
     }
-    
-    [CCOldLinotteMigration migrateIfNeeded];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken

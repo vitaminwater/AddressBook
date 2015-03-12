@@ -13,6 +13,7 @@
 #import "SQLiteManager.h"
 
 #import "CCModelHelper.h"
+#import "CCModelChangeMonitor.h"
 
 #import "CCList.h"
 #import "CCAddress.h"
@@ -29,11 +30,12 @@
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         SQLiteManager *sqliteManager = [[SQLiteManager alloc] initWithDatabaseNamed:[storeURL path]];
         NSArray *addressesDicts = [sqliteManager getRowsForQuery:@"select * from ZCCADDRESS"];
+        
+        CCList *list = [CCModelHelper defaultList];
+        NSMutableArray *addresses = [@[] mutableCopy];
+    
         for (NSDictionary *addressDict in addressesDicts) {
             NSDictionary *category = [[sqliteManager getRowsForQuery:[NSString stringWithFormat:@"select * from ZCCCATEGORY where ZADDRESS = %@", addressDict[@"Z_PK"]]] firstObject];
-            
-            
-            CCList *list = [CCModelHelper defaultList];
             
             CCAddress *address = [CCAddress insertInManagedObjectContext:managedObjectContext];
             address.name = addressDict[@"ZNAME"];
@@ -41,12 +43,10 @@
             address.geohash = addressDict[@"ZGEOHASH"];
             address.latitudeValue = [addressDict[@"ZLATITUDE"] floatValue];
             address.longitudeValue = [addressDict[@"ZLONGITUDE"] floatValue];
-            address.notifyValue = [addressDict[@"ZNOTIFY"] boolValue];
+            address.notifyValue = addressDict[@"ZNOTIFY"] == nil || [addressDict[@"ZNOTIFY"] isKindOfClass:[NSNull class]] ? NO : [addressDict[@"ZNOTIFY"] boolValue];
             address.provider = addressDict[@"ZPROVIDER"];
             address.providerId = addressDict[@"ZPROVIDERID"];
             address.isAuthorValue = YES;
-            
-            [list addAddressesObject:address];
             
             if (category != nil) {
                 CCAddressMeta *addressMeta = [CCAddressMeta insertInManagedObjectContext:managedObjectContext];
@@ -56,7 +56,12 @@
                 
                 [address addMetasObject:addressMeta];
             }
+            [addresses addObject:address];
         }
+        [[CCModelChangeMonitor sharedInstance] addresses:addresses willMoveToList:list send:YES];
+        [list addAddresses:[NSSet setWithArray:addresses]];
+        [[CCModelChangeMonitor sharedInstance] addresses:addresses didMoveToList:list send:YES];
+        
         [[CCLinotteCoreDataStack sharedInstance] saveContext];
         
         NSError *error = nil;

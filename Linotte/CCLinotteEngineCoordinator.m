@@ -12,6 +12,7 @@
 #import <Mixpanel/Mixpanel.h>
 
 #import "CCLinotteAuthenticationManager.h"
+#import "CCOldLinotteMigration.h"
 
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
@@ -70,6 +71,8 @@
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         if ([CCAddress numberOfNotifyingAddressesInManagedObjectContext:managedObjectContext] > 0)
             [self startNotifying];
+        
+        [CCOldLinotteMigration migrateIfNeeded];
     }
 }
 
@@ -143,6 +146,7 @@
 
 - (void)authenticationManagerDidLogin:(CCLinotteAuthenticationManager *)authenticationManager {
     [self startSynchronization];
+    [CCOldLinotteMigration migrateIfNeeded];
 }
 
 #pragma mark - NSNotificationCenter methods
