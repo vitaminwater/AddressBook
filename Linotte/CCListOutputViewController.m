@@ -126,6 +126,9 @@
     
     self.title = _list.name;
     
+    _list.hasNewValue = NO;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
     NSString *color = @"#6b6b6b";
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
     

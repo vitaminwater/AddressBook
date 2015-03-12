@@ -222,6 +222,7 @@
     }
     [cell setDeletable:[_delegate deletableForListItemAtIndex:index]];
     cell.markerImageView.image = [_delegate iconForListItemAtIndex:index];
+    [cell setIsNew:[_delegate isNewForListItemAtIndex:index]];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

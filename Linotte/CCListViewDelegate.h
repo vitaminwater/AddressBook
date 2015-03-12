@@ -26,5 +26,6 @@
 - (BOOL)deletableForListItemAtIndex:(NSUInteger)index;
 - (BOOL)orientationAvailableAtIndex:(NSUInteger)index;
 - (NSUInteger)numberOfListItems;
+- (BOOL)isNewForListItemAtIndex:(NSUInteger)index;
 
 @end

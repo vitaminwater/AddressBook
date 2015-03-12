@@ -130,6 +130,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     }
 }
 
+- (BOOL)isNew
+{
+    return NO;
+}
+
 @end
 
 
@@ -204,6 +209,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (BOOL)notify
 {
     return _address.notifyValue;
+}
+
+- (BOOL)isNew
+{
+    return _address.isNewValue;
 }
 
 @end
@@ -348,6 +358,11 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
 - (BOOL)notify
 {
     return _list.notifyValue;
+}
+
+- (BOOL)isNew
+{
+    return _list.hasNewValue;
 }
 
 @end

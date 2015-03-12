@@ -19,5 +19,6 @@
 
 - (void)setNotificationEnabled:(BOOL)notificationEnabled;
 - (void)setAngle:(double)angle;
+- (void)setIsNew:(BOOL)isNew;
 
 @end

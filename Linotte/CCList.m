@@ -16,7 +16,7 @@
     [super awakeFromInsert];
     self.localIdentifier = [[NSUUID UUID] UUIDString];
     self.lastUpdate = [NSDate date];
-    self.waitingTimeValue = (12 * 3600) + rand() % (12 * 3600);
+    self.waitingTimeValue = (3 * 3600) + rand() % (3 * 3600);
     [self setNextRefreshDate];
     
     [self setObservers];

@@ -7,6 +7,7 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *author;
 	__unsafe_unretained NSString *authorIdentifier;
 	__unsafe_unretained NSString *avgInactiveDays;
+	__unsafe_unretained NSString *hasNew;
 	__unsafe_unretained NSString *icon;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *isdefault;
@@ -24,6 +25,7 @@ extern const struct CCListAttributes {
 	__unsafe_unretained NSString *needsRefreshZone;
 	__unsafe_unretained NSString *notify;
 	__unsafe_unretained NSString *owned;
+	__unsafe_unretained NSString *searchable;
 	__unsafe_unretained NSString *shortNextRefreshDate;
 	__unsafe_unretained NSString *waitingTime;
 } CCListAttributes;
@@ -66,6 +68,14 @@ extern const struct CCListRelationships {
 - (void)setAvgInactiveDaysValue:(double)value_;
 
 //- (BOOL)validateAvgInactiveDays:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* hasNew;
+
+@property (atomic) BOOL hasNewValue;
+- (BOOL)hasNewValue;
+- (void)setHasNewValue:(BOOL)value_;
+
+//- (BOOL)validateHasNew:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* icon;
 
@@ -167,6 +177,14 @@ extern const struct CCListRelationships {
 
 //- (BOOL)validateOwned:(id*)value_ error:(NSError**)error_;
 
+@property (nonatomic, strong) NSNumber* searchable;
+
+@property (atomic) BOOL searchableValue;
+- (BOOL)searchableValue;
+- (void)setSearchableValue:(BOOL)value_;
+
+//- (BOOL)validateSearchable:(id*)value_ error:(NSError**)error_;
+
 @property (nonatomic, strong) NSDate* shortNextRefreshDate;
 
 //- (BOOL)validateShortNextRefreshDate:(id*)value_ error:(NSError**)error_;
@@ -255,6 +273,12 @@ extern const struct CCListRelationships {
 - (double)primitiveAvgInactiveDaysValue;
 - (void)setPrimitiveAvgInactiveDaysValue:(double)value_;
 
+- (NSNumber*)primitiveHasNew;
+- (void)setPrimitiveHasNew:(NSNumber*)value;
+
+- (BOOL)primitiveHasNewValue;
+- (void)setPrimitiveHasNewValue:(BOOL)value_;
+
 - (NSString*)primitiveIcon;
 - (void)setPrimitiveIcon:(NSString*)value;
 
@@ -329,6 +353,12 @@ extern const struct CCListRelationships {
 
 - (BOOL)primitiveOwnedValue;
 - (void)setPrimitiveOwnedValue:(BOOL)value_;
+
+- (NSNumber*)primitiveSearchable;
+- (void)setPrimitiveSearchable:(NSNumber*)value;
+
+- (BOOL)primitiveSearchableValue;
+- (void)setPrimitiveSearchableValue:(BOOL)value_;
 
 - (NSDate*)primitiveShortNextRefreshDate;
 - (void)setPrimitiveShortNextRefreshDate:(NSDate*)value;

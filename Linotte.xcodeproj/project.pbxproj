@@ -124,6 +124,9 @@
 		C785F4D91A3EF7860011A681 /* CCLinotteEngineCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = C785F4D81A3EF7860011A681 /* CCLinotteEngineCoordinator.m */; };
 		C79578B319D873F6008B520E /* CCListOutputSettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B119D873F6008B520E /* CCListOutputSettingsView.m */; };
 		C79578B819D87417008B520E /* CCListOutputSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C79578B619D87417008B520E /* CCListOutputSettingsViewController.m */; };
+		C795D30F1AB1921A00B49846 /* CCOldLinotteMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = C795D30E1AB1921A00B49846 /* CCOldLinotteMigration.m */; };
+		C795D3131AB1936300B49846 /* SQLiteManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C795D3121AB1936300B49846 /* SQLiteManager.m */; };
+		C795D3151AB194B300B49846 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C795D3141AB194B300B49846 /* libsqlite3.dylib */; };
 		C796D7C119BB8C0000B97879 /* _CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7BE19BB8C0000B97879 /* _CCList.m */; };
 		C796D7C219BB8C0000B97879 /* CCList.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7C019BB8C0000B97879 /* CCList.m */; };
 		C796D7C719BB8C0B00B97879 /* _CCListMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = C796D7C419BB8C0B00B97879 /* _CCListMeta.m */; };
@@ -210,6 +213,7 @@
 		C7D484C31995196E00E81E81 /* Futura-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C21995196E00E81E81 /* Futura-Book.ttf */; };
 		C7D484C61995197900E81E81 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */; };
 		C7D484C71995197900E81E81 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */; };
+		C7DB501D1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.m in Sources */ = {isa = PBXBuildFile; fileRef = C7DB501C1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.m */; };
 		C7DCAA761A35FBC1009140B5 /* CCEmailLoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7DCAA751A35FBC1009140B5 /* CCEmailLoginView.m */; };
 		C7E1E4ED191A240700602A4D /* _CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EA191A240700602A4D /* _CCAddress.m */; };
 		C7E1E4EE191A240700602A4D /* CCAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E1E4EC191A240700602A4D /* CCAddress.m */; };
@@ -486,6 +490,12 @@
 		C79578B519D8740C008B520E /* CCListOutputSettingsViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputSettingsViewControllerDelegate.h; sourceTree = "<group>"; };
 		C79578B619D87417008B520E /* CCListOutputSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCListOutputSettingsViewController.m; sourceTree = "<group>"; };
 		C79578B719D87417008B520E /* CCListOutputSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCListOutputSettingsViewController.h; sourceTree = "<group>"; };
+		C795D30D1AB1921A00B49846 /* CCOldLinotteMigration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOldLinotteMigration.h; sourceTree = "<group>"; };
+		C795D30E1AB1921A00B49846 /* CCOldLinotteMigration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCOldLinotteMigration.m; sourceTree = "<group>"; };
+		C795D3111AB1936300B49846 /* SQLiteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLiteManager.h; sourceTree = "<group>"; };
+		C795D3121AB1936300B49846 /* SQLiteManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLiteManager.m; sourceTree = "<group>"; };
+		C795D3141AB194B300B49846 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		C795D3161AB1A0F500B49846 /* Linotte 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 5.xcdatamodel"; sourceTree = "<group>"; };
 		C796D7B819BB889F00B97879 /* Linotte 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 3.xcdatamodel"; sourceTree = "<group>"; };
 		C796D7BD19BB8C0000B97879 /* _CCList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _CCList.h; sourceTree = "<group>"; };
 		C796D7BE19BB8C0000B97879 /* _CCList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _CCList.m; sourceTree = "<group>"; };
@@ -667,6 +677,8 @@
 		C7D484C41995197900E81E81 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
 		C7D484C51995197900E81E81 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
 		C7D84B231AAFAC5C005053D4 /* Linotte 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Linotte 4.xcdatamodel"; sourceTree = "<group>"; };
+		C7DB501B1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+CCNoiCloudBackup.h"; sourceTree = "<group>"; };
+		C7DB501C1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+CCNoiCloudBackup.m"; sourceTree = "<group>"; };
 		C7DCAA741A35FBC1009140B5 /* CCEmailLoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCEmailLoginView.h; sourceTree = "<group>"; };
 		C7DCAA751A35FBC1009140B5 /* CCEmailLoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCEmailLoginView.m; sourceTree = "<group>"; };
 		C7DCAA781A360194009140B5 /* CCSignUpViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSignUpViewDelegate.h; sourceTree = "<group>"; };
@@ -711,6 +723,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C795D3151AB194B300B49846 /* libsqlite3.dylib in Frameworks */,
 				C7C66A8A1A5BF78600FACC0C /* MessageUI.framework in Frameworks */,
 				C799AB4F1920D5370096B5A8 /* CoreLocation.framework in Frameworks */,
 				C7CE2C671918E48800D37A64 /* CoreGraphics.framework in Frameworks */,
@@ -1623,6 +1636,7 @@
 		C759A99719F69459008549B3 /* core data stack */ = {
 			isa = PBXGroup;
 			children = (
+				C795D30C1AB191CE00B49846 /* migration */,
 				C759A9CD19F6968A008549B3 /* CCLinotteCoreDataStack.h */,
 				C759A9CE19F6968A008549B3 /* CCLinotteCoreDataStack.m */,
 			);
@@ -2350,6 +2364,7 @@
 		C785F4DA1A3EFBB70011A681 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C7DB501A1AB0B1B600026E83 /* file icloud no backup */,
 				C7CB992B1AA6051800B0AFAB /* network */,
 				C72B50E519F9844100F39E7F /* dict cache */,
 			);
@@ -2417,6 +2432,24 @@
 				C79578B519D8740C008B520E /* CCListOutputSettingsViewControllerDelegate.h */,
 			);
 			name = protocol;
+			sourceTree = "<group>";
+		};
+		C795D30C1AB191CE00B49846 /* migration */ = {
+			isa = PBXGroup;
+			children = (
+				C795D30D1AB1921A00B49846 /* CCOldLinotteMigration.h */,
+				C795D30E1AB1921A00B49846 /* CCOldLinotteMigration.m */,
+			);
+			name = migration;
+			sourceTree = "<group>";
+		};
+		C795D3101AB1935900B49846 /* sqlite manager */ = {
+			isa = PBXGroup;
+			children = (
+				C795D3111AB1936300B49846 /* SQLiteManager.h */,
+				C795D3121AB1936300B49846 /* SQLiteManager.m */,
+			);
+			name = "sqlite manager";
 			sourceTree = "<group>";
 		};
 		C796D7B919BB8B2E00B97879 /* meta */ = {
@@ -3254,6 +3287,7 @@
 		C7CE2C631918E48800D37A64 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C795D3141AB194B300B49846 /* libsqlite3.dylib */,
 				C7C66A891A5BF78600FACC0C /* MessageUI.framework */,
 				C799AB4E1920D5370096B5A8 /* CoreLocation.framework */,
 				C7CE2C641918E48800D37A64 /* Foundation.framework */,
@@ -3452,6 +3486,15 @@
 			name = fonts;
 			sourceTree = "<group>";
 		};
+		C7DB501A1AB0B1B600026E83 /* file icloud no backup */ = {
+			isa = PBXGroup;
+			children = (
+				C7DB501B1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.h */,
+				C7DB501C1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.m */,
+			);
+			name = "file icloud no backup";
+			sourceTree = "<group>";
+		};
 		C7DCAA731A35FBB0009140B5 /* email login view */ = {
 			isa = PBXGroup;
 			children = (
@@ -3481,6 +3524,7 @@
 		C7E1E4EF191A468800602A4D /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				C795D3101AB1935900B49846 /* sqlite manager */,
 				C73E7D0119F7D91200ADC1A2 /* autocomplete */,
 				C7FE2C7D1998276E00D7D0DC /* ui */,
 				C799AB7A1927529E0096B5A8 /* categories */,
@@ -3882,6 +3926,7 @@
 				C7216B931A19E6EE00498CFE /* CCListSynchronizationActionConsumeEvents.m in Sources */,
 				C7216B2C1A13C7F100498CFE /* CCServerEventListUpdatedConsumer.m in Sources */,
 				C7619FDF19C97D4800C09F0D /* CCAddListViewController.m in Sources */,
+				C7DB501D1AB0B1CE00026E83 /* NSFileManager+CCNoiCloudBackup.m in Sources */,
 				C7FE2C76199794E000D7D0DC /* CCSplashViewController.m in Sources */,
 				C7C2925919D4BA5200EBF5C3 /* CCListOutputAddressListViewController.m in Sources */,
 				C785F4D51A3EF7530011A681 /* CCLinotteAuthenticationManager.m in Sources */,
@@ -3905,6 +3950,7 @@
 				C7C2924F19D4B35200EBF5C3 /* CCListOutputListEmptyView.m in Sources */,
 				C7619FD519C6DDAF00C09F0D /* CCListOptionButton.m in Sources */,
 				C7CE2C771918E48800D37A64 /* CCAppDelegate.m in Sources */,
+				C795D30F1AB1921A00B49846 /* CCOldLinotteMigration.m in Sources */,
 				C796D7C119BB8C0000B97879 /* _CCList.m in Sources */,
 				C7216BA91A1B635B00498CFE /* CCNetworkLogs.m in Sources */,
 				C7F4451F19FCE708009AE1C9 /* CCListZone.m in Sources */,
@@ -3985,6 +4031,7 @@
 				C77F8DD81A00F6C400AE2655 /* CCListInstallerCloseButton.m in Sources */,
 				C799AB5B19216C390096B5A8 /* CCOutputView.m in Sources */,
 				C73184121A27515E00A99762 /* CCOpenHoursMeta.m in Sources */,
+				C795D3131AB1936300B49846 /* SQLiteManager.m in Sources */,
 				C7C66AA11A5C171900FACC0C /* CCFoursquareSocialButton.m in Sources */,
 				C7CE2CB81918F17B00D37A64 /* CCListView.m in Sources */,
 				C7C66A6B1A5AA37300FACC0C /* CCSearchListStoreView.m in Sources */,
@@ -4278,12 +4325,13 @@
 		C7CE2C781918E48800D37A64 /* Linotte.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				C795D3161AB1A0F500B49846 /* Linotte 5.xcdatamodel */,
 				C7D84B231AAFAC5C005053D4 /* Linotte 4.xcdatamodel */,
 				C796D7B819BB889F00B97879 /* Linotte 3.xcdatamodel */,
 				C736B24A1934B3D4003E643B /* Linotte 2.xcdatamodel */,
 				C7CE2C791918E48800D37A64 /* Linotte.xcdatamodel */,
 			);
-			currentVersion = C7D84B231AAFAC5C005053D4 /* Linotte 4.xcdatamodel */;
+			currentVersion = C795D3161AB1A0F500B49846 /* Linotte 5.xcdatamodel */;
 			path = Linotte.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

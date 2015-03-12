@@ -18,6 +18,7 @@
 @implementation CCListViewTableViewCell
 {
     UILabel *_realTextLabel;
+    UIImageView *_newIcon;
     CCListViewTableViewCellDetailLabel *_realDetailTextLabel;
     
     UIButton *_bellButton;
@@ -37,6 +38,7 @@
         [self setupLabels];
         [self setupBellButton];
         [self setupCompas];
+        [self setupNewIcon];
         [self setupLayout];
         
         UILongPressGestureRecognizer *longPressedGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(removePressed:)];
@@ -76,6 +78,13 @@
     _compasView = [[UIImageView alloc] initWithImage:compasImage];
     _compasView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_compasView];
+}
+
+- (void)setupNewIcon
+{
+    _newIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_new"]];
+    _newIcon.hidden = YES;
+    [self.contentView addSubview:_newIcon];
 }
 
 - (void)setupLayout
@@ -202,6 +211,11 @@
     _compasView.hidden = directionHidden;
     [self setupLayout];
     [self didChangeValueForKey:@"directionHidden"];
+}
+
+- (void)setIsNew:(BOOL)isNew
+{
+    _newIcon.hidden = !isNew;
 }
 
 @end

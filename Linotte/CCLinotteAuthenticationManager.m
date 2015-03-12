@@ -69,7 +69,7 @@
 
 - (BOOL)readyToSend
 {
-    NSArray *readyToSend = @[@(kCCSendAuthMethod), @(kCCLoggedIn)];
+    NSArray *readyToSend = @[@(kCCSendAuthMethod), @(kCCLoggedIn), @(kCCSendPushNotificationDeviceToken)];
     return [readyToSend containsObject:@(_credentialStore.storeState)];
 }
 

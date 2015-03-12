@@ -8,6 +8,7 @@ extern const struct CCAddressAttributes {
 	__unsafe_unretained NSString *geohash;
 	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *isAuthor;
+	__unsafe_unretained NSString *isNew;
 	__unsafe_unretained NSString *lastnotif;
 	__unsafe_unretained NSString *latitude;
 	__unsafe_unretained NSString *localIdentifier;
@@ -55,6 +56,14 @@ extern const struct CCAddressRelationships {
 - (void)setIsAuthorValue:(BOOL)value_;
 
 //- (BOOL)validateIsAuthor:(id*)value_ error:(NSError**)error_;
+
+@property (nonatomic, strong) NSNumber* isNew;
+
+@property (atomic) BOOL isNewValue;
+- (BOOL)isNewValue;
+- (void)setIsNewValue:(BOOL)value_;
+
+//- (BOOL)validateIsNew:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSDate* lastnotif;
 
@@ -146,6 +155,12 @@ extern const struct CCAddressRelationships {
 
 - (BOOL)primitiveIsAuthorValue;
 - (void)setPrimitiveIsAuthorValue:(BOOL)value_;
+
+- (NSNumber*)primitiveIsNew;
+- (void)setPrimitiveIsNew:(NSNumber*)value;
+
+- (BOOL)primitiveIsNewValue;
+- (void)setPrimitiveIsNewValue:(BOOL)value_;
 
 - (NSDate*)primitiveLastnotif;
 - (void)setPrimitiveLastnotif:(NSDate*)value;

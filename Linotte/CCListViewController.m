@@ -218,6 +218,11 @@
     return [_provider numberOfListItems];
 }
 
+- (BOOL)isNewForListItemAtIndex:(NSUInteger)index
+{
+    return [_provider isNewForListItemAtIndex:index];
+}
+
 #pragma mark - CCListViewContentProviderDelegate methods
 
 - (void)refreshCellsAtIndexes:(NSIndexSet *)indexSet

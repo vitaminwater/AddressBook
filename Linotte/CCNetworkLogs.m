@@ -10,6 +10,8 @@
 
 #import <AFNetworking/AFNetworking.h>
 
+#import "NSFileManager+CCNoiCloudBackup.h"
+
 #import "CCAppDelegate.h"
 
 #if defined(DEBUG)
@@ -138,6 +140,8 @@
 
         if (error)
             NSLog(@"%@", error);
+        else
+            [NSFileManager addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:_logFilePath]];
     }
 
     _logFile = [NSFileHandle fileHandleForWritingAtPath:_logFilePath];

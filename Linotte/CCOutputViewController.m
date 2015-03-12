@@ -76,6 +76,9 @@
 {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    _address.isNewValue = NO;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
 
     CCOutputView *view = [CCOutputView new];
     

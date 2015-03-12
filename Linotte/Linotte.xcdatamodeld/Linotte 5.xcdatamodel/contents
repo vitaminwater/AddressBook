@@ -51,10 +51,10 @@
         <attribute name="localIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="longNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="needsRefreshZone" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="notify" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="needsRefreshZone" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
+        <attribute name="notify" attributeType="Boolean" defaultValueString="NO" indexed="YES" syncable="YES"/>
         <attribute name="owned" optional="YES" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
-        <attribute name="searchable" attributeType="Boolean" defaultValueString="YES" syncable="YES"/>
+        <attribute name="searchable" attributeType="Boolean" defaultValueString="YES" indexed="YES" syncable="YES"/>
         <attribute name="shortNextRefreshDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="waitingTime" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="addresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CCAddress" inverseName="lists" inverseEntity="CCAddress" syncable="YES"/>

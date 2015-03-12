@@ -81,6 +81,7 @@
         NSArray *addressDictIdentifiers = [addressesDicts valueForKeyPath:@"@unionOfObjects.identifier"];
         for (CCAddress *address in newAddresses) {
             NSUInteger addressDictIndex = [addressDictIdentifiers indexOfObject:address.identifier];
+            address.isNewValue = YES;
             
             if (addressDictIndex == NSNotFound)
                 continue;
@@ -95,6 +96,7 @@
             [address addMetas:[NSSet setWithArray:addressMetas]];
         }
         
+        list.hasNewValue = YES;
         [[CCModelChangeMonitor sharedInstance] addresses:addressesToAdd willMoveToList:list send:NO];
         [list addAddresses:[NSSet setWithArray:addressesToAdd]];
         

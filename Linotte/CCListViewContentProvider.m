@@ -289,6 +289,12 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     return [_listItems count];
 }
 
+- (BOOL)isNewForListItemAtIndex:(NSUInteger)index
+{
+    CCListItem *listItem = _listItems[index];
+    return listItem.isNew;
+}
+
 #pragma mark - setter methods
 
 - (void)setCurrentLocation:(CLLocation *)currentLocation

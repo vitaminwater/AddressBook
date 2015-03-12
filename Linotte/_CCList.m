@@ -7,6 +7,7 @@ const struct CCListAttributes CCListAttributes = {
 	.author = @"author",
 	.authorIdentifier = @"authorIdentifier",
 	.avgInactiveDays = @"avgInactiveDays",
+	.hasNew = @"hasNew",
 	.icon = @"icon",
 	.identifier = @"identifier",
 	.isdefault = @"isdefault",
@@ -24,6 +25,7 @@ const struct CCListAttributes CCListAttributes = {
 	.needsRefreshZone = @"needsRefreshZone",
 	.notify = @"notify",
 	.owned = @"owned",
+	.searchable = @"searchable",
 	.shortNextRefreshDate = @"shortNextRefreshDate",
 	.waitingTime = @"waitingTime",
 };
@@ -67,6 +69,11 @@ const struct CCListRelationships CCListRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"hasNewValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"hasNew"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"isdefaultValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"isdefault"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -107,6 +114,11 @@ const struct CCListRelationships CCListRelationships = {
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
+	if ([key isEqualToString:@"searchableValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"searchable"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 	if ([key isEqualToString:@"waitingTimeValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"waitingTime"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -138,6 +150,26 @@ const struct CCListRelationships CCListRelationships = {
 
 - (void)setPrimitiveAvgInactiveDaysValue:(double)value_ {
 	[self setPrimitiveAvgInactiveDays:[NSNumber numberWithDouble:value_]];
+}
+
+@dynamic hasNew;
+
+- (BOOL)hasNewValue {
+	NSNumber *result = [self hasNew];
+	return [result boolValue];
+}
+
+- (void)setHasNewValue:(BOOL)value_ {
+	[self setHasNew:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveHasNewValue {
+	NSNumber *result = [self primitiveHasNew];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveHasNewValue:(BOOL)value_ {
+	[self setPrimitiveHasNew:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic icon;
@@ -316,6 +348,26 @@ const struct CCListRelationships CCListRelationships = {
 
 - (void)setPrimitiveOwnedValue:(BOOL)value_ {
 	[self setPrimitiveOwned:[NSNumber numberWithBool:value_]];
+}
+
+@dynamic searchable;
+
+- (BOOL)searchableValue {
+	NSNumber *result = [self searchable];
+	return [result boolValue];
+}
+
+- (void)setSearchableValue:(BOOL)value_ {
+	[self setSearchable:[NSNumber numberWithBool:value_]];
+}
+
+- (BOOL)primitiveSearchableValue {
+	NSNumber *result = [self primitiveSearchable];
+	return [result boolValue];
+}
+
+- (void)setPrimitiveSearchableValue:(BOOL)value_ {
+	[self setPrimitiveSearchable:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic shortNextRefreshDate;

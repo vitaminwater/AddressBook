@@ -48,6 +48,10 @@
         [CCServerEvent deleteEvents:_events];
         _events = nil;
         
+        for (CCList *list in lists) {
+            list.hasNewValue = YES;
+        }
+        
         [[CCLinotteCoreDataStack sharedInstance] saveContext];
         
         [[CCModelChangeMonitor sharedInstance] listsDidAdd:lists send:NO];

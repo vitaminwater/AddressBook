@@ -18,7 +18,11 @@
 #import "CCCurrentUserData.h"
 #import "CCList.h"
 
-#define kCCDateIntervalDifference -(10 * 60)
+#if defined(CCSHORT_REFRESH)
+#define kCCDateIntervalDifference -(10)
+#else
+#define kCCDateIntervalDifference -(5 * 60)
+#endif
 
 @implementation CCUserSynchronizationActionConsumeEvents
 {
