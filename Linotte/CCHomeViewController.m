@@ -23,7 +23,6 @@
 
 #import "CCListStoreHomeViewController.h"
 
-#import "CCBookAndNotifiedListViewModel.h"
 #import "CCAddressListViewModel.h"
 #import "CCListListViewModel.h"
 #import "CCLastNotificationModel.h"
@@ -32,6 +31,7 @@
 #import "CCLastNotifListViewContentProvider.h"
 
 #import "CCListViewController.h"
+#import "CCListListViewController.h"
 
 #import "CCAddAddressViewController.h"
 
@@ -78,7 +78,7 @@
     CCLastNotificationModel *lastNotificationModel = [CCLastNotificationModel new];
     _listViewControllers = @[
                                  [self createListViewControllerWithModel:addressListModel orderByLastNotif:NO],
-                                 [self createListViewControllerWithModel:listListModel orderByLastNotif:NO],
+                                 [self createListViewControllerWithModel:listListModel orderByLastNotif:NO],//[CCListListViewController new],
                                  [self createListViewControllerWithModel:lastNotificationModel orderByLastNotif:YES],
                                  ];
     _swapViewController = [[CCSwapperViewController alloc] initWithFirstViewController:_listViewControllers[0]];

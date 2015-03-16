@@ -2,12 +2,20 @@
 
 #import <CoreLocation/CoreLocation.h>
 
+@class CCAddress;
+
 @interface CCList : _CCList {}
 
 - (NSArray *)getListZonesSortedByDistanceFromLocation:(CLLocationCoordinate2D)location;
 - (NSArray *)metasForActions:(NSArray *)action;
 - (void)updateNextRefreshDate:(BOOL)doubleWaitingTime;
 - (void)setNextRefreshDate;
+
+- (NSUInteger)numberOfAddresses;
+- (NSUInteger)numberOfAddressesInGeohash:(NSString *)geohash;
+
+- (NSArray *)closestAddressesGeohashes:(CLLocation *)location maxAddresses:(NSUInteger)maxAddresses;
+- (CCAddress *)closestAddress:(CLLocation *)location;
 
 + (CCList *)listWithIdentifier:(NSString *)identifier managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 

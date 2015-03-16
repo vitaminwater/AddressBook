@@ -27,9 +27,8 @@
         <relationship name="list" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CCList" inverseName="addressMetas" inverseEntity="CCList" syncable="YES"/>
     </entity>
     <entity name="CCAuthMethod" representedClassName="CCAuthMethod" syncable="YES">
-        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="infos" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="sent" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="signup" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="CCList" representedClassName="CCList" syncable="YES">
@@ -104,7 +103,7 @@
     <elements>
         <element name="CCAddress" positionX="0" positionY="0" width="128" height="285"/>
         <element name="CCAddressMeta" positionX="0" positionY="0" width="128" height="135"/>
-        <element name="CCAuthMethod" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="CCAuthMethod" positionX="0" positionY="0" width="128" height="90"/>
         <element name="CCList" positionX="0" positionY="0" width="128" height="480"/>
         <element name="CCListMeta" positionX="0" positionY="0" width="128" height="120"/>
         <element name="CCListZone" positionX="0" positionY="0" width="128" height="255"/>

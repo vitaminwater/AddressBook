@@ -13,6 +13,7 @@
 @interface CCBaseMetaWidget : UIView
 
 @property(nonatomic, readonly)id<CCMetaProtocol> meta;
+@property(nonatomic, readonly)BOOL isValid;
 
 - (instancetype)initWithMeta:(id<CCMetaProtocol>)meta;
 + (CCBaseMetaWidget *)widgetForMeta:(id<CCMetaProtocol>)meta;

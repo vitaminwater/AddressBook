@@ -10,6 +10,7 @@
 
 #import <FacebookSDK/FacebookSDK.h>
 
+#import "CCSignupLoadingView.h"
 #import "CCEmailLoginView.h"
 
 @implementation CCSignUpView
@@ -18,6 +19,7 @@
     FBLoginView *_facebookButton;
     UILabel *_orLabel;
     CCEmailLoginView *_emailLoginView;
+    CCSignupLoadingView *_loadingView;
     
     BOOL _keyboardOut;
     NSMutableArray *_constraints;
@@ -138,6 +140,34 @@
     [self addConstraints:_constraints];
 }
 
+- (void)showLoadingView
+{
+    if (_loadingView != nil)
+        return;
+    
+    _loadingView = [CCSignupLoadingView new];
+    _loadingView.frame = self.bounds;
+    [self addSubview:_loadingView];
+    
+    _loadingView.alpha = 0;
+    [UIView animateWithDuration:0.2 animations:^{
+        _loadingView.alpha = 1;
+    }];
+}
+
+- (void)hideLoadingView
+{
+    if (_loadingView == nil)
+        return;
+    
+    [UIView animateWithDuration:0.2 animations:^{
+        _loadingView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [_loadingView removeFromSuperview];
+        _loadingView = nil;
+    }];
+}
+
 #pragma mark - NSNotificationCenter target methods
 
 - (void)keyboardWillShowNotification:(NSNotification *)notification
@@ -172,11 +202,24 @@
 
 #pragma mark - setter methods
 
+- (void)setReachable:(BOOL)reachable
+{
+    _reachable = reachable;
+    _emailLoginView.reachable = reachable;
+}
+
 - (void)setDelegate:(id<CCSignUpViewDelegate, FBLoginViewDelegate>)delegate
 {
     _delegate = delegate;
     _emailLoginView.delegate = delegate;
     _facebookButton.delegate = delegate;
+}
+
+#pragma mark - getter methods
+
+- (BOOL)loading
+{
+    return _loadingView != nil;
 }
 
 @end

@@ -57,6 +57,11 @@
     return metas;
 }
 
+- (CLLocation *)location
+{
+    return [[CLLocation alloc] initWithLatitude:self.latitudeValue longitude:self.longitudeValue];
+}
+
 + (NSUInteger)numberOfNotifyingAddressesInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];

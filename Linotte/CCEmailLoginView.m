@@ -150,6 +150,10 @@
 
 - (void)validateAndSubmitForm
 {
+    if (_reachable == NO) {
+        [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:self.superview text:NSLocalizedString(@"MISSING_LOCATION", @"") delay:3];
+        return;
+    }
     [_emailField resignFirstResponder];
     [_passwordField resignFirstResponder];
     if ([self validateEmail] == NO) {
@@ -180,6 +184,15 @@
 - (BOOL)validatePasswords
 {
     return [_passwordField.text length] != 0;
+}
+
+#pragma mark - setter methods
+
+- (void)setReachable:(BOOL)reachable
+{
+    _reachable = reachable;
+    _emailField.enabled = reachable;
+    _passwordField.enabled = reachable;
 }
 
 #pragma mark - UIButton target methods

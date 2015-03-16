@@ -59,18 +59,12 @@
 
 - (NSDictionary *)requestDict
 {
-    NSError *error;
     NSString *infosUUID = self.infos;
     
     if (infosUUID == nil)
         return nil;
     
     NSString *infosJSON = [SSKeychain passwordForService:infosUUID account:kCCAccountName];
-    
-    if (error != nil) {
-        CCLog(@"%@", error);
-        return nil;
-    }
     
     return @{@"type" : self.type, @"infos" : infosJSON};
 }

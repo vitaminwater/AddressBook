@@ -46,7 +46,7 @@
         if (error != nil)
             CCLog(@"%@", error);
         else
-            [self.provider addAddresses:addresses];
+            [self.provider addAddresses:addresses filteredList:nil];
     }
     
     // Lists
@@ -86,7 +86,7 @@
     NSArray *addressesToRefresh = [[addresses arrayByRemovingObjectsFromArray:addressesToAdd] arrayByRemovingObjectsFromArray:addressesToRemove];
     
     [self.provider removeAddresses:addressesToRemove];
-    [self.provider addAddresses:addressesToAdd];
+    [self.provider addAddresses:addressesToAdd filteredList:nil];
     [self.provider refreshListItemContentsForObjects:addressesToRefresh];
 }
 
@@ -118,7 +118,7 @@
 - (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
 {
     NSArray *notifiedAddresses = [self notifiedAddresses:addresses];
-    [self.provider addAddresses:notifiedAddresses];
+    [self.provider addAddresses:notifiedAddresses filteredList:nil];
     [self.provider addAddresses:addresses toList:list];
 }
 
@@ -140,7 +140,7 @@
         NSArray *addressesToRefresh = [[addresses arrayByRemovingObjectsFromArray:addressesToAdd] arrayByRemovingObjectsFromArray:addressesToRemove];
 
         [self.provider removeAddresses:addressesToRemove];
-        [self.provider addAddresses:addressesToAdd];
+        [self.provider addAddresses:addressesToAdd filteredList:nil];
         [self.provider refreshListItemContentsForObjects:addressesToRefresh];
     }
     [self.provider removeAddresses:addresses fromList:list];
@@ -168,7 +168,7 @@
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.provider removeAddresses:addressesToRemove];
-        [self.provider addAddresses:addressesToAdd];
+        [self.provider addAddresses:addressesToAdd filteredList:nil];
     });
 }
 

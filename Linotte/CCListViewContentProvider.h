@@ -39,7 +39,7 @@ typedef void(^SearchHandlerBlockType)(CCListItem *listItem);
 
 - (CCListItemType)listItemTypeAtIndex:(NSUInteger)index;
 
-- (void)addAddresses:(NSArray *)addresses;
+- (void)addAddresses:(NSArray *)addresses filteredList:(CCList *)filteredList;
 - (void)addAddresses:(NSArray *)addresses toList:(CCList *)list;
 - (void)removeAddresses:(NSArray *)addresses;
 - (void)removeAddresses:(NSArray *)addresses fromList:(CCList *)list;

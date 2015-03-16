@@ -1,6 +1,10 @@
 #import "_CCAddress.h"
 
+#import <CoreLocation/CoreLocation.h>
+
 @interface CCAddress : _CCAddress {}
+
+@property(nonatomic, readonly)CLLocation *location;
 
 - (NSArray *)metasForActions:(NSArray *)actions;
 

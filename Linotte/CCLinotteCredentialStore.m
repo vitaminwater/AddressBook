@@ -18,7 +18,7 @@
 
 #if defined(DEBUG)
 
-#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug93"
+#define kCCKeyChainServiceName @"kCCKeyChainServiceNameDebug94"
 
 #define kCCAccessTokenAccountName @"kCCAccessTokenAccountNameDebug"
 #define kCCExpirationDateAccountName @"kCCExpirationDateAccountNameDebug"
@@ -130,8 +130,6 @@
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @(NO)];
-    [fetchRequest setPredicate:predicate];
     
     NSError *error;
     NSUInteger count = [managedObjectContext countForFetchRequest:fetchRequest error:&error];
@@ -145,28 +143,6 @@
 }
 
 - (CCAuthMethod *)nextUnsentAuthMethod
-{
-    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sent = %@", @(NO)];
-    [fetchRequest setPredicate:predicate];
-    fetchRequest.fetchLimit = 1;
-    
-    NSError *error;
-    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if (error != nil) {
-        CCLog(@"%@", error);
-        return nil;
-    }
-    
-    if ([authMethods count] == 0)
-        return nil;
-    
-    return [authMethods firstObject];
-}
-
-- (CCAuthMethod *)firstAuthMethod
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
@@ -245,7 +221,7 @@
         return kCCCreateDeviceId;
     else if ([self hasAuthMethodToSend])
         return kCCSendAuthMethod;
-    else if (CCUD.pushNotificationDeviceTokenSent == NO)
+    else if (CCUD.pushNotificationDeviceToken != nil && CCUD.pushNotificationDeviceTokenSent == NO)
         return kCCSendPushNotificationDeviceToken;
     else
         return kCCLoggedIn;

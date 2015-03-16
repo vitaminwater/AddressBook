@@ -167,7 +167,10 @@
 - (NSString *)addressDetailAtIndex:(NSUInteger)index
 {
     CCAddress *address = _addresses[index];
-    NSString *listDetail = [[[address.lists allObjects] valueForKeyPath:@"@distinctUnionOfObjects.match"] componentsJoinedByString:@", "];
+    NSString *listDetail = [[[address.lists allObjects] valueForKeyPath:@"@distinctUnionOfObjects.name"] componentsJoinedByString:@", "];
+    if ([address.address length] == 0)
+        return listDetail;
+    
     return [NSString stringWithFormat:@"%@\n%@", address.address, listDetail];
 }
 

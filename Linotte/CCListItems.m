@@ -19,8 +19,6 @@
 
 #import "CCGeohashHelper.h"
 
-#define kCCMediumGeohashLength 13
-
 #define degreesToRadians(x) (M_PI * x / 180.0)
 #define radiandsToDegrees(x) (x * 180.0 / M_PI)
 
@@ -41,21 +39,6 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
         return 360+degree;
     }
 }
-
-NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache result
-{
-    NSArray *geohashes = [CCGeohashHelper geohashGridSurroundingCoordinate:location.coordinate radius:1 digits:digits all:YES];
-    NSMutableArray *geohashesComp = [@[] mutableCopy];
-    for (NSString *geohash in geohashes) {
-        NSString *subGeohash = [geohash substringToIndex:digits];
-        [geohashesComp addObject:subGeohash];
-    }
-    return geohashesComp;
-}
-
-
-
-
 
 
 
@@ -294,24 +277,9 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     if (self.location == nil)
         return;
     
-    NSError *error = nil;
-    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    CCAddress *closestAddress = [_list closestAddress:self.location];
     
-    NSArray *geohashesComp = geohashLimit(self.location, kCCMediumGeohashLength);
-    
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(ANY lists = %@) AND (geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@ OR geohash BEGINSWITH %@)", _list, geohashesComp[0], geohashesComp[1], geohashesComp[2], geohashesComp[3], geohashesComp[4], geohashesComp[5], geohashesComp[6], geohashesComp[7], geohashesComp[8]]; // TODO store pre calculated small geohash in model !
-    [fetchRequest setPredicate:predicate];
-    
-    NSArray *addresses = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if (error != nil) {
-        CCLog(@"%@", error);
-        return;
-    }
-    
-    if ([addresses count] == 0) {
+    if (closestAddress == nil) {
         self.itemLocation = nil;
         _closestAddress = nil;
         self.farAway = YES;
@@ -319,19 +287,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache res
     }
     self.farAway = NO;
     
-    CLLocation *closestLocation = nil;
-    CCAddress *closestAddress = nil;
-    double distance = DBL_MAX;
-    for (CCAddress *address in addresses) {
-        CLLocation *addressLocation = [[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue];
-        double newDistance = [self.location distanceFromLocation:addressLocation];
-        if (closestLocation == nil || newDistance < distance) {
-            closestLocation = addressLocation;
-            closestAddress = address;
-            distance = newDistance;
-        }
-    }
-    self.itemLocation = closestLocation;
+    self.itemLocation = closestAddress.location;
     _closestAddress = closestAddress;
 }
 

@@ -1,16 +1,16 @@
 //
-//  CCSearchViewCell.m
+//  CCListListViewCell.m
 //  Linotte
 //
-//  Created by stant on 13/02/15.
+//  Created by stant on 15/03/15.
 //  Copyright (c) 2015 CCSAS. All rights reserved.
 //
 
-#import "CCSearchViewCell.h"
+#import "CCListListViewCell.h"
 
 #import <HexColors/HexColor.h>
 
-@implementation CCSearchViewCell
+@implementation CCListListViewCell
 {
     UIImageView *_iconView;
     UILabel *_nameLabel;
@@ -72,14 +72,14 @@
         NSArray *horizontalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:[_iconView]-[_detailLabel]|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:horizontalConstraints];
     }
-
+    
     {
         NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_iconView]-|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:verticalConstraints];
     }
     
     {
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_nameLabel][_detailLabel(>=25)]-(>=5)-|" options:0 metrics:nil views:views];
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_nameLabel][_detailLabel]-|" options:0 metrics:nil views:views];
         [self.contentView addConstraints:verticalConstraints];
     }
 }

@@ -261,6 +261,8 @@
         return;
     CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
     [metaContainerView addMetas:metas];
+    if ([metaContainerView.widgets count] == 0)
+        return;
     [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
     [_actionButtonsView setupLayout];
     /*if ([metas count] == 0) {
@@ -278,6 +280,8 @@
         return;
     CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
     [metaContainerView addMetas:metas];
+    if ([metaContainerView.widgets count] == 0)
+        return;
     [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"cloud_icon"]];
     [_actionButtonsView setupLayout];
 }
@@ -295,6 +299,8 @@
         return NSOrderedSame;
     }];
     [metaContainerView addMetas:metas];
+    if ([metaContainerView.widgets count] == 0)
+        return;
     [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"social_icon"]];
     [_actionButtonsView setupLayout];
 }
@@ -305,6 +311,8 @@
         return;
     CCMetaContainerView *metaContainerView = [CCMetaContainerView new];
     [metaContainerView addMetas:metas];
+    if ([metaContainerView.widgets count] == 0)
+        return;
     [_actionButtonsView addActionWithView:metaContainerView fullWidth:NO minHeight:0 icon:[UIImage imageNamed:@"clock_icon"]];
     [_actionButtonsView setupLayout];
 }

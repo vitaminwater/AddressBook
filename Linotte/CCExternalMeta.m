@@ -18,6 +18,10 @@
 {
     UILabel *_titleLabel;
     
+    NSString *_tel;
+    NSString *_email;
+    NSString *_weblink;
+    
     NSMutableArray *_contactButtons;
     NSMutableArray *_constraints;
 }
@@ -26,9 +30,24 @@
 {
     self = [super initWithMeta:meta];
     if (self) {
+        if (self.meta.content[@"tel"] != nil && [self.meta.content[@"tel"] isKindOfClass:[NSString class]] && [self.meta.content[@"tel"] length] != 0) {
+            _tel = self.meta.content[@"tel"];
+        }
+        if (self.meta.content[@"email"] != nil && [self.meta.content[@"email"] isKindOfClass:[NSString class]] && [self.meta.content[@"email"] length] != 0) {
+            _email = self.meta.content[@"email"];
+        }
+        if (self.meta.content[@"weblink"] != nil && [self.meta.content[@"weblink"] isKindOfClass:[NSString class]] && [self.meta.content[@"weblink"] length] != 0) {
+            _weblink = self.meta.content[@"weblink"];
+        }
+        
         [self setupContent];
     }
     return self;
+}
+
+- (BOOL)isValid
+{
+    return _tel != nil || _email != nil || _weblink != nil;
 }
 
 - (void)setupContent
@@ -54,13 +73,13 @@
 {
     _contactButtons = [@[] mutableCopy];
     
-    if (self.meta.content[@"tel"] != nil && [self.meta.content[@"tel"] isKindOfClass:[NSString class]] && [self.meta.content[@"tel"] length] != 0) {
+    if (_tel != nil) {
         [self addContactButton:[[CCTelephoneButton alloc] initWithNumber:self.meta.content[@"tel"]]];
     }
-    if (self.meta.content[@"email"] != nil && [self.meta.content[@"email"] isKindOfClass:[NSString class]] && [self.meta.content[@"email"] length] != 0) {
+    if (_email != nil) {
         [self addContactButton:[[CCEmailButton alloc] initWithEmail:self.meta.content[@"email"]]];
     }
-    if (self.meta.content[@"weblink"] != nil && [self.meta.content[@"weblink"] isKindOfClass:[NSString class]] && [self.meta.content[@"weblink"] length] != 0) {
+    if (_weblink != nil) {
         [self addContactButton:[[CCWeblinkButton alloc] initWithLink:self.meta.content[@"weblink"]]];
     }
 }

@@ -12,6 +12,8 @@
 
 @interface CCEmailLoginView : UIView<UITextFieldDelegate>
 
+@property(nonatomic, assign)BOOL reachable;
+
 @property(nonatomic, weak)id<CCSignUpViewDelegate> delegate;
 
 @end

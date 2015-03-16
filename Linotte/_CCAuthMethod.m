@@ -4,9 +4,8 @@
 #import "_CCAuthMethod.h"
 
 const struct CCAuthMethodAttributes CCAuthMethodAttributes = {
-	.identifier = @"identifier",
 	.infos = @"infos",
-	.sent = @"sent",
+	.signup = @"signup",
 	.type = @"type",
 };
 
@@ -36,8 +35,8 @@ const struct CCAuthMethodAttributes CCAuthMethodAttributes = {
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 
-	if ([key isEqualToString:@"sentValue"]) {
-		NSSet *affectingKey = [NSSet setWithObject:@"sent"];
+	if ([key isEqualToString:@"signupValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"signup"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
 		return keyPaths;
 	}
@@ -45,28 +44,26 @@ const struct CCAuthMethodAttributes CCAuthMethodAttributes = {
 	return keyPaths;
 }
 
-@dynamic identifier;
-
 @dynamic infos;
 
-@dynamic sent;
+@dynamic signup;
 
-- (BOOL)sentValue {
-	NSNumber *result = [self sent];
+- (BOOL)signupValue {
+	NSNumber *result = [self signup];
 	return [result boolValue];
 }
 
-- (void)setSentValue:(BOOL)value_ {
-	[self setSent:[NSNumber numberWithBool:value_]];
+- (void)setSignupValue:(BOOL)value_ {
+	[self setSignup:[NSNumber numberWithBool:value_]];
 }
 
-- (BOOL)primitiveSentValue {
-	NSNumber *result = [self primitiveSent];
+- (BOOL)primitiveSignupValue {
+	NSNumber *result = [self primitiveSignup];
 	return [result boolValue];
 }
 
-- (void)setPrimitiveSentValue:(BOOL)value_ {
-	[self setPrimitiveSent:[NSNumber numberWithBool:value_]];
+- (void)setPrimitiveSignupValue:(BOOL)value_ {
+	[self setPrimitiveSignup:[NSNumber numberWithBool:value_]];
 }
 
 @dynamic type;

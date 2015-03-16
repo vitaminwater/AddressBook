@@ -13,6 +13,9 @@
 #import <geohash/geohash.h>
 
 #define kCCGeohashHelperNDigits MAX_GEOHASH_LENGTH
+#define kCCMediumGeohashLength 13
+
+NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 
 @interface CCGeohashHelper : NSObject
 

@@ -33,7 +33,7 @@
 
 - (void)loadListItems
 {
-    [self.provider addAddresses:[_list.addresses allObjects]];
+    [self.provider addAddresses:[_list.addresses allObjects] filteredList:_list];
 }
 
 #pragma mark CCModelChangeMonitorDelegate methods
@@ -55,7 +55,7 @@
 - (void)addresses:(NSArray *)addresses didMoveToList:(CCList *)list send:(BOOL)send
 {
     if (_list == list)
-        [self.provider addAddresses:addresses];
+        [self.provider addAddresses:addresses filteredList:_list];
 }
 
 - (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send

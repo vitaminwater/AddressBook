@@ -12,6 +12,8 @@
 
 @interface CCMetaContainerView : UIView
 
+@property(nonatomic, readonly)NSArray *widgets;
+
 - (void)beginMetaAddBatch;
 - (void)addMeta:(id<CCMetaProtocol>)meta;
 - (void)addMetas:(NSArray *)metas;

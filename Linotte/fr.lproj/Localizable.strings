@@ -162,3 +162,10 @@
 
 "ADD_LIST_TO_LINOTTE" = "Ajouter";
 "REMOVE_LIST_FROM_LINOTTE" = "Retirer";
+
+"SIGNUP_LOADING" = "Connexion\nVeuillez patienter";
+"SIGNUP_ERROR" = "Oops, une erreur est survenue\nveuillez réessayer";
+
+"ME" = "moi";
+"MY_BOOKS" = "Mes carnets";
+"MY_SUBSCRIPTION" = "Mes dénicheurs";

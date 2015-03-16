@@ -166,3 +166,10 @@
 
 "ADD_LIST_TO_LINOTTE" = "Add";
 "REMOVE_LIST_FROM_LINOTTE" = "Remove";
+
+"SIGNUP_LOADING" = "Connecting\nPlease be patient";
+"SIGNUP_ERROR" = "Oops, something went terribly wrong\nplease try again";
+
+"ME" = "me";
+"MY_BOOKS" = "My books";
+"MY_SUBSCRIPTION" = "My subscriptions";

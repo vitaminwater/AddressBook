@@ -92,9 +92,9 @@
             [_linotteAPI createDeviceWithSuccess:^(NSString *deviceId) {
                 _credentialStore.deviceId = deviceId;
                 [_delegate authenticationManager:self didCreateDeviceWithIdentifier:deviceId];
-                dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf syncWithSuccess:successBlock failure:failureBlock];
-                });
+                //});
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
                 failureBlock(task, error);
@@ -111,12 +111,11 @@
             }
             
             [_linotteAPI addAuthenticationMethod:parameters success:^(NSString *identifier) {
-                authMethod.identifier = identifier;
-                authMethod.sentValue = YES;
+                [[CCLinotteCoreDataStack sharedInstance].managedObjectContext deleteObject:authMethod];
                 [[CCLinotteCoreDataStack sharedInstance] saveContext];
-                dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf syncWithSuccess:successBlock failure:failureBlock];
-                });
+                //});
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
                 failureBlock(task, error);
@@ -127,9 +126,9 @@
             NSString *pushNotificationDeviceToken = [CCUD.pushNotificationDeviceToken hexString];
             [_linotteAPI sendDevicePushNotificationToken:pushNotificationDeviceToken success:^{
                 CCUD.pushNotificationDeviceTokenSent = YES;
-                dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(dispatch_get_main_queue(), ^{
                     [weakSelf syncWithSuccess:successBlock failure:failureBlock];
-                });
+                //});
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
                 failureBlock(task, error);
@@ -168,11 +167,11 @@
     [_linotteAPI authenticate:parameters success:^(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier) {
         _credentialStore.accessToken = accessToken;
         _credentialStore.identifier = identifier;
-        authMethod.identifier = authMethodIdentifier;
-        authMethod.sentValue = YES;
-        [[CCLinotteCoreDataStack sharedInstance] saveContext];
-        [_delegate authenticationManagerDidLogin:self];
         [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidLogin object:@{kCCLinotteAuthenticationManagerUser : self}];
+        [_delegate authenticationManagerDidLogin:self];
+        
+        [[CCLinotteCoreDataStack sharedInstance].managedObjectContext deleteObject:authMethod];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         successBlock();
     } failure:failureBlock];
 }
@@ -183,12 +182,12 @@
     [_linotteAPI createUser:parameters success:^(NSString *identifier, NSString *accessToken, NSString *authMethodIdentifier) {
         _credentialStore.accessToken = accessToken;
         _credentialStore.identifier = identifier;
-        authMethod.identifier = authMethodIdentifier;
-        authMethod.sentValue = YES;
-        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerAuthMethod : authMethod, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
         [_delegate authenticationManager:self didCreateUserWithAuthMethod:authMethod];
         [_delegate authenticationManagerDidLogin:self];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kCCLinotteAuthenticationManagerDidCreateUser object:@{kCCLinotteAuthenticationManagerUser : self, kCCLinotteAuthenticationManagerAuthMethod : authMethod, kCCLinotteAuthenticationManagerUserIdentifier : identifier}];
+        
+        [[CCLinotteCoreDataStack sharedInstance].managedObjectContext deleteObject:authMethod];
+        [[CCLinotteCoreDataStack sharedInstance] saveContext];
         successBlock();
     } failure:failureBlock];
 }

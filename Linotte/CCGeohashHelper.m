@@ -8,6 +8,16 @@
 
 #import "CCGeohashHelper.h"
 
+NSArray *geohashLimit(CLLocation *location, NSUInteger digits) // TODO cache result
+{
+    NSArray *geohashes = [CCGeohashHelper geohashGridSurroundingCoordinate:location.coordinate radius:1 digits:digits all:YES];
+    NSMutableArray *geohashesComp = [@[] mutableCopy];
+    for (NSString *geohash in geohashes) {
+        NSString *subGeohash = [geohash substringToIndex:digits];
+        [geohashesComp addObject:subGeohash];
+    }
+    return geohashesComp;
+}
 
 @implementation CCGeohashHelper
 

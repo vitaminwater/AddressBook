@@ -12,6 +12,11 @@
 
 @interface CCSignUpView : UIView
 
+@property(nonatomic, assign)BOOL reachable;
 @property(nonatomic, weak)id<CCSignUpViewDelegate> delegate;
+@property(nonatomic, readonly)BOOL loading;
+
+- (void)showLoadingView;
+- (void)hideLoadingView;
 
 @end

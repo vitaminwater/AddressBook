@@ -43,6 +43,7 @@ NSArray *geohashLimit(CLLocation *location, NSUInteger digits);
 
 @interface CCListItemAddress : CCListItem
 
+@property(nonatomic, strong)CCList *filteredList;
 @property(nonatomic, strong)CCAddress *address;
 
 @end

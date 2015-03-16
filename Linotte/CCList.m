@@ -1,9 +1,12 @@
 #import "CCList.h"
 
-#import "CCListZone.h"
-
 #import "CCGeohashHelper.h"
 #import "CCLinotteEngineCoordinator.h"
+
+#import "CCGeohashHelper.h"
+
+#import "CCListZone.h"
+#import "CCAddress.h"
 
 @interface CCList ()
 
@@ -107,6 +110,132 @@
 {
     self.shortNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue / 2];
     self.longNextRefreshDate = [[NSDate date] dateByAddingTimeInterval:self.waitingTimeValue];
+}
+
+- (NSUInteger)numberOfAddresses
+{
+    NSError *error = nil;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY lists = %@", self];
+    [fetchRequest setPredicate:predicate];
+    
+    NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+    }
+    return count;
+}
+
+- (NSUInteger)numberOfAddressesInGeohash:(NSString *)geohash
+{
+    NSError *error = nil;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"geohash BEGINSWITH %@", geohash];
+    [fetchRequest setPredicate:predicate];
+    
+    NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+    
+    if (error != nil) {
+        CCLog(@"%@", error);
+    }
+    
+    return count;
+}
+
+- (NSArray *)closestAddressesGeohashes:(CLLocation *)location maxAddresses:(NSUInteger)maxAddresses
+{
+    NSMutableArray *geohashesLimit = [geohashLimit(location, kCCMediumGeohashLength) mutableCopy];
+    NSArray *listZones = [self getListZonesSortedByDistanceFromLocation:location.coordinate];
+    
+    NSMutableArray *geohahes = [@[] mutableCopy];
+    
+    NSUInteger nAddresses = 0;
+    for (CCListZone *listZone in listZones) {
+        NSMutableArray *geohashesToDelete = [@[] mutableCopy];
+        for (NSString *geohash in geohashesLimit) {
+            if ([listZone.geohash hasPrefix:geohash] || [listZone.geohash isEqualToString:geohash]) { // zone inside geohash
+                [geohahes addObject:listZone.geohash];
+                nAddresses += listZone.nAddressesValue;
+            } else if ([geohash hasPrefix:listZone.geohash]) { // geohash inside zone
+                [geohahes addObject:geohash];
+                [geohashesToDelete addObject:geohash];
+                nAddresses += [self numberOfAddressesInGeohash:geohash];
+            }
+            if (nAddresses >= maxAddresses) {
+                break;
+            }
+        }
+        [geohashesLimit removeObjectsInArray:geohashesToDelete];
+        if (nAddresses >= maxAddresses) {
+            break;
+        }
+    }
+    
+    if ([geohahes count] == 0) {
+        NSUInteger nAddresses = 0;
+        for (CCListZone *listZone in listZones) {
+            [geohahes addObject:listZone.geohash];
+            nAddresses += listZone.nAddressesValue;
+            if (nAddresses >= maxAddresses)
+                break;
+        }
+    }
+    return geohahes;
+}
+
+- (CCAddress *)closestAddress:(CLLocation *)location
+{
+    NSUInteger numberOfAddresses = [self numberOfAddresses];
+    NSArray *addresses = nil;
+    
+    if (numberOfAddresses < 200) {
+        addresses = [self.addresses allObjects];
+    } else {
+        NSError *error = nil;
+        
+        NSArray *geohashes = [self closestAddressesGeohashes:location maxAddresses:200];
+
+        if ([geohashes count] == 0)
+            return nil;
+
+        NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAddress entityName]];
+        
+        NSMutableString *format = [@"(ANY lists = %@) AND (" mutableCopy];
+        for (int i = 0; i < [geohashes count]; ++i) {
+            [format appendString:@"geohash BEGINSWITH %@ OR "];
+        }
+        [format replaceCharactersInRange:(NSRange){[format length] - 4, 4} withString:@")"];
+        
+        NSMutableArray *predicateArgs = [@[self] mutableCopy];
+        [predicateArgs addObjectsFromArray:geohashes];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:format argumentArray:predicateArgs];
+        [fetchRequest setPredicate:predicate];
+        
+        addresses = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+            return nil;
+        }
+    }
+    
+    if ([addresses count] == 0)
+        return nil;
+    
+    CLLocation *closestLocation = nil;
+    CCAddress *closestAddress = nil;
+    double distance = DBL_MAX;
+    for (CCAddress *address in addresses) {
+        CLLocation *addressLocation = address.location;
+        double newDistance = fabs(location.coordinate.latitude - addressLocation.coordinate.latitude) + fabs(location.coordinate.longitude - addressLocation.coordinate.longitude);
+        if (closestLocation == nil || newDistance < distance) {
+            closestLocation = addressLocation;
+            closestAddress = address;
+            distance = newDistance;
+        }
+    }
+    return closestAddress;
 }
 
 + (CCList *)listWithIdentifier:(NSString *)identifier managedObjectContext:(NSManagedObjectContext *)managedObjectContext

@@ -45,7 +45,7 @@
         if (error != nil)
             CCLog(@"%@", error);
         else
-            [self.provider addAddresses:addresses];
+            [self.provider addAddresses:addresses filteredList:nil];
     }
 }
 
@@ -76,7 +76,7 @@
 
 - (void)addressesDidNotify:(NSArray *)addresses
 {
-    [self.provider addAddresses:addresses];
+    [self.provider addAddresses:addresses filteredList:nil];
 }
 
 @end

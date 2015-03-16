@@ -40,7 +40,7 @@
         if (error != nil)
             CCLog(@"%@", error);
         else
-            [self.provider addAddresses:addresses];
+            [self.provider addAddresses:addresses filteredList:nil];
     }
 }
 
@@ -69,7 +69,7 @@
     
     [myAddresses removeObjectsInArray:toAddAddresses];
     [self.provider refreshListItemContentsForObjects:myAddresses];
-    [self.provider addAddresses:toAddAddresses];
+    [self.provider addAddresses:toAddAddresses filteredList:nil];
 }
 
 - (void)addresses:(NSArray *)addresses didMoveFromList:(CCList *)list send:(BOOL)send

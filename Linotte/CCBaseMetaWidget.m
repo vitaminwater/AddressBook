@@ -24,6 +24,7 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
 
+        _isValid = YES;
         if (![[self class] conformsToProtocol:@protocol(CCBaseMetaWidgetProtocol)]) {
             @throw [NSException exceptionWithName:@"implementation error" reason:@"CCBaseMetaWidgetProtocol not implemented" userInfo:nil];
         }
@@ -44,8 +45,13 @@
     for (Class metaClass in widgets) {
         NSString *action = [metaClass action];
         
-        if ([meta.action isEqualToString:action])
-            return [[metaClass alloc] initWithMeta:meta];
+        if ([meta.action isEqualToString:action]) {
+            CCBaseMetaWidget *metaWidget = [[metaClass alloc] initWithMeta:meta];
+            if (metaWidget.isValid)
+                return metaWidget;
+            else
+                return nil;
+        }
     }
     
     return nil;

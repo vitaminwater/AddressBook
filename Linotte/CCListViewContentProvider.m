@@ -46,7 +46,7 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
     _listItems = [@[] mutableCopy];
 }
 
-- (void)addAddresses:(NSArray *)addresses
+- (void)addAddresses:(NSArray *)addresses filteredList:(CCList *)filteredList
 {
     NSMutableArray *addedListItems = [@[] mutableCopy];
     
@@ -54,6 +54,7 @@ typedef BOOL(^SearchBlockType)(CCListItem *listItem, NSUInteger idx, BOOL *stop)
         CCListItemAddress *listItemAddress = [CCListItemAddress new];
         listItemAddress.address = address;
         listItemAddress.location = _currentLocation;
+        listItemAddress.filteredList = filteredList;
         [addedListItems addObject:listItemAddress];
     }
     [self insertNewListItems:addedListItems];

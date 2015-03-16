@@ -16,6 +16,8 @@
 #import "CCLinotteCoreDataStack.h"
 #import "CCLinotteAuthenticationManager.h"
 
+#import "CCActionResultHUD.h"
+
 #import "CCSignUpView.h"
 
 #import "CCAuthMethod.h"
@@ -26,10 +28,25 @@
 
 @implementation CCSignUpViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityDidChangeNotification:) name:AFNetworkingReachabilityDidChangeNotification object:nil];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)loadView
 {
     CCSignUpView *view = [CCSignUpView new];
     view.delegate = self;
+    view.reachable = [AFNetworkReachabilityManager sharedManager].reachable;
     self.view = view;
 }
 
@@ -47,21 +64,46 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
+- (void)checkSignupFailure
+{
+    NSError *error = nil;
+    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"signup = %@", @YES];
+    [fetchRequest setPredicate:predicate];
+    
+    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
+    if ([authMethods count] == 0)
+        return;
+    
+    CCAuthMethod *authMethod = [authMethods firstObject];
+    
+    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {}];
+}
+
 - (void)processAccountCreationWithAuthMethod:(CCAuthMethod *)authMethod failure:(void(^)(NSURLSessionDataTask *task, NSError *error))failureBlock
 {
     if ([AFNetworkReachabilityManager sharedManager].isReachable) {
+        CCSignUpView *view = (CCSignUpView *)self.view;
+        [view showLoadingView];
         [CCLEC.authenticationManager createAccountOrLoginWithAuthMethod:authMethod success:^{
             [_delegate signupCompleted];
+            [view hideLoadingView];
         } failure:^(NSURLSessionDataTask *task, NSError *error) {
             CCLog(@"%@", error);
-            //NSDictionary *response = [CCLEC.linotteAPI errorDescription:task error:error];
-            //NSLog(@"%@", response);
             
             NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
             [managedObjectContext deleteObject:authMethod];
             [[CCLinotteCoreDataStack sharedInstance] saveContext];
             
             failureBlock(task, error);
+            [view hideLoadingView];
+            [CCActionResultHUD showActionResultWithImage:[UIImage imageNamed:@"sad_icon"] inView:self.view text:NSLocalizedString(@"SIGNUP_ERROR", @"") delay:3];
         }];
     }
 }
@@ -70,25 +112,48 @@
 
 - (void)loginSignupButtonPressed:(NSString *)email password:(NSString *)password
 {
-    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithEmail:email password:password];
+    CCSignUpView *view = (CCSignUpView *)self.view;
+    if (view.loading)
+        return;
     
-    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {
-    }];
+    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithEmail:email password:password];
+    authMethod.signupValue = YES;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
+    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {}];
 }
 
 #pragma mark - FBLoginViewDelegate methods
 
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)user
 {
-    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithFacebookAccount:user];
+    CCSignUpView *view = (CCSignUpView *)self.view;
+    if (view.loading)
+        return;
     
-    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {
-    }];
+    CCAuthMethod *authMethod = [CCLEC.authenticationManager addAuthMethodWithFacebookAccount:user];
+    authMethod.signupValue = YES;
+    [[CCLinotteCoreDataStack sharedInstance] saveContext];
+    
+    [self processAccountCreationWithAuthMethod:authMethod failure:^(NSURLSessionDataTask *task, NSError *error) {}];
 }
 
 - (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error
 {
-    NSLog(@"%@", error);
+    CCLog(@"%@", error);
+}
+
+#pragma mark - AFNetworkingReachabilityManager target methods
+
+- (void)reachabilityDidChangeNotification:(NSNotification *)note
+{
+    BOOL reachable = [AFNetworkReachabilityManager sharedManager].reachable;
+    CCSignUpView *view = (CCSignUpView *)self.view;
+    view.reachable = reachable;
+    
+    if (reachable) {
+        [self checkSignupFailure];
+    }
 }
 
 @end
