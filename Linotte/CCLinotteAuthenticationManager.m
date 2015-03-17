@@ -79,6 +79,7 @@
 {
     CCCredentialStoreState storeState = _credentialStore.storeState;
     __weak typeof(self) weakSelf = self;
+    __weak typeof(_linotteAPI) weakLinotteAPI = _linotteAPI;
     _syncing = YES;
     switch (storeState) {
         case kCCFirstStart: {
@@ -118,6 +119,14 @@
                 //});
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 weakSelf.syncing = NO;
+                id response = [weakLinotteAPI errorDescription:task error:error];
+                if (response != nil && [response isKindOfClass:[NSDictionary class]]) {
+                    if ([response[@"Message"] isEqualToString:@"Already taken"]) { // ...........
+                        [[CCLinotteCoreDataStack sharedInstance].managedObjectContext deleteObject:authMethod];
+                        [[CCLinotteCoreDataStack sharedInstance] saveContext];
+                    }
+                    NSLog(@"%@", response);
+                }
                 failureBlock(task, error);
             }];
             break;

@@ -116,6 +116,11 @@
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
 }
 
+- (void)addFakeAuthMethod
+{
+    [CCLEC.authenticationManager addAuthMethodWithEmail:@"toto@toto.com" password:@"toto"];
+}
+
 #endif
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -128,6 +133,7 @@
     //[self clearCredentials];
     //[self dumpZones];
     //[self dumpMissingLocalIdentifier];
+    //[self addFakeAuthMethod];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     

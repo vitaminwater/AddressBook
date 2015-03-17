@@ -4243,7 +4243,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "2ef67605-9c35-4837-be46-c7995091d6f1";
+				PROVISIONING_PROFILE = "52ebece2-ba4b-497b-9d05-7bdf9e70c83d";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -4277,7 +4277,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
-				PROVISIONING_PROFILE = "84A6D312-C9A3-49E8-B1C8-34FE0D43D827";
+				PROVISIONING_PROFILE = "52ebece2-ba4b-497b-9d05-7bdf9e70c83d";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -4302,7 +4302,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "dcbd1a3c-e2dc-46c1-b4ee-77c47f1480a4";
+				PROVISIONING_PROFILE = "52ebece2-ba4b-497b-9d05-7bdf9e70c83d";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
@@ -4324,7 +4324,7 @@
 				INFOPLIST_FILE = "Linotte/Linotte-Info.plist";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "dcbd1a3c-e2dc-46c1-b4ee-77c47f1480a4";
+				PROVISIONING_PROFILE = "52ebece2-ba4b-497b-9d05-7bdf9e70c83d";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				WRAPPER_EXTENSION = app;
