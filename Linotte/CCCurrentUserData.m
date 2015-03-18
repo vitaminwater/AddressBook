@@ -93,6 +93,17 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)totallyKillCurrentSession
+{
+    self.lastUserEventDate = nil;
+    self.lastUserEventUpdate = nil;
+    self.pushNotificationDeviceToken = nil;
+    self.pushNotificationDeviceTokenSent = NO;
+    
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+}
+
 #pragma mark - Singleton method
 
 + (instancetype)sharedInstance

@@ -32,7 +32,6 @@ typedef enum : NSUInteger {
 
 - (CCAuthMethod *)addAuthMethodWithEmail:(NSString *)email password:(NSString *)password;
 - (CCAuthMethod *)addAuthMethodWithFacebookAccount:(id<FBGraphUser>)user;
-- (void)removeAuthMethods;
 - (BOOL)hasAuthMethodToSend;
 - (CCAuthMethod *)nextUnsentAuthMethod;
 - (void)logout;

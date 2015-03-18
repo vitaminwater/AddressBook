@@ -106,26 +106,6 @@
     return authMethod;
 }
 
-- (void)removeAuthMethods
-{
-    NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
-
-    NSError *error;
-    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCAuthMethod entityName]];
-    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    
-    if (error != nil) {
-        CCLog(@"%@", error);
-        return;
-    }
-    
-    for (CCAuthMethod *authMethod in authMethods) {
-        [managedObjectContext deleteObject:authMethod];
-    }
-    
-    [[CCLinotteCoreDataStack sharedInstance] saveContext];
-}
-
 - (BOOL)hasAuthMethodToSend
 {
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
@@ -168,7 +148,7 @@
     self.deviceId = nil;
     self.identifier = nil;
     
-    [self removeAuthMethods];
+    [CCAuthMethod removeAllAuthMethodsInManagedObjectContext:[CCLinotteCoreDataStack sharedInstance].managedObjectContext];
 }
 
 #pragma mark - helper methods

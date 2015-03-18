@@ -57,7 +57,7 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     
-    _tableView.rowHeight = 95;
+    _tableView.rowHeight = 80;
 
     [_tableView registerClass:[CCListViewTableViewCell class] forCellReuseIdentifier:kCCListViewTableViewCellIdentifier];
     

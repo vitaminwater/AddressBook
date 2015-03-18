@@ -6,4 +6,6 @@
 
 - (NSDictionary *)requestDict;
 
++ (void)removeAllAuthMethodsInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
 @end

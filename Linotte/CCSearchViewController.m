@@ -127,7 +127,21 @@
 
 - (UIImage *)listIconAtIndex:(NSUInteger)index
 {
-    return [UIImage imageNamed:@"list_pin_neutral"];
+    if (_location == nil)
+        return [UIImage imageNamed:@"list_pin_neutral"];
+    CCList *list = _lists[index];
+    CCAddress *address = [list closestAddress:_location];
+    CGFloat distance = [_location distanceFromLocation:[[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue]];
+    NSArray *distanceColors = kCCLinotteColors;
+    NSString *imagePath = nil;
+    int distanceColorIndex = distance / 500;
+    distanceColorIndex = MIN(distanceColorIndex, (int)[distanceColors count] - 1);
+    if (distance > 0) {
+        NSString *color = distanceColors[distanceColorIndex];
+        imagePath = [NSString stringWithFormat:@"list_pin_%@", [color substringFromIndex:1]];
+    } else
+        imagePath = @"list_pin_neutral";
+    return [UIImage imageNamed:imagePath];
 }
 
 - (NSString *)listNameAtIndex:(NSUInteger)index
@@ -144,6 +158,8 @@
 
 -(UIImage *)addressIconAtIndex:(NSUInteger)index
 {
+    if (_location == nil)
+        return [UIImage imageNamed:@"gmap_pin_neutral"];
     CCAddress *address = _addresses[index];
     CGFloat distance = [_location distanceFromLocation:[[CLLocation alloc] initWithLatitude:address.latitudeValue longitude:address.longitudeValue]];
     NSArray *distanceColors = kCCLinotteColors;

@@ -143,7 +143,7 @@
 
 - (void)closeBrowserViewController
 {
-    [self dismissViewControllerAnimated:YES completion:^{}];
+    [self.parentViewController dismissViewControllerAnimated:YES completion:^{}];
 }
 
 #pragma mark - NSNotificationCenter target methods
@@ -189,7 +189,7 @@
     
     CCLinotteBrowserViewController *browserViewController = [[CCLinotteBrowserViewController alloc] initWithRootUrl:rootUrl];
     browserViewController.delegate = self;
-    [self presentViewController:browserViewController animated:YES completion:^{}];
+    [self.parentViewController presentViewController:browserViewController animated:YES completion:^{}];
 }
 
 - (void)showEmail:(NSNotification *)note

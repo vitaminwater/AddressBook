@@ -14,6 +14,20 @@
 
 @dynamic infosDict;
 
+- (void)prepareForDeletion
+{
+    [super prepareForDeletion];
+    
+    if (self.infos != nil) {
+        NSError *error = nil;
+        [SSKeychain deletePasswordForService:self.infos account:kCCAccountName error:&error];
+        
+        if (error != nil) {
+            CCLog(@"%@", error);
+        }
+    }
+}
+
 - (void)setInfosDict:(NSDictionary *)infos
 {
     NSString *infosUUID = self.infos;
@@ -67,6 +81,28 @@
     NSString *infosJSON = [SSKeychain passwordForService:infosUUID account:kCCAccountName];
     
     return @{@"type" : self.type, @"infos" : infosJSON};
+}
+
++ (void)removeAllAuthMethodsInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSError *error = nil;
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[self entityName]];
+    
+    NSArray *authMethods = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (error != nil) {
+        CCLog(@"%@", error);
+        return;
+    }
+    
+    for (CCAuthMethod *authMethod in authMethods) {
+        [managedObjectContext deleteObject:authMethod];
+    }
+    
+    error = nil;
+    [managedObjectContext save:&error];
+    if (error != nil) {
+        CCLog(@"%@", error);
+    }
 }
 
 @end

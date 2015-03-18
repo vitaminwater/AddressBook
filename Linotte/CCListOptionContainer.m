@@ -113,7 +113,7 @@
     
     [button setTitle:title forState:UIControlStateNormal];
     button.titleLabel.textAlignment = NSTextAlignmentCenter;
-    button.titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:20];
+    button.titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:19];
     [button setBackgroundColor:[UIColor whiteColor]];
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     
@@ -148,7 +148,7 @@
     [_contentView addConstraints:horizontalConstraints];
 
     for (UIView *view in views.allValues) {
-        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_scrollView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:-10];
+        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:_scrollView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:-20];
         [_scrollView addConstraint:widthConstraint];
         
         NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:0 metrics:nil views:@{@"view" : view}];

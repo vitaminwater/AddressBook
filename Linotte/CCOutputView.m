@@ -27,7 +27,7 @@
 @implementation CCOutputView
 {
     BOOL _metaExpanded;
-    UIImageView *_expandIcon;
+    //UIImageView *_expandIcon;
     
     GMSMarker *_marker;
     GMSMapView *_mapView;
@@ -127,7 +127,7 @@
     _infosView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
     [self addSubview:_infosView];
     
-    {
+    /*{
         UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureRecognizer:)];
         tapGestureRecognizer.delegate = self;
         [_infosView addGestureRecognizer:tapGestureRecognizer];
@@ -140,7 +140,7 @@
     _expandIcon.backgroundColor = [UIColor clearColor];
     _expandIcon.contentMode = UIViewContentModeCenter;
     _expandIcon.hidden = YES;
-    [_infosView addSubview:_expandIcon];
+    [_infosView addSubview:_expandIcon];*/
     
     _nameLabel = [UILabel new];
     _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -194,8 +194,8 @@
     
     // _infosView constraints
     {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_expandIcon, _nameLabel, _addressLabel, _distanceLabel, _providerLabel, _metaScrollView);
-        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_expandIcon][_nameLabel][_addressLabel]-(==7)-[_distanceLabel]-(==7)-[_providerLabel]-(==7)-[_metaScrollView]-(==25)-|" options:0 metrics:nil views:views];
+        NSDictionary *views = NSDictionaryOfVariableBindings(/*_expandIcon, */_nameLabel, _addressLabel, _distanceLabel, _providerLabel, _metaScrollView);
+        NSArray *verticalConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-[_nameLabel][_addressLabel]-(==7)-[_distanceLabel]-(==7)-[_providerLabel]-(==7)-[_metaScrollView]-(==25)-|" options:0 metrics:nil views:views];
         [_infosView addConstraints:verticalConstraints];
         
         for (UIView *view in views.allValues) {
@@ -319,7 +319,7 @@
 
 #pragma mark - UIGestureRecognizer methods
 
-- (void)swipeGestureRecognizer:(UISwipeGestureRecognizer *)swipeGestureRecognizer
+/*- (void)swipeGestureRecognizer:(UISwipeGestureRecognizer *)swipeGestureRecognizer
 {
     if (swipeGestureRecognizer.state == UIGestureRecognizerStateRecognized) {
 
@@ -354,7 +354,7 @@
     [UIView animateWithDuration:0.2 animations:^{
         [self layoutIfNeeded];
     }];
-}
+}*/
 
 #pragma mark - UITabBarDelegate methods
 

@@ -19,7 +19,7 @@
 #import "CCFlatColorButton.h"
 
 #define kCCMainViewTopListConstraintAnimator @"kCCMainViewTopListConstraintAnimator"
-#define kCCHomeViewMetrics @{@"kCCHomeButtonContainerHeight" : @50}
+#define kCCHomeViewMetrics @{@"kCCHomeButtonContainerHeight" : @45}
 #define kCCHomeSearchFieldHeight [kCCLinotteTextFieldHeight floatValue]
 
 @implementation CCHomeView

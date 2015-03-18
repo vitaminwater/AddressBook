@@ -15,6 +15,7 @@
 #import "CCLocationMonitor.h"
 #import "CCModelChangeMonitor.h"
 #import "CCLinotteCoreDataStack.h"
+#import "CCLinotteEngineCoordinator.h"
 
 #import "UIView+CCShowSettingsView.h"
 #import "CCFirstAddressDisplaySettingsViewController.h"
@@ -106,6 +107,16 @@
         [firstAddressDisplaySettingsViewController didMoveToParentViewController:self];
     }
     
+    if ([[_address.name lowercaseString] isEqualToString:@"!demomode!"]) {
+        UIButton *demoMode = [UIButton new];
+        demoMode.frame = CGRectMake(0, 0, 100, 30);
+        [demoMode setTitle:@"demoMode" forState:UIControlStateNormal];
+        [demoMode setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        demoMode.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
+        [demoMode addTarget:self action:@selector(demoMode:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:demoMode];
+    }
+    
     @try {
         [[Mixpanel sharedInstance] track:@"Address consult" properties:@{@"name": _address.name, @"address": _address.address, @"identifier": _address.identifier ?: @"NEW"}];
     }
@@ -114,13 +125,18 @@
     }
 }
 
+- (void)demoMode:(id)sender
+{
+    [CCLEC totallyKillCurrentSession];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = [_address.name capitalizedString];
     
     NSString *color = @"#6b6b6b";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:19]};
     
     { // left bar button items
         CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);
@@ -248,7 +264,7 @@
     _distance = [_currentLocation distanceFromLocation:coordinate];
     [view setDistance:_distance];
     
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:((CCOutputView *)self.view).currentColor], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:19]};
 }
 
 #pragma mark - CCoutputViewDelegate

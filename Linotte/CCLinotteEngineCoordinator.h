@@ -28,6 +28,8 @@
 
 - (void)forceListSynchronization:(CCList *)list;
 
+- (void)totallyKillCurrentSession;
+
 + (instancetype)sharedInstance;
 
 @end

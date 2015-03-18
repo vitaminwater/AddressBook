@@ -130,7 +130,7 @@
     [[CCLinotteCoreDataStack sharedInstance] saveContext];
     
     NSString *color = @"#6b6b6b";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:23]};
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithHexString:color], NSFontAttributeName: [UIFont fontWithName:@"Montserrat-Bold" size:19]};
     
     { // left bar button items
         CGRect backButtonFrame = CGRectMake(0, 0, 30, 30);

@@ -63,9 +63,7 @@
     }
     
     if (eventCount == 0) {
-        [_provider fetchServerEventsWithList:list completionBlock:^(BOOL goOnSyncing, BOOL error) {
-            completionBlock(goOnSyncing, error);
-        }];
+        [_provider fetchServerEventsWithList:list completionBlock:completionBlock];
         return;
     }
     

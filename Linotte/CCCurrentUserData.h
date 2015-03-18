@@ -17,6 +17,8 @@
 @property(nonatomic, strong)NSData *pushNotificationDeviceToken;
 @property(nonatomic, assign)BOOL pushNotificationDeviceTokenSent;
 
+- (void)totallyKillCurrentSession;
+
 + (instancetype)sharedInstance;
 
 @end

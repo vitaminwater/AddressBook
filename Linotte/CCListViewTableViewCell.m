@@ -52,7 +52,7 @@
     _realTextLabel = [UILabel new];
     _realTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _realTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    _realTextLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:20];
+    _realTextLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:17];
     _realTextLabel.textColor = [UIColor colorWithHexString:@"#6B6B6B"];
     [self.contentView addSubview:_realTextLabel];
     
@@ -97,10 +97,10 @@
     
     // realTextLabel and reatDetailTextLabel
     {
-        NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
+        NSLayoutConstraint *topTextLabelConstraint = [NSLayoutConstraint constraintWithItem:_realTextLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:5];
         [_constraints addObject:topTextLabelConstraint];
         
-        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-15];
+        NSLayoutConstraint *bottomDetailLabelConstraint = [NSLayoutConstraint constraintWithItem:_realDetailTextLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-5];
         [_constraints addObject:bottomDetailLabelConstraint];
         
         for (UIView *view in @[_realTextLabel, _realDetailTextLabel]) {

@@ -19,9 +19,11 @@
 #import "CCList.h"
 
 #if defined(CCSHORT_REFRESH)
-#define kCCDateIntervalDifference -(10)
+#define kCCDateIntervalDifferenceBackground -(10)
+#define kCCDateIntervalDifferenceActive -(10)
 #else
-#define kCCDateIntervalDifference -(5 * 60)
+#define kCCDateIntervalDifferenceBackground -(10 * 60)
+#define kCCDateIntervalDifferenceActive -(10)
 #endif
 
 @implementation CCUserSynchronizationActionConsumeEvents
@@ -60,6 +62,16 @@
 
 - (void)fetchServerEventsWithList:(CCList *)list completionBlock:(CCSynchronizationCompletionBlock)completionBlock
 {
+    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCApplicationBackground ? kCCDateIntervalDifferenceBackground : kCCDateIntervalDifferenceActive];
+    NSDate *lastUserEventUpdate = CCUD.lastUserEventUpdate;
+
+    if ([lastUserEventUpdate compare:minDate] != NSOrderedAscending) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionBlock(NO, NO);
+        });
+        return;
+    }
+    
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
     
     _currentConnection = [CCLEC.linotteAPI fetchUserEventsWithLastDate:lastUserEventDate success:^(NSArray *eventsDicts) {
@@ -108,16 +120,6 @@
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
 
     if (lastUserEventDate == nil) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completionBlock(NO, NO);
-        });
-        return;
-    }
-    
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
-    NSDate *lastUserEventUpdate = CCUD.lastUserEventUpdate;
-    
-    if ([lastUserEventUpdate compare:minDate] != NSOrderedAscending) {
         dispatch_async(dispatch_get_main_queue(), ^{
             completionBlock(NO, NO);
         });

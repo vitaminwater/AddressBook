@@ -13,6 +13,7 @@
 
 #import "CCLinotteAuthenticationManager.h"
 #import "CCOldLinotteMigration.h"
+#import "CCCurrentUserData.h"
 
 #import "CCLinotteAPI.h"
 #import "CCLinotteCoreDataStack.h"
@@ -27,6 +28,7 @@
 #import "CCAddListCommand.h"
 
 #import "CCAddress.h"
+#import "CCAuthMethod.h"
 
 @implementation CCLinotteEngineCoordinator
 {
@@ -194,6 +196,9 @@
     if (_timer == nil) {
         _timer = [NSTimer timerWithTimeInterval:10.0 target:self selector:@selector(timerTick:) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self timerTick:_timer];
+        });
     }
 }
 
@@ -225,6 +230,14 @@
         return;
 
     [_synchronizationHandler performSynchronizationsWithMaxDuration:0 list:nil completionBlock:^(BOOL didSync){}];
+}
+
+- (void)totallyKillCurrentSession
+{
+    [CCUD totallyKillCurrentSession];
+    [self.authenticationManager logout];
+    [[CCLinotteCoreDataStack sharedInstance] totallyKillCurrentSession];
+    abort();
 }
 
 #pragma mark - Singleton method

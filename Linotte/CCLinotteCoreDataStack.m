@@ -92,6 +92,17 @@
     [self performSaveContextForContext:_managedObjectContext];
 }
 
+- (void)totallyKillCurrentSession
+{
+    NSError *error = nil;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"db2.sqlite"];
+    
+    [fileManager removeItemAtURL:storeURL error:&error];
+    if (error != nil)
+        NSLog(@"%@", error);
+}
+
 #pragma mark - Core Data Saving support
 
 - (void)performSaveContextForContext:(NSManagedObjectContext *)managedObjectContext

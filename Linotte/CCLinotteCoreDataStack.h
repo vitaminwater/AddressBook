@@ -15,6 +15,7 @@
 - (NSManagedObjectContext *)managedObjectContext;
 - (NSManagedObjectContext *)childManagedObjectContext;
 - (void)saveChildManagedObjectContext:(NSManagedObjectContext *)childManagedObjectContext;
+- (void)totallyKillCurrentSession;
 - (NSURL *)applicationDocumentsDirectory;
 
 - (void)saveContext;

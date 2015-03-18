@@ -134,6 +134,7 @@
     //[self dumpZones];
     //[self dumpMissingLocalIdentifier];
     //[self addFakeAuthMethod];
+    //[CCLEC totallyKillCurrentSession];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     

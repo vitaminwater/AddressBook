@@ -302,9 +302,14 @@ float getHeadingForDirectionFromCoordinate(CLLocationCoordinate2D fromLoc, CLLoc
 {
     NSString *distanceInfo = [self distanceInfo];
     
-    NSUInteger nAddresses = [_list.addresses count];
-    NSString *localizedKey = nAddresses > 1 ? @"LIST_INFO_PLURAL" : @"LIST_INFO";
-    NSString *listInfo = [NSString localizedStringByReplacingFromDictionnary:@{@"[nAddress]" : [@(nAddresses) stringValue]} localizedKey:localizedKey];
+    //NSUInteger nAddresses = [_list.addresses count];
+    //NSString *localizedKey = nAddresses > 1 ? @"LIST_INFO_PLURAL" : @"LIST_INFO";
+    NSString *listInfo = [self.list.author length] != 0 ? self.list.author : NSLocalizedString(@"ME", @"");
+    
+    /*if ([self.list.author length] != 0)
+        listInfo = self.list.author;
+    else
+        listInfo = [NSString localizedStringByReplacingFromDictionnary:@{@"[nAddress]" : [@(nAddresses) stringValue]} localizedKey:localizedKey];*/
     
     if ([_list.addresses count] == 0)
         return listInfo;
