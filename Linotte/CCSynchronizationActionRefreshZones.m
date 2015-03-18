@@ -20,7 +20,8 @@
 #if defined(CCSHORT_REFRESH)
 #define kCCDateIntervalDifference -20
 #else
-#define kCCDateIntervalDifference -(24 * 60 * 60)
+#define kCCDateIntervalDifferenceBackground -(24 * 60 * 60)
+#define kCCDateIntervalDifferenceActive -(60 * 60)
 #endif
 
 @implementation CCSynchronizationActionRefreshZones
@@ -40,13 +41,13 @@
 
 - (BOOL)listNeedProcess:(CCList *)list
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
+    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCApplicationBackground ? kCCDateIntervalDifferenceBackground : kCCDateIntervalDifferenceActive];
     return list.lastZonesRefresh == nil || [list.lastZonesRefresh compare:minDate] == NSOrderedAscending;
 }
 
 - (CCList *)findNextListToProcess
 {
-    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCDateIntervalDifference];
+    NSDate *minDate = [[NSDate date] dateByAddingTimeInterval:kCCApplicationBackground ? kCCDateIntervalDifferenceBackground : kCCDateIntervalDifferenceActive];
     NSError *error = nil;
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCList entityName]];

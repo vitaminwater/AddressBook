@@ -45,8 +45,6 @@
         return;
     }
     
-    CCLog(@"Starting %@ job", NSStringFromClass([self class]));
-    
     NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
     NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:[CCServerEvent entityName]];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"list = %@ and event in %@", list, [_provider eventsList]];
@@ -67,9 +65,10 @@
         return;
     }
     
+    NSString *selfClassName = NSStringFromClass([self class]);
     for (id<CCServerEventConsumerProtocol> consumer in [_provider consumers]) {
         if ([consumer hasEventsForList:list]) {
-            CCLog(@"Triggering event consumer: %@", NSStringFromClass([consumer class]));
+            CCLog(@"%@ Triggering event consumer: %@", selfClassName, NSStringFromClass([consumer class]));
             [consumer triggerWithList:list completionBlock:^(BOOL goOnSyncing, BOOL error){
                 completionBlock(goOnSyncing, error);
             }];

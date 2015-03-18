@@ -122,6 +122,8 @@
         return;
     }
     
+    CCLog(@"Event fetch for list: %@", list.identifier);
+    
     _currentConnection = [CCLEC.linotteAPI fetchListEvents:list.identifier lastDate:list.lastEventDate success:^(NSArray *eventsDicts) {
         _currentList = nil;
         _currentConnection = nil;
@@ -135,7 +137,7 @@
         }
         [list updateNextRefreshDate:NO];
         
-        CCLog(@"%lu events received", [eventsDicts count]);
+        CCLog(@"%lu events received for list %@", [eventsDicts count], list.identifier);
         NSManagedObjectContext *managedObjectContext = [CCLinotteCoreDataStack sharedInstance].managedObjectContext;
         NSDate *lastEventDate = nil;
         for (NSDictionary *eventDict in eventsDicts) {

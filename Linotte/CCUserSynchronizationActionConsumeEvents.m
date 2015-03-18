@@ -74,6 +74,8 @@
     
     NSDate *lastUserEventDate = CCUD.lastUserEventDate;
     
+    CCLog(@"User events fetch");
+    
     _currentConnection = [CCLEC.linotteAPI fetchUserEventsWithLastDate:lastUserEventDate success:^(NSArray *eventsDicts) {
         _currentConnection = nil;
         
