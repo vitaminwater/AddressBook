@@ -48,10 +48,9 @@
 {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(reachabilityChanged:)
-                                                     name:AFNetworkingReachabilityDidChangeNotification
-                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:AFNetworkingReachabilityDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundStateChanged:) name:UIApplicationDidBecomeActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backgroundStateChanged:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     }
     return self;
@@ -187,6 +186,11 @@
     } else {
         [self stopTimer];
     }
+}
+
+- (void)backgroundStateChanged:(NSNotification *)note
+{
+    
 }
 
 #pragma mark - NSTimer management

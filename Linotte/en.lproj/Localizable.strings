@@ -6,8 +6,8 @@
   Copyright (c) 2014 CCSAS. All rights reserved.
 */
 
-"PLACE_NAME" = "VENUE NAME";
-"ENTER_ADDRESS" = "ADDRESS";
+"PLACE_NAME" = "ENTER VENUE NAME";
+"ENTER_ADDRESS" = "ENTER ADDRESS";
 "BY_NAME" = "By name";
 "BY_ADDRESS" = "By address";
 "AT_LOCATION" = "At position";

@@ -11,7 +11,6 @@
 #import <HexColors/HexColor.h>
 
 #import "CCLinotteField.h"
-
 #import "CCAddAddressViewTableViewCell.h"
 
 #import "CCAddAddressTabButtons.h"

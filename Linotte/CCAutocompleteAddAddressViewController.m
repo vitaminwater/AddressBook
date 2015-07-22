@@ -58,7 +58,6 @@
 
 - (void)autocompletionResultSelectedAtIndex:(NSUInteger)index {}
 
-
 - (void)autocompleteName:(NSString *)name
 {
     [_autoComplete autocompleteText:name];

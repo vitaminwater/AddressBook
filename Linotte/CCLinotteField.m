@@ -16,6 +16,7 @@
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         self.opaque = YES;
+        self.borderStyle = UITextBorderStyleNone;
         
         [self setupSelfWithImage:image];
     }

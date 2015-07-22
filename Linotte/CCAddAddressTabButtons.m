@@ -10,6 +10,7 @@
 
 #import <HexColors/HexColor.h>
 
+#import "CCFlatColorButton.h"
 #import "CCTabStyleButton.h"
 
 @implementation CCAddAddressTabButtons
@@ -60,10 +61,12 @@
 
 - (UIButton *)createButton:(NSString *)title textColor:(UIColor *)color
 {
-    UIButton *button = [CCTabStyleButton new];
+    CCFlatColorButton *button = [CCFlatColorButton new];
     button.translatesAutoresizingMaskIntoConstraints = NO;
     [button setTitle:title forState:UIControlStateNormal];
     [button setTitleColor:color forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1]];
+    [button setBackgroundColor:[UIColor whiteColor] forState:UIControlStateSelected];
     button.titleLabel.font = [UIFont fontWithName:@"Montserrat-Bold" size:15];
     return button;
 }
