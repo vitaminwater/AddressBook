@@ -1,4 +1,4 @@
-Linotte (now stopped project)
+iOSAddressBook (now stopped project)
 ===
 
 A Offline synchronized address book with battery-friendly nearby
